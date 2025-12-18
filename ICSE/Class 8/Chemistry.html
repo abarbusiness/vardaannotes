@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Comet - Class 8 Chemistry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #000;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- SCROLLBAR --- */
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-thumb { background-color: #aa33ff; border-radius: 10px; border: 2px solid #0a0514; }
+        body::-webkit-scrollbar-track { background-color: #0a0514; }
+
+        /* --- 3D BACKGROUND --- */
+        #canvas-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        /* --- CONTENT --- */
+        #main-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- NAV --- */
+        .nav-bar {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #00ffff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            background: rgba(0, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transform: translateX(-5px);
+        }
+
+        /* --- LOGO CONTAINER (New) --- */
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            overflow: visible; 
+            cursor: pointer;
+        }
+
+        /* NEW LOGO IMAGE STYLE */
+        .logo-img {
+            height: 100px; /* Adjusted size for inner pages */
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* --- HEADER --- */
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(170, 51, 255, 0.8);
+        }
+
+        .subtitle {
+            color: #dcbfff;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        /* --- ACCORDION --- */
+        .chapters-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 50px;
+            animation: slideUp 1s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+
+        .chapter-item {
+            background: rgba(20, 10, 30, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(170, 51, 255, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chapter-item:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(170, 51, 255, 0.2);
+        }
+
+        .chapter-header {
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            transition: background 0.3s;
+        }
+
+        .chapter-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chapter-title-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chapter-number {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #9933ff; 
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(153, 51, 255, 0.4);
+        }
+
+        .chapter-name {
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .toggle-icon {
+            color: #00ffff;
+            transition: transform 0.3s ease;
+            width: 24px;
+            height: 24px;
+        }
+
+        .chapter-item.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* --- DROPDOWN & ICONS --- */
+        .chapter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 25px;
+        }
+
+        .resource-btn {
+            background: linear-gradient(135deg, rgba(153, 51, 255, 0.1), rgba(139, 0, 255, 0.1));
+            border: 1px solid rgba(153, 51, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            color: #d9b3ff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .resource-btn:hover {
+            background: linear-gradient(135deg, rgba(153, 51, 255, 0.2), rgba(139, 0, 255, 0.2));
+            box-shadow: 0 5px 15px rgba(153, 51, 255, 0.2);
+            color: #fff;
+            border-color: #9933ff;
+        }
+
+        /* Lucide Resource Icon Styling */
+        .resource-btn .lucide {
+            width: 32px;
+            height: 32px;
+            stroke: #d9b3ff;
+            stroke-width: 1.5;
+            transition: stroke 0.3s ease;
+        }
+
+        /* Hover State - Only Color Change */
+        .resource-btn:hover .lucide {
+            stroke: #fff;
+        }
+
+        /* Footer */
+        footer { margin-top: auto; padding-top: 40px; text-align: center; color: #888; font-size: 0.8rem; width: 100%; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .chapter-header { padding: 15px 20px; }
+            .chapter-number { font-size: 1.2rem; }
+            .chapter-name { font-size: 1rem; }
+            .resource-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+            .resource-btn { padding: 10px; font-size: 0.9rem; }
+            .resource-btn .lucide { width: 24px; height: 24px; }
+            
+            .logo-img { height: 60px; } /* Smaller logo on mobile */
+        }
+    </style>
+    
+    <script type="importmap">
+        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+    </script>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div id="main-content">
+        <div class="nav-bar">
+            <a href="Class8.html" class="back-btn">
+                <i data-lucide="arrow-left"></i> Subjects
+            </a>
+            <!-- Brand Logo -->
+            <a href="../../index.html" class="brand-container">
+                <img src="../../Vardaan comet logo animation video loop.gif" alt="Vardaan Comet Logo" class="logo-img">
+            </a>
+        </div>
+
+        <div class="header-section">
+            <h1>CHEMISTRY</h1>
+            <div class="subtitle">Class 10 • All Chapters</div>
+        </div>
+
+        <div class="chapters-container">
+            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">01</span>
+                        <span class="chapter-name">Matter</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/01Matter/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/01Matter/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/01Matter/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/01Matter/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/01Matter/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">02</span>
+                        <span class="chapter-name">Physical and Chemical Changes</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/02PhysicalandChemicalChanges/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/02PhysicalandChemicalChanges/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/02PhysicalandChemicalChanges/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/02PhysicalandChemicalChanges/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/02PhysicalandChemicalChanges/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">03</span>
+                        <span class="chapter-name">Elements, Compounds and Mixtures</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/03ElementsCompoundsandMixtures/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/03ElementsCompoundsandMixtures/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/03ElementsCompoundsandMixtures/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/03ElementsCompoundsandMixtures/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/03ElementsCompoundsandMixtures/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">04</span>
+                        <span class="chapter-name">Atomic Structure</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/04AtomicStructure/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/04AtomicStructure/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/04AtomicStructure/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/04AtomicStructure/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/04AtomicStructure/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">05</span>
+                        <span class="chapter-name">Language of Chemistry</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/05LanguageofChemistry/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/05LanguageofChemistry/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/05LanguageofChemistry/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/05LanguageofChemistry/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/05LanguageofChemistry/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">06</span>
+                        <span class="chapter-name">Chemical Reactions</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/06ChemicalReactions/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/06ChemicalReactions/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/06ChemicalReactions/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/06ChemicalReactions/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/06ChemicalReactions/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">07</span>
+                        <span class="chapter-name">Hydrogen</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/07Hydrogen/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/07Hydrogen/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/07Hydrogen/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/07Hydrogen/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/07Hydrogen/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">08</span>
+                        <span class="chapter-name">Water</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/08Water/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/08Water/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/08Water/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/08Water/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/08Water/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">09</span>
+                        <span class="chapter-name">Carbon and its Compounds</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Chemistry/09CarbonanditsCompounds/VideoLecture.html" class="resource-btn"><i data-lucide="monitor-play"></i> Video Lecture</a>
+                        <a href="Chemistry/09CarbonanditsCompounds/ChapterNotes.html" class="resource-btn"><i data-lucide="book-open"></i> Chapter Notes</a>
+                        <a href="Chemistry/09CarbonanditsCompounds/ClassNotes.html" class="resource-btn"><i data-lucide="notebook-pen"></i> Class Notes</a>
+                        <a href="Chemistry/09CarbonanditsCompounds/MindMap.html" class="resource-btn"><i data-lucide="brain-circuit"></i> Mind Map</a>
+                        <a href="Chemistry/09CarbonanditsCompounds/Quiz.html" class="resource-btn"><i data-lucide="clipboard-list"></i> Quiz</a>                    </div>
+                </div>
+            </div>
+</div>
+<!-- FOOTER -->
+        <footer>
+            VARDAAN LEARNING INSTITUTE &copy; 2025
+        </footer>
+
+    </div>
+
+    <script type="module">
+        // Init Lucide
+        lucide.createIcons();
+
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        // --- ACCORDION LOGIC ---
+        window.toggleChapter = function(header) {
+            const item = header.parentElement;
+            const content = item.querySelector('.chapter-content');
+            item.classList.toggle('active');
+            if (item.classList.contains('active')) {
+                content.style.maxHeight = content.scrollHeight + "px";
+            } else {
+                content.style.maxHeight = null;
+            }
+            const allItems = document.querySelectorAll('.chapter-item');
+            allItems.forEach(otherItem => {
+                if (otherItem !== item && otherItem.classList.contains('active')) {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.chapter-content').style.maxHeight = null;
+                }
+            });
+        };
+
+        // --- BACKGROUND ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.002);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(0, 25, 90); camera.lookAt(0, 0, 0);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        container.appendChild(renderer.domElement);
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloomPass.threshold = 0.1; bloomPass.strength = 1.5; bloomPass.radius = 0.8;
+        composer.addPass(bloomPass);
+        const planetGeo = new THREE.SphereGeometry(12, 64, 64);
+        const planetMat = new THREE.MeshBasicMaterial({ color: 0x220044 });
+        const planetMesh = new THREE.Mesh(planetGeo, planetMat);
+        const starGeo = new THREE.BufferGeometry();
+        const starCount = 4000;
+        const starPos = new Float32Array(starCount * 3);
+        for(let i=0; i<starCount*3; i+=3) {
+            const r = 1000 + Math.random() * 1000;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            starPos[i] = r * Math.sin(phi) * Math.cos(theta);
+            starPos[i+1] = r * Math.sin(phi) * Math.sin(theta);
+            starPos[i+2] = r * Math.cos(phi);
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({ size: 1.5, color: 0xffffff, transparent: true, opacity: 0.8 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+            stars.rotation.y = time * 0.02;
+            composer.render();
+        }
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+        animate();
+    </script>
+
+    <!-- Ensure Subjects button reliably navigates to Class10 page -->
+    <script>
+        (function(){
+            const btn = document.querySelector('.back-btn');
+            if(!btn) return;
+            btn.addEventListener('click', function(e){
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // allow open-in-new-tab
+                e.preventDefault();
+
+                const fallbacks = ['Class8.html','./Class10.html','/vardaannotes/ICSE/Class 8/Class8.html','/CBSE/Class10/Class10.html','/index.html'];
+                for (const p of fallbacks) {
+                    try {
+                        const candidate = new URL(p, window.location.href);
+                        window.location.href = candidate.href;
+                        return;
+                    } catch (err) {
+                        // ignore and try next
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
