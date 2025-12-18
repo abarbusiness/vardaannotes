@@ -82,7 +82,7 @@
             line-height: 1.2;
         }
 
-        h1 span {
+        h1 .char {
             display: inline-block;
             pointer-events: auto;
             cursor: default;
@@ -101,11 +101,25 @@
             animation: cosmicDetailMove 12s linear infinite;
         }
 
-        h1 span:hover {
+        h1 .char:hover {
             animation-play-state: paused;
             transform: scale(1.15) translateY(-5px);
             background-image: linear-gradient(180deg, #ffffff 0%, #e0c6ff 50%, #aa33ff 100%);
             text-shadow: 0 0 5px #aa33ff, 0 0 10px rgba(170, 51, 255, 0.6);
+        }
+
+        .word-wrapper {
+            display: inline-block;
+            white-space: nowrap;
+            margin: 0 15px;
+        }
+
+        @media (max-width: 768px) {
+            .word-wrapper {
+                display: block;
+                margin: 0;
+                margin-bottom: 10px;
+            }
         }
 
         #divider-line {
@@ -777,14 +791,26 @@
 
             // --- 0. TEXT SPLITTING LOGIC ---
             const title = document.getElementById('main-title');
-            const text = title.textContent;
+            const str = title.textContent.trim();
             title.innerHTML = '';
 
-            [...text].forEach((char, index) => {
-                const span = document.createElement('span');
-                span.textContent = char === ' ' ? '\u00A0' : char;
-                span.style.animationDelay = `-${index * 2}s`;
-                title.appendChild(span);
+            const words = str.split(/\s+/);
+            let globalCharIndex = 0;
+
+            words.forEach((word) => {
+                const wordWrapper = document.createElement('span');
+                wordWrapper.classList.add('word-wrapper');
+
+                [...word].forEach((char) => {
+                    const span = document.createElement('span');
+                    span.textContent = char;
+                    span.classList.add('char');
+                    span.style.animationDelay = `-${globalCharIndex * 2}s`;
+                    wordWrapper.appendChild(span);
+                    globalCharIndex++;
+                });
+
+                title.appendChild(wordWrapper);
             });
 
             // --- 1. SLIDER CLONING LOGIC (Seamless Loop) ---
