@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Comet - MOCK TESTS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --accent-cyan: #00ffff;
+            --accent-pink: #ff00f0;
+            --glass-bg: rgba(18, 12, 35, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #000000;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        /* --- 3D BACKGROUND --- */
+        #canvas-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 10%, rgba(0,0,0,0.95) 100%);
+            z-index: 5; pointer-events: none;
+        }
+
+        /* --- CONTENT WRAPPER --- */
+        #main-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            padding: clamp(20px, 5vw, 60px) clamp(15px, 4vw, 40px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- NAV --- */
+        .nav-bar {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: clamp(30px, 8vw, 60px);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50px; 
+            background: rgba(0, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* --- HEADER --- */
+        .header-section {
+            text-align: center;
+            margin-bottom: clamp(40px, 10vw, 80px);
+            width: 100%;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.2rem, 10vw, 3.8rem);
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: clamp(4px, 2vw, 12px);
+            text-shadow: 0 0 30px rgba(170, 51, 255, 0.8);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            color: var(--accent-cyan);
+            margin-top: 15px;
+            font-size: clamp(0.65rem, 2.5vw, 0.85rem);
+            letter-spacing: clamp(1px, 0.8vw, 3px);
+            text-transform: uppercase;
+            font-weight: 400;
+            display: inline-block;
+            max-width: 100%;
+            opacity: 0.9;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 12px 15px 0;
+        }
+
+        /* --- GRID --- */
+        .test-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* --- MOCK TEST CARD --- */
+        .test-card {
+            background: linear-gradient(145deg, rgba(35, 25, 65, 0.85), rgba(15, 8, 30, 0.98));
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+            transition: 0.4s;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .test-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 45px rgba(0, 255, 255, 0.1);
+        }
+
+        .test-icon {
+            width: 65px;
+            height: 65px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .test-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: #fff;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .test-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* --- COMPACT CAPSULE BUTTONS --- */
+        .test-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #eee;
+            font-size: 0.62rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .test-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: var(--accent-cyan);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .test-btn.solution .lucide {
+            stroke: var(--accent-pink);
+        }
+
+        .test-btn.solution:hover {
+            background: rgba(255, 0, 240, 0.1);
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 240, 0.2);
+        }
+
+        .test-btn .lucide {
+            width: 14px;
+            height: 14px;
+            stroke: var(--accent-cyan);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            margin-top: auto;
+            padding: 80px 20px 40px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 600px) {
+            .test-container { grid-template-columns: 1fr; gap: 20px; }
+            .test-actions { flex-direction: column; }
+            .test-btn { width: 100%; }
+        }
+    </style>
+
+    <script type="importmap">
+        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+    </script>
+</head>
+
+<body>
+
+    <div class="vignette"></div>
+    <div id="canvas-container"></div>
+
+    <div id="main-content">
+        <nav class="nav-bar">
+            <a href="extras.html" class="back-btn">
+                <i data-lucide="chevron-left"></i> <span>Extra Resources</span>
+            </a>
+        </nav>
+
+        <header class="header-section">
+            <h1>MOCK TESTS</h1>
+            <div class="subtitle">Battle Simulation • Performance Metrics</div>
+        </header>
+
+        <div class="test-container">
+            <!-- TEST 01 -->
+            <div class="test-card">
+                <div class="test-icon"><i data-lucide="file-check"></i></div>
+                <h3 class="test-title">MOCK TEST 01</h3>
+                <div class="test-actions">
+                    <a href="#" class="test-btn">
+                        <i data-lucide="file-question"></i> <span>Question Paper</span>
+                    </a>
+                    <a href="#" class="test-btn solution">
+                        <i data-lucide="check-circle"></i> <span>View Solution</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- TEST 02 -->
+            <div class="test-card">
+                <div class="test-icon"><i data-lucide="file-check"></i></div>
+                <h3 class="test-title">MOCK TEST 02</h3>
+                <div class="test-actions">
+                    <a href="#" class="test-btn">
+                        <i data-lucide="file-question"></i> <span>Question Paper</span>
+                    </a>
+                    <a href="#" class="test-btn solution">
+                        <i data-lucide="check-circle"></i> <span>View Solution</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- TEST 03 -->
+            <div class="test-card">
+                <div class="test-icon"><i data-lucide="file-check"></i></div>
+                <h3 class="test-title">MOCK TEST 03</h3>
+                <div class="test-actions">
+                    <a href="#" class="test-btn">
+                        <i data-lucide="file-question"></i> <span>Question Paper</span>
+                    </a>
+                    <a href="#" class="test-btn solution">
+                        <i data-lucide="check-circle"></i> <span>View Solution</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Vardaan Learning Institute &copy; 2025 • COSMIC DISCOVERY ENGINE
+        </footer>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        lucide.createIcons();
+
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 8000);
+        camera.position.set(0, 50, 450);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloomPass.threshold = 0.1; bloomPass.strength = 1.1; bloomPass.radius = 0.6;
+        composer.addPass(bloomPass);
+
+        const galaxyParams = { count: 25000, size: 0.2, radius: 400, branches: 5, spin: 1.5, randomness: 0.3, randomnessPower: 3, insideColor: '#ff00aa', outsideColor: '#00ccff' };
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(galaxyParams.count * 3);
+        const colors = new Float32Array(galaxyParams.count * 3);
+        const colorInside = new THREE.Color(galaxyParams.insideColor);
+        const colorOutside = new THREE.Color(galaxyParams.outsideColor);
+
+        for (let i = 0; i < galaxyParams.count; i++) {
+            const i3 = i * 3;
+            const radius = Math.random() * galaxyParams.radius;
+            const spinAngle = radius * galaxyParams.spin;
+            const branchAngle = (i % galaxyParams.branches) / galaxyParams.branches * Math.PI * 2;
+            positions[i3] = Math.cos(branchAngle + spinAngle) * radius;
+            positions[i3 + 1] = (Math.random() - 0.5) * 40;
+            positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius;
+            const mixedColor = colorInside.clone().lerp(colorOutside, radius / galaxyParams.radius);
+            colors[i3] = mixedColor.r; colors[i3 + 1] = mixedColor.g; colors[i3 + 2] = mixedColor.b;
+        }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        const galaxy = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 0.15, vertexColors: true, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.6 }));
+        scene.add(galaxy);
+
+        const mouse = new THREE.Vector2();
+        document.addEventListener('mousemove', (e) => { mouse.x = (e.clientX/window.innerWidth)*2-1; mouse.y = -(e.clientY/window.innerHeight)*2+1; });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            camera.position.x += (mouse.x * 20 - camera.position.x) * 0.02;
+            camera.position.y += (50 + mouse.y * 20 - camera.position.y) * 0.02;
+            camera.lookAt(0, 0, 0);
+            galaxy.rotation.y += 0.002;
+            composer.render();
+        }
+        animate();
+    </script>
+</body>
+</html>
