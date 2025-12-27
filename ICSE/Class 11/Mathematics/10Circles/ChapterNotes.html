@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 11 Circles - Vardaan Master Notes</title>
+
+    <!-- Fonts: Computer Modern Serif (The standard LaTeX/Math font) -->
+    <link href="https://fonts.cdnfonts.com/css/computer-modern-serif" rel="stylesheet">
+
+    <!-- MathJax for LaTeX Rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            },
+            chtml: {
+                scale: 1.05, /* Slight scale up for better readability */
+                mtextInheritFont: true /* Text inside math matches the body font */
+            },
+            options: {
+                renderActions: {
+                    addMenu: []
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            /* Functional Highlight Themes */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+
+            --blue-bg: #e3f2fd;
+            --blue-border: #1565c0;
+
+            --green-bg: #e8f5e9;
+            --green-border: #388e3c;
+
+            --pink-bg: #fce4ec;
+            --pink-border: #c2185b;
+
+            --orange-border: #e65100;
+            /* Exam Key */
+            --orange-bg: #fff3e0;
+
+            --red-border: #c62828;
+            --red-bg: #ffcdd2;
+            /* Master Tip */
+
+            --text-color: #000000;
+            /* Pure black for sharp contrast */
+            --border-dark: #333;
+        }
+
+        body {
+            background-color: #ffffff;
+            /* White Request */
+            /* Dark Grey App Background REMOVED */
+            margin: 0;
+            padding: 20px;
+            /* Global Font: Computer Modern */
+            font-family: 'Computer Modern Serif', serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        /* --- DARK MODE THEME --- */
+        /* Global Invert Approach as requested */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* 
+           FIX: Set body background to WHITE so it inverts to PURE BLACK.
+           Remove shadows so the paper 'merges' with the background.
+           Watermark: Move to body (sides) instead of sheet in Dark Mode.
+        */
+        /* 
+           FIX: Set body background to WHITE so it inverts to PURE BLACK.
+           Remove shadows so the paper 'merges' with the background.
+           Watermark: Move to body (sides) instead of sheet in Dark Mode.
+           Subtle Effect: Use a linear gradient to fade the watermark or keep it very low opacity.
+           Since we can't easily change opacity of just the background image in CSS without pseudo-elements,
+           and the whole HTML is inverted, a "white" watermark in the image becomes "black" (invisible on black bg).
+           The current image is likely dark text on clear/white. Inverted -> Light text on Black.
+           
+           To make it subtle (darker) in the inverted mode, we need the original to be LIGHTER (so it inverts to DARKER grey).
+           Or we can use a small opacity. But background-opacity isn't a property.
+           
+           Workaround: Use a linear-gradient to tint it, or rely on the image being naturally subtle.
+           User said: "keep it darkest colour... visible a little bit".
+           Inverted Mode logic:
+           - Original: White BG, Black Text.
+           - Inverted: Black BG, White Text.
+           - User wants: Black BG, Dark Grey Text (Subtle).
+           - Means Original should be: White BG, Light Grey Text.
+           
+           Since we can't edit the image file, and `background-image` opacity is hard.
+           Let's try using `opacity` on the body? No, that fades content.
+           
+           Alternative: Add a fixed position pseudo-element to `body` for the watermark in dark mode, and give it low opacity.
+        */
+        html.dark-mode body {
+            background-color: #ffffff;
+            /* Remove background image from body, use pseudo-element for control */
+            background-image: none;
+        }
+
+        /* Persistent watermark for Dark Mode Sides */
+        html.dark-mode body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -10;
+            /* Define image twice to allow distinct positioning on left and right */
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg'), url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-repeat: repeat-y, repeat-y;
+            background-position: left top, right top;
+            background-size: 15%, 15%;
+            /* Sizing for both layers */
+            opacity: 0.08;
+            /* Extremely subtle */
+        }
+
+        html.dark-mode .paper-sheet {
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Hide the main sheet watermark in Dark Mode */
+        html.dark-mode .paper-sheet::before {
+            display: none;
+        }
+
+        /* Ensure images stay inverted (as requested) */
+        html.dark-mode img {
+            /* No re-inversion, user specifically asked to invert images too */
+        }
+
+        /* 
+           When inverted:
+           - White paper becomes Black.
+           - #555 Body becomes #aaa (Light Grey). 
+           - Images are inverted (Negatives).
+           
+           To make the "App Background" (body) look dark in Dark Mode (which means Light in the pre-inverted state),
+           we don't need to do much if we just invert the html.
+           
+           However, usually scrollbars and background outside body need handling.
+           Applying filter to HTML affects everything within.
+        */
+
+        /* Dark Mode Toggle Button - Modern Icon Only */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+            /* Circle */
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        /* Hover effect */
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Updated icon styles */
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.3s ease;
+            position: absolute;
+        }
+
+        /* Logic for showing/hiding icons based on theme state */
+        /* Default (Light Mode): Show Moon, Hide Sun */
+        .icon-sun {
+            transform: rotate(90deg) scale(0);
+            opacity: 0;
+            color: #f57f17;
+            /* Orange Sun */
+        }
+
+        .icon-moon {
+            transform: rotate(0) scale(1);
+            opacity: 1;
+            color: #5c6bc0;
+            /* Indigo Moon */
+            fill: currentColor;
+        }
+
+        /* Dark Mode (Inverted Context): 
+           Remember filter: invert(1) flips colors. 
+           We want the button to look "correct" to the user.
+           Inverted: White BG -> Black BG.
+           Orange Sun -> Blueish. This might look weird.
+           
+           Actually, the toggle logic:
+           When we are in Dark Mode (class="dark-mode" on HTML):
+           We want to show the SUN (to switch back to light).
+           But HTML is inverted. So a "Sun" will look inverted.
+           
+           Trick: We can double-invert the button container to make it look "normal" 
+           even in dark mode, or just style it knowing it will be inverted.
+           User asked for specific modern look.
+           
+           Let's double-invert the button so icons have their true colors!
+        */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            /* Re-invert to normal colors */
+            background: #333;
+            border-color: #555;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* In Dark Mode state: Show Sun, Hide Moon */
+        html.dark-mode .icon-sun {
+            transform: rotate(0) scale(1);
+            opacity: 1;
+        }
+
+        html.dark-mode .icon-moon {
+            transform: rotate(-90deg) scale(0);
+            opacity: 0;
+        }
+
+        /* The Sheet */
+        .paper-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: #ffffff;
+            padding: 20mm;
+            box-sizing: border-box;
+            box-shadow: none;
+            /* No lifting effect */
+            border: none;
+            /* Seamless merge */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Watermark */
+        .paper-sheet::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-repeat: repeat-y;
+            background-position: center 120px;
+            background-size: 80%;
+            opacity: 0.05;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3em;
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: none;
+            color: #d84315;
+            margin-bottom: 10px;
+            padding-bottom: 0;
+            position: relative;
+            z-index: 1;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #1565c0;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            color: #1565c0;
+            position: relative;
+            z-index: 1;
+            font-weight: bold;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            border-left: 5px solid #c62828;
+            padding-left: 15px;
+            margin-top: 35px;
+            color: #333;
+            position: relative;
+            z-index: 1;
+            font-weight: bold;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            color: #2c3e50;
+            text-decoration: underline;
+            margin-top: 0;
+            font-weight: bold;
+        }
+
+        p,
+        li {
+            font-size: 1.2em;
+            /* Readable size */
+            line-height: 1.5;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        /* Ensure MathJax uses the same font family */
+        mjx-container {
+            font-family: 'Computer Modern Serif', serif !important;
+        }
+
+        /* --- UI COMPONENTS --- */
+
+        /* A. Highlight Boxes */
+        .highlight-box {
+            border-radius: 4px;
+            border: 1px solid;
+            border-left-width: 6px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+
+        .box-yellow {
+            background-color: var(--yellow-bg);
+            border-color: var(--yellow-border);
+        }
+
+        .box-yellow h4,
+        .box-yellow strong {
+            color: #f57f17;
+        }
+
+        .box-blue {
+            background-color: var(--blue-bg);
+            border-color: var(--blue-border);
+        }
+
+        .box-blue h4,
+        .box-blue strong {
+            color: var(--blue-border);
+        }
+
+        .box-green {
+            background-color: var(--green-bg);
+            border-color: var(--green-border);
+        }
+
+        .box-green h4,
+        .box-green strong {
+            color: var(--green-border);
+        }
+
+        .box-pink {
+            background-color: var(--pink-bg);
+            border-color: var(--pink-border);
+        }
+
+        .box-pink h4,
+        .box-pink strong {
+            color: var(--pink-border);
+        }
+
+        /* B. Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            background-color: #fff;
+            padding: 20px;
+            margin: 30px 0;
+            box-shadow: 4px 4px 0px #000;
+            /* Sharp shadow */
+            position: relative;
+            z-index: 1;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: -14px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            font-weight: bold;
+            padding: 2px 10px;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+            font-family: 'Computer Modern Serif', serif;
+        }
+
+        /* C. Exam Key Word Box */
+        .exam-key {
+            border: 2px dashed var(--orange-border);
+            background-color: var(--orange-bg);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .exam-key::before {
+            content: "💡 EXAM KEY WORD";
+            display: block;
+            font-weight: bold;
+            color: #ef6c00;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        /* D. Master Tip Box */
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: var(--red-bg);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .master-tip strong {
+            font-style: normal;
+            color: var(--red-border);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* E. Image Placeholders */
+        .img-placeholder {
+            border: 1px solid #bdc3c7;
+            background-color: #fafafa;
+            min-height: 220px;
+            /* Slightly taller for 16:9 visualization */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 25px 0 8px 0;
+            border-radius: 2px;
+            position: relative;
+            z-index: 1;
+            color: #7f8c8d;
+            padding: 10px;
+        }
+
+        .img-placeholder::before {
+            content: "📸 PASTE DIAGRAM HERE";
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        .design-specs {
+            font-size: 0.85em;
+            color: #e67e22;
+            background: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px dashed #e67e22;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .img-caption {
+            display: block;
+            text-align: center;
+            font-size: 1em;
+            color: #555;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 2px solid #000;
+            position: relative;
+            z-index: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Computer Modern Serif', serif;
+        }
+
+        th {
+            background-color: var(--blue-bg);
+            color: var(--blue-border);
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 15px;
+            border-bottom: 2px solid #000;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ccc;
+            font-size: 1.1em;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+                min-height: auto;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+
+        /* --- PRINT OPTIMIZATION --- */
+        @media print {
+
+            /* Force Light Mode in Print */
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                padding: 15mm;
+                /* Sufficient padding for content but maximizing width */
+                box-shadow: none;
+                border: none;
+                min-height: auto;
+            }
+
+            .paper-sheet::before {
+                display: none;
+                /* Optional: Hide watermark if preferred, or keep it */
+            }
+
+            /* Prevent page breaks inside critical elements */
+            .highlight-box,
+            .formula-box,
+            img,
+            table,
+            .exam-key,
+            .master-tip {
+                page-break-inside: avoid;
+            }
+
+            h1,
+            h2,
+            h3 {
+                page-break-after: avoid;
+            }
+
+            /* Hide Toggle Button in Print */
+            .theme-toggle {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+</head>
+
+<body>
+
+    <!-- Dark Mode Button (Icon Only) -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <!-- Sun Icon (Hidden by default) -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <!-- Moon Icon (Visible by default) -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <script>
+        function toggleTheme() {
+            // Toggle class on HTML tag for global filter
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            // Icons handle themselves via CSS based on the class
+        }
+    </script>
+
+    <div class="paper-sheet">
+
+        <h1>Circles</h1>
+
+        <!-- Branding Header -->
+        <div
+            style="text-align: center; font-family: sans-serif; font-size: 13px; color: #666; font-weight: bold; letter-spacing: 1px; margin-bottom: 30px;">
+            Created by Team Vardaan with <span style="color: #d32f2f;">❤️</span>
+            <div
+                style="width: 80px; height: 1.5px; background-color: #e0e0e0; margin: 12px auto 0; border-radius: 1px;">
+            </div>
+        </div>
+
+        <!-- SECTION 1 -->
+        <h2>1. Definition & Basics</h2>
+
+        <div class="highlight-box box-yellow">
+            <h4>Definition</h4>
+            <p>A circle is the set of all points in a plane that are equidistant from a fixed point in the plane.</p>
+            <ul>
+                <li><strong>Fixed Point:</strong> Center ($C$)</li>
+                <li><strong>Constant Distance:</strong> Radius ($r$)</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 25px 0;">
+            <img src="circle Images/Figure 1.png" alt="Figure 1: Basic Circle Geometry"
+                style="max-width: 100%; height: auto;">
+        </div>
+        <span class="img-caption">Figure 1: Basic Circle Geometry showing Center C, Point P, and Radius r</span>
+
+        <!-- SECTION 2 -->
+        <h2>2. Equations of a Circle</h2>
+
+        <h3>A. Central Form (Standard Form)</h3>
+        <p>If the center of the circle is $(h, k)$ and the radius is $r$:</p>
+
+        <div class="formula-box">
+            $$ (x - h)^2 + (y - k)^2 = r^2 $$
+        </div>
+
+        <div style="text-align: center; margin: 25px 0;">
+            <img src="circle Images/Figure 2.1 Central Form Derivation.png" alt="Figure 2.1: Central Form Derivation"
+                style="max-width: 100%; height: auto;">
+        </div>
+        <span class="img-caption">Figure 2.1: Central Form Derivation</span>
+
+        <div class="highlight-box box-green">
+            <h4>Proof / Derivation</h4>
+            <p>Let $P(x, y)$ be any point on the circle and $C(h, k)$ be the center.</p>
+            <p>By definition, the distance $CP = r$.</p>
+            <p>Using the Distance Formula:</p>
+            $$ \sqrt{(x - h)^2 + (y - k)^2} = r $$
+            <p>Squaring both sides gives the standard equation:</p>
+            $$ (x - h)^2 + (y - k)^2 = r^2 $$
+        </div>
+
+        <h3>B. Simplest Form</h3>
+        <p>If the center is at the origin $(0, 0)$ and radius is $r$, the equation simplifies to:</p>
+
+        <div class="formula-box">
+            $$ x^2 + y^2 = r^2 $$
+        </div>
+
+        <h3>C. General Equation</h3>
+        <p>The general equation of second degree representing a circle is:</p>
+
+        <div class="formula-box">
+            $$ x^2 + y^2 + 2gx + 2fy + c = 0 $$
+        </div>
+
+        <div style="text-align: center; margin: 25px 0;">
+            <img src="circle Images/Figure 2.2 General Equation Parameters.png"
+                alt="Figure 2.2: General Equation Parameters" style="max-width: 100%; height: auto;">
+        </div>
+        <span class="img-caption">Figure 2.2: General Equation Parameters</span>
+
+        <div class="highlight-box box-green">
+            <h4>Derivation from Standard Form</h4>
+            <p>Expand the standard equation $(x - h)^2 + (y - k)^2 = r^2$:</p>
+            <p>$x^2 - 2hx + h^2 + y^2 - 2ky + k^2 = r^2$</p>
+            <p>$x^2 + y^2 + (-2h)x + (-2k)y + (h^2 + k^2 - r^2) = 0$</p>
+            <p>Comparing this with the general form:</p>
+            <ul>
+                <li>$2g = -2h \Rightarrow h = -g$ (Center x-coordinate)</li>
+                <li>$2f = -2k \Rightarrow k = -f$ (Center y-coordinate)</li>
+                <li>$c = h^2 + k^2 - r^2$</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box box-blue">
+            <h4>Key Parameters</h4>
+            <ul>
+                <li><strong>Center:</strong> $(-g, -f)$</li>
+                <li><strong>Radius:</strong> $r = \sqrt{g^2 + f^2 - c}$</li>
+            </ul>
+        </div>
+
+        <div class="master-tip">
+            <strong>Master Tip:</strong> Always ensure the coefficients of $x^2$ and $y^2$ are <strong>1</strong> before
+            finding the Center and Radius. If the equation is $2x^2 + 2y^2 + \dots$, divide the entire equation by 2
+            first!
+        </div>
+
+        <div class="highlight-box box-pink">
+            <h4>Nature of Circle</h4>
+            <p>Check the value of $r^2 = g^2 + f^2 - c$:</p>
+            <ul>
+                <li>$> 0$: <strong>Real Circle</strong> (Real radius)</li>
+                <li>$= 0$: <strong>Point Circle</strong> (Radius is 0, circle shrinks to a point)</li>
+                <li>$< 0$: <strong>Imaginary Circle</strong> (No real locus exists)</li>
+            </ul>
+        </div>
+
+        <h3>D. Diameter Form</h3>
+        <div class="exam-key">
+            Use this when coordinates of the diameter endpoints $A(x_1, y_1)$ and $B(x_2, y_2)$ are given.
+        </div>
+
+        <div class="formula-box">
+            $$ (x - x_1)(x - x_2) + (y - y_1)(y - y_2) = 0 $$
+        </div>
+
+        <div style="text-align: center; margin: 25px 0;">
+            <img src="circle Images/Figure 2.3 Angle in Semicircle is 90°.png"
+                alt="Figure 2.3: Angle in Semicircle is 90°" style="max-width: 100%; height: auto;">
+        </div>
+        <span class="img-caption">Figure 2.3: Angle in Semicircle is 90°</span>
+
+        <div class="highlight-box box-green">
+            <h4>Proof Logic</h4>
+            <p>Angle in a semi-circle is a right angle ($90^\circ$).</p>
+            <p>Let $P(x, y)$ be any point on the circle. Lines $AP$ and $BP$ are perpendicular.</p>
+            <p>Product of their slopes $m_1 \times m_2 = -1$:</p>
+            $$ \left(\frac{y - y_1}{x - x_1}\right) \cdot \left(\frac{y - y_2}{x - x_2}\right) = -1 $$
+            <p>Rearranging terms gives the diameter form equation.</p>
+        </div>
+
+        <h3>E. Parametric Form</h3>
+        <p>For a circle with center $(h, k)$ and radius $r$, the parametric coordinates are:</p>
+        <div class="formula-box">
+            $$ x = h + r \cos \theta $$
+            $$ y = k + r \sin \theta $$
+        </div>
+        <p>where $\theta$ is the parameter ($0 \le \theta < 2\pi$).</p>
+
+                <!-- SECTION 3 -->
+                <h2>3. Geometric Properties</h2>
+
+                <h3>A. Position of a Point</h3>
+                <p>To check where a point $P(x_1, y_1)$ lies with respect to the circle $S \equiv x^2 + y^2 + 2gx + 2fy
+                    + c = 0$.</p>
+
+                <div class="highlight-box box-blue">
+                    <h4>Rule: Power of Point ($S_1$)</h4>
+                    <p>Substitute the point coordinates into the equation:</p>
+                    $$ S_1 = x_1^2 + y_1^2 + 2gx_1 + 2fy_1 + c $$
+                    <ul>
+                        <li>$S_1 > 0 \Rightarrow$ Point is <strong>Outside</strong> ($CP > Radius$)</li>
+                        <li>$S_1 = 0 \Rightarrow$ Point is <strong>On</strong> the circle ($CP = Radius$)</li>
+                        <li>$S_1 < 0 \Rightarrow$ Point is <strong>Inside</strong> ($CP < Radius$)</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 25px 0;">
+                    <img src="circle Images/Figure 3.1 Relative Positions of Points.png"
+                        alt="Figure 3.1: Relative Positions of Points" style="max-width: 100%; height: auto;">
+                </div>
+                <span class="img-caption">Figure 3.1: Relative Positions of Points</span>
+
+                <h3>B. Line and Circle Interaction</h3>
+                <p>Let $d$ be the perpendicular distance from the Center to the line, and $r$ be the radius.</p>
+                <div class="highlight-box box-yellow">
+                    <ul>
+                        <li><strong>$d > r$:</strong> Line does not intersect (No common points).</li>
+                        <li><strong>$d = r$:</strong> Line is a <strong>Tangent</strong> (Touches at 1 point).</li>
+                        <li><strong>$d < r$:</strong> Line is a <strong>Secant</strong> (Cuts at 2 points).</li>
+                    </ul>
+                </div>
+
+                <h3>C. Intercepts on Axes</h3>
+                <p>If a circle cuts the coordinate axes, the lengths of intercepts are given by:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Axis</th>
+                                <th>Length Formula</th>
+                                <th>Condition to Cut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>X-Axis</td>
+                                <td>$2\sqrt{g^2 - c}$</td>
+                                <td>$g^2 > c$</td>
+                            </tr>
+                            <tr>
+                                <td>Y-Axis</td>
+                                <td>$2\sqrt{f^2 - c}$</td>
+                                <td>$f^2 > c$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="text-align: center; margin: 25px 0;">
+                    <img src="circle Images/Figure 3.2 X-Intercept Geometry.png" alt="Figure 3.2: X-Intercept Geometry"
+                        style="max-width: 100%; height: auto;">
+                </div>
+                <span class="img-caption">Figure 3.2: X-Intercept Geometry</span>
+
+                <div class="highlight-box box-green">
+                    <h4>Derivation (X-Intercept)</h4>
+                    <p>1. Center $C(-g, -f)$. Perpendicular distance to X-axis is $|-f| = f$.</p>
+                    <p>2. In right $\Delta CMA$ ($M$ is midpoint of chord): $CA = r$, $CM = f$.</p>
+                    <p>3. By Pythagoras: $AM = \sqrt{r^2 - f^2} = \sqrt{(g^2+f^2-c) - f^2} = \sqrt{g^2-c}$.</p>
+                    <p>4. Total intercept $AB = 2 \times AM = 2\sqrt{g^2 - c}$.</p>
+                </div>
+
+                <!-- Quick Summary -->
+                <h2>Quick Recap</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Form</th>
+                                <th>Equation</th>
+                                <th>Key Features</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Standard</td>
+                                <td>$(x-h)^2 + (y-k)^2 = r^2$</td>
+                                <td>Center $(h,k)$, Radius $r$</td>
+                            </tr>
+                            <tr>
+                                <td>General</td>
+                                <td>$x^2+y^2+2gx+2fy+c=0$</td>
+                                <td>$C(-g,-f)$, $r=\sqrt{g^2+f^2-c}$</td>
+                            </tr>
+                            <tr>
+                                <td>Diameter</td>
+                                <td>$(x-x_1)(x-x_2) + (y-y_1)(y-y_2) = 0$</td>
+                                <td>Endpoints $(x_1,y_1), (x_2,y_2)$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+    </div>
+
+</body>
+
+</html>
