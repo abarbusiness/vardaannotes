@@ -29,6 +29,8 @@
         :root {
             --bg-color-light: #ffffff;
             --text-color-light: #000000;
+            --formula-border: 2px solid #000000;
+            --formula-shadow: 4px 4px 0px #000000;
             --main-font: 'CMU Serif', 'Times New Roman', serif;
         }
 
@@ -73,36 +75,36 @@
             display: inline-block;
         }
 
-        .watermark-container {
-            pointer-events: none;
-            z-index: 0;
-            transition: all 0.5s ease;
-        }
-
-        .watermark-img {
-            opacity: 0.1;
-            transform: rotate(-30deg);
-            width: 400px;
-        }
-
-        html:not(.dark-mode) .watermark-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        html.dark-mode .watermark-container {
+        /* Watermark Overlay */
+        .watermark-overlay {
             position: fixed;
-            top: 50%;
-            right: 5%;
-            left: auto;
-            transform: translateY(-50%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 999;
         }
 
-        html.dark-mode .watermark-img {
-            opacity: 0.15;
-            width: 300px;
+        .watermark-image {
+            opacity: 0.05;
+            /* Light Mode */
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+            /* Dark Mode */
         }
 
         header {
@@ -240,15 +242,7 @@
             padding-top: 10px;
         }
 
-        .question-img {
-            max-width: 300px;
-            height: auto;
-            display: block;
-            margin: 15px 0;
-            filter: grayscale(100%);
-            border: 1px solid #000;
-        }
-
+        /* MOBILE OPTIMIZATION */
         @media screen and (max-width: 768px) {
             body {
                 background-color: #ffffff;
@@ -260,6 +254,7 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 padding: 15px !important;
+                /* Symmetrical Padding */
                 margin: 0 auto;
                 box-sizing: border-box;
             }
@@ -269,8 +264,33 @@
                 right: 10px;
             }
 
+            html.dark-mode .watermark-container {
+                right: -20px;
+                opacity: 0.1;
+            }
+
+            .watermark-img {
+                width: 250px;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
             .options {
                 grid-template-columns: 1fr;
+                /* Stack options */
+            }
+
+            /* Reduce Math Size for Mobile */
+            mjx-container {
+                font-size: 0.9em !important;
             }
         }
 
@@ -303,6 +323,10 @@
 
 <body>
 
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
         <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -316,10 +340,7 @@
     </button>
 
     <div class="paper-sheet">
-        <div class="watermark-container">
-            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-                alt="Vardaan Watermark" class="watermark-img">
-        </div>
+
 
         <header>
             <h1>Vardaan Learning Institute</h1>
@@ -327,7 +348,7 @@
             <div class="sub-header">
                 <span>Class: 10 (CBSE)</span>
                 <span>Subject: Mathematics</span>
-                <span>Max. Marks: 25</span>
+                <span>Max. Marks: 50</span>
             </div>
         </header>
 
@@ -376,12 +397,110 @@
             <span class="marks">[1]</span>
         </div>
 
+        <div class="question">
+            <div class="question-content">
+                4. The distance between two parallel tangents of a circle of radius 4 cm is:
+                <ol class="options">
+                    <li>2 cm</li>
+                    <li>4 cm</li>
+                    <li>6 cm</li>
+                    <li>8 cm</li>
+                </ol>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                5. A point P is 26 cm away from the centre of a circle and the length of the tangent drawn from P to the
+                circle is 24 cm. Find the radius of the circle.
+                <ol class="options">
+                    <li>10 cm</li>
+                    <li>12 cm</li>
+                    <li>13 cm</li>
+                    <li>15 cm</li>
+                </ol>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                6. Two concentric circles are of radii 5 cm and 3 cm. The length of the chord of the larger circle which
+                touches the smaller circle is:
+                <ol class="options">
+                    <li>8 cm</li>
+                    <li>10 cm</li>
+                    <li>12 cm</li>
+                    <li>18 cm</li>
+                </ol>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                7. From an external point P, two tangents PA and PB are drawn to a circle with centre O. If $\angle APB
+                = 50^\circ$, then $\angle OAB$ is:
+                <ol class="options">
+                    <li>$25^\circ$</li>
+                    <li>$50^\circ$</li>
+                    <li>$100^\circ$</li>
+                    <li>$60^\circ$</li>
+                </ol>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                8. At one end A of a diameter AB of a circle of radius 5cm, tangent XAY is drawn to the circle. The
+                length of the chord CD parallel to XY and at a distance 8cm from A is:
+                <ol class="options">
+                    <li>4 cm</li>
+                    <li>5 cm</li>
+                    <li>6 cm</li>
+                    <li>8 cm</li>
+                </ol>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                9. In which of the following cases can a circle be inscribed in a quadrilateral ABCD?
+                <ol class="options">
+                    <li>$AB+BC = CD+DA$</li>
+                    <li>$AB+CD = BC+DA$</li>
+                    <li>$AB+DA = BC+CD$</li>
+                    <li>$AB-CD = BC-DA$</li>
+                </ol>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                10. Assertion (A): If a chord AB subtends an angle of $60^\circ$ at the centre of a circle, then the
+                angle between the tangents at A and B is also $60^\circ$.<br>
+                Reason (R): The angle between two tangents drawn from an external point to a circle is supplementary to
+                the angle subtended by the line segment joining the points of contact at the centre.
+                <ol class="options">
+                    <li>Both A and R are true and R is the correct explanation of A.</li>
+                    <li>Both A and R are true but R is not the correct explanation of A.</li>
+                    <li>A is true but R is false.</li>
+                    <li>A is false but R is true.</li>
+                </ol>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
         <!-- SECTION B -->
         <div class="section-title">SECTION B: SHORT ANSWER TYPE QUESTIONS (2 Marks Each)</div>
 
         <div class="question">
             <div class="question-content">
-                4. Two concentric circles are of radii 5 cm and 3 cm. Find the length of the chord of the larger circle
+                11. Two concentric circles are of radii 5 cm and 3 cm. Find the length of the chord of the larger circle
                 which touches the smaller circle.
             </div>
             <span class="marks">[2]</span>
@@ -389,31 +508,39 @@
 
         <div class="question">
             <div class="question-content">
-                5. A quadrilateral ABCD is drawn to circumscribe a circle. Prove that $AB + CD = AD + BC$.
+                12. A quadrilateral ABCD is drawn to circumscribe a circle. Prove that $AB + CD = AD + BC$.
             </div>
             <span class="marks">[2]</span>
         </div>
 
         <div class="question">
             <div class="question-content">
-                6. Prove that the parallelogram circumscribing a circle is a rhombus.
+                13. Prove that the parallelogram circumscribing a circle is a rhombus.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                14. In the figure, if PQR is the tangent to a circle at Q whose centre is O, AB is a chord parallel to
+                PR and $\angle BQR = 70^\circ$, then find $\angle AQB$.
             </div>
             <span class="marks">[2]</span>
         </div>
 
         <!-- SECTION C -->
-        <div class="section-title">SECTION C: LONG ANSWER TYPE QUESTIONS (3 Marks Each)</div>
+        <div class="section-title">SECTION C: SHORT ANSWER TYPE II QUESTIONS (3 Marks Each)</div>
 
         <div class="question">
             <div class="question-content">
-                7. Prove that the lengths of tangents drawn from an external point to a circle are equal.
+                15. Prove that the lengths of tangents drawn from an external point to a circle are equal.
             </div>
             <span class="marks">[3]</span>
         </div>
 
         <div class="question">
             <div class="question-content">
-                8. XY and X'Y' are two parallel tangents to a circle with centre O and another tangent AB with point of
+                16. XY and X'Y' are two parallel tangents to a circle with centre O and another tangent AB with point of
                 contact C intersecting XY at A and X'Y' at B. Prove that $\angle AOB = 90^{\circ}$.
             </div>
             <span class="marks">[3]</span>
@@ -421,19 +548,64 @@
 
         <div class="question">
             <div class="question-content">
-                9. A triangle ABC is drawn to circumscribe a circle of radius 4 cm such that the segments BD and DC into
-                which BC is divided by the point of contact D are of lengths 8 cm and 6 cm respectively. Find the sides
-                AB and AC.
+                17. Prove that opposite sides of a quadrilateral circumscribing a circle subtend supplementary angles at
+                the centre of the circle.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                18. Two tangents TP and TQ are drawn to a circle with centre O from an external point T. Prove that
+                $\angle PTQ = 2 \angle OPQ$.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                19. A circle is touching the side BC of $\triangle ABC$ at P and touching AB and AC produced at Q and R
+                respectively. Prove that $AQ = \frac{1}{2} (\text{Perimeter of } \triangle ABC)$.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                20. PQ is a chord of length 8 cm of a circle of radius 5 cm. The tangents at P and Q intersect at a
+                point T. Find the length TP.
             </div>
             <span class="marks">[3]</span>
         </div>
 
         <!-- SECTION D -->
-        <div class="section-title">SECTION D: CASE STUDY (4 Marks)</div>
+        <div class="section-title">SECTION D: LONG ANSWER TYPE QUESTIONS (5 Marks Each)</div>
 
         <div class="question">
             <div class="question-content">
-                10. <strong>Case Study: Playground Design</strong><br>
+                21. A triangle ABC is drawn to circumscribe a circle of radius 4 cm such that the segments BD and DC
+                into
+                which BC is divided by the point of contact D are of lengths 8 cm and 6 cm respectively. Find the sides
+                AB and AC.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                22. Prove that the tangent at any point of a circle is perpendicular to the radius through the point of
+                contact. Using this, prove that if two tangents are drawn to a circle from an external point, they
+                subtend equal angles at the centre.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <!-- SECTION E -->
+        <div class="section-title">SECTION E: CASE STUDY (4 Marks)</div>
+
+        <div class="question">
+            <div class="question-content">
+                23. <strong>Case Study: Playground Design</strong><br>
                 A circular playground has a radius of 50m. A tangent path is constructed from a point P 120m away from
                 the center O touching the circle at T.<br><br>
                 (i) What is the length of the tangent path PT? (2 Marks)<br>
@@ -444,7 +616,7 @@
         </div>
 
         <footer>
-            <p>&copy; 2024-2025 Vardaan Learning Institute | Class 10 Math | Circles</p>
+            <p>&copy; 2025 Vardaan Learning Institute | Class 10 Math | Circles</p>
         </footer>
     </div>
 

@@ -1,13 +1,531 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Mathematics - Polynomials - ChapterNotes</title>
-    <style>body { background-color: #0a0514; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; } h1 { color: #aa33ff; }</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 02: Polynomials - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            /* Core Colors */
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+
+            /* Theme Palettes */
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+
+            --red-border: #d32f2f;
+        }
+
+        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- DARK MODE (FILTER INVERSION) --- */
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* --- ADAPTIVE WATERMARK (V2.5 UNIFIED) --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            /* Light Mode Default */
+            transition: opacity 0.3s ease;
+        }
+
+        /* Dark Mode Override for Watermark */
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* --- PAPER SHEET LAYOUT --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            /* seamless paper: no shadow, no border */
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            /* A4 Width */
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+            /* Above watermark */
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Double Inversion for Toggle Button */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Light Mode State */
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        /* Dark Mode State */
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+
+        /* --- CONTENT STYLING --- */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- SPECIAL COMPONENTS --- */
+
+        /* Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            background-color: #fff;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Concept Blocks */
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Placeholder Images (No Border) */
+        .placeholder-image {
+            width: 100%;
+            padding: 3rem;
+            margin: 2rem 0;
+            background-color: #f5f5f5;
+            /* Very subtle background to indicate area */
+            color: #888;
+            font-weight: 600;
+            text-align: center;
+            font-style: italic;
+            border-radius: 4px;
+        }
+
+        /* --- MATHJAX MOBILE FIX --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* --- PRINT OPTIMIZATION --- */
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>ChapterNotes</h1>
-    <h2>Polynomials</h2>
-    <p>Content coming soon...</p>
+
+    <!-- ADAPTIVE WATERMARK -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- CONTENT PAPER -->
+    <div class="paper-sheet">
+        <h1>Polynomials</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Mathematics • Chapter 02 (Rationalized
+            Syllabus)</p>
+
+        <h2>1. Introduction</h2>
+        <div class="concept-blue">
+            <p><strong>Polynomial $p(x)$:</strong> An algebraic expression in variable $x$ where the exponents of the
+                variable are <strong>non-negative integers</strong> (Whole numbers).</p>
+        </div>
+
+        <h3>Degree of a Polynomial</h3>
+        <p>The highest power of $x$ in $p(x)$ is called the degree of the polynomial.</p>
+        <ul>
+            <li><strong>Linear Polynomial (Degree 1):</strong> $ax + b$, where $a \neq 0$. Example: $2x - 3$.</li>
+            <li><strong>Quadratic Polynomial (Degree 2):</strong> $ax^2 + bx + c$, where $a \neq 0$. Example: $2x^2 + 3x
+                - 5$.</li>
+            <li><strong>Cubic Polynomial (Degree 3):</strong> $ax^3 + bx^2 + cx + d$, where $a \neq 0$. Example: $x^3 -
+                2$.</li>
+        </ul>
+
+        <h2>2. Geometrical Meaning of Zeroes</h2>
+        <p>A <strong>zero</strong> of a polynomial $p(x)$ is the $x$-coordinate of the point where the graph of $y =
+            p(x)$ <strong>intersects the x-axis</strong>.</p>
+
+        <div class="master-tip">
+            <span class="tip-header">KEY CONCEPT</span>
+            A polynomial of degree $n$ has <strong>at most</strong> $n$ zeroes.
+        </div>
+
+        <h3>Case 1: Two Distinct Zeroes</h3>
+        <p>The graph of $ax^2+bx+c$ cuts the x-axis at two distinct points. This happens when the discriminant $D > 0$.
+        </p>
+        <div class="placeholder-image">
+            [Insert Image: Graph of a parabola extending upwards/downwards cutting x-axis at two points A and A']
+        </div>
+
+        <h3>Case 2: One Zero (Two Equal roots)</h3>
+        <p>The graph touches the x-axis at exactly one point. Here $D = 0$.</p>
+        <div class="placeholder-image">
+            [Insert Image: Graph of a parabola just touching the x-axis at one point]
+        </div>
+
+        <h3>Case 3: No Zero</h3>
+        <p>The graph is either completely above or completely below the x-axis. It does not cut the x-axis. Here $D <
+                0$.</p>
+                <div class="placeholder-image">
+                    [Insert Image: Graph of a parabola completely above or below the x-axis]
+                </div>
+
+                <h2>3. Relationship between Zeroes and Coefficients</h2>
+                <p>This is the most critical part for board exams. We typically deal with Quadratic Polynomials.</p>
+
+                <div class="concept-green">
+                    <h3>Quadratic Polynomial ($ax^2 + bx + c$)</h3>
+                    <p>Let $\alpha$ (alpha) and $\beta$ (beta) be the zeroes.</p>
+                    <div class="formula-box">
+                        <span class="formula-pill">FORMULA</span>
+                        $$ \text{Sum of zeroes } (\alpha + \beta) = -\frac{b}{a} = -\frac{\text{Coefficient of }
+                        x}{\text{Coefficient of } x^2} $$
+                        <br>
+                        $$ \text{Product of zeroes } (\alpha \beta) = \frac{c}{a} = \frac{\text{Constant
+                        term}}{\text{Coefficient of } x^2} $$
+                    </div>
+                </div>
+
+                <h3>Forming a Quadratic Polynomial</h3>
+                <p>If we know the Sum ($S$) and Product ($P$) of zeroes, the polynomial is given by:</p>
+                <div class="formula-box">
+                    <span class="formula-pill">FORMULA</span>
+                    $$ p(x) = k[x^2 - (\text{Sum})x + \text{Product}] $$
+                    $$ p(x) = k[x^2 - (\alpha + \beta)x + \alpha\beta] $$
+                </div>
+                <p>Note: $k$ is any non-zero real number (constant).</p>
+
+                <h2>4. Important Exam Questions (PYQ Trends)</h2>
+
+                <div class="concept-blue">
+                    <h3>Type 1: Finding Zeroes and Verifying Relationship</h3>
+                    <p><strong>Question: Find the zeroes of $x^2 + 7x + 10$ and verify the relationship between zeroes
+                            and coefficients.</strong></p>
+                    <p><strong>Solution:</strong></p>
+                    <ol>
+                        <li><strong>Factorize:</strong> $x^2 + 5x + 2x + 10 = x(x+5) + 2(x+5) = (x+5)(x+2)$.</li>
+                        <li><strong>Zeroes:</strong> $x+5=0 \Rightarrow x=-5$ and $x+2=0 \Rightarrow x=-2$. So, $\alpha
+                            = -5, \beta = -2$.</li>
+                        <li><strong>Verification:</strong>
+                            <ul>
+                                <li>Sum = $\alpha + \beta = -5 + (-2) = -7$. AND $-b/a = -7/1 = -7$. (Matched)</li>
+                                <li>Product = $\alpha \beta = (-5)(-2) = 10$. AND $c/a = 10/1 = 10$. (Matched)</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="concept-green">
+                    <h3>Type 2: Forming Polynomial from Zeroes</h3>
+                    <p><strong>Question: Find a quadratic polynomial whose zeroes are $-3$ and $2$.</strong></p>
+                    <p><strong>Solution:</strong></p>
+                    <ol>
+                        <li>Sum ($\alpha + \beta$) = $-3 + 2 = -1$.</li>
+                        <li>Product ($\alpha \beta$) = $-3 \times 2 = -6$.</li>
+                        <li>Formula: $k[x^2 - (\text{Sum})x + \text{Product}]$.</li>
+                        <li>Polynomial: $k[x^2 - (-1)x + (-6)] \Rightarrow k(x^2 + x - 6)$.</li>
+                    </ol>
+                </div>
+
+                <div class="concept-blue">
+                    <h3>Type 3: Advanced Relationships ($\alpha, \beta$)</h3>
+                    <p><strong>Question: If $\alpha$ and $\beta$ are zeroes of $3x^2 + 5x - 2$, find the value of
+                            $\alpha^2 + \beta^2$.</strong></p>
+                    <p><strong>Solution:</strong></p>
+                    <ol>
+                        <li>From polynomial: $a=3, b=5, c=-2$.</li>
+                        <li>$\alpha + \beta = -5/3$ and $\alpha\beta = -2/3$.</li>
+                        <li>Identity: $\alpha^2 + \beta^2 = (\alpha + \beta)^2 - 2\alpha\beta$.</li>
+                        <li>Substitute: $(-5/3)^2 - 2(-2/3) = 25/9 + 4/3$.</li>
+                        <li>LCM is 9: $(25 + 12)/9 = 37/9$.</li>
+                    </ol>
+                </div>
+
+                <div class="master-tip">
+                    <span class="tip-header">EXAM TRICK</span>
+                    Often questions give "Sum and Product" directly (e.g., Sum=1/4, Product=-1). Students mistake these
+                    for $\alpha$ and $\beta$. Read carefully if it says "Zeroes are..." or "Sum and Product of zeroes
+                    are...".
+                </div>
+
+    </div>
+
+    <!-- SCRIPT FOR TOGGLE -->
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+
+            if (html.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
 </body>
+
 </html>
