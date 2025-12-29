@@ -1,0 +1,607 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Human Eye - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            transform: rotate(0deg);
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .solution-step {
+                margin-left: 10px;
+                font-size: 0.95em;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <div class="paper-sheet">
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Topic: The Human Eye and the Colourful World</h2>
+            <div class="sub-header">
+                <span>Class: 10 (Science)</span>
+                <span>Type: Answer Key</span>
+                <span>Max. Marks: 50</span>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: OBJECTIVE TYPE ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">1. Image Formation</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (d) Retina</span><br>
+                Retina acts as the light-sensitive screen where the image is formed.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">2. Focal Length Change</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) Ciliary muscles</span><br>
+                Ciliary muscles relax (lens thin) and contract (lens thick) to adjust focal length.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">3. Controls Pupil Size</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) Iris</span><br>
+                The iris controls the size of the pupil and thus the amount of light entering the eye.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">4. Least Distance of Vision</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) 25 cm</span><br>
+                For a normal young adult eye, the near point is 25 cm.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">5. Far Point</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Infinity</span><br>
+                A normal eye can see objects clearly up to infinity.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">6. Rainbow Phenomena</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) Refraction, dispersion and internal reflection</span><br>
+                Three steps: Refraction into drop, Dispersion, Internal Reflection, Refraction out of drop.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">7. Myopia Power Calculation</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) -0.5 D</span><br>
+                $f = -Far Point = -2m$.<br>
+                $P = 1/f = -0.5$ D.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">8. Astigmatism Correction</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Cylindrical lens</span><br>
+                Astigmatism is due to irregular curvature of cornea, corrected by cylindrical lens.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">9. Longest Wavelength</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (d) Red</span><br>
+                Red has the longest wavelength and bends the least; Violet has the shortest.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">10. Blue Sky Reason</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Blue color is scattered most</span><br>
+                Fine particles scatter short wavelengths (blue/violet) more effectively (Rayleigh scattering).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">11. Assertion: Dark Sky at Altitude</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                At high altitudes, atmosphere is thin or non-existent, so no scattering occurs, leading to a dark sky.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">12. Assertion: White Sun at Noon</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Light travels less distance; scattering is minimal, so all colors reach the eye combined as white.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">13. Assertion: Planets Don't Twinkle</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Planets are extended sources (collection of point sources). Variations cancel out, giving a steady
+                light.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">14. Assertion: Red Danger Signals</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Red has longest wavelength $\rightarrow$ least scattered $\rightarrow$ visible from long distances even
+                in fog.
+            </div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: SHORT ANSWER ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">15. Power of Accommodation</div>
+            <div class="solution-step">
+                It is the ability of the eye lens to adjust its focal length to see objects clearly at varying distances
+                (from 25 cm to infinity). For a normal eye, the power of accommodation is about 4 Dioptres.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">16. Myopia Calculation</div>
+            <div class="solution-step">
+                Defect: Myopia (Nearsightedness). Corrective Lens: Concave Lens.<br>
+                $v = -1.2 m, u = \infty$.<br>
+                $P = 1/f = 1/(-1.2) = -0.83$ D.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">17. Advantages of Two Eyes</div>
+            <div class="solution-step">
+                1. Wider field of view (approx $180^\circ$ vs $150^\circ$ with one eye).<br>
+                2. Stereopsis (3D vision/Depth perception): Ability to judge distances accurately.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">18. Twinkling of Stars</div>
+            <div class="solution-step">
+                Caused by atmospheric refraction. As starlight enters the atmosphere, it undergoes refraction due to
+                changing refractive index of air layers. The apparent position of the star fluctuates, and the intensity
+                of light reaching the eye varies, causing the twinkling effect.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">19. Prism Ray Diagram</div>
+            <div class="solution-step">
+                (Diagram required showing Incident ray, Refracted ray, Emergent ray, Angle of Prism A, Angle of
+                Deviation D).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">20. Presbyopia</div>
+            <div class="solution-step">
+                Defect where the eye loses its power of accommodation due to aging. The near point recedes.<br>
+                Cause: Weakening of ciliary muscles and diminishing flexibility of eye lens.<br>
+                Correction: Bifocal lens (Upper concave for distance, Lower convex for reading).
+            </div>
+        </div>
+
+        <!-- SECTION C -->
+        <div class="section-title">SECTION C: LONG ANSWER ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">21. Hypermetropia</div>
+            <div class="solution-step">
+                (i) Farsightedness (cannot see near objects). Causes: Short eyeball or long focal length of lens.<br>
+                (ii) Corrected by Convex Lens (Diagram required showing convergence on retina).<br>
+                (iii) +1.5D is positive $\rightarrow$ Convex Lens $\rightarrow$ Hypermetropia.<br>
+                $f = 1/1.5 = 0.67$ m = $66.7$ cm.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">22. Spectrum and Scattering</div>
+            <div class="solution-step">
+                (i) Use two prisms. First disperses into spectrum. Second (inverted) recombines spectrum into white
+                light.<br>
+                (ii) Blue Sky: Scattering of lower wavelengths (blue) by air molecules.<br>
+                (iii) Red Sun: At horizon, light travels longer distance. Blue scattered out. Red reaches eye.
+            </div>
+        </div>
+
+        <!-- SECTION D -->
+        <div class="section-title">SECTION D: CASE STUDY ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">23. Case Study: Prism</div>
+            <div class="solution-step">
+                (i) Red.<br>
+                (ii) Violet.<br>
+                (iii) VIBGYOR (Violet to Red).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">24. Case Study: Atmospheric Refraction</div>
+            <div class="solution-step">
+                (i) Advanced sunrise: 2 mins. Delayed sunset: 2 mins. Total: 4 mins.<br>
+                (ii) Light from star bends towards normal as it enters atmosphere, so they appear higher.<br>
+                (iii) They are extended sources; point-source variations average out.
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Created by Team Vardaan</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

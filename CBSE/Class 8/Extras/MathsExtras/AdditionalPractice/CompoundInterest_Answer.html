@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Advanced Compound Interest - Vardaan Learning Institute</title>
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: {'[+]': ['ams']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html { 
+            transition: filter 0.3s ease; 
+            overflow-x: hidden;
+        }
+        
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode { 
+            filter: invert(1) hue-rotate(180deg); 
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff; /* Matches sheet background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none; /* No lifting effect */
+            border: none;     /* No outlines */
+            width: 210mm;     /* A4 Width */
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            /* 1. FORCE LINE BREAKS */
+            white-space: normal !important; /* Overrides MathJax default 'nowrap' */
+            /* 2. EMERGENCY BREAKING */
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* 3. CONTAINMENT */
+            max-width: 100%;
+            /* 4. FLOW BEHAVIOR */
+            display: inline-block;
+            /* 5. ALIGNMENT */
+            text-align: left;
+        }
+        
+        /* --- WATERMARK STYLES --- */
+        /* Light Mode: Center of Sheet */
+        .watermark-overlay {
+            position: fixed; /* Static on screen, repeats on print */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Centered by default */
+            align-items: center;
+            z-index: 999; /* Visible on top of paper */
+            pointer-events: none; /* Allows clicking through to text */
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05; /* Light mode opacity per spec */
+            transform: rotate(0deg); /* Horizontal */
+            transition: all 0.3s ease;
+        }
+        
+        /* DARK MODE WATERMARK PHILOSOPHY */
+        /* Reverted to Center per latest user request */
+        html.dark-mode .watermark-overlay {
+            justify-content: center; 
+            padding: 0;
+            width: 100vw;
+        }
+        
+        html.dark-mode .watermark-image { 
+            opacity: 0.08; 
+            width: 600px; 
+            height: 600px;
+            /* In dark mode, filter:invert(1) on html makes this black image look white/grey. */
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        h1 { font-size: 28px; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        h2 { font-size: 18px; margin: 5px 0; font-weight: normal; font-style: italic; }
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+        
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute; /* Non-Sticky per spec */
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Double Inversion Fix: Button looks 'normal' in Dark Mode */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333; /* Dark grey which inverts to light grey */
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Icon Animation States */
+        /* Light Mode: Moon Visible */
+        html:not(.dark-mode) .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html:not(.dark-mode) .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        
+        /* Dark Mode: Sun Visible */
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body { background-color: #ffffff; display: block; padding: 0; }
+            .paper-sheet { width: 100% !important; padding: 15px !important; margin: 0 auto; box-sizing: border-box; }
+            .theme-toggle { top: 10px; right: 10px; }
+            
+            /* Responsive Watermark Size */
+            .watermark-image { width: 80vw; height: 80vw; }
+            html.dark-mode .watermark-image { width: 80vw; height: 80vw; }
+            
+            .sub-header { flex-direction: column; align-items: center; gap: 5px; }
+            h1 { font-size: 22px; }
+            
+            .solution-step { margin-left: 10px; font-size: 0.95em; } 
+            mjx-container { font-size: 0.9em !important; }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+            /* Force Light Mode */
+            html.dark-mode { filter: none !important; }
+            
+            /* Hide UI */
+            .theme-toggle { display: none !important; }
+            
+            body { 
+                background: white; 
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+            
+            /* Reset Container */
+            .paper-sheet { 
+                width: 100%; 
+                margin: 0; 
+                padding: 0; 
+                box-shadow: none; 
+                border: none; 
+                background: transparent !important; 
+            }
+            
+            .section-title { background-color: #eee !important; -webkit-print-color-adjust: exact; }
+            
+            /* Watermark Print Specifics */
+            .watermark-overlay {
+                position: fixed !important; 
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important; 
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                padding-right: 0 !important; 
+            }
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                transform: rotate(0deg) !important;
+                filter: none !important;
+            }
+            
+            @page { 
+                size: A4;
+                margin: 15mm 20mm; 
+            }
+            .question-block { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Detailed Solution Sheet</h2>
+            <div class="sub-header">
+                <span>Class: 8 (CBSE)</span>
+                <span>Topic: Compound Interest (HOTS)</span>
+                <span>Type: Answer Key</span>
+            </div>
+        </header>
+
+        <!-- Section 1 -->
+        <div class="section-title">SECTION A: SHORT ANSWER</div>
+
+        <div class="question-block">
+            <div class="q-text">Q1. CI on ₹10,800 for 3 years at 12.5%</div>
+            <div class="solution-step">
+                Principal $P = \text{₹}10,800$, $R = 12\frac{1}{2}\% = 12.5\%$, $n = 3$.<br>
+                Amount $A = P(1 + \frac{R}{100})^n$ <br>
+                $= 10800(1 + \frac{12.5}{100})^3$<br>
+                $= 10800(1 + \frac{1}{8})^3$ $= 10800(\frac{9}{8})^3$<br>
+                $= 10800 \times \frac{729}{512}$ $= \text{₹}15,377.34$ (approx)<br>
+                CI $= A - P$ $= 15377.34 - 10800$ $= \text{₹}4,577.34$
+            </div>
+            <div class="final-ans">Answer: ₹4,577.34</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q2. Amount for 18 months compounded half-yearly</div>
+            <div class="solution-step">
+                $P = \text{₹}4,096$. Time = 18 months = 3 half-years ($n=3$).<br>
+                Rate = $12\frac{1}{2}\%$ p.a. = $6.25\%$ per half-year = $\frac{1}{16}$.<br>
+                Amount $A = P(1 + \frac{R}{100})^n$ $= 4096(1 + \frac{1}{16})^3$<br>
+                $= 4096(\frac{17}{16})^3$ $= 4096 \times \frac{4913}{4096}$ $= \text{₹}4,913$.
+            </div>
+            <div class="final-ans">Answer: ₹4,913</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q3. Population Growth</div>
+            <div class="solution-step">
+                (i) Population in 2001 ($P_{2001}$):<br>
+                $P_{2003} = P_{2001}(1 + \frac{R}{100})^n$ $\Rightarrow$ $54000 = P_{2001}(1 + \frac{5}{100})^2$<br>
+                $54000 = P_{2001}(\frac{21}{20})^2$ $\Rightarrow$ $P_{2001} = \frac{54000 \times 400}{441}$ $\approx 48,980$.<br><br>
+                (ii) Population in 2005:<br>
+                $A = 54000(1 + \frac{5}{100})^2$ $= 54000(\frac{441}{400})$ $= 135 \times 441$ $= 59,535$.
+            </div>
+            <div class="final-ans">Answer: (i) 48,980 (approx), (ii) 59,535</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q4. Depreciation of Scooter</div>
+            <div class="solution-step">
+                $P = \text{₹}42,000$, Rate = $8\%$ depreciation.<br>
+                Value after 1 year $= P(1 - \frac{R}{100})$<br>
+                $= 42000(1 - \frac{8}{100})$ $= 42000(\frac{92}{100})$<br>
+                $= 420 \times 92$ $= \text{₹}38,640$.
+            </div>
+            <div class="final-ans">Answer: ₹38,640</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q5. CI Half-yearly vs Annual</div>
+            <div class="solution-step">
+                $P = 10000, R = 8\%, T = 1$ year.<br>
+                <strong>Compounded Half-yearly:</strong> $R=4\%, n=2$.<br>
+                $A = 10000(1.04)^2$ $= 10816$ $\Rightarrow$ $CI = \text{₹}816$.<br>
+                <strong>Compounded Annually:</strong> $R=8\%, n=1$.<br>
+                $A = 10000(1.08)^1$ $= 10800$ $\Rightarrow$ $CI = \text{₹}800$.<br>
+                Difference $= 816 - 800$ $= \text{₹}16$.
+            </div>
+            <div class="final-ans">Answer: ₹816, Difference: ₹16</div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section-title">SECTION B: LONG ANSWER</div>
+
+        <div class="question-block">
+            <div class="q-text">Q6. Difference between CI and SI</div>
+            <div class="solution-step">
+                Difference for 2 years $= P(\frac{R}{100})^2$.<br>
+                Given Diff = ₹500, R = 10%.<br>
+                $500 = P(\frac{10}{100})^2$ $\Rightarrow$ $500 = P(\frac{1}{10})^2$<br>
+                $500 = P(\frac{1}{100})$ $\Rightarrow$ $P = 500 \times 100$ $= \text{₹}50,000$.
+            </div>
+            <div class="final-ans">Answer: ₹50,000</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q7. Sum and Rate (Semi-annual)</div>
+            <div class="solution-step">
+                Amount in 1 year (2 half-years) = 13,230.<br>
+                Amount in 1.5 years (3 half-years) = 13,891.50.<br>
+                Interest for 1 half-year on 13,230 is $13891.50 - 13230 = \text{₹}661.50$.<br>
+                Rate per half-year $= \frac{661.50}{13230} \times 100$ $= 5\%$.<br>
+                <strong>Rate per annum = 10%.</strong><br>
+                For Sum: $13230 = P(1 + \frac{5}{100})^2$ $= P(\frac{21}{20})^2$<br>
+                $P = 13230 \times \frac{400}{441}$ $= 30 \times 400$ $= \text{₹}12,000$.
+            </div>
+            <div class="final-ans">Answer: Sum: ₹12,000, Rate: 10% p.a.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q8. Rate Calculation</div>
+            <div class="solution-step">
+                $A = P(1 + \frac{R}{100})^n$ $\Rightarrow$ $6615 = 6000(1 + \frac{R}{100})^2$<br>
+                $\frac{6615}{6000} = (1 + \frac{R}{100})^2$ $\Rightarrow$ $1.1025 = (1 + \frac{R}{100})^2$<br>
+                Taking square root: $1.05 = 1 + \frac{R}{100}$ $\Rightarrow$ $0.05 = \frac{R}{100}$<br>
+                $R = 5\%$.
+            </div>
+            <div class="final-ans">Answer: 5% p.a.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q9. Successive Rates</div>
+            <div class="solution-step">
+                $P = 50000$. Rates: 5%, 4%, 3%.<br>
+                $A = 50000(1 + \frac{5}{100})(1 + \frac{4}{100})(1 + \frac{3}{100})$<br>
+                $= 50000(\frac{105}{100})(\frac{104}{100})(\frac{103}{100})$<br>
+                $= 5 \times 105 \times 1.04 \times 103 \div 10$<br>
+                $= 50000 \times 1.05 \times 1.04 \times 1.03$ $\approx 56,238$.
+            </div>
+            <div class="final-ans">Answer: 56,238</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q10. Bacteria Growth</div>
+            <div class="solution-step">
+                $P = 5,06,000$, Rate = $2.5\%$ per hour, Time = 2 hours.<br>
+                $A = 506000(1 + \frac{2.5}{100})^2$ $= 506000(1.025)^2$<br>
+                $= 506000 \times 1.050625$ $\approx 5,31,616.25$.<br>
+                Rounding to nearest whole number.
+            </div>
+            <div class="final-ans">Answer: 5,31,616 (approx)</div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section-title">SECTION C: CHALLENGERS</div>
+
+        <div class="question-block">
+            <div class="q-text">Q11. Sum doubling time</div>
+            <div class="solution-step">
+                Let Sum be $P$. It becomes $2P$ in 5 years.<br>
+                $2P = P(1+R)^5$ $\Rightarrow$ $(1+R)^5 = 2$.<br>
+                We want amount to be $8P$.<br>
+                $8P = P(1+R)^n$ $\Rightarrow$ $(1+R)^n = 8$.<br>
+                Since $8 = 2^3$, then $(1+R)^n = ((1+R)^5)^3$ $= (1+R)^{15}$.<br>
+                $n = 15$.
+            </div>
+            <div class="final-ans">Answer: 15 years</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q12. CI Semi-annual vs Annual</div>
+            <div class="solution-step">
+                $P = 1,60,000, T = 2$ yrs, $R = 10\%$ p.a.<br>
+                <strong>Semi-annual:</strong> $R=5\%, n=4$.<br>
+                $A = 160000(1.05)^4$ $= 160000(1.2155...)$ $= \text{₹}1,94,481$.<br>
+                $CI = 194481 - 160000$ $= \text{₹}34,481$.<br>
+                <strong>Annual:</strong> $R=10\%, n=2$.<br>
+                $A = 160000(1.1)^2$ $= 160000(1.21)$ $= \text{₹}1,93,600$.<br>
+                $CI = \text{₹}33,600$.<br>
+                Difference $= 34481 - 33600$ $= \text{₹}881$.
+            </div>
+            <div class="final-ans">Answer: ₹34,481, Difference: ₹881</div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

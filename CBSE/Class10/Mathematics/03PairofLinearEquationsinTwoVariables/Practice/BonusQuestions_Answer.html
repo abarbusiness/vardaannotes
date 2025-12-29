@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Pair of Linear Equations - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --formula-border: 2px solid #000000;
+            --formula-shadow: 4px 4px 0px #000000;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: var(--bg-color-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            padding: 20mm;
+            background-color: #ffffff;
+            box-shadow: none;
+            border: none;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* EQUATION WRAPPING FIXES */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* Watermark Overlay */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Toggle Button */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-shadow: none;
+                border: none;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            /* Responsive Watermark */
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .solution-step {
+                margin-left: 10px;
+                font-size: 0.95em;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                opacity: 0.15 !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Master Notes: Pair of Linear Equations</h2>
+            <div class="sub-header">
+                <span>Class: 10 (CBSE)</span>
+                <span>Subject: Mathematics</span>
+                <span>Worksheet Solutions</span>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: OBJECTIVE TYPE QUESTIONS</div>
+
+        <div class="question-block">
+            <div class="q-text">1. The pair of equations $x+2y-5=0$ and $-3x-6y+15=0$ have:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) Infinitely many solutions</span><br>
+                $a_1/a_2 = 1/-3$, $b_1/b_2 = 2/-6$ $= -1/3$. $c_1/c_2 = -5/15 = -1/3$.<br>
+                Since all ratios are equal, infinite solutions.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">2. If the lines given by $3x + 2ky = 2$ and $2x + 5y = 1$ are parallel, then value of k
+                is:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) 15/4</span><br>
+                For parallel lines, $a_1/a_2 = b_1/b_2 \neq c_1/c_2$.<br>
+                $3/2 = 2k/5$.<br>
+                $2k \times 2 = 15$.<br>
+                $4k = 15$ $\Rightarrow k = 15/4$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">3. The value of k for which the system of equations $x + 2y = 3$ and $5x + ky + 7 = 0$
+                has no solution is:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) 10</span><br>
+                No solution: $a_1/a_2 = b_1/b_2 \neq c_1/c_2$.<br>
+                $1/5 = 2/k$. $k = 10$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">4. The solution of the equations $x-y=2$ and $x+y=4$ is:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) 3, 1</span><br>
+                Adding both: $2x = 6 \Rightarrow x = 3$.<br>
+                $3 + y = 4 \Rightarrow y = 1$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">5. If a pair of linear equations is consistent, then the lines will be:</div>
+            <div class="solution-step"><span class="final-ans">Ans: (c) Intersecting or coincident</span></div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">6. The sum of the digits of a two-digit number is 9...</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (d) 36</span><br>
+                Number = $10x + y$. $x+y=9$.<br>
+                $10x+y+27 = 10y+x$<br>
+                $\Rightarrow 9y-9x=27$<br>
+                $\Rightarrow y-x=3$.<br>
+                Adding: $2y=12 \Rightarrow y=6, x=3$. Number 36.
+            </div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: SHORT ANSWER TYPE QUESTIONS</div>
+
+        <div class="question-block">
+            <div class="q-text">7. Solve for x and y: $2x + 3y = 11$ and $2x - 4y = -24$.</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: x = -2, y = 5</span><br>
+                Subtracting eq 2 from eq 1: $7y = 35 \Rightarrow y = 5$.<br>
+                $2x + 15 = 11 \Rightarrow 2x = -4 \Rightarrow x = -2$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">8. For what value of k will the following system of linear equations have infinite
+                solutions?</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: k = 6</span><br>
+                $k/12 = 3/k$ $= (k-3)/k$.<br>
+                $k^2 = 36 \Rightarrow k = \pm 6$.<br>
+                Check k=6: $6/12 = 3/6 = 3/6$ (True).<br>
+                Check k=-6: $-6/12 = 3/-6 \neq -9/-6$ (False).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">9. Find the values of $\alpha$ and $\beta$...</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: $\alpha = 4, \beta = 8$</span><br>
+                $2/2\alpha = 3/(\alpha+\beta)$ $= 7/28$ $= 1/4$.<br>
+                $1/\alpha = 1/4 \Rightarrow \alpha = 4$.<br>
+                $3/(4+\beta) = 1/4 \Rightarrow 12 = 4 + \beta \Rightarrow \beta = 8$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">10. Solve for x and y: $\frac{2}{x} + \frac{3}{y} = 13$...</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: x = 1/2, y = 1/3</span><br>
+                Let $1/x = u, 1/y = v$. $2u+3v=13$, $5u-4v=-2$.<br>
+                Solving, $u=2, v=3$. Thus $x=1/2, y=1/3$.
+            </div>
+        </div>
+
+        <!-- SECTION C -->
+        <div class="section-title">SECTION C: LONG ANSWER TYPE QUESTIONS</div>
+
+        <div class="question-block">
+            <div class="q-text">11. A fraction becomes 9/11 if 2 is added...</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: 7/9</span><br>
+                $(x+2)/(y+2) = 9/11$ $\Rightarrow$ $11x - 9y = -4$.<br>
+                $(x+3)/(y+3) = 5/6$ $\Rightarrow$ $6x - 5y = -3$.<br>
+                Solving: $x=7, y=9$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">12. Five years hence, the age of Jacob...</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: Jacob: 40, Son: 10</span><br>
+                Eq 1: $J+5 = 3(S+5)$ $\Rightarrow$ $J-3S = 10$.<br>
+                Eq 2: $J-5 = 7(S-5)$ $\Rightarrow$ $J-7S = -30$.<br>
+                Solving: $J=40, S=10$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">13. Yarn A costs 4 rupees per meter...</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: A: 60m, B: 40m</span><br>
+                $x+y=100$.<br>
+                $4x+5y=440$.<br>
+                Solving: $x=60, y=40$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">14. Solve graphically... Vertices?</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: Vertices: (2, 3), (-1, 0), (4, 0)</span><br>
+                Intersection (2,3).<br>
+                Line 1 on x-axis (y=0): $x+1=0 \Rightarrow x=-1$. (-1,0).<br>
+                Line 2 on x-axis (y=0): $3x-12=0 \Rightarrow x=4$. (4,0).
+            </div>
+        </div>
+
+        <!-- SECTION D -->
+        <div class="section-title">SECTION D: CASE STUDY</div>
+
+        <div class="question-block">
+            <div class="q-text">15. Case Study: Taxi Charges</div>
+            <div class="solution-step">
+                Detailed Solution:<br>
+                (i) $x + 10y = 105$,<br>
+                $x + 15y = 155$.<br>
+                (ii) Subs Eq1 from Eq2: $5y = 50$ $\Rightarrow$ $y = 10$. Subs in Eq1: $x = 5$. Fixed charge: ₹5.<br>
+                (iii) Charge per km: ₹10.<br>
+                (iv) For 25 km: $x + 25y = 5 + 25(10) = 255$. ₹255.
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

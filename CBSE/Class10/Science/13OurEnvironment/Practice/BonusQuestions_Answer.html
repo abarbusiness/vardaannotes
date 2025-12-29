@@ -1,0 +1,619 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Our Environment - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            transform: rotate(0deg);
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .solution-step {
+                margin-left: 10px;
+                font-size: 0.95em;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <div class="paper-sheet">
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Topic: Our Environment</h2>
+            <div class="sub-header">
+                <span>Class: 10 (Science)</span>
+                <span>Type: Answer Key</span>
+                <span>Max. Marks: 50</span>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: OBJECTIVE TYPE ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">1. Abiotic Component</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) Temperature</span><br>
+                Abiotic means non-living. Temperature, light, soil are abiotic factors.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">2. Third Trophic Level</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Carnivores</span><br>
+                1st: Producers, 2nd: Herbivores (Primary Consumers), 3rd: Carnivores (Secondary Consumers).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">3. Ozone Depletion Cause</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Chlorofluorocarbons (CFCs)</span><br>
+                CFCs release chlorine atoms which breakdown ozone into oxygen.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">4. Limit on Trophic Levels</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Decrease in energy at higher trophic levels</span><br>
+                According to 10% law, energy decreases at each step, leaving very little energy after 3-4 levels.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">5. Biodegradable Group</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) Fruit-peels, cake and lime-juice</span><br>
+                All items in this group can be broken down by decomposers.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">6. Decomposers Function</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Convert organic material to inorganic forms</span><br>
+                They break down complex organic matter into simple inorganic substances (nutrients) affecting recycling.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">7. 10% Law Proposer</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Lindeman</span><br>
+                Lindeman proposed the 10% law of energy transfer.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">8. Artificial Ecosystem</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Crop field</span><br>
+                Crop fields are man-made and managed ecosystems. Pond, Lake, Forest are natural.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">9. Producers Definition</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Producers</span><br>
+                Organisms (Plants) that make their own food (organic) from inorganic substances using light energy.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">10. UV Radiation Harm</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Skin cancer</span><br>
+                UV radiation damages DNA and causes skin cancer.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">11. Assertion: Energy Flow</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Energy goes from Sun $\rightarrow$ Plants $\rightarrow$ Herbivores. It never goes back to the Sun or
+                from Herbivores to Plants.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">12. Assertion: Ozone Protection</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Both A and R are true but R is not the correct explanation of
+                    A.</span><br>
+                Ozone protects by absorbing UV rays. Formation (from UV action on O2) is a true fact but not the
+                explanation of HOW it protects.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">13. Assertion: Magnification</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Chemicals concentrate more at each higher level. Since humans are at the top, they have max
+                concentration.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">14. Assertion: Biodegradable Manure</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Decomposition by microorganisms produces nutrient-rich manure (humus).
+            </div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: SHORT ANSWER ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">15. Biological Magnification</div>
+            <div class="solution-step">
+                The phenomenon of progressive increase in the concentration of harmful non-biodegradable substances
+                (like pesticides) at successive trophic levels.<br>
+                Yes, max concentration is found at the top trophic level (e.g., humans) and min at the bottom
+                (producers).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">16. Ozone Formation</div>
+            <div class="solution-step">
+                Ozone is $O_3$.<br>
+                High energy UV radiations split oxygen molecule ($O_2$) into free oxygen atoms ($O$).<br>
+                $O_2 \xrightarrow{UV} O + O$<br>
+                These atoms combine with molecular oxygen to form ozone.<br>
+                $O + O_2 \rightarrow O_3$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">17. Decomposers</div>
+            <div class="solution-step">
+                Decomposers (bacteria/fungi) break down dead organic remains.<br>
+                Consequences of absence: 1. Dead bodies would pile up. 2. Nutrients would not be returned to soil (cycle
+                stops), affecting plant growth.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">18. Food Chain and Limits</div>
+            <div class="solution-step">
+                Example: Grass $\rightarrow$ Insect $\rightarrow$ Frog $\rightarrow$ Snake.<br>
+                Limited steps because at each step, 90% energy is lost (10% law). After 3-4 steps, negligible energy
+                remains for the next level.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">19. Biodegradable vs Non-biodegradable</div>
+            <div class="solution-step">
+                Biodegradable: Substances broken down by biological processes (Bacteria/Saprophytes). e.g., Paper, Wood,
+                Cotton.<br>
+                Non-biodegradable: Substances NOT broken down by biological processes. They persist in environments for
+                long. e.g., Plastic, DDT, Glass.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">20. Unidirectional Energy Flow</div>
+            <div class="solution-step">
+                Energy captured by autotrophs does not revert back to the solar input. Energy which passes to the
+                herbivores does not come back to autotrophs. As it moves progressively through various trophic levels,
+                it is no longer available to the previous level.
+            </div>
+        </div>
+
+        <!-- SECTION C -->
+        <div class="section-title">SECTION C: LONG ANSWER ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">21. Waste Management</div>
+            <div class="solution-step">
+                (i) Problems: Persistence in environment, biological magnification, clogging drains, soil pollution,
+                death of animals (eating plastic).<br>
+                (ii) Methods: 1. Recycling (Plastics/Metals), 2. Composting (Biodegradable waste), 3. Incineration
+                (Burning waste at high temp).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">22. 10% Law Calculation</div>
+            <div class="solution-step">
+                (i) Diagram: Sun $\rightarrow$ Producer $\rightarrow$ Primary Consumer $\rightarrow$ Secondary
+                Consumer.<br>
+                (ii) Plant (10,000 J) $\rightarrow$ Grasshopper ($10\%$ of 10,000 = 1000 J) $\rightarrow$ Frog ($10\%$
+                of 1000 = 100 J) $\rightarrow$ Snake ($10\%$ of 100 = 10 J) $\rightarrow$ Hawk ($10\%$ of 10 = 1 J).<br>
+                Answer: 1 J.
+            </div>
+        </div>
+
+        <!-- SECTION D -->
+        <div class="section-title">SECTION D: CASE STUDY ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">23. Case Study: Environment</div>
+            <div class="solution-step">
+                (i) $O_3$.<br>
+                (ii) Chlorofluorocarbons (CFCs).<br>
+                (iii) 1. Reduce use of non-biodegradable materials (plastic bags).<br>
+                2. Segregate waste into biodegradable and non-biodegradable bins for proper treatment.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">24. Case Study: Pesticides</div>
+            <div class="solution-step">
+                (i) They are non-biodegradable and cannot be metabolized, so they get stored in body tissues.<br>
+                (ii) Organisms at the top trophic level (Top Carnivores/Humans).<br>
+                (iii) Because accumulation of toxic chemicals like DDT can cause serious health problems, cancer, and
+                damage
+                immune/reproductive systems.
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Created by Team Vardaan</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

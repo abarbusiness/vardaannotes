@@ -1,0 +1,633 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Paper: Light - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            transform: rotate(0deg);
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        /* Student Input Fields */
+        .student-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: flex-end;
+            width: 45%;
+        }
+
+        .line-input {
+            border: none;
+            border-bottom: 1px solid black;
+            flex-grow: 1;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .student-inputs {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .input-group {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Topic: Light - Reflection and Refraction</h2>
+            <div class="sub-header">
+                <span>Class: 10 (Science)</span>
+                <span>Type: Bonus Practice Paper</span>
+                <span>Max. Marks: 50</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: OBJECTIVE TYPE QUESTIONS (1 Mark Each)</div>
+
+        <div class="question-block">
+            <div class="q-text">1. The angle of reflection is equal to the angle of incidence:</div>
+            <ol type="a">
+                <li>Always</li>
+                <li>Sometimes</li>
+                <li>Under special conditions</li>
+                <li>Never</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">2. The image formed by a concave mirror is observed to be VIRTUAL, ERECT and LARGER than
+                the object. Where should be the position of the object?</div>
+            <ol type="a">
+                <li>Between principal focus and center of curvature</li>
+                <li>At the center of curvature</li>
+                <li>Beyond the center of curvature</li>
+                <li>Between the pole of the mirror and its principal focus</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">3. Which one of the following materials cannot be used to make a lens?</div>
+            <ol type="a">
+                <li>Water</li>
+                <li>Glass</li>
+                <li>Plastic</li>
+                <li>Clay</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">4. The S.I unit of power of a lens is:</div>
+            <ol type="a">
+                <li>Meter</li>
+                <li>Watt</li>
+                <li>Dioptre</li>
+                <li>Centimeter</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">5. Where should an object be placed in front of a convex lens to get a real image of the
+                size of the object?</div>
+            <ol type="a">
+                <li>At the principal focus F</li>
+                <li>At twice the focal length (2F)</li>
+                <li>At Infinity</li>
+                <li>Between optical center and F</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">6. The focal length of a plane mirror is:</div>
+            <ol type="a">
+                <li>Positive</li>
+                <li>Negative</li>
+                <li>Zero</li>
+                <li>Infinity</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">7. The magnification produced by a plane mirror is:</div>
+            <ol type="a">
+                <li>-1</li>
+                <li>0</li>
+                <li>+1</li>
+                <li>Infinity</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">8. A full length image of a distant tall building can definitely be seen by using:</div>
+            <ol type="a">
+                <li>A concave mirror</li>
+                <li>A convex mirror</li>
+                <li>A plane mirror</li>
+                <li>Both concave as well as plane mirror</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">9. Which of the following lens would you prefer to use while reading small letters found
+                in a dictionary?</div>
+            <ol type="a">
+                <li>A convex lens of focal length 50 cm</li>
+                <li>A concave lens of focal length 50 cm</li>
+                <li>A convex lens of focal length 5 cm</li>
+                <li>A concave lens of focal length 5 cm</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">10. Light travels fastest in:</div>
+            <ol type="a">
+                <li>Water</li>
+                <li>Glass</li>
+                <li>Diamond</li>
+                <li>Vacuum</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text"><b>Directions (Q11-Q14):</b> In the following questions, a statement of assertion (A) is
+                followed by a statement of reason (R). Mark the correct choice as:</div>
+            <ol type="a">
+                <li>Both A and R are true and R is the correct explanation of A.</li>
+                <li>Both A and R are true but R is not the correct explanation of A.</li>
+                <li>A is true but R is false.</li>
+                <li>A is false but R is true.</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">11. <b>Assertion (A):</b> The mirrors used in searchlights are concave spherical.<br>
+                <b>Reason (R):</b> In concave mirrors, the reflected rays converge at the focus, so if source is at
+                focus, beam becomes parallel.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">12. <b>Assertion (A):</b> A ray of light passing through the optical center of a lens
+                suffers no deviation.<br>
+                <b>Reason (R):</b> The optical center is a point on the principal axis of a lens.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">13. <b>Assertion (A):</b> The refractive index of diamond is 2.42.<br>
+                <b>Reason (R):</b> The refractive index of a medium is the ratio of speed of light in vacuum to speed of
+                light in that medium.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">14. <b>Assertion (A):</b> A pencil partly immersed in water appears to be bent at the
+                water surface.<br>
+                <b>Reason (R):</b> This is due to the phenomenon of refraction of light.
+            </div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: SHORT ANSWER QUESTIONS (3 Marks Each)</div>
+
+        <div class="question-block">
+            <div class="q-text">15. Light enters from air to glass having refractive index 1.50. What is the speed of
+                light in the glass? The speed of light in vacuum is $3 \times 10^8$ m/s.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">16. An object 5.0 cm in length is placed at a distance of 20 cm in front of a convex
+                mirror of radius of curvature 30 cm. Find the position, nature and size of the image.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">17. Draw a ray diagram to show the formation of an image by a concave mirror when the
+                object is placed between C and F.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">18. Explain the Laws of Refraction of light with the help of a diagram.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">19. Why does a swimming pool appear to be shallower than it actually is? Illustrate with
+                a ray diagram.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">20. Under what conditions does a ray of light pass without deviation through: (i) a
+                glass slab, (ii) a lens?</div>
+        </div>
+
+        <!-- SECTION C -->
+        <div class="section-title">SECTION C: LONG ANSWER QUESTIONS (5 Marks Each)</div>
+
+        <div class="question-block">
+            <div class="q-text">21. (i) An object is placed at a distance of 10 cm from a convex lens of focal length 15
+                cm. Find the position and nature of the image.<br>
+                (ii) A concave lens has focal length of 15 cm. At what distance should the object from the lens be
+                placed so that it forms an image at 10 cm from the lens? Also, find the magnification produced by the
+                lens.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">22. (i) What is meant by power of a lens? Define 1 Dioptre.<br>
+                (ii) Two thin lenses of power +3.5D and -2.5D are placed in contact. Find the power and focal length of
+                the lens combination.</div>
+        </div>
+
+        <!-- SECTION D -->
+        <div class="section-title">SECTION D: CASE STUDY (4 Marks)</div>
+
+        <div class="question-block">
+            <div class="q-text">23. <b>Read the following text and answer the questions:</b><br>
+                Spherical mirrors are of two types - convex and concave. Convex mirrors are used as rear-view mirrors in
+                vehicles because they always give an erect image and have a wider field of view. Concave mirrors are
+                converging mirrors used by dentists.<br><br>
+                (i) Why do we prefer a convex mirror as a rear-view mirror in vehicles? (1 Mark)<br>
+                (ii) A student wants to project a full length image of a tall building on a small screen. Which mirror
+                should he use? (1 Mark)<br>
+                (iii) If the radius of curvature of a spherical mirror is 20 cm, what is its focal length? (2 Marks)
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">24. <b>Read the following text and answer the questions:</b><br>
+                A convex lens forms a real and inverted image of an object. The size of the image depends on the
+                position of the object. Lenses are used in cameras, microscopes, telescopes, and spectacles. Light
+                refracts when passing through a lens.<br><br>
+                (i) If an object is placed at the focus of a convex lens, where is the image formed? (1 Mark)<br>
+                (ii) Which lens is used to correct hypermetropia (long-sightedness)? (1 Mark)<br>
+                (iii) Calculate the power of a convex lens of focal length 25 cm. (2 Marks)</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text"></div>
+            <center><i>"All the best!"</i></center>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Created by Team Vardaan</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

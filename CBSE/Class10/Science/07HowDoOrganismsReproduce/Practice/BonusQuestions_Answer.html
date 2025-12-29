@@ -1,0 +1,616 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Reproduction - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            transform: rotate(0deg);
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .solution-step {
+                margin-left: 10px;
+                font-size: 0.95em;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <div class="paper-sheet">
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Topic: How do Organisms Reproduce?</h2>
+            <div class="sub-header">
+                <span>Class: 10 (Science)</span>
+                <span>Type: Answer Key</span>
+                <span>Max. Marks: 50</span>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: OBJECTIVE TYPE ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">1. Pollination</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (d) Anther of one flower to Stigma of another flower (same one)</span><br>
+                For fertilization to occur, pollination must happen within the same species.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">2. Female Reproductive System</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) Vas deferens</span><br>
+                Vas deferens is part of the male reproductive system (sperm duct).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">3. Anther Contents</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (d) Pollen grains</span><br>
+                Anther produces pollen grains (male gametophytes).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">4. STD Protection</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Condoms</span><br>
+                Barrier methods like condoms prevent fluid exchange, thus protecting against STDs.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">5. Vegetative Propagation</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Leaf</span><br>
+                Bryophyllum reproduces via buds produced in the notches along the leaf margin.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">6. Implantation Site</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Uterus</span><br>
+                The fertilized egg (zygote) gets implanted in the lining of the uterus.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">7. Amoeba Fission</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Binary fission</span><br>
+                During favourable conditions, Amoeba divides into two daughter cells (Binary fission).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">8. Spore Formation</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Rhizopus</span><br>
+                Rhizopus (Bread Mould) reproduces by forming spores in sporangia.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">9. Budding</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Yeast</span><br>
+                Yeast reproduces asexually by budding.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">10. Spirogyra Reproduction</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Fragmentation</span><br>
+                Spirogyra breaks up into smaller fragments upon maturation, each growing into a new individual.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">11. Assertion: Spores</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Both A and R are true but R is not the correct explanation of
+                    A.</span><br>
+                Spores are unicellular. They grow into new plants. Both statements are true but R doesn't explain why
+                they are unicellular.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">12. Assertion: Testes Location</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Sperm formation needs a lower temperature than body temp, so testes are located outside in the scrotum.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">13. Assertion: Sexual Variation</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) Both A and R are true and R is the correct explanation of A.</span><br>
+                Fusion of gametes from two different parents combines DNA from two sources, leading to greater
+                variation.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">14. Assertion: Vegetative Propagation</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) Both A and R are true but R is not the correct explanation of
+                    A.</span><br>
+                A is true (plants that lost seed capacity). R is true (faster growth). But R is another advantage, not
+                the explanation for A.
+            </div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: SHORT ANSWER ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">15. Fragmentation vs Regeneration</div>
+            <div class="solution-step">
+                Fragmentation: Organism breaks into pieces, each grows into new individual (e.g., Spirogyra). Occurs in
+                multicelluar organisms with simple body organization.<br>
+                Regeneration: Ability to repair injured parts or grow a whole organism from a cut part (e.g., Planaria).
+                Carried out by specialized cells.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">16. DNA Copying</div>
+            <div class="solution-step">
+                (i) DNA contains hereditary information. Copying ensures that daughter cells receive the same genetic
+                blueprint for similar body design.<br>
+                (ii) Variations help a species survive in changing environmental niches (e.g., temperature resistance).
+                Individual may die, but species survives.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">17. Placenta Function</div>
+            <div class="solution-step">
+                (i) Placenta is a disc-like tissue connecting embryo to mother's uterine wall. It provides glucose and
+                oxygen to embryo and removes waste ($CO_2$, urea) from embryo to mother's blood.<br>
+                (ii) Menstruation: The thick uterine lining breaks down and is discharged along with blood and mucus.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">18. Contraception and Health</div>
+            <div class="solution-step">
+                Methods: Mechanical barriers (Condom), Chemical (Pills), IUCD (Copper-T), Surgical
+                (Vasectomy/Tubectomy).<br>
+                Effect: Helps in family planning (spacing children), prevents unwanted pregnancies, improves mother's
+                health, and barrier methods prevent STDs. Small family leads to better economic prosperity.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">19. Puberty in Girls</div>
+            <div class="solution-step">
+                Changes: 1. Breast enlargement and darkening of nipple skin. 2. Onset of menstruation (Menarche). 3.
+                Growth of hair in armpits and genital region. 4. Deposition of fat in thighs and hips.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">20. AIDS</div>
+            <div class="solution-step">
+                AIDS: Acquired Immuno Deficiency Syndrome. Caused by HIV (Human Immunodeficiency Virus).<br>
+                Transmission: 1. Sexual contact with infected person. 2. Blood transfusion from infected person.
+            </div>
+        </div>
+
+        <!-- SECTION C -->
+        <div class="section-title">SECTION C: LONG ANSWER ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">21. Flower Structure and Pollination</div>
+            <div class="solution-step">
+                (i) (Diagram required: Stamen (Anther, Filament), Carpel (Stigma, Style, Ovary), Petals, Sepals).<br>
+                (ii) Self-pollination: Pollen transfer within same flower or same plant.<br>
+                Cross-pollination: Pollen transfer to a flower on a different plant of same species (requires agents
+                like wind/insects).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">22. Female Reproductive System</div>
+            <div class="solution-step">
+                (i) (Diagram required).<br>
+                (ii) (a) Fertilized: Zygote forms, implants in uterus, placenta develops, pregnancy follows.<br>
+                (b) Not Fertilized: Uterine lining sheds (Menstruation) after about 14 days of ovulation (Cycle is 28
+                days).
+            </div>
+        </div>
+
+        <!-- SECTION D -->
+        <div class="section-title">SECTION D: CASE STUDY ANSWERS</div>
+
+        <div class="question-block">
+            <div class="q-text">23. Case Study: Sexual Reproduction</div>
+            <div class="solution-step">
+                (i) Male: Pollen grain (generates male germ cells). Female: Egg cell (Ovum).<br>
+                (ii) Syngamy is the fusion of one male gamete with the female gamete (egg) to form Zygote.<br>
+                (iii) Double Fertilization: One male gamete fuses with egg (Syngamy) $\rightarrow$ Zygote. Second male
+                gamete fuses with two polar nuclei $\rightarrow$ Endosperm (Triploid). Two fusions occur, hence double
+                fertilization.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">24. Case Study: Human Reproduction</div>
+            <div class="solution-step">
+                (i) 9 months (280 days).<br>
+                (ii) Testosterone.<br>
+                (iii) Waste substances generated by the embryo are removed by transferring them into the mother's blood
+                through the placenta (diffusion).
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Created by Team Vardaan</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

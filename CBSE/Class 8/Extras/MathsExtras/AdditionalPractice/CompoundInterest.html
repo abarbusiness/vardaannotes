@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Paper: Advanced Compound Interest - Vardaan Learning Institute</title>
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: {'[+]': ['ams']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html { 
+            transition: filter 0.3s ease; 
+            overflow-x: hidden;
+        }
+        
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode { 
+            filter: invert(1) hue-rotate(180deg); 
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff; /* Matches sheet background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none; /* No lifting effect */
+            border: none;     /* No outlines */
+            width: 210mm;     /* A4 Width */
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            /* 1. FORCE LINE BREAKS */
+            white-space: normal !important; /* Overrides MathJax default 'nowrap' */
+            /* 2. EMERGENCY BREAKING */
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* 3. CONTAINMENT */
+            max-width: 100%;
+            /* 4. FLOW BEHAVIOR */
+            display: inline-block;
+            /* 5. ALIGNMENT */
+            text-align: left;
+        }
+        
+        /* --- WATERMARK STYLES --- */
+        /* Unified Center Strategy */
+        .watermark-overlay {
+            position: fixed; /* Static on screen, repeats on print */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Centered in BOTH modes */
+            align-items: center;
+            z-index: 999; /* Visible on top of paper */
+            pointer-events: none; /* Allows clicking through to text */
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05; /* Light mode opacity per spec */
+            transform: rotate(0deg); /* Horizontal */
+            transition: opacity 0.3s ease;
+        }
+        
+        /* DARK MODE WATERMARK ADJUSTMENT */
+        /* Kept Centered, Opacity adjusted for visibility against black */
+        html.dark-mode .watermark-image { 
+            opacity: 0.08; /* Slightly higher to be visible in 'negative' */
+            /* filter: invert(1) is applied by html.dark-mode, making the black logo white-ish */
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        h1 { font-size: 28px; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        h2 { font-size: 18px; margin: 5px 0; font-weight: normal; font-style: italic; }
+        
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            padding: 5px 0;
+        }
+
+        /* Student Input Fields for Question Paper */
+        .student-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .input-group {
+            display: flex;
+            align-items: flex-end;
+            width: 45%;
+        }
+        .line-input {
+            border: none;
+            border-bottom: 1px solid black;
+            flex-grow: 1;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding-left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            page-break-inside: avoid;
+        }
+        .question-content { width: 92%; font-size: 1.05em; line-height: 1.6; text-align: justify; }
+        .marks { font-weight: bold; font-size: 13px; white-space: nowrap; margin-left: 10px; }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute; /* Non-Sticky per spec */
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Double Inversion Fix: Button looks 'normal' in Dark Mode */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333; /* Dark grey which inverts to light grey */
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Icon Animation States */
+        /* Light Mode: Moon Visible */
+        html:not(.dark-mode) .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html:not(.dark-mode) .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        
+        /* Dark Mode: Sun Visible */
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body { background-color: #ffffff; display: block; padding: 0; }
+            .paper-sheet { width: 100% !important; padding: 15px !important; margin: 0 auto; box-sizing: border-box; }
+            .theme-toggle { top: 10px; right: 10px; }
+            
+            /* Responsive Watermark Size */
+            .watermark-image { width: 80vw; height: 80vw; }
+            
+            .sub-header { flex-direction: column; align-items: center; gap: 5px; }
+            .student-inputs { flex-direction: column; gap: 10px; }
+            .input-group { width: 100%; }
+            h1 { font-size: 22px; }
+            
+            mjx-container { font-size: 0.9em !important; }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+            /* Force Light Mode */
+            html.dark-mode { filter: none !important; }
+            
+            /* Hide UI */
+            .theme-toggle { display: none !important; }
+            
+            body { 
+                background: white; 
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+            
+            /* Reset Container */
+            .paper-sheet { 
+                width: 100%; 
+                margin: 0; 
+                padding: 0; 
+                box-shadow: none; 
+                border: none; 
+                background: transparent !important; 
+            }
+            
+            .section-title { background-color: #eee !important; -webkit-print-color-adjust: exact; }
+            
+            /* Watermark Print Specifics */
+            .watermark-overlay {
+                position: fixed !important; 
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important; 
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                transform: rotate(0deg) !important;
+                filter: none !important;
+            }
+            
+            @page { 
+                size: A4;
+                margin: 15mm 20mm; 
+            }
+            .question { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>High Achievers Worksheet</h2>
+            <div class="sub-header">
+                <span>Class: 8 (CBSE)</span>
+                <span>Topic: Compound Interest (HOTS)</span>
+                <span>Max. Marks: 50</span>
+            </div>
+            <!-- Student Inputs Section -->
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <!-- Section 1 -->
+        <div class="section-title">SECTION A: SHORT ANSWER (3 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                1. Calculate the compound interest on ₹10,800 for 3 years at $12 \frac{1}{2}\%$ per annum compounded annually.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                2. Find the amount which Ram will get on ₹4,096, if he gave it for 18 months at $12 \frac{1}{2}\%$ per annum, interest being compounded half-yearly.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                3. The population of a place increased to 54,000 in 2003 at a rate of $5\%$ per annum.
+                <br>(i) Find the population in 2001.
+                <br>(ii) What would be its population in 2005?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                4. A scooter was bought at ₹42,000. Its value depreciated at the rate of $8\%$ per annum. Find its value after one year.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                5. Find the compound interest on ₹10,000 for 1 year at $8\%$ per annum compounded half-yearly. Also find the difference between this interest and the interest calculated if it were compounded annually.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section-title">SECTION B: LONG ANSWER (5 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                6. The difference between the Compound Interest and Simple Interest on a certain sum of money for 2 years at $10\%$ per annum is ₹500. Find the sum.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                7. A sum of money amounts to ₹13,230 in 1 year and to ₹13,891.50 in $1 \frac{1}{2}$ years at compound interest, compounded semi-annually. Find the sum and the rate of interest per annum.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                8. At what rate percent per annum will a sum of ₹6,000 amount to ₹6,615 in 2 years, interest compounded annually?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                9. Three years ago, the population of a town was 50,000. If the annual increase during three successive years be at the rate of $5\%$, $4\%$ and $3\%$ respectively, what is the present population?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                10. In a laboratory, the count of bacteria in a certain experiment was increasing at the rate of $2.5\%$ per hour. Find the bacteria at the end of 2 hours if the count was initially 5,06,000.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section-title">SECTION C: CHALLENGERS (5 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                11. A sum of money placed at compound interest doubles itself in 5 years. It will amount to eight times itself at the same rate of interest in how many years?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                12. Find the compound interest on ₹1,60,000 for 2 years at $10\%$ per annum when compounded semi-annually. How much more is this than the interest if it was compounded annually?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

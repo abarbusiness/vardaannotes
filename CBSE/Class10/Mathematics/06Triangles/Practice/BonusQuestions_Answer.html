@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Triangles - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --formula-border: 2px solid #000000;
+            --formula-shadow: 4px 4px 0px #000000;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: var(--bg-color-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            padding: 20mm;
+            background-color: #ffffff;
+            box-shadow: none;
+            border: none;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* EQUATION WRAPPING FIXES */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* Watermark Overlay */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Toggle Button */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-shadow: none;
+                border: none;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            /* Responsive Watermark */
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .solution-step {
+                margin-left: 10px;
+                font-size: 0.95em;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                opacity: 0.15 !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Master Notes: Triangles</h2>
+            <div class="sub-header">
+                <span>Class: 10 (CBSE)</span>
+                <span>Subject: Mathematics</span>
+                <span>Worksheet Solutions</span>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: OBJECTIVE TYPE QUESTIONS</div>
+
+        <div class="question-block">
+            <div class="q-text">1. If $\triangle ABC \sim \triangle PQR$... then PQ is:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) 12 cm</span><br>
+                Area(ABC)/Area(PQR) = $(AB/PQ)^2$.<br>
+                $81/144 = (9/PQ)^2$ $\Rightarrow$ $9/12 = 9/PQ$<br>
+                $\Rightarrow PQ = 12$ cm.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">2. In $\triangle ABC$, DE || BC... then EC is:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) 2 cm</span><br>
+                By BPT: $AD/DB = AE/EC$.<br>
+                $1.5/3 = 1/EC$ $\Rightarrow$ $1/2 = 1/EC$<br>
+                $\Rightarrow EC = 2$ cm.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">3. The lengths of the diagonals of a rhombus are 24 cm and 32 cm. The side is:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (c) 20 cm</span><br>
+                Diagonals bisect at 90 deg. Half diag: 12, 16.<br>
+                Side = $\sqrt{12^2 + 16^2}$<br>
+                $= \sqrt{144+256}$<br>
+                $= \sqrt{400}$ $= 20$ cm.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">4. Two poles of height 6 m and 11 m... Distance between tops is:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) 13 m</span><br>
+                Difference in height = $11-6 = 5$ m. Base = 12 m.<br>
+                Hypotenuse = $\sqrt{5^2 + 12^2}$<br>
+                $= \sqrt{25+144}$<br>
+                $= \sqrt{169}$ $= 13$ m.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">5. A vertical pole of length 6 m casts a shadow 4 m... Height of tower?</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (b) 42 m</span><br>
+                Similar triangles. $H/28 = 6/4$.<br>
+                $H = (6/4) \times 28 = 1.5 \times 28 = 42$ m.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">6. Two isosceles triangles have equal angles... Ratio of corresponding heights:</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: (a) 4:5</span><br>
+                Ratio of areas = Square of ratio of corresponding heights.<br>
+                $h_1^2/h_2^2 = 16/25 \Rightarrow h_1/h_2 = 4/5$.
+            </div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: SHORT ANSWER TYPE QUESTIONS</div>
+
+        <div class="question-block">
+            <div class="q-text">7. Ratio of the area of $\triangle PQR$ to area of $\triangle ABC$.</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: 1:4</span><br>
+                Line joining midpoints divides triangle into 4 congruent triangles.<br>
+                Area(PQR) = 1/4 Area(ABC).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">8. In a trapezium ABCD... Show that $AO/BO = CO/DO$.</div>
+            <div class="solution-step">
+                $\triangle AOB \sim \triangle COD$ (AA similarity).<br>
+                $AO/CO = BO/DO \Rightarrow AO/BO = CO/DO$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">9. Perimeters of ABC and PQR are 60 and 48... Find AB.</div>
+            <div class="solution-step">
+                <span class="final-ans">Ans: 10 cm</span><br>
+                Ratio of perimeters = Ratio of sides.<br>
+                $60/48 = AB/8 \Rightarrow 5/4 = AB/8 \Rightarrow AB = 10$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">10. If $\triangle ABE \cong \triangle ACD$, show that $\triangle ADE \sim \triangle
+                ABC$.</div>
+            <div class="solution-step">
+                $AB=AC$ and $AE=AD$ (CPCT).<br>
+                $AD/AB = AE/AC$. Angle A is common.<br>
+                By SAS similarity, $\triangle ADE \sim \triangle ABC$.
+            </div>
+        </div>
+
+        <!-- SECTION C -->
+        <div class="section-title">SECTION C: LONG ANSWER TYPE QUESTIONS</div>
+
+        <div class="question-block">
+            <div class="q-text">11. Show that $CA^2 = CB \cdot CD$.</div>
+            <div class="solution-step">
+                In $\triangle ADC$ and $\triangle BAC$:<br>
+                $\angle ADC = \angle BAC$ (Given), $\angle C = \angle C$ (Common).<br>
+                So $\triangle ADC \sim \triangle BAC$.<br>
+                $CA/CB = CD/CA \Rightarrow CA^2 = CB \cdot CD$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">12. Show that $\triangle ABC \sim \triangle PQR$.</div>
+            <div class="solution-step">
+                Given $AB/PQ = BC/QR = AD/PM$.<br>
+                $BC/QR = 2BD/2QM = BD/QM$.<br>
+                So $AB/PQ = BD/QM = AD/PM \Rightarrow \triangle ABD \sim \triangle PQM$ (SSS).<br>
+                Therefore $\angle B = \angle Q$.<br>
+                In $\triangle ABC$ and $\triangle PQR$, $AB/PQ = BC/QR$ and $\angle B = \angle Q$.<br>
+                So $\triangle ABC \sim \triangle PQR$ (SAS).
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">13. Prove that ratio of areas... equal to square of ratio of corresponding medians.
+            </div>
+            <div class="solution-step">
+                We know $\triangle ABC \sim \triangle PQR \Rightarrow Area(ABC)/Area(PQR) = (AB/PQ)^2$.<br>
+                Also $\triangle ABD \sim \triangle PQM$ (as shown in Q12 logic) $\Rightarrow$ $AB/PQ = AD/PM$.<br>
+                Hence $Area(ABC)/Area(PQR) = (AD/PM)^2$.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">14. Prove that $4(BL^2 + CM^2) = 5 BC^2$.</div>
+            <div class="solution-step">
+                In $\triangle ABL$, $BL^2 = AB^2 + AL^2 = AB^2 + (AC/2)^2$.<br>
+                In $\triangle ACM$, $CM^2 = AC^2 + AM^2 = AC^2 + (AB/2)^2$.<br>
+                $BL^2 + CM^2 = AB^2 + AC^2/4 + AC^2 + AB^2/4$<br>
+                $= 5/4(AB^2 + AC^2)$.<br>
+                $4(BL^2 + CM^2) = 5(BC^2)$. (Since $AB^2+AC^2 = BC^2$).
+            </div>
+        </div>
+
+        <!-- SECTION D -->
+        <div class="section-title">SECTION D: CASE STUDY</div>
+
+        <div class="question-block">
+            <div class="q-text">15. Case Study: Light House</div>
+            <div class="solution-step">
+                (i) [Sketch: Vertical pole AB=3.6m, Boy CD=0.9m, Shadow DE=x].<br>
+                (ii) Let shadow length be x. In 4 sec, dist covered BD = $1.2 \times 4 = 4.8$ m.<br>
+                $\triangle ABE \sim \triangle CDE$. $AB/CD = BE/DE$.<br>
+                $3.6/0.9 = (4.8+x)/x \Rightarrow 4 = (4.8+x)/x \Rightarrow 4x = 4.8 + x \Rightarrow 3x = 4.8$<br>
+                $\Rightarrow x = 1.6$ m.<br>
+                (iii) AA Similarity.
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

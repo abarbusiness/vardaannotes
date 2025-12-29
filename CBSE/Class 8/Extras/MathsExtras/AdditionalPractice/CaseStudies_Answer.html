@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Case Studies - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            /* Matches sheet background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            /* No lifting effect */
+            border: none;
+            /* No outlines */
+            width: 210mm;
+            /* A4 Width */
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            /* 1. FORCE LINE BREAKS */
+            white-space: normal !important;
+            /* 2. EMERGENCY BREAKING */
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* 3. CONTAINMENT */
+            max-width: 100%;
+            /* 4. FLOW BEHAVIOR */
+            display: inline-block;
+            /* 5. ALIGNMENT */
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        /* Unified Center Strategy */
+        .watermark-overlay {
+            position: fixed;
+            /* Static on screen, repeats on print */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            /* Centered in BOTH modes */
+            align-items: center;
+            z-index: 999;
+            /* Visible on top of paper */
+            pointer-events: none;
+            /* Allows clicking through to text */
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            /* Light mode opacity per spec */
+            transform: rotate(0deg);
+            /* Horizontal */
+            transition: opacity 0.3s ease;
+        }
+
+        /* DARK MODE WATERMARK ADJUSTMENT */
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .q-image {
+            display: block;
+            max-width: 80%;
+            height: auto;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Double Inversion Fix */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            html.dark-mode .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                transform: rotate(0deg) !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Answer Key: Competency Based Assessment</h2>
+            <div class="sub-header">
+                <span>Class: 8 (CBSE)</span>
+                <span>Subject: Mathematics</span>
+                <span>Solutions</span>
+            </div>
+        </header>
+
+        <div class="section-title">SOLUTIONS</div>
+
+        <!-- Case 1 -->
+        <div class="question-block">
+            <div class="q-text">Case 1: The Charity Drive</div>
+            <div class="solution-step">
+                1. Total Fraction Donated = $\frac{1}{3} + \frac{1}{4} = \frac{4+3}{12} = \frac{7}{12}$.<br>
+                2. Fraction Left = $1 - \frac{7}{12} = \frac{5}{12}$.<br>
+                3. Donation to Food Bank = $\frac{1}{4}$ of Salary.<br>
+                Amount = $\frac{1}{4} \times 60000 = \text{₹}15,000$.
+            </div>
+        </div>
+
+        <!-- Case 2 -->
+        <div class="question-block">
+            <div class="q-text">Case 2: The School Excursion</div>
+            <div class="solution-step">
+                1. Equation: Bus + Car + Van = Total $\Rightarrow$ $\frac{x}{2} + \frac{x}{4} + 20 = x$.<br>
+                2. Solving: $\frac{2x+x}{4} + 20 = x \Rightarrow \frac{3x}{4} + 20 = x$.<br>
+                $20 = x - \frac{3x}{4} = \frac{x}{4} \Rightarrow x = 80$.<br>
+                3. Students by Bus = $\frac{x}{2} = \frac{80}{2} = 40$.
+            </div>
+        </div>
+
+        <!-- Case 3 -->
+        <div class="question-block">
+            <div class="q-text">Case 3: The Farm Land</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1766886488/56afb0c2-6be8-461a-95f8-e93628fe0b76.png"
+                class="q-image" alt="Parallelogram ABCD">
+            <div class="solution-step">
+                1. Angle A + Angle B = $180^\circ$ (Adjacent angles in parallelogram are supplementary).<br>
+                $\angle B = 180^\circ - 70^\circ = 110^\circ$.<br>
+                2. $\angle C = \angle A = 70^\circ$ (Opposite angles).<br>
+                $\angle D = \angle B = 110^\circ$ (Opposite angles).<br>
+                3. Measures of rectangle angles are $90^\circ$. So $\angle A$ would be $90^\circ$.
+            </div>
+        </div>
+
+        <!-- Case 4 -->
+        <div class="question-block">
+            <div class="q-text">Case 4: Sports Selection</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1766886514/997a1396-c2be-4c15-b6d5-f21e6651b889.png"
+                class="q-image" alt="Sports Pie Chart">
+            <div class="solution-step">
+                1. Fraction Cricket = $\frac{120^\circ}{360^\circ} = \frac{1}{3}$.<br>
+                2. Angle Basketball = $360^\circ - (120^\circ + 90^\circ) = 360^\circ - 210^\circ = 150^\circ$.<br>
+                3. Football Fraction = $\frac{90^\circ}{360^\circ} = \frac{1}{4}$.<br>
+                Students = $\frac{1}{4} \times 720 = 180$.
+            </div>
+        </div>
+
+        <!-- Case 5 -->
+        <div class="question-block">
+            <div class="q-text">Case 5: The Auditorium Seating</div>
+            <div class="solution-step">
+                1. Concept used: Square Root.<br>
+                2. Rows = $\sqrt{1764}$. Factors: $1764 = 2^2 \times 3^2 \times 7^2$.<br>
+                $\sqrt{1764} = 2 \times 3 \times 7 = 42$. So, 42 rows.<br>
+                3. Total Chairs = $1764 + 100 = 1864$.<br>
+                $43^2 = 1849$, $44^2 = 1936$. 1864 is not a perfect square. No.
+            </div>
+        </div>
+
+        <!-- Case 6 -->
+        <div class="question-block">
+            <div class="q-text">Case 6: The Festival Sale</div>
+            <div class="solution-step">
+                1. Discount = $10\%$ of 40,000 = $\text{₹}4,000$.<br>
+                2. Selling Price (before tax) = $40000 - 4000 = \text{₹}36,000$.<br>
+                3. GST = $18\%$ of 36,000 = $0.18 \times 36000 = \text{₹}6,480$.<br>
+                Total Bill = $36000 + 6480 = \text{₹}42,480$.
+            </div>
+        </div>
+
+        <!-- Case 7 -->
+        <div class="question-block">
+            <div class="q-text">Case 7: The Rectangular Park</div>
+            <div class="solution-step">
+                1. Length $l = 2b + 5$.<br>
+                2. Perimeter $P = 2(l + b) = 2(2b + 5 + b) = 2(3b + 5) = 6b + 10$.<br>
+                3. If $b=10$, $l = 2(10) + 5 = 25$m.<br>
+                Area = $l \times b = 25 \times 10 = 250 m^2$.
+            </div>
+        </div>
+
+        <!-- Case 8 -->
+        <div class="question-block">
+            <div class="q-text">Case 8: The Water Tank</div>
+            <div class="solution-step">
+                1. CSA = $2\pi rh = 2 \times \frac{22}{7} \times 7 \times 10 = 440 m^2$.<br>
+                2. Cost = $440 \times 20 = \text{₹}8,800$.<br>
+                3. Volume (Capacity) = $\pi r^2 h = \frac{22}{7} \times 7^2 \times 10 = 1540 m^3$.
+            </div>
+        </div>
+
+        <!-- Case 9 -->
+        <div class="question-block">
+            <div class="q-text">Case 9: The Micro-Organisms</div>
+            <div class="solution-step">
+                1. Plant Cell = $1.275 \times 10^{-5}$ m.<br>
+                2. Red Blood Cell = $7.0 \times 10^{-6}$ m.<br>
+                3. Total Size = $100 \times 1.275 \times 10^{-5} = 1.275 \times 10^{-3}$ m.
+            </div>
+        </div>
+
+        <!-- Case 10 -->
+        <div class="question-block">
+            <div class="q-text">Case 10: The Delivery Boy</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1766886664/84a50026-67f8-4713-9767-c59aa4cfa484.png"
+                class="q-image" alt="Distance-Time Graph">
+            <div class="solution-step">
+                1. Horizontal line indicates the boy was at rest (stopped) during that time interval.<br>
+                2. Speed = Distance / Time = 10 km / 1 hr = 10 km/hr.<br>
+                3. A steeper slope indicates greater speed (traveling faster), as more distance is covered in less time.
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

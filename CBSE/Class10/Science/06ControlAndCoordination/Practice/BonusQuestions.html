@@ -1,0 +1,627 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Paper: Control Coordination - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            transform: rotate(0deg);
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        /* Student Input Fields */
+        .student-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: flex-end;
+            width: 45%;
+        }
+
+        .line-input {
+            border: none;
+            border-bottom: 1px solid black;
+            flex-grow: 1;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .student-inputs {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .input-group {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Topic: Control and Coordination</h2>
+            <div class="sub-header">
+                <span>Class: 10 (Science)</span>
+                <span>Type: Bonus Practice Paper</span>
+                <span>Max. Marks: 50</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: OBJECTIVE TYPE QUESTIONS (1 Mark Each)</div>
+
+        <div class="question-block">
+            <div class="q-text">1. The gap between two neurons is called:</div>
+            <ol type="a">
+                <li>Dendrite</li>
+                <li>Synapse</li>
+                <li>Axon</li>
+                <li>Impulse</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">2. Which plant hormone promotes cell division?</div>
+            <ol type="a">
+                <li>Auxin</li>
+                <li>Gibberellin</li>
+                <li>Cytokinin</li>
+                <li>Abscisic acid</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">3. The main function of Abscisic acid in plants is to:</div>
+            <ol type="a">
+                <li>increase the length of cells</li>
+                <li>promote cell division</li>
+                <li>inhibit growth</li>
+                <li>promote growth of stem</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">4. Which of the following is not an involuntary action?</div>
+            <ol type="a">
+                <li>Vomiting</li>
+                <li>Salivation</li>
+                <li>Heart beat</li>
+                <li>Chewing</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">5. Iodine is necessary for the synthesis of which hormone?</div>
+            <ol type="a">
+                <li>Adrenaline</li>
+                <li>Thyroxin</li>
+                <li>Auxin</li>
+                <li>Insulin</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">6. The movement of sunflower in accordance with the path of the sun is due to:</div>
+            <ol type="a">
+                <li>Phototropism</li>
+                <li>Geotropism</li>
+                <li>Chemotropism</li>
+                <li>Hydrotropism</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">7. Spinal cord originates from:</div>
+            <ol type="a">
+                <li>Cerebrum</li>
+                <li>Medulla</li>
+                <li>Pons</li>
+                <li>Cerebellum</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">8. Which of the following is both an endocrine and exocrine gland?</div>
+            <ol type="a">
+                <li>Liver</li>
+                <li>Thyroid</li>
+                <li>Pancreas</li>
+                <li>Adrenal</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">9. Which receptors regulate the taste of food in human beings?</div>
+            <ol type="a">
+                <li>Olfactory receptors</li>
+                <li>Gustatory receptors</li>
+                <li>Photo receptors</li>
+                <li>Phono receptors</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">10. The brain is protected by a bony box called:</div>
+            <ol type="a">
+                <li>Vertebral column</li>
+                <li>Cranium</li>
+                <li>Rib cage</li>
+                <li>Sternum</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text"><b>Directions (Q11-Q14):</b> In the following questions, a statement of assertion (A) is
+                followed by a statement of reason (R). Mark the correct choice as:</div>
+            <ol type="a">
+                <li>Both A and R are true and R is the correct explanation of A.</li>
+                <li>Both A and R are true but R is not the correct explanation of A.</li>
+                <li>A is true but R is false.</li>
+                <li>A is false but R is true.</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">11. <b>Assertion (A):</b> The brain is also known as the central nervous system.<br>
+                <b>Reason (R):</b> The central nervous system controls and regulates the voluntary actions.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">12. <b>Assertion (A):</b> A nerve impulse travels only in one direction.<br>
+                <b>Reason (R):</b> Neurotransmitters are released only at the axon ending of a neuron.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">13. <b>Assertion (A):</b> Insulin regulates blood sugar level.<br>
+                <b>Reason (R):</b> Insufficient insulin causes diabetes.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">14. <b>Assertion (A):</b> Plants do not have a nervous system, but they show
+                movements.<br>
+                <b>Reason (R):</b> Plants use electrical-chemical means to convey information from cell to cell.
+            </div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: SHORT ANSWER QUESTIONS (3 Marks Each)</div>
+
+        <div class="question-block">
+            <div class="q-text">15. (i) Draw the structure of a neuron and label: (a) Cell body (b) Axon (c)
+                Dendrite.<br>
+                (ii) State the function of Dendrite.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">16. What is a reflex arc? Draw a schematic diagram to show the reflex arc pathway
+                (Receptor -> Sensory Neuron -> Spinal Cord -> Motor Neuron -> Effector).</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">17. How do auxins promote the growth of a tendril around a support?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">18. Differentiate between tropic movements and nastic movements in plants with examples.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">19. How does phototropism occur in plants? Explain with the help of a diagram.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">20. Name the hormone secreted by the Adrenal gland. Explain its function during
+                emergency situations.</div>
+        </div>
+
+        <!-- SECTION C -->
+        <div class="section-title">SECTION C: LONG ANSWER QUESTIONS (5 Marks Each)</div>
+
+        <div class="question-block">
+            <div class="q-text">21. (i) Draw a well-labelled diagram of the Human Brain.<br>
+                (ii) Mention the functions of the following parts: (a) Cerebellum (b) Medulla (c) Cerebrum.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">22. Name the hormones secreted by the following endocrine glands and specify one
+                function of each:<br>
+                (i) Thyroid<br>
+                (ii) Pituitary<br>
+                (iii) Pancreas<br>
+                (iv) Adrenal<br>
+                (v) Testes</div>
+        </div>
+
+        <!-- SECTION D -->
+        <div class="section-title">SECTION D: CASE STUDY (4 Marks)</div>
+
+        <div class="question-block">
+            <div class="q-text">23. <b>Read the following text and answer the questions:</b><br>
+                Diabetes is a condition in which the blood sugar level is higher than normal. It is caused due to the
+                deficiency of a hormone secreted by the pancreas. This hormone helps in regulating blood sugar levels.
+                Treatment includes taking injections of this hormone.<br><br>
+                (i) Name the hormone mentioned in the passage. (1 Mark)<br>
+                (ii) Which gland secretes this hormone? (1 Mark)<br>
+                (iii) Explain the feedback mechanism that regulates the timing and amount of hormone released with the
+                example of this hormone. (2 Marks)</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">24. <b>Read the following text and answer the questions:</b><br>
+                A person touches a hot object and immediately withdraws their hand. This is an example of a reflex
+                action. Reflex actions are sudden, involuntary responses to stimuli. The pathway is called a reflex arc
+                and primarily involves the spinal cord.<br><br>
+                (i) Defined Reflex Action. (1 Mark)<br>
+                (ii) Where is any Message from the environment detected? (1 Mark)<br>
+                (iii) Why are reflex arcs evolved in animals? (2 Marks)</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text"></div>
+            <center><i>"All the best!"</i></center>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Created by Team Vardaan</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
