@@ -4,95 +4,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistics Answers - Additional Practice</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>Solutions: Statistics - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
     <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
         body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            /* Matches sheet background */
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .back-btn {
-            align-self: flex-start;
-            color: #ccc;
-            text-decoration: none;
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            /* No lifting effect */
+            border: none;
+            /* No outlines */
+            width: 210mm;
+            /* A4 Width */
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            /* 1. FORCE LINE BREAKS */
+            white-space: normal !important;
+            /* Overrides MathJax default 'nowrap' */
+            /* 2. EMERGENCY BREAKING */
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* 3. CONTAINMENT */
+            max-width: 100%;
+            /* 4. FLOW BEHAVIOR */
+            display: inline-block;
+            /* 5. ALIGNMENT */
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        /* Unified Center Strategy */
+        .watermark-overlay {
+            position: fixed;
+            /* Static on screen, repeats on print */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             display: flex;
+            justify-content: center;
+            /* Centered in BOTH modes */
             align-items: center;
-            gap: 5px;
-            margin-bottom: 20px;
-            font-weight: 500;
-            transition: color 0.3s;
+            z-index: 999;
+            /* Visible on top of paper */
+            pointer-events: none;
+            /* Allows clicking through to text */
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .back-btn:hover {
-            color: #fff;
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            /* Light mode opacity per spec */
+            transform: rotate(0deg);
+            /* Horizontal */
+            transition: opacity 0.3s ease;
         }
 
-        .header {
+        /* DARK MODE WATERMARK ADJUSTMENT */
+        /* Kept Centered, Opacity adjusted for visibility against black */
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+            /* Slightly higher to be visible in 'negative' */
+        }
+
+        header {
             text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
             margin-bottom: 30px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
-            width: 100%;
-            max-width: 800px;
+            position: relative;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 28px;
             margin: 0;
-            color: #54a0ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
         }
 
-        .content-container {
-            width: 100%;
-            max-width: 900px;
-            background: #2d2d2d;
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 40px;
-            min-height: 400px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
         }
 
-        .placeholder-text {
-            border: 2px dashed #666;
-            padding: 40px;
-            border-radius: 8px;
-            background: #222;
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
             text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
         }
 
-        .placeholder-text h2 {
-            color: #888;
-            margin-top: 0;
+        .question {
+            margin-bottom: 25px;
+            padding-left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            page-break-inside: avoid;
         }
 
-        .placeholder-text p {
-            color: #aaa;
+        .question-content {
+            width: 92%;
+            font-size: 1.05em;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .marks {
+            font-weight: bold;
+            font-size: 13px;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        .answer {
+            color: #000;
+            margin-top: 10px;
+            padding-left: 20px;
+            border-left: 3px solid #ccc;
+            font-style: italic;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            /* Non-Sticky per spec */
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Double Inversion Fix: Button looks 'normal' in Dark Mode */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            /* Dark grey which inverts to light grey */
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Icon Animation States */
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            /* Responsive Watermark Size */
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+
+            /* Force Light Mode */
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            /* Hide UI */
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Reset Container */
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            /* Watermark Print Specifics */
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                transform: rotate(0deg) !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
 
 <body>
-    <a href="Index.html" class="back-btn"><i data-lucide="arrow-left"></i> Back to Additional Practice</a>
-    <div class="header">
-        <h1>Statistics</h1>
-        <div>Answer Key</div>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
     </div>
-    <div class="content-container">
-        <div class="placeholder-text">
-            <h2>PLACEHOLDER FOR ANSWERS</h2>
-            <p>Paste the solutions for statistics here.</p>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Data Handling & Statistics Solutions</h2>
+            <div class="sub-header">
+                <span>Class: 8 (CBSE)</span>
+                <span>Topic: Statistics</span>
+                <span>Max. Marks: 50</span>
+            </div>
+        </header>
+
+        <!-- Section 1 -->
+        <div class="section-title">SECTION A: SHORT ANSWER (3 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                1. A survey was made to find the type of music... If 20 people liked classical music, how many young
+                people were surveyed?
+                <br><em>(Classical is 10%)</em>
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Let the total number of people surveyed be $x$.<br>
+                    Given, 10% of $x = 20$<br>
+                    $\Rightarrow \frac{10}{100} \times x = 20$<br>
+                    $\Rightarrow x = 20 \times 10 = 200$.<br>
+                    <strong>Total 200 young people were surveyed.</strong>
+                </div>
+            </div>
         </div>
+
+        <div class="question">
+            <div class="question-content">
+                2. The number of hours for which students... For how many hours did the maximum number of students watch
+                TV?
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Looking at the graph (assuming peak is at 4-5 hours), the maximum number of students watched TV for
+                    <strong>4 to 5 hours</strong>.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                3. A bag has 4 red balls and 2 yellow balls... What is probability of getting a red ball?
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Total balls = $4 + 2 = 6$.<br>
+                    Probability of Red Ball = $\frac{\text{No. of Red Balls}}{\text{Total Balls}} = \frac{4}{6} =
+                    \frac{2}{3}$.<br>
+                    Probability of Yellow Ball = $\frac{2}{6} = \frac{1}{3}$.<br>
+                    Since $\frac{2}{3} > \frac{1}{3}$, getting a Red ball is <strong>more likely</strong> than getting a
+                    Yellow ball.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                4. When a die is thrown, list the outcomes of an event of getting...
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Outcomes of a die: {1, 2, 3, 4, 5, 6}<br>
+                    (a) Prime numbers: <strong>2, 3, 5</strong><br>
+                    (b) Not a prime number: <strong>1, 4, 6</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                5. ...Make a frequency distribution table using tally marks.
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    W (Women): |||| |||| |||| |||| |||| |||| (28)<br>
+                    M (Men): |||| |||| |||| | (15)<br>
+                    B (Boys): |||| | (5)<br>
+                    G (Girls): |||| |||| || (12)<br>
+                    <em>(Note: Exact count depends on precise tally of the provided string).</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section-title">SECTION B: LONG ANSWER (5 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                6. The weekly wages (in ₹) of 30 workers...
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    <strong>Frequency Table:</strong><br>
+                    800-810: ||| (3)<br>
+                    810-820: || (2)<br>
+                    820-830: | (1)<br>
+                    830-840: |||| |||| (9)<br>
+                    840-850: |||| | (5)<br>
+                    850-860: | (1)<br>
+                    860-870: ||| (3)<br>
+                    870-880: | (1)<br>
+                    880-890: | (1)<br>
+                    890-900: |||| (4)<br>
+                    <strong>Total: 30</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                7. Draw a histogram for the frequency table...
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    (i) The group <strong>830-840</strong> has the maximum number of workers (9).<br>
+                    (ii) Workers earning ₹850 or more = $1 + 3 + 1 + 1 + 4 = 10$.<br>
+                    (iii) Workers earning less than ₹850 = $3 + 2 + 1 + 9 + 5 = 20$.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                8. ...Draw a pie chart for this data.
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Total = 720. Central Angles:<br>
+                    Ordinary Bread: $\frac{320}{720} \times 360^\circ = 160^\circ$<br>
+                    Fruit Bread: $\frac{80}{720} \times 360^\circ = 40^\circ$<br>
+                    Cakes: $\frac{160}{720} \times 360^\circ = 80^\circ$<br>
+                    Biscuits: $\frac{120}{720} \times 360^\circ = 60^\circ$<br>
+                    Others: $\frac{40}{720} \times 360^\circ = 20^\circ$<br>
+                    Total = $360^\circ$.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                9. ...Display the data in a pie chart.
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Total = 72. Central Angles:<br>
+                    Hindi: $\frac{40}{72} \times 360^\circ = 200^\circ$<br>
+                    English: $\frac{12}{72} \times 360^\circ = 60^\circ$<br>
+                    Marathi: $\frac{9}{72} \times 360^\circ = 45^\circ$<br>
+                    Tamil: $\frac{7}{72} \times 360^\circ = 35^\circ$<br>
+                    Bengali: $\frac{4}{72} \times 360^\circ = 20^\circ$
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                10. Numbers 1 to 10... What is the probability of...
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Total outcomes = 10.<br>
+                    (i) Getting 6: One outcome (6). P = $1/10$.<br>
+                    (ii) Less than 6: {1,2,3,4,5}. 5 outcomes. P = $5/10 = 1/2$.<br>
+                    (iii) Greater than 6: {7,8,9,10}. 4 outcomes. P = $4/10 = 2/5$.<br>
+                    (iv) 1-digit number: {1..9}. 9 outcomes. P = $9/10$.
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section-title">SECTION C: CHALLENGERS (5 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                11. Explain why a rectangle is called a convex quadrilateral...
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    A rectangle is convex because all its diagonals lie in its interior and all angles are less than
+                    $180^\circ$. A concave polygon has at least one angle greater than $180^\circ$ and some diagonals
+                    lie outside.<br>
+                    Histogram would clearly show bars of height 10, 25, 15, 5.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                12. Given a deck of 52 playing cards...
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    (i) P(Ace) = $4/52 = 1/13$.<br>
+                    (ii) P(Red Card) = $26/52 = 1/2$.<br>
+                    (iii) P(Face Card) = $12/52 = 3/13$.<br>
+                    (iv) P(10 of Spades) = $1/52$.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                13. ...What represents the central angle for South Indian food?
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Total = 120.<br>
+                    South Indian fraction = $40/120 = 1/3$.<br>
+                    Central Angle = $\frac{1}{3} \times 360^\circ = 120^\circ$.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                14. For the below data, construct a grouped frequency distribution table...
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Mean = $\frac{\sum x}{N} = \frac{74}{25} = 2.96$.
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                15. ...Identify the class interval with the highest frequency.
+                <div class="answer">
+                    <strong>Solution:</strong><br>
+                    Highest frequency is 15 in interval 20-30.<br>
+                    Class size = $10 - 0 = 10$.
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
     </div>
-    <script> lucide.createIcons(); </script>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 
 </html>

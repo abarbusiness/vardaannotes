@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 0 Electricity</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark - Fixed Position & High Z-Index for Print */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
+        }
+
+        /* Answer Styles */
+        .section-title {
+            /* Existing section-title styling removed as per instruction */
+        }
+
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px 12px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #004d40;
+        }
+
+        html.dark-mode .topic-header {
+            /* Global invert handles color */
+        }
+
+        .ans-block {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        .ans-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .ans-item {
+            flex: 1 1 200px;
+            /* Responsive grid ish */
+            min-width: 150px;
+        }
+
+        .ans-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                background: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                z-index: 9999;
+                display: flex !important;
+                visibility: visible !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 0 (Electricity)</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Foundation & Objective</span>
+                <span>Max. Questions: 100</span>
+            </div>
+        </header>
+
+        <div class="section-title">Section A: MCQs (1-20)</div>
+        <div class="ans-row">
+            <div class="ans-item"><span class="ans-label">1.</span> (c) Coulomb</div>
+            <div class="ans-item"><span class="ans-label">2.</span> (b) Current</div>
+            <div class="ans-item"><span class="ans-label">3.</span> (a) Ammeter</div>
+            <div class="ans-item"><span class="ans-label">4.</span> (b) Potential Differene</div>
+            <div class="ans-item"><span class="ans-label">5.</span> (c) Volt</div>
+            <div class="ans-item"><span class="ans-label">6.</span> (a) V and I</div>
+            <div class="ans-item"><span class="ans-label">7.</span> (d) All of these</div>
+            <div class="ans-item"><span class="ans-label">8.</span> (c) Material & Temperature</div>
+            <div class="ans-item"><span class="ans-label">9.</span> (b) Ohm</div>
+            <div class="ans-item"><span class="ans-label">10.</span> (b) Ohm-meter</div>
+            <div class="ans-item"><span class="ans-label">11.</span> (b) Current</div>
+            <div class="ans-item"><span class="ans-label">12.</span> (a) Voltage</div>
+            <div class="ans-item"><span class="ans-label">13.</span> (c) kWh</div>
+            <div class="ans-item"><span class="ans-label">14.</span> (b) $3.6 \times 10^6$ J</div>
+            <div class="ans-item"><span class="ans-label">15.</span> (c) Tungsten</div>
+            <div class="ans-item"><span class="ans-label">16.</span> (b) Nichrome</div>
+            <div class="ans-item"><span class="ans-label">17.</span> (c) $P = VI$</div>
+            <div class="ans-item"><span class="ans-label">18.</span> (a) $H = I^2 Rt$</div>
+            <div class="ans-item"><span class="ans-label">19.</span> (b) Lead and Tin</div>
+            <div class="ans-item"><span class="ans-label">20.</span> (b) Commutator</div>
+        </div>
+
+        <div class="section-title">Section B: Fill in the Blanks (21-40)</div>
+        <div class="ans-row">
+            <div class="ans-item"><span class="ans-label">21.</span> scalar</div>
+            <div class="ans-item"><span class="ans-label">22.</span> series</div>
+            <div class="ans-item"><span class="ans-label">23.</span> parallel</div>
+            <div class="ans-item"><span class="ans-label">24.</span> zero</div>
+            <div class="ans-item"><span class="ans-label">25.</span> infinite</div>
+            <div class="ans-item"><span class="ans-label">26.</span> resistance</div>
+            <div class="ans-item"><span class="ans-label">27.</span> $1.6 \times 10^{-19}$</div>
+            <div class="ans-item"><span class="ans-label">28.</span> increases</div>
+            <div class="ans-item"><span class="ans-label">29.</span> less</div>
+            <div class="ans-item"><span class="ans-label">30.</span> greater</div>
+            <div class="ans-item"><span class="ans-label">31.</span> low</div>
+            <div class="ans-item"><span class="ans-label">32.</span> heating</div>
+            <div class="ans-item"><span class="ans-label">33.</span> high resistance</div>
+            <div class="ans-item"><span class="ans-label">34.</span> higher</div>
+            <div class="ans-item"><span class="ans-label">35.</span> opposite</div>
+            <div class="ans-item"><span class="ans-label">36.</span> Joule</div>
+            <div class="ans-item"><span class="ans-label">37.</span> Ampere</div>
+            <div class="ans-item"><span class="ans-label">38.</span> electrical energy</div>
+            <div class="ans-item"><span class="ans-label">39.</span> Rheostat</div>
+            <div class="ans-item"><span class="ans-label">40.</span> electric circuit</div>
+        </div>
+
+        <div class="section-title">Section C: True or False (41-60)</div>
+        <div class="ans-row">
+            <div class="ans-item"><span class="ans-label">41.</span> False</div>
+            <div class="ans-item"><span class="ans-label">42.</span> True</div>
+            <div class="ans-item"><span class="ans-label">43.</span> False</div>
+            <div class="ans-item"><span class="ans-label">44.</span> False</div>
+            <div class="ans-item"><span class="ans-label">45.</span> False</div>
+            <div class="ans-item"><span class="ans-label">46.</span> False</div>
+            <div class="ans-item"><span class="ans-label">47.</span> False</div>
+            <div class="ans-item"><span class="ans-label">48.</span> True</div>
+            <div class="ans-item"><span class="ans-label">49.</span> True</div>
+            <div class="ans-item"><span class="ans-label">50.</span> True</div>
+            <div class="ans-item"><span class="ans-label">51.</span> True</div>
+            <div class="ans-item"><span class="ans-label">52.</span> True</div>
+            <div class="ans-item"><span class="ans-label">53.</span> False</div>
+            <div class="ans-item"><span class="ans-label">54.</span> True</div>
+            <div class="ans-item"><span class="ans-label">55.</span> True</div>
+            <div class="ans-item"><span class="ans-label">56.</span> True</div>
+            <div class="ans-item"><span class="ans-label">57.</span> False</div>
+            <div class="ans-item"><span class="ans-label">58.</span> True</div>
+            <div class="ans-item"><span class="ans-label">59.</span> False</div>
+            <div class="ans-item"><span class="ans-label">60.</span> False</div>
+        </div>
+
+        <div class="section-title">Section D: Match the Following (61-80)</div>
+        <div class="ans-row">
+            <div class="ans-item"><span class="ans-label">61.</span> B (Ampere)</div>
+            <div class="ans-item"><span class="ans-label">62.</span> A (Volt)</div>
+            <div class="ans-item"><span class="ans-label">63.</span> D (Ohm)</div>
+            <div class="ans-item"><span class="ans-label">64.</span> C (Watt)</div>
+            <div class="ans-item"><span class="ans-label">65.</span> E (Joule)</div>
+            <div class="ans-item"><span class="ans-label">66.</span> B (V = IR)</div>
+            <div class="ans-item"><span class="ans-label">67.</span> A (H = I²Rt)</div>
+            <div class="ans-item"><span class="ans-label">68.</span> D (V²/R)</div>
+            <div class="ans-item"><span class="ans-label">69.</span> C (ρL/A)</div>
+            <div class="ans-item"><span class="ans-label">70.</span> E (Ohm-meter)</div>
+            <div class="ans-item"><span class="ans-label">71.</span> C (Low Resistance)</div>
+            <div class="ans-item"><span class="ans-label">72.</span> B (High Resistance)</div>
+            <div class="ans-item"><span class="ans-label">73.</span> A (Low MP)</div>
+            <div class="ans-item"><span class="ans-label">74.</span> D (Variable R)</div>
+            <div class="ans-item"><span class="ans-label">75.</span> E (Source of DC)</div>
+            <div class="ans-item"><span class="ans-label">76.</span> B (Filament)</div>
+            <div class="ans-item"><span class="ans-label">77.</span> C (Heating)</div>
+            <div class="ans-item"><span class="ans-label">78.</span> A (Wires)</div>
+            <div class="ans-item"><span class="ans-label">79.</span> E (Plastic)</div>
+            <div class="ans-item"><span class="ans-label">80.</span> D (Semiconductor)</div>
+        </div>
+
+        <div class="section-title">Section E: One Word Answer (81-100)</div>
+        <div class="ans-row">
+            <div class="ans-item"><span class="ans-label">81.</span> $+1.6 \times 10^{-19}$ C</div>
+            <div class="ans-item"><span class="ans-label">82.</span> Silver</div>
+            <div class="ans-item"><span class="ans-label">83.</span> Constantan/Manganin</div>
+            <div class="ans-item"><span class="ans-label">84.</span> Doubled</div>
+            <div class="ans-item"><span class="ans-label">85.</span> Halved</div>
+            <div class="ans-item"><span class="ans-label">86.</span> Two</div>
+            <div class="ans-item"><span class="ans-label">87.</span> Heating Effect</div>
+            <div class="ans-item"><span class="ans-label">88.</span> Magnetic Effect</div>
+            <div class="ans-item"><span class="ans-label">89.</span> P = VI</div>
+            <div class="ans-item"><span class="ans-label">90.</span> E = P x t</div>
+            <div class="ans-item"><span class="ans-label">91.</span> No</div>
+            <div class="ans-item"><span class="ans-label">92.</span> No</div>
+            <div class="ans-item"><span class="ans-label">93.</span> Zero Hz</div>
+            <div class="ans-item"><span class="ans-label">94.</span> 50 Hz</div>
+            <div class="ans-item"><span class="ans-label">95.</span> Georg Ohm</div>
+            <div class="ans-item"><span class="ans-label">96.</span> Galvanometer</div>
+            <div class="ans-item"><span class="ans-label">97.</span> Live Wire</div>
+            <div class="ans-item"><span class="ans-label">98.</span> Brown</div>
+            <div class="ans-item"><span class="ans-label">99.</span> Green (or Green/Yellow)</div>
+            <div class="ans-item"><span class="ans-label">100.</span> kWh</div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -4,95 +4,609 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistics - Additional Practice</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>Question Paper: Statistics - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
     <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode: Full page inversion (Global Negative Effect) */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
         body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--main-font);
+            background-color: #ffffff;
+            /* Matches sheet background */
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .back-btn {
-            align-self: flex-start;
-            color: #ccc;
-            text-decoration: none;
+        /* The Seamless Paper Rule: No Border, No Shadow in default state */
+        .paper-sheet {
+            background-color: #ffffff;
+            box-shadow: none;
+            /* No lifting effect */
+            border: none;
+            /* No outlines */
+            width: 210mm;
+            /* A4 Width */
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (Mobile Optimization) --- */
+        mjx-container {
+            /* 1. FORCE LINE BREAKS */
+            white-space: normal !important;
+            /* Overrides MathJax default 'nowrap' */
+            /* 2. EMERGENCY BREAKING */
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* 3. CONTAINMENT */
+            max-width: 100%;
+            /* 4. FLOW BEHAVIOR */
+            display: inline-block;
+            /* 5. ALIGNMENT */
+            text-align: left;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        /* Unified Center Strategy */
+        .watermark-overlay {
+            position: fixed;
+            /* Static on screen, repeats on print */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             display: flex;
+            justify-content: center;
+            /* Centered in BOTH modes */
             align-items: center;
-            gap: 5px;
-            margin-bottom: 20px;
-            font-weight: 500;
-            transition: color 0.3s;
+            z-index: 999;
+            /* Visible on top of paper */
+            pointer-events: none;
+            /* Allows clicking through to text */
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .back-btn:hover {
-            color: #fff;
+        .watermark-image {
+            width: 600px;
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.05;
+            /* Light mode opacity per spec */
+            transform: rotate(0deg);
+            /* Horizontal */
+            transition: opacity 0.3s ease;
         }
 
-        .header {
+        /* DARK MODE WATERMARK ADJUSTMENT */
+        /* Kept Centered, Opacity adjusted for visibility against black */
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+            /* Slightly higher to be visible in 'negative' */
+        }
+
+        header {
             text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
             margin-bottom: 30px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
-            width: 100%;
-            max-width: 800px;
+            position: relative;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 28px;
             margin: 0;
-            color: #54a0ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
         }
 
-        .content-container {
-            width: 100%;
-            max-width: 900px;
-            background: #2d2d2d;
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 40px;
-            min-height: 400px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
         }
 
-        .placeholder-text {
-            border: 2px dashed #666;
-            padding: 40px;
-            border-radius: 8px;
-            background: #222;
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            padding: 5px 0;
+        }
+
+        /* Student Input Fields for Question Paper */
+        .student-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: flex-end;
+            width: 45%;
+        }
+
+        .line-input {
+            border: none;
+            border-bottom: 1px solid black;
+            flex-grow: 1;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        .section-title {
             text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
         }
 
-        .placeholder-text h2 {
-            color: #888;
-            margin-top: 0;
+        .question {
+            margin-bottom: 25px;
+            padding-left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            page-break-inside: avoid;
         }
 
-        .placeholder-text p {
-            color: #aaa;
+        .question-content {
+            width: 92%;
+            font-size: 1.05em;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .marks {
+            font-weight: bold;
+            font-size: 13px;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            /* Non-Sticky per spec */
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Double Inversion Fix: Button looks 'normal' in Dark Mode */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            /* Dark grey which inverts to light grey */
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Icon Animation States */
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            /* Responsive Watermark Size */
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .student-inputs {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .input-group {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+
+            /* Force Light Mode */
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            /* Hide UI */
+            .theme-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Reset Container */
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            /* Watermark Print Specifics */
+            .watermark-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                height: 500px !important;
+                opacity: 0.15 !important;
+                transform: rotate(0deg) !important;
+                filter: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
 
 <body>
-    <a href="Index.html" class="back-btn"><i data-lucide="arrow-left"></i> Back to Additional Practice</a>
-    <div class="header">
-        <h1>Statistics</h1>
-        <div>Question Paper</div>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
     </div>
-    <div class="content-container">
-        <div class="placeholder-text">
-            <h2>PLACEHOLDER FOR STATISTICS</h2>
-            <p>Paste the statistics questions here.</p>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Data Handling & Statistics Worksheet</h2>
+            <div class="sub-header">
+                <span>Class: 8 (CBSE)</span>
+                <span>Topic: Statistics</span>
+                <span>Max. Marks: 50</span>
+            </div>
+            <!-- Student Inputs Section -->
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <!-- Section 1 -->
+        <div class="section-title">SECTION A: SHORT ANSWER (3 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                1. A survey was made to find the type of music that a certain group of young people liked in a city.
+                Adjoining pie chart shows the findings of this survey. If 20 people liked classical music, how many
+                young people were surveyed?
+                <br><em>(Assume a Pie Chart where Classical is 10%, Semi-classical 20%, Light 40%, Folk 30%)</em>
+            </div>
+            <span class="marks">[3]</span>
         </div>
+
+        <div class="question">
+            <div class="question-content">
+                2. The number of hours for which students of a particular class watched television during holidays is
+                shown through the given graph. Answer the following:
+                <br>For how many hours did the maximum number of students watch TV?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                3. A bag has 4 red balls and 2 yellow balls. (The balls are identical in all respects other than
+                colour). A ball is drawn from the bag without looking into the bag. What is probability of getting a red
+                ball? Is it more or less than getting a yellow ball?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                4. When a die is thrown, list the outcomes of an event of getting:
+                <br>(a) a prime number
+                <br>(b) not a prime number
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                5. The shopper who come to a departmental store are marked as: Man (M), Woman (W), Boy (B) or Girl (G).
+                The following list gives the shoppers who came during the first hour in the morning:
+                <br> W W W G B W W M G G M M W W W W G B M W B G G M W W M M W W W M W B W G M W W W W G W M M W W Q W
+                <br> Make a frequency distribution table using tally marks.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section-title">SECTION B: LONG ANSWER (5 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                6. The weekly wages (in ₹) of 30 workers in a factory are:
+                <br>830, 835, 890, 810, 835, 836, 869, 845, 898, 890, 820, 860, 832, 833, 855, 845, 804, 808, 812, 840,
+                885, 835, 835, 836, 878, 840, 868, 890, 806, 840.
+                <br>Using tally marks make a frequency table with intervals as 800-810, 810-820 and so on.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                7. Draw a histogram for the frequency table made for the data in Question 6, and answer the following
+                questions:
+                <br>(i) Which group has the maximum number of workers?
+                <br>(ii) How many workers earn ₹850 or more?
+                <br>(iii) How many workers earn less than ₹850?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                8. On a particular day, the sales (in rupees) of different items of a baker’s shop are given below:
+                <br>Ordinary bread: 320, Fruit bread: 80, Cakes and pastries: 160, Biscuits: 120, Others: 40. Total:
+                720.
+                <br>Draw a pie chart for this data.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                9. The following data gives the number of students in a hostel, speaking different languages:
+                <br>Hindi: 40, English: 12, Marathi: 9, Tamil: 7, Bengali: 4. Total: 72.
+                <br>Display the data in a pie chart.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                10. Numbers 1 to 10 are written on ten separate slips (one number on one slip), kept in a box and mixed
+                well. One slip is chosen from the box without looking into it. What is the probability of:
+                <br>(i) getting a number 6?
+                <br>(ii) getting a number less than 6?
+                <br>(iii) getting a number greater than 6?
+                <br>(iv) getting a 1-digit number?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section-title">SECTION C: CHALLENGERS (5 Marks Each)</div>
+
+        <div class="question">
+            <div class="question-content">
+                11. Explain why a rectangle is called a convex quadrilateral but a concave polygon is not. Also, draw a
+                histogram representing the number of sides of polygons where Frequency is: Triangle (3), Quadrilateral
+                (4), Pentagon (5), Hexagon (6) – with values 10, 25, 15, 5 respectively.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                12. Given a deck of 52 playing cards. Proved outcomes are equally likely. Find the probability of:
+                <br>(i) getting an ace.
+                <br>(ii) getting a red card.
+                <br>(iii) getting a face card (K, Q, J).
+                <br>(iv) getting a 10 of spades.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                13. The following table shows the number of people preferring different food items:
+                <br>North Indian: 30, South Indian: 40, Chinese: 25, Others: 25. Total 120.
+                <br>Construct a Pie Chart. What represents the central angle for South Indian food?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                14. For the below data, construct a grouped frequency distribution table:
+                <br>2, 3, 4, 3, 2, 5, 1, 2, 3, 4, 2, 1, 3, 5, 3, 2, 2, 3, 1, 5, 2, 1, 5, 3, 2.
+                <br>Find the mean of the data.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                15. Look at the histogram below (imaginary graphic). Range 0-10 (freq 5), 10-20 (freq 10), 20-30 (freq
+                15), 30-40 (freq 8).
+                <br>Identify the class interval with the highest frequency. What is the size of the class intervals?
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
     </div>
-    <script> lucide.createIcons(); </script>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 
 </html>

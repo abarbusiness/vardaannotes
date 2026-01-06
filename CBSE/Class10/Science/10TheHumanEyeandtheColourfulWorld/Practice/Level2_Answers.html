@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 2 Human Eye</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #4caf50;
+            --blue-bg: #e3f2fd;
+            --blue-border: #2196f3;
+            --pink-bg: #fce4ec;
+            --pink-border: #ec407a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
+        }
+
+        /* Answer Styles */
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px 12px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #004d40;
+        }
+
+        .ans-block {
+            margin-top: 15px;
+            margin-bottom: 12px;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .ans-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-right: 5px;
+        }
+
+        .diagram-placeholder {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            border: 2px dashed #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            color: #666;
+            background: #fdfdfd;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 15px;
+            margin: 20px 0;
+            position: relative;
+            background: #fff;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #000;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed red;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            background: #fffafa;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (STRICT) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            /* standard */
+            word-break: break-word;
+            /* non-standard but needed for some browsers */
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 2 (Human Eye)</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Concept Modules Solutions</span>
+                <span>Max. Questions: 50</span>
+            </div>
+        </header>
+
+        <div class="topic-header">Module 1: Diagrammatic Analysis</div>
+        <div class="ans-block"><span class="ans-title">1.</span> (a) Iris (b) Retina (c) Ciliary Muscles. [Diagram:
+            Human Eye with these parts labeled].</div>
+        <div class="ans-block"><span class="ans-title">2.</span> Myopia: Image forms in front of retina. Correction:
+            Concave lens diverges rays to focus on retina.
+            <div class="diagram-placeholder">[Diagram: Myopic Eye and Correction with Concave Lens]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">3.</span> Hypermetropia: Image forms behind retina. Correction:
+            Convex lens converges rays to focus on retina.
+            <div class="diagram-placeholder">[Diagram: Hypermetropic Eye and Correction with Convex Lens]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">4.</span> Dispersion by Prism. Top: Red (Least deviated). Bottom:
+            Violet (Most deviated).
+            <div class="diagram-placeholder">[Diagram: Dispersion showing VIBGYOR]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">5.</span> Two identical prisms placed inverted (Action and
+            Opposition). First disperses white light, second recombines it.
+            <div class="diagram-placeholder">[Diagram: Newton's Recombination Experiment]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">6.</span> Sunlight enters water droplet $\to$ Refraction &
+            Dispersion $\to$ Total Internal Reflection $\to$ Refraction out $\to$ Rainbow.
+            <div class="diagram-placeholder">[Diagram: Rainbow formation in water droplet]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">7.</span> [Diagram: Refraction through glass prism showing
+            $\angle i, \angle e, \angle D$]. $\angle i + \angle e = \angle A + \angle D$.</div>
+        <div class="ans-block"><span class="ans-title">8.</span> Due to atmospheric refraction, sun appears at horizon
+            when it is actually below it. Light bends from vacuum to atmosphere.
+            <div class="diagram-placeholder">[Diagram: Advance Sunrise due to refraction]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">9.</span> Myopia: Focal length decreased (Lens too curved).
+            Hypermetropia: Focal length increased (Lens too flat).
+            <div class="diagram-placeholder">[Diagram: Eye lens curvature comparison]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">10.</span> Light from stars bends towards normal as it travels
+            down through denser and denser layers of atmosphere. Eye projects ray straight back to a higher position.
+            <div class="diagram-placeholder">[Diagram: Shift in star position]</div>
+        </div>
+
+        <div class="topic-header">Module 2: Numerical Ability</div>
+        <div class="ans-block"><span class="ans-title">11.</span> Myopia (can't see far). Far point $x = 1.2$ m. <br>
+            Using $f = -x$ for myopia correction: $f = -1.2$ m.<br>
+            $P = 1/f = 1/(-1.2)$ $= -10/12 = -0.83$ D. Concave Lens.</div>
+        <div class="ans-block"><span class="ans-title">12.</span> Hypermetropia. Near point $N' = 1$ m = 100 cm. Normal
+            near point $N = 25$ cm.<br>
+            Object at $u = -25$ cm should form virtual image at $v = -100$ cm.<br>
+            $1/f = 1/(-100) - 1/(-25)$ $= -1/100 + 4/100 = 3/100$.<br>
+            $P = 100/f(\text{cm}) = 3$ D. Convex Lens.</div>
+        <div class="ans-block"><span class="ans-title">13.</span> $P = -2.5$ D. $f = 1/P = 1/(-2.5) = -0.4$ m = -40
+            cm.<br>
+            Negative power indicates Concave lens, so defect is Myopia.</div>
+        <div class="ans-block"><span class="ans-title">14.</span> (i) Distant: $P=-5.5$D. $f = 1/(-5.5) = -0.18$ m (-18
+            cm).<br>
+            (ii) Near: $P=+1.5$D. $f = 1/1.5 = +0.67$ m (+67 cm).</div>
+        <div class="ans-block"><span class="ans-title">15.</span> Far point = 80 cm (0.8 m). <br>
+            $f = -0.8$ m. $P = 1/(-0.8) = -1.25$ D. Nature: Concave Lens.</div>
+        <div class="ans-block"><span class="ans-title">16.</span> Same question as Q12. $P = +3.0$ D.</div>
+        <div class="ans-block"><span class="ans-title">17.</span> Person wants to read at $u=-25$ cm, but can only focus
+            at $v=-40$ cm.<br>
+            $1/f = 1/(-40) - 1/(-25)$ $= -5/200 + 8/200$ $= 3/200$.<br>
+            $f = 200/3$ cm = +66.67 cm. $P = 100/66.67 = +1.5$ D.</div>
+        <div class="ans-block"><span class="ans-title">18.</span> $n = c/v \implies v = c/n$.<br>
+            $v = 3 \times 10^8 / 1.5 = 2 \times 10^8$ m/s.</div>
+        <div class="ans-block"><span class="ans-title">19.</span> Same as Q18. $v = 2 \times 10^8$ m/s.</div>
+        <div class="ans-block"><span class="ans-title">20.</span> Snell's Law: $n = \sin i / \sin r$. <br>
+            $n = \sin 45^\circ / \sin 30^\circ$ $= (1/\sqrt{2}) / (1/2)$ $= 2/\sqrt{2} = \sqrt{2} = 1.414$.</div>
+        <div class="ans-block"><span class="ans-title">21.</span> ${}_w n_g = n_g / n_w = (3/2) / (4/3) = 9/8 = 1.125$.
+        </div>
+        <div class="ans-block"><span class="ans-title">22.</span> Real, Inverted, Same Size means image is at $2F$. So
+            $v = 2f = 50$ cm.<br>
+            So $f = 25$ cm = 0.25 m. Object also at $2F = 50$ cm.<br>
+            $P = 1/0.25 = +4.0$ D.</div>
+        <div class="ans-block"><span class="ans-title">23.</span> Critical angle $\sin C = 1/n = 1/1.5 = 0.666$.<br>
+            Given $\sin 42^\circ \approx 0.67$. So $C \approx 42^\circ$.</div>
+        <div class="ans-block"><span class="ans-title">24.</span> $P = P_1 + P_2 = +3.5 - 2.5 = +1.0$ D.<br>
+            $f = 1/P = 1$ m = 100 cm.</div>
+        <div class="ans-block"><span class="ans-title">25.</span> $h_o = 5, f = +20, u = -30$. Lens Formula: $1/v - 1/u
+            = 1/f$.<br>
+            $1/v = 1/20 + 1/(-30) = 3/60 - 2/60 = 1/60$. $v = +60$ cm (Real, behind lens).<br>
+            $m = v/u = 60/(-30) = -2$. Image is Real, Inverted, Magnified ($10$ cm tall).</div>
+
+        <div class="topic-header">Module 3: Scientific Reasoning</div>
+        <div class="ans-block"><span class="ans-title">26.</span> In space, there is no atmosphere. No particles to
+            scatter light. Scattering requires particles. Hence, no light enters eye from sky path $\to$ Dark.</div>
+        <div class="ans-block"><span class="ans-title">27.</span> At sunrise/set, light travels max distance through
+            atmosphere. Blue/shorter wavelengths scatter away completely. Only Red (longest $\lambda$) remains to reach
+            eye.</div>
+        <div class="ans-block"><span class="ans-title">28.</span> Stars are point sources; their light path changes due
+            to atmospheric turbulence (refraction), causing fluctuating intensity (twinkle). Planets are extended disks;
+            points average out.</div>
+        <div class="ans-block"><span class="ans-title">29.</span> Rayleigh Scattering. Air molecules scatter blue light
+            ($I \propto 1/\lambda^4$) much more than red. This scattered blue light enters our eyes.</div>
+        <div class="ans-block"><span class="ans-title">30.</span> Red has longest wavelength. It is scattered the least
+            by fog/smoke/air. So it is visible from the longest distance.</div>
+        <div class="ans-block"><span class="ans-title">31.</span> Planets are closer and appear as extended sources
+            (collection of points). Variations in intensity from different points cancel each other out $\to$ No
+            twinkling.</div>
+        <div class="ans-block"><span class="ans-title">32.</span> At noon, sun is overhead, light travels least
+            distance. All colors scatter less, so they mix to appear white.</div>
+        <div class="ans-block"><span class="ans-title">33.</span> Near Point limit. Ciliary muscles cannot contract
+            enough to make the lens curved/thick enough to focus objects closer than 25 cm (Max power reached).</div>
+        <div class="ans-block"><span class="ans-title">34.</span> Image distance remains constant ($v \approx 2.3$ cm,
+            dist between lens and retina). Focal length changes to accommodate object distance.</div>
+        <div class="ans-block"><span class="ans-title">35.</span> (i) To increase horizontal field of view. (ii) For
+            stereoscopic vision (depth perception/3D).</div>
+        <div class="ans-block"><span class="ans-title">36.</span> No. Apparent position is slightly higher than true
+            position due to atmospheric refraction bending light towards the normal.</div>
+        <div class="ans-block"><span class="ans-title">37.</span> Rainbow requires water droplets in atmosphere to act
+            as prisms (dispersion+TIR). Rainfall provides these droplets.</div>
+        <div class="ans-block"><span class="ans-title">38.</span> Red light scatters least and penetrates fog/mist best
+            (Long wavelength).</div>
+        <div class="ans-block"><span class="ans-title">39.</span> Yes. Blue is scattered in all directions by
+            observation path.</div>
+        <div class="ans-block"><span class="ans-title">40.</span> Clouds contain large water droplets (larger than
+            $\lambda$ of light). Large particles scatter all wavelengths equally (Mie scattering) $\to$ White.</div>
+
+        <div class="topic-header">Module 4: Case-Based & Practical</div>
+        <div class="ans-block"><span class="ans-title">41.</span> <b>Defect:</b> Myopia (Near-sightedness). Cannot see
+            distant objects (blackboard at 3m).</div>
+        <div class="ans-block"><span class="ans-title">42.</span> <b>Correction:</b> Concave Lens (Diverging Lens) of
+            appropriate power.</div>
+        <div class="ans-block"><span class="ans-title">43.</span> [Diagram: Myopic correction with concave lens].</div>
+
+        <div class="ans-block"><span class="ans-title">44.</span> <b>Bending:</b> Violet bends most, Red bends least.
+        </div>
+        <div class="ans-block"><span class="ans-title">45.</span> <b>Cause:</b> Different colors travel with different
+            speeds in glass ($Speed \propto \text{Wavelength}$). Refractive index is different for each color.</div>
+        <div class="ans-block"><span class="ans-title">46.</span> <b>Phenomenon:</b> Rainbow.</div>
+
+        <div class="ans-block"><span class="ans-title">47.</span> Power is negative (-1.0 D), so lens is Concave. Defect
+            is Myopia. He can see near objects clearly (so reading is fine), but distant objects are blurry without
+            glasses.</div>
+        <div class="ans-block"><span class="ans-title">48.</span> Lens hardens with age (Presbyopia), loses
+            accommodation. Can't focus near (needs Convex for reading). If also myopic for distance, needs Concave.
+            Resolution: Bifocal Lenses (Upper: Concave, Lower: Convex).</div>
+        <div class="ans-block"><span class="ans-title">49.</span> Yellow light has longer wavelength than blue/violet,
+            so it scatters less in fog, providing better contrast and visibility.</div>
+        <div class="ans-block"><span class="ans-title">50.</span> Fine smoke particles are small enough to cause
+            Rayleigh scattering, scattering blue light more than red.</div>
+
+    </div>
+</body>
+
+</html>

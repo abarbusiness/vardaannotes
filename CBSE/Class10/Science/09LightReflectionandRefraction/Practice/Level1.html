@@ -4,40 +4,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 1: Light - Vardaan Learning Institute</title>
+    <title>Level 1: Light - Topic-wise Practice</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
         body {
-            font-family: 'Times New Roman', serif;
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.5;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            /* Critical for mobile */
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            /* Seamless merge */
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                /* Adjust padding for small screens */
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .student-inputs {
+            margin-top: 1rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .line-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            /* Light Mode */
+            height: auto;
+        }
+
+        /* Dark Mode Implementation */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Double Inversion for Watermark & Images */
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+            /* Dark Mode */
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            /* Scrolls with page */
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .container {
-            text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            /* Double inversion to keep icon looking normal-ish */
+            background: #333;
+            color: #fff;
         }
 
-        h1 {
-            color: #333;
+        /* Question Styles */
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
 
-        p {
+        html.dark-mode .topic-header {
+            /* Global invert handles color */
+        }
+
+        .question-block {
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-line {
+            display: inline-block;
+            border-bottom: 1px dashed #999;
+            min-width: 50px;
+        }
+
+        /* Diagram Placeholder */
+        .diagram-placeholder {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            border: 2px dashed #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
             color: #666;
+            background: #fdfdfd;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+
+        /* Mobile Scroll Fix */
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                max-width: 100%;
+            }
+
+            mjx-container {
+                max-width: 100% !important;
+                overflow-x: auto;
+                white-space: normal !important;
+            }
+
+            .paper-sheet {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Level 1 Practice</h1>
-        <p>Content Coming Soon...</p>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Level 1: Light - Topic-wise Practice</h2>
+            <div class="meta-strip"><span>Class: 10 Science</span><span>Topic: Light (Detailed
+                    Segregation)</span><span>Max. Questions: 55</span></div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <!-- TOPIC 1 -->
+        <div class="topic-header">Topic 1: Reflection - Plane Mirror Laws</div>
+        <div class="question-block">
+            <p>1. State the two laws of reflection of light.</p>
+            <p>2. A ray of light is incident on a plane mirror at an angle of 30° with the mirror surface. Calculate the
+                angle of reflection.</p>
+            <p>3. Explain "Lateral Inversion" with an example.</p>
+            <p>4. If you stand 2 m in front of a plane mirror, what is the distance between you and your image?</p>
+            <p>5. What is the minimum size of a plane mirror required to see the full image of a person of height H?</p>
+        </div>
+
+        <!-- TOPIC 2 -->
+        <div class="topic-header">Topic 2: Spherical Mirrors - Terminology & Ray Rules</div>
+        <div class="question-block">
+            <p>6. Define the principal focus of a concave mirror.</p>
+            <p>7. Draw the path of a ray passing through the Center of Curvature of a concave mirror after reflection.
+                Why does it follow this path?</p>
+            <p>8. What is the relationship between Radius of Curvature ($R$) and Focal length ($f$).</p>
+            <p>9. A convex mirror has a radius of curvature of 30 cm. Find its focal length.</p>
+            <p>10. State the nature of the image formed by a convex mirror for any position of the object.</p>
+        </div>
+
+        <!-- TOPIC 3 -->
+        <div class="topic-header">Topic 3: Ray Diagrams - Concave Mirror</div>
+        <div class="question-block">
+            <p>11. Draw a ray diagram to show image formation when an object is placed at 'C' of a concave mirror.</p>
+            <p>12. Draw a ray diagram for an object placed between 'P' and 'F' of a concave mirror. State the nature of
+                the image.</p>
+            <p>13. Where should an object be placed in front of a concave mirror to get a real, inverted and magnified
+                image?</p>
+            <p>14. Why do dentists use concave mirrors?</p>
+            <p>15. Draw the ray diagram for an object at infinity for a concave mirror.</p>
+        </div>
+
+        <!-- TOPIC 4 -->
+        <div class="topic-header">Topic 4: Mirror Formula Numericals</div>
+        <div class="question-block">
+            <p>16. An object of height 5 cm is placed 20 cm from a concave mirror of focal length 15 cm. Find the
+                position, nature, and size of the image.</p>
+            <p>17. A convex mirror used for rear-view has a radius of curvature 3 m. If a bus is 5 m from this mirror,
+                find the position of the image.</p>
+            <p>18. An object is placed 10 cm from a mirror. A real image is formed 20 cm from the mirror. Calculate
+                focal length and identify the mirror.</p>
+            <p>19. Find the magnification if an image is 3 times the size of the object and is Real.</p>
+            <p>20. An arrow 2.5 cm high is placed at a distance of 25 cm from a diverging mirror of focal length 20 cm.
+                Find the nature and position of the image.</p>
+        </div>
+
+        <!-- TOPIC 5 -->
+        <div class="topic-header">Topic 5: Refraction - Snell's Law & Refractive Index</div>
+        <div class="question-block">
+            <p>21. Define Refractive Index in terms of speed of light.</p>
+            <p>22. Light enters from air to glass having refractive index 1.50. What is the speed of light in the glass?
+            </p>
+            <p>23. The refractive index of diamond is 2.42. What is the meaning of this statement?</p>
+            <p>24. Draw a diagram showing the refraction of light through a rectangular glass slab. Label the lateral
+                displacement.</p>
+            <p>25. State Snell's law of refraction.</p>
+        </div>
+
+        <!-- TOPIC 6 -->
+        <div class="topic-header">Topic 6: Lenses - Terminology & Image Formation</div>
+        <div class="question-block">
+            <p>26. Differentiate between a Convex and Concave lens based on their action on a parallel beam of light.
+            </p>
+            <p>27. Draw a ray diagram for a convex lens when object is at $2F_1$.</p>
+            <p>28. Draw a ray diagram showing the formation of a virtual image by a convex lens.</p>
+            <p>29. Where should an object be placed in front of a convex lens to get a real image of the same size as
+                the object?</p>
+            <p>30. A concave lens always forms a virtual, erect image. Illustrate with a ray diagram.</p>
+        </div>
+
+        <!-- TOPIC 7 -->
+        <div class="topic-header">Topic 7: Lens Formula Numericals</div>
+        <div class="question-block">
+            <p>31. A convex lens of focal length 10 cm is placed at a distance of 12 cm from a wall. How far from the
+                lens should an object be placed to form its real image on the wall?</p>
+            <p>32. An object 5 cm tall is placed 25 cm from a converging lens of focal length 10 cm. Find position, size
+                and nature of image.</p>
+            <p>33. A concave lens has focal length of 15 cm. At what distance should the object be placed so that it
+                forms an image at 10 cm from the lens?</p>
+            <p>34. Find the focal length of a lens of power -2.0 D. What type of lens is this?</p>
+            <p>35. A doctor has prescribed a corrective lens of power +1.5 D. Find the focal length of the lens. Is the
+                prescribed lens diverging or converging?</p>
+        </div>
+
+        <!-- TOPIC 8 -->
+        <div class="topic-header">Topic 8: Power of Lens Combinations</div>
+        <div class="question-block">
+            <p>36. Define 1 Dioptre of power.</p>
+            <p>37. Two lenses of power +2D and -0.5D are placed in contact. What is the net power of the combination?
+            </p>
+            <p>38. Find the effective focal length of the combination in the above question.</p>
+            <p>39. Why do we combine lenses in optical instruments?</p>
+            <p>40. If three lenses of power $P_1, P_2, P_3$ are combined, write the formula for net power.</p>
+        </div>
+
+        <!-- TOPIC 9 -->
+        <!-- TOPIC 9 -->
+        <div class="topic-header">Topic 9: HOTS - Refractive Index & Power</div>
+        <div class="question-block">
+            <p>41. The refractive index of water is 4/3 and glass is 3/2. Find the refractive index of glass with
+                respect to water.</p>
+            <p>42. A doctor prescribes a corrective lens of power -0.5 D. What is the focal length and nature of the
+                lens?</p>
+            <p>43. Light enters from air into a medium A with speed $2 \times 10^8$ m/s. Find the refractive index of
+                medium A.</p>
+            <p>44. Two thin lenses of power +3.5 D and -2.5 D are placed in contact. Find the power and focal length of
+                the combination.</p>
+            <p>45. If the refractive index of a medium is 1.5, what is the critical angle? (Optional/Advanced) OR: State
+                the unit of Refractive Index.</p>
+        </div>
+
+        <!-- TOPIC 10 -->
+        <div class="topic-header">Topic 10: Critical Thinking & Reasoning</div>
+        <div class="question-block">
+            <p>46. A ray of light does not bends at the boundary of two media. State two conditions when this is
+                possible.</p>
+            <p>47. Can a convex mirror ever form a real image? Explain your answer.</p>
+            <p>48. Why is a convex lens called a converging lens?</p>
+            <p>49. "A lens can be considered as a collection of prisms". Justify.</p>
+            <p>50. How does the focal length of a lens change when it is immersed in water?</p>
+        </div>
+
+        <!-- TOPIC 11 -->
+        <div class="topic-header">Topic 11: Speed of Light Numericals</div>
+        <div class="question-block">
+            <p>51. Calculate speed of light in glass of refractive index 1.5. (Given $c=3\times10^8$ m/s).</p>
+            <p>52. Refractive index of water is 4/3. Calculate speed of light in water.</p>
+            <p>53. Speed of light in a medium is $2 \times 10^8$ m/s. Calculate absolute refractive index of the medium.
+            </p>
+            <p>54. Light enters from air into diamond ($n=2.42$). Calculate speed of light in diamond.</p>
+            <p>55. If speed of light in medium A is $2 \times 10^8$ m/s and in medium B is $2.5 \times 10^8$ m/s. Find
+                refractive index of A with respect to B.</p>
+        </div>
     </div>
 </body>
 

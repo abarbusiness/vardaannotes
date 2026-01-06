@@ -1,0 +1,675 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 05: Refraction through a Lens - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Refraction through a Lens</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 05 (Deep Detail)</p>
+
+        <h2>1. Types of Lenses</h2>
+        <div class="reaction-type">
+            <p><strong>Convex Lens (Converging):</strong> Thicker at the middle, thinner at edges. Converges light rays
+                to a point (Focus).</p>
+            <p><strong>Concave Lens (Diverging):</strong> Thinner at the middle, thicker at edges. Diverges light rays.
+            </p>
+        </div>
+
+        <h3>Technical Terms:</h3>
+        <ul>
+            <li><strong>Optical Centre (O):</strong> Point on principal axis through which ray passes undeviated.</li>
+            <li><strong>Principal Focus (F):</strong> Point where parallel rays meet (Convex) or appear to diverge from
+                (Concave).</li>
+            <li><strong>Focal Length ($f$):</strong> Distance between Optical Centre and Principal Focus.</li>
+        </ul>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q1: Optical
+                Centre</span>
+            <p><strong>Q:</strong> A ray passes through the optical centre of a lens. What is its deviation?</p>
+            <p><strong>Ans:</strong> Zero. It passes undeviated.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: Lens Action</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Explain the action of a convex lens on a parallel beam of light.
+            </p>
+            <p><strong>Ans:</strong> Converging action. It bends the parallel rays towards the principal axis to meet at
+                the Focus.</p>
+        </div>
+
+        <h2>2. Image Formation (Convex Lens)</h2>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: LENS RAY DIAGRAMS]</span>
+            <div class="img-prompt">
+                Grid of 6 diagrams showing image formation by Convex Lens for different object positions. Use arrows for
+                rays. Mark O, F1, 2F1, F2, 2F2.
+            </div>
+        </div>
+        <div class="concept-blue">
+            <p><strong>Rules:</strong></p>
+            <ol>
+                <li>Ray parallel to axis $\to$ Passes through Focus ($F_2$).</li>
+                <li>Ray through Optical Centre $\to$ Goes undeviated.</li>
+                <li>Ray through Focus $\to$ Becomes parallel to axis.</li>
+            </ol>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q3: Ray Tracing</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: CONVEX LENS RAY RULES]</span>
+                <div class="img-prompt">
+                    Convex lens. Ray 1 parallel to axis hits lens, goes through F2. Ray 2 through Optical center goes
+                    straight. Intersection is Image. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">CONCEPTUAL</span> Complete the path of a ray of light passing through the Focus
+                ($F_1$) of a convex lens.</p>
+            <p><strong>Ans:</strong> After refraction, the ray becomes <strong>parallel to the principal axis</strong>.
+            </p>
+        </div>
+
+        <h3>Cases Summary (Convex):</h3>
+        <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr style="background:#e0e0e0;">
+                <th style="border:1px solid #999; padding:8px;">Object Position</th>
+                <th style="border:1px solid #999; padding:8px;">Image Position</th>
+                <th style="border:1px solid #999; padding:8px;">Nature</th>
+            </tr>
+            <tr>
+                <td style="border:1px solid #999; padding:8px;">At Infinity</td>
+                <td style="border:1px solid #999; padding:8px;">At Focus ($F_2$)</td>
+                <td style="border:1px solid #999; padding:8px;">Real, Inverted, Point size</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #999; padding:8px;">Beyond 2F$_1$</td>
+                <td style="border:1px solid #999; padding:8px;">Between F$_2$ and 2F$_2$</td>
+                <td style="border:1px solid #999; padding:8px;">Real, Inverted, Diminished</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #999; padding:8px;">At 2F$_1$</td>
+                <td style="border:1px solid #999; padding:8px;">At 2F$_2$</td>
+                <td style="border:1px solid #999; padding:8px;">Real, Inverted, Same size</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #999; padding:8px;">Between F$_1$ and 2F$_1$</td>
+                <td style="border:1px solid #999; padding:8px;">Beyond 2F$_2$</td>
+                <td style="border:1px solid #999; padding:8px;">Real, Inverted, Magnified</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #999; padding:8px;">At F$_1$</td>
+                <td style="border:1px solid #999; padding:8px;">At Infinity</td>
+                <td style="border:1px solid #999; padding:8px;">Real, Inverted, Highly Magnified</td>
+            </tr>
+            <tr style="background:#fffde7;">
+                <td style="border:1px solid #999; padding:8px;"><strong>Between F$_1$ and O</strong></td>
+                <td style="border:1px solid #999; padding:8px;">Same side (Behind Object)</td>
+                <td style="border:1px solid #999; padding:8px;"><strong>Virtual, Erect, Magnified</strong></td>
+            </tr>
+        </table>
+
+        <div class="master-tip">
+            <span class="tip-header">MAGNIFYING GLASS</span>
+            The case where object is between $F$ and $O$ is used in a **Simple Microscope** (Magnifying Glass) and for
+            reading small print.
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q4: Ray Diagram Logic</span>
+            <p><span class="q-tag">CONCEPTUAL</span> To get a real, inverted and magnified image using a convex lens,
+                where should the object be placed?</p>
+            <p><strong>Ans:</strong> Between $F_1$ and $2F_1$. (Image forms beyond $2F_2$).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Magnifying Glass</span>
+            <p><span class="q-tag">THINKING</span> To use a convex lens as a magnifying glass, where should the object
+                be placed?</p>
+            <p><strong>Solution:</strong> The object must be placed <strong>between the Optical Centre and the
+                    Focus</strong> ($u < f$) of the lens. This creates a virtual, erect, and magnified image.</p>
+        </div>
+
+
+
+        <h2>3. Concave Lens</h2>
+        <p>Always forms a <strong>Virtual, Erect, and Diminished</strong> image, located between Focus and Optical
+            Centre on the same side as the object.</p>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Concave Image</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: CONCAVE LENS DIVERGING]</span>
+                <div class="img-prompt">
+                    Concave lens. Object at 2F. Rays diverge. Trace backward to meet at virtual F. Virtual, Erect,
+                    Diminished image. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">REASONING</span> Can a concave lens ever form a real image? Explain.</p>
+            <p><strong>Ans:</strong> No, for a real object, a concave lens always diverges light rays. They never
+                actually meet, only appear to meet when produced backwards. Hence, it always forms a Virtual image.</p>
+        </div>
+
+        <h2>4. Sign Convention</h2>
+        <ul>
+            <li>Light travels left to right. Optical Centre is Origin (0,0).</li>
+            <li>Direction of incident light: Positive (+ve).</li>
+            <li>Opposite to incident light: Negative (-ve).</li>
+            <li>Upwards (Height): Positive. Downwards: Negative.</li>
+        </ul>
+        <p><strong>Focal Length:</strong> Convex = Positive (+), Concave = Negative (-).</p>
+
+        <h2>5. Lens Formula & Magnification</h2>
+
+        <div class="formula-box">
+            <div class="formula-pill">LENS FORMULA</div>
+            $$ \frac{1}{f} = \frac{1}{v} - \frac{1}{u} $$
+            <p>Where $u$ = object distance (always -ve), $v$ = image distance, $f$ = focal length.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">MAGNIFICATION (m)</div>
+            $$ m = \frac{h_i}{h_o} = \frac{v}{u} $$
+            <p>For Real image: $m$ is negative. For Virtual image: $m$ is positive.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Projector Setup</span>
+            <p><span class="q-tag">APPLICATION</span> A slide projector has to project a 100 times magnified image on a
+                screen 5m away. What lens should be used?</p>
+            <p><strong>Solution:</strong></p>
+            <p>1. Image is Real (on screen), so $m = -100$. $v = +500 \text{ cm}$.</p>
+            <p>2. $m = v/u \implies -100 = 500/u$</p>
+            <p>$\implies u = -5 \text{ cm}$.</p>
+            <p>3. $\frac{1}{f} = \frac{1}{v} - \frac{1}{u} = \frac{1}{500} - \frac{1}{-5} = \frac{1}{500} +
+                \frac{100}{500} = \frac{101}{500}$.</p>
+            <p>$f \approx 4.95 \text{ cm}$ (Convex Lens).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Finding Image Position</span>
+            <p><span class="q-tag">NUMERICAL</span> An object is placed 20 cm from a convex lens of focal length 15 cm.
+                Find image position.</p>
+            <p><strong>Solution:</strong></p>
+            <p>$u = -20$, $f = +15$.</p>
+            <p>$\frac{1}{v} - \frac{1}{u} = \frac{1}{f} \implies \frac{1}{v} = \frac{1}{15} - \frac{1}{20} =
+                \frac{4-3}{60} = \frac{1}{60}$.</p>
+            <p>$v = +60 \text{ cm}$ (Real image on other side).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q9: Concave Lens</span>
+            <p><span class="q-tag">NUMERICAL</span> An object is placed 30 cm from a concave lens of focal length 15 cm.
+                Find image distance.</p>
+            <p><strong>Solution:</strong></p>
+            <p>$u = -30$, $f = -15$ (Concave is negative).</p>
+            <p>$\frac{1}{v} = \frac{1}{f} + \frac{1}{u} = \frac{1}{-15} - \frac{1}{30} = \frac{-2-1}{30} = \frac{-3}{30}
+                = - \frac{1}{10}$.</p>
+            <p>$v = -10 \text{ cm}$ (Virtual image on same side).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q10: Lens Formula</span>
+            <p><span class="q-tag">NUMERICAL</span> An object is placed at a distance of 24 cm from a convex lens of
+                focal length 8 cm. Find the position and nature of the image.</p>
+            <p><strong>Solution:</strong> $u = -24, f = +8$.</p>
+            <p>$\frac{1}{v} = \frac{1}{f} + \frac{1}{u} = \frac{1}{8} - \frac{1}{24}$</p>
+            <p>$= \frac{3-1}{24} = \frac{1}{12}$.</p>
+            <p>$v = +12 \text{ cm}$. Real and Inverted.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q11: Finding Object Position (Mag -3)</span>
+            <p><span class="q-tag">NUMERICAL</span> A convex lens produces a real image 3 times the size of the object.
+                If focal length is 10 cm, find object position.</p>
+            <p><strong>Solution:</strong> Real image $\implies m = -3 \implies v = -3u$.</p>
+            <p>$\frac{1}{-3u} - \frac{1}{u} = \frac{1}{10}$</p>
+            <p>$\implies \frac{-4}{3u} = \frac{1}{10}$</p>
+            <p>$\implies 3u = -40 \implies u = -13.33 \text{ cm}$.</p>
+        </div>
+
+        <h2>6. Power of a Lens (P)</h2>
+        <p>The ability of a lens to converge or diverge light rays.</p>
+
+        <div class="formula-box">
+            $$ P = \frac{1}{f (\text{in metres})} $$
+            <p><strong>SI Unit:</strong> Dioptre (D).</p>
+            <p>Convex (+D), Concave (-D). (e.g., Spectacle power -2.5D means Concave lens).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q12: Lens Combination</span>
+            <p><span class="q-tag">NUMERICAL</span> Two lenses of power +2.5 D and -1.5 D are placed in contact. Find
+                the focal length of the combination.</p>
+            <p><strong>Solution:</strong></p>
+            <p>Net Power $P = P_1 + P_2 = +2.5 - 1.5 = +1.0 \text{ D}$.</p>
+            <p>Focal Length $f = 1/P = 1/1 = 1 \text{ m} = 100 \text{ cm}$.</p>
+            <p>System behaves as a Convex lens.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q13: Basic Power
+                Calc</span>
+            <p><strong>Q:</strong> Find the power of a convex lens of focal length 25 cm.</p>
+            <p><strong>Ans:</strong> $f = 0.25 \text{ m}$. $P = 1/0.25 = +4 \text{ D}$.</p>
+        </div>
+
+        <div class="concept-green">
+            <h3>Combination of Lenses</h3>
+            <p>If two lenses of power $P_1$ and $P_2$ are placed in contact, the net power $P$ is:</p>
+            $$ P = P_1 + P_2 $$
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q14: Power Identification</span>
+            <p><span class="q-tag">CONCEPTUAL</span> A lens has a power of -2.0 D. Identify the type of lens and its
+                focal length.</p>
+            <p><strong>Solution:</strong> Negative power $\implies$ Concave Lens.</p>
+            <p>$f = 1/P = 1/-2 = -0.5 \text{ m} = -50 \text{ cm}$.</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }</script>
+</body>
+
+</html>

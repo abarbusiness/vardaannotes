@@ -4,41 +4,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 0: Our Environment - Vardaan Learning Institute</title>
+    <title>Level 0: Our Environment - Vardaan Learning</title>
+
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #4caf50;
+            --blue-bg: #e3f2fd;
+            --blue-border: #2196f3;
+            --pink-bg: #fce4ec;
+            --pink-border: #e91e63;
+        }
+
+        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
         body {
-            font-family: 'Times New Roman', serif;
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.5;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- DARK MODE (GLOBAL INVERSION) --- */
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* --- ADAPTIVE WATERMARK --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: #f0f0f0;
+            pointer-events: none;
+            z-index: 9999;
         }
 
-        .container {
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* --- PAPER SHEET LAYOUT --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+
+        /* --- HEADER STYLING --- */
+        header {
             text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
         }
 
-        h1 {
-            color: #333;
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
         }
 
-        p {
-            color: #666;
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .student-inputs {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .line-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            margin-left: 10px;
+            background: transparent;
+            font-family: inherit;
+        }
+
+        /* --- SECTION STYLING --- */
+        .section-title {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #004d40;
+            text-transform: uppercase;
+        }
+
+        html.dark-mode .section-title {
+            /* Global invert handles color */
+        }
+
+        /* --- QUESTION STYLING --- */
+        .question-block {
+            margin-bottom: 1.5rem;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-line {
+            display: inline-block;
+            border-bottom: 1px solid #000;
+            min-width: 50px;
+        }
+
+        /* --- ORDERED LIST STYLING --- */
+        ol {
+            margin-left: 25px;
+            padding-left: 15px;
+        }
+
+        @media screen and (max-width: 800px) {
+            ol {
+                margin-left: 10px;
+                padding-left: 20px;
+            }
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        /* --- MATHJAX MOBILE FIX --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* --- PRINT OPTIMIZATION --- */
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+
+        /* Mobile Scroll Fix */
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                max-width: 100%;
+            }
+
+            mjx-container {
+                max-width: 100% !important;
+                overflow-x: auto;
+                white-space: normal !important;
+            }
+
+            .paper-sheet {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Level 0 Practice</h1>
-        <p>Content Coming Soon...</p>
+
+    <!-- ADAPTIVE WATERMARK -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
     </div>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <span style="font-size: 20px;">◑</span>
+    </button>
+
+    <!-- PAPER SHEET -->
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Level 0 Worksheet: Our Environment</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Ecology Basics</span>
+                <span>Max. Questions: 50</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <div class="section-title">Section A: Fill in the Blanks</div>
+        <div class="question-block">
+            <p><strong>Q1-10. Complete the sentences:</strong></p>
+            <ol>
+                <li>Green plants are called __________ because they produce food.</li>
+                <li>Organisms that feed on plants are called __________.</li>
+                <li>__________ decompose dead organic matter.</li>
+                <li>The flow of energy in an ecosystem is __________ (Unidirectional).</li>
+                <li>Ozone molecule contains __________ atoms of oxygen.</li>
+                <li>Biodegradable wastes can be broken down by __________.</li>
+                <li>Non-biodegradable wastes like __________ persist in environment.</li>
+                <li>CFC stands for __________.</li>
+                <li>In a food chain, the third trophic level is occupied by __________.</li>
+                <li>Full form of UNEP is __________.</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section B: Classify Waste</div>
+        <div class="question-block">
+            <p><strong>Q11-20. Identify as Biodegradable (B) or Non-Biodegradable (NB):</strong></p>
+            <ol start="11">
+                <li>Fruit Peels - __________ (B)</li>
+                <li>Plastic Bottle - __________ (NB)</li>
+                <li>Old Newspaper - __________ (B)</li>
+                <li>Glass pieces - __________ (NB)</li>
+                <li>Cotton cloth - __________ (B)</li>
+                <li>DDT - __________ (NB)</li>
+                <li>Leather belt - __________ (B)</li>
+                <li>Metal Can - __________ (NB)</li>
+                <li>Jute Bag - __________ (B)</li>
+                <li>Polythene Bag - __________ (NB)</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section C: True or False</div>
+        <div class="question-block">
+            <p><strong>Q21-30. State True or False:</strong></p>
+            <ol start="21">
+                <li>Man is an Omnivore. __________ (True).</li>
+                <li>Decomposers replenish nutrients in the soil. __________ (True).</li>
+                <li>Ozone layer protects us from Infrared rays. __________ (False, UV).</li>
+                <li>Energy increases at higher trophic levels. __________ (False, decreases).</li>
+                <li>Aquarium is an artificial ecosystem. __________ (True).</li>
+                <li>Food web behaves like a single straight chain. __________ (False).</li>
+                <li>10% energy is available to next level. __________ (True).</li>
+                <li>Paper is non-biodegradable. __________ (False).</li>
+                <li>Sun is the ultimate source of energy. __________ (True).</li>
+                <li>CFCs are used in refrigerators. __________ (True).</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section D: One Word Answers</div>
+        <div class="question-block">
+            <p><strong>Q31-40. Answer in one word:</strong></p>
+            <ol start="31">
+                <li>Name the gas formed by action of UV rays on oxygen. __________ (Ozone).</li>
+                <li>Which organisms constitute the first trophic level? __________ (Producers/Plants).</li>
+                <li>Name a natural ecosystem. __________ (Forest/Pond).</li>
+                <li>What percentage of solar energy is trapped by plants? __________ (1%).</li>
+                <li>Name the phenomenon of accumulation of chemicals in food chain. __________ (Biomagnification).</li>
+                <li>Who proposed the 10% law? __________ (Lindeman).</li>
+                <li>Which radiation causes skin cancer? __________ (UV).</li>
+                <li>Name a scavenger. __________ (Vulture/Crow).</li>
+                <li>Are crop fields natural or artificial? __________ (Artificial).</li>
+                <li>Can energy flow back from herbivore to producer? __________ (No).</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section E: Correct Order</div>
+        <div class="question-block">
+            <p><strong>Q41-50. Arrange in correct food chain order: (Producer > Primary > Secondary)</strong></p>
+            <ol start="41">
+                <li>Frog, Grass, Insect. __________ (Grass > Insect > Frog).</li>
+                <li>Lion, Deer, Grass. __________ (Grass > Deer > Lion).</li>
+                <li>Snake, Frog, Hawk, Grass, Insect. __________ (Grass > Insect > Frog > Snake > Hawk).</li>
+                <li>Fish, Phytoplankton, Bird, Zooplankton. __________ (Phyto > Zoo > Fish > Bird).</li>
+                <li>Goat, Man, Grass. __________ (Grass > Goat > Man).</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- SCRIPT FOR TOGGLE -->
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            if (html.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
 </body>
 
 </html>

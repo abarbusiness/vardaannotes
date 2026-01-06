@@ -4,41 +4,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 2: Magnetic Effects - Vardaan Learning Institute</title>
+    <title>Level 2: Magnetic Effects - Vardaan Institute</title>
+
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
         body {
-            font-family: 'Times New Roman', serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.5;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .student-inputs {
+            margin-top: 1rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .line-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        /* Watermark - Fixed Position & High Z-Index for Print */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .container {
-            text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
         }
 
-        h1 {
-            color: #333;
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
         }
 
-        p {
-            color: #666;
+        /* Sections */
+        .section-title {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #004d40;
+            text-transform: uppercase;
+        }
+
+        html.dark-mode .section-title {
+            /* Global invert handles color */
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+        }
+
+        ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+
+        @media print {
+            body {
+                background: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                z-index: 9999;
+                display: flex !important;
+                visibility: visible !important;
+            }
+        }
+
+        /* Mobile Scroll Fix */
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                max-width: 100%;
+            }
+
+            mjx-container {
+                max-width: 100% !important;
+                overflow-x: auto;
+                white-space: normal !important;
+            }
+
+            .paper-sheet {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Level 2 Practice</h1>
-        <p>Content Coming Soon...</p>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
     </div>
+
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Level 2 Worksheet: Magnetic Effects of Electric Current</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Logic, Numericals & Reasoning</span>
+                <span>Max. Questions: 50</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <div class="section-title">Section A: Direction & Logic (1-15)</div>
+        <div class="question-block">
+            <ol>
+                <li>A positively charged particle (alpha particle) projected towards the West is deflected towards the
+                    North by a magnetic field. Determine the direction of the magnetic field.</li>
+                <li>An electron enters a magnetic field at right angles to it moving from West to East. The field is
+                    acting vertically downwards. What is the direction of the force experienced by the electron?</li>
+                <li>A constant current flows in a horizontal wire in the plane of the paper from East to West. What is
+                    the direction of the magnetic field at a point (a) North of the wire, (b) South of the wire?</li>
+                <li>Imagine you are sitting in a chamber with your back to one wall. An electron beam, moving
+                    horizontally from the back wall towards the front wall, is deflected by a strong magnetic field to
+                    your right side. What is the direction of the magnetic field?</li>
+                <li>A proton is moving towards the East. A magnetic field is acting vertically upwards. Find the
+                    direction of the force on the proton.</li>
+                <li>State the rule to find the direction of magnetic field produced moving from south to north in a
+                    straight wire.</li>
+                <li>Current in a horizontal power line flows from East to West. What is the direction of magnetic field
+                    at a point directly below it?</li>
+                <li>A circular loop carries current in clockwise direction when viewed from top. What is the polarity of
+                    the top face?</li>
+                <li>Uniform magnetic field exists in the plane of paper pointing from left to right. An electron enters
+                    the field moving from lower to upper edge of the paper. Direction of force?</li>
+                <li>Does a neutron moving in a magnetic field experience any force? Explain.</li>
+                <li>Two parallel wires carry current in the same direction. Will they attract or repel each other?
+                    (Concept logic).</li>
+                <li>A vertical wire carries current upwards. A compass is placed to the East of the wire. In which
+                    direction will the North pole of the compass point?</li>
+                <li>If the current in a coil is reversed, what happens to the magnetic field pattern and polarity?</li>
+                <li>Can we have a single magnetic pole? Why or why not?</li>
+                <li>How does the magnetic field line pattern change if we use a AC source instead of DC in a straight
+                    wire?</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section B: Circuit Analysis & Diagrams (16-30)</div>
+        <div class="question-block">
+            <ol start="16">
+                <li>Draw a schematic diagram of a domestic electric circuit connecting a bulb, a fan, and a socket to
+                    mains. Show the Live, Neutral and Earth connections clearly.</li>
+                <li>Explain the function of a fuse in a circuit diagrammatically (where is it placed related to meter
+                    and switch?).</li>
+                <li>A 3-pin plug is used for an electric iron. Name the three pins and their function. Why is the top
+                    pin thicker and longer?</li>
+                <li>You are given a coil of copper wire, a battery and a switch. How can you determine the North and
+                    South pole of the coil without a compass? (Suspension/Repulsion methods).</li>
+                <li>Draw the magnetic field pattern of a solenoid. How does it resemble a bar magnet?</li>
+                <li>Identify the mistake in a circuit where the switch is connected to the neutral wire. What is the
+                    specific hazard?</li>
+                <li>In a household circuit, explain why we connect appliances in parallel. Using a circuit diagram
+                    logic, show what happens if one breaks in series.</li>
+                <li>Draw diagram of an electric motor and label: Split Rings, Brushes, Armature.</li>
+                <li>What is the role of brushes in the motor? If brushes are removed, will the motor work?</li>
+                <li>A solenoid has a soft iron core. Draw the magnetic field lines. How does the core affect the density
+                    of lines?</li>
+                <li>Explain the concept of 'Short Circuit' using a simple circuit diagram concept (Path of least
+                    resistance).</li>
+                <li>Draw a diagram to show the magnetic field lines around a circular loop. Mark the direction of field
+                    at the center if current is clockwise.</li>
+                <li>What is the polarity of the end of a solenoid if the current appears anti-clockwise to an observer?
+                </li>
+                <li>Diagrammatically show how to induce current in a coil using a bar magnet.</li>
+                <li>In an experiment to show Oersted's observation, where should the wire be placed relative to the
+                    compass needle to see maximum deflection?</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section C: Numericals & Safety (31-40)</div>
+        <div class="question-block">
+            <ol start="31">
+                <li>An electric oven of 2 kW power rating is operated in a domestic circuit (220 V) that has a current
+                    rating of 5 A. What result do you expect? Explain with calculation.</li>
+                <li>Calculate the current drawn by an electric iron of 1000 W connected to a 220 V line. What should be
+                    the ideal fuse rating?</li>
+                <li>Two bulbs 100W and 60W are connected in parallel to 220V supply. Which one draws more current?
+                    Calculate ratio.</li>
+                <li>A house has 10 bulbs of 40W each used for 5 hours a day. Find the electrical energy consumed in a
+                    day in kWh.</li>
+                <li>A fuse wire melts at 5A. If it is used in a circuit with a 1.5 kW heater at 220V, will it work?
+                    Justify.</li>
+                <li>What is the resistance of a 100W bulb working at 220V? ($P=V^2/R$).</li>
+                <li>If the voltage drops to 110V for a 220V-rated heater, how does the heat produced change? (Assume R
+                    constant).</li>
+                <li>A length of wire carries a steady current. It is bent first to form a circular coil of one turn. The
+                    same length is now bent more sharply to give a double loop of smaller radius. How does the magnetic
+                    field at the center compare in the two cases?</li>
+                <li>Calculate the power of an appliance if it draws 4.5A from a 220V source.</li>
+                <li>A 1000W heater and 500W toaster are connected in parallel. What is the total current drawn from 220V
+                    line?</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section D: Scientific Reasoning (41-50)</div>
+        <div class="question-block">
+            <ol start="41">
+                <li>Why is the earth wire thicker than the other two wires in a domestic circuit?</li>
+                <li>Why does the magnetic field inside a long solenoid appear uniform? Explain based on field line
+                    pattern.</li>
+                <li>Why is series arrangement not used for domestic circuits? Give two scientific reasons.</li>
+                <li>Why is it necessary to earth metallic appliances like electric iron and toaster? Explain the physics
+                    of protection.</li>
+                <li>Why do two magnetic field lines NOT intersect? Justify your answer using the property of tangent
+                    (direction).</li>
+                <li>Why is soft iron used for making electromagnets and not steel? Explain based on retentivity.</li>
+                <li>Why does the compass needle deflect when brought near a current carrying wire?</li>
+                <li>Force on a current carrying conductor is maximum when it is perpendicular to the field. Why?
+                    (Concept of cross product/angle dependence).</li>
+                <li>Why are copper and aluminum wires usually used for electricity transmission?</li>
+                <li>Why is AC preferred over DC for long distance transmission of electric power?</li>
+            </ol>
+        </div>
+    </div>
+
 </body>
 
 </html>

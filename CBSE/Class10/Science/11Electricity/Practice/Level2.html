@@ -4,41 +4,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 2: Electricity - Vardaan Learning Institute</title>
+    <title>Level 2: Electricity - Vardaan Institute</title>
+
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
         body {
-            font-family: 'Times New Roman', serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.5;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .student-inputs {
+            margin-top: 1rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .line-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        /* Watermark - Fixed Position & High Z-Index for Print */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .container {
-            text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
         }
 
-        h1 {
-            color: #333;
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
         }
 
-        p {
-            color: #666;
+        /* Sections */
+        .section-title {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #004d40;
+            text-transform: uppercase;
+        }
+
+        html.dark-mode .section-title {
+            /* Global invert handles color */
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+        }
+
+        ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                background: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                z-index: 9999;
+                display: flex !important;
+                visibility: visible !important;
+            }
+        }
+
+        /* Mobile Scroll Fix */
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                max-width: 100%;
+            }
+
+            mjx-container {
+                max-width: 100% !important;
+                overflow-x: auto;
+                white-space: normal !important;
+            }
+
+            .paper-sheet {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Level 2 Practice</h1>
-        <p>Content Coming Soon...</p>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
     </div>
+
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Level 2 Worksheet: Electricity</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Practice Modules</span>
+                <span>Max. Questions: 50</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <div class="module-header">Module 1: Circuit Diagram Analysis</div>
+        <div class="question-block">
+            <ol>
+                <li>Draw a schematic diagram of a circuit consisting of a battery of three cells of 2 V each, a 5
+                    $\Omega$ resistor, an 8 $\Omega$ resistor, and a 12 $\Omega$ resistor, and a plug key, all connected
+                    in series.</li>
+                <li>In the circuit of Q1, redraw it putting an ammeter to measure the current through the resistors and
+                    a voltmeter to measure the potential difference across the 12 $\Omega$ resistor.</li>
+                <li>How would you connect three resistors, each of resistance 6 $\Omega$, so that the combination has a
+                    resistance of (i) 9 $\Omega$, (ii) 4 $\Omega$?</li>
+                <li>Three resistors of 2 $\Omega$, 3 $\Omega$ and 6 $\Omega$ are connected in parallel. Draw the circuit
+                    diagram.</li>
+                <li>A wire of resistance R is bent in the form of a closed circle. What is the effective resistance
+                    between the two ends of any diameter?</li>
+                <li>You are given n resistors each of resistance R. How will you combine them to get the (i) maximum and
+                    (ii) minimum effective resistance? What is the ratio of the maximum to minimum resistance?</li>
+                <li>Study the following circuit: Two resistors 3 $\Omega$ and 6 $\Omega$ connected in parallel, and this
+                    combination is connected in series with a 4 $\Omega$ resistor and a 12V battery. Calculate total
+                    resistance.</li>
+                <li>In the circuit mentioned in Q7, what is the current flowing through the 12V battery?</li>
+                <li>For the same circuit (Q7), find the potential drop across the 4 $\Omega$ resistor.</li>
+                <li>Find the current passing through the 6 $\Omega$ resistor in the circuit described in Q7.</li>
+                <li>Draw a circuit diagram to show how two resistors are connected in series with a battery and an
+                    ammeter. Where should the voltmeter be placed to measure voltage across one resistor?</li>
+                <li>In a series circuit, if one bulb fuses, why do the others go off? Explain with a diagrammatic
+                    concept.</li>
+                <li>Why is the parallel arrangement used in domestic wiring? Explain using the concept of voltage
+                    stability.</li>
+                <li>Two lamps, one rated 100 W at 220 V, and the other 60 W at 220 V, are connected in parallel. Draw
+                    the circuit.</li>
+                <li>What is the function of an electric fuse? Where is it placed in the circuit? Draw a symbol for a
+                    fuse.</li>
+            </ol>
+        </div>
+
+        <div class="module-header">Module 2: Numerical Proficiency</div>
+        <div class="question-block">
+            <ol start="16">
+                <li>A potential difference of 250 V is applied across a resistance of 500 $\Omega$. Calculate the
+                    current passing through it.</li>
+                <li>A resistance of 20 $\Omega$ has a current of 2 A flowing through it. What is the potential
+                    difference across it?</li>
+                <li>Calculate the resistance of a conductor if the current flowing through it is 0.2 A when the applied
+                    potential difference is 0.8 V.</li>
+                <li>A copper wire of length 2 m and area of cross-section $1.7 \times 10^{-6} m^2$ has a resistance of
+                    $2 \times 10^{-2} \Omega$. Calculate the resistivity of copper.</li>
+                <li>A piece of wire of resistance 20 $\Omega$ is drawn out so that its length is increased to twice its
+                    original length. Calculate the resistance of the wire in the new shape.</li>
+                <li>Two resistors, with resistances 5 $\Omega$ and 10 $\Omega$ respectively are to be connected to a
+                    battery of emf 6 V so as to obtain: (i) minimum current (ii) maximum current. (a) How will you
+                    connect the resistances in such case? (b) Calculate the strength of the total current in the circuit
+                    in the two cases.</li>
+                <li>A hot plate of an electric oven connected to a 220 V line has two resistance coils A and B, each of
+                    24 $\Omega$ resistance. Calculate current when coils are used: (i) separately, (ii) in series, (iii)
+                    in parallel.</li>
+                <li>Compare the power used in the 2 $\Omega$ resistor in each of the following circuits: (i) a 6 V
+                    battery in series with 1 $\Omega$ and 2 $\Omega$ resistors, and (ii) a 4 V battery in parallel with
+                    12 $\Omega$ and 2 $\Omega$ resistors.</li>
+                <li>Two lamps, one rated 100 W at 220 V, and the other 60 W at 220 V, are connected in parallel to
+                    electric mains supply. What current is drawn from the line if the supply voltage is 220 V?</li>
+                <li>Which uses more energy: a 250 W TV set in 1 hr, or a 1200 W toaster in 10 minutes?</li>
+                <li>An electric heater of resistance 8 $\Omega$ draws 15 A from the service mains 2 hours. Calculate the
+                    rate at which heat is developed in the heater.</li>
+                <li>100 J of heat is produced each second in a 4 $\Omega$ resistance. Find the potential difference
+                    across the resistor.</li>
+                <li>An electric bulb connects to a 220 V generator. The current is 0.50 A. What is the power of the
+                    bulb?</li>
+                <li>An electric refrigerator rated 400 W operates 8 hour/day. What is the cost of the energy to operate
+                    it for 30 days at Rs 3.00 per kWh?</li>
+                <li>Find the energy consumed by a bulb of 500 W in 4 hours. Express your answer in Joules.</li>
+                <li>A torch bulb is rated 2.5 V and 750 mA. Calculate (i) its power, (ii) its resistance, (iii) the
+                    energy consumed if this bulb is lighted for 4 hours.</li>
+                <li>Calculate the heat produced when 96000 C of charge is transferred in 1 hour through a potential
+                    difference of 50 V.</li>
+                <li>A current of 4 A flows through a 12 V car headlight bulb for 10 minutes. How much energy transfer
+                    occurs during this time?</li>
+                <li>Calculate the current through a 60 W lamp rated for 250 V. If the line voltage falls to 200 V, how
+                    is power consumed affected? (Assuming R remains constant).</li>
+                <li>Two bulbs A and B are rated 100W - 120V and 10W - 120V respectively. They are connected across a
+                    120V source in series. Which bulb will consume more power?</li>
+            </ol>
+        </div>
+
+        <div class="module-header">Module 3: Scientific Reasoning</div>
+        <div class="question-block">
+            <ol start="36">
+                <li>Why is tungsten used for the filament of reaction lamps? Give two reasons.</li>
+                <li>Why are the conductors of electric heating devices, such as bread-toasters and electric irons, made
+                    of an alloy rather than a pure metal?</li>
+                <li>Why is the series arrangement not used for domestic circuits?</li>
+                <li>How does the resistance of a wire vary with its cross-sectional area? Explain on the basis of
+                    electron collisions.</li>
+                <li>Why do electricians wear rubber gloves while working?</li>
+                <li>Why is copper/aluminum used for transmission lines?</li>
+                <li>Explain why the resistance of a conductor increases with increase in temperature.</li>
+                <li>Why should a fuse wire have a low melting point?</li>
+                <li>Why should an ammeter have very low resistance?</li>
+                <li>Why should a voltmeter have very high resistance?</li>
+                <li>What is the role of the earth wire in domestic circuits?</li>
+                <li>Does the resistivity of an alloy change with temperature? How is it different from pure metals?</li>
+                <li>Why is parallel connection preferred for connecting bulbs in a house?</li>
+                <li>Explain the term 'Overloading' in an electric circuit.</li>
+                <li>Explain the term 'Short Circuiting'. How does a fuse protect against it?</li>
+            </ol>
+        </div>
+    </div>
+
 </body>
 
 </html>

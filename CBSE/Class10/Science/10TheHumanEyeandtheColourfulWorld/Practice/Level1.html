@@ -4,41 +4,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 1: Human Eye - Vardaan Learning Institute</title>
+    <title>Level 1: Human Eye - Vardaan Institute</title>
+
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
         body {
-            font-family: 'Times New Roman', serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.5;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .student-inputs {
+            margin-top: 1rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .line-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .container {
-            text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
         }
 
-        h1 {
-            color: #333;
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
         }
 
-        p {
-            color: #666;
+        /* Questions */
+        .section-title {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #004d40;
+            text-transform: uppercase;
+        }
+
+        html.dark-mode .section-title {
+            /* Global invert handles color */
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+        }
+
+        ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+
+        /* Mobile Scroll Fix */
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                max-width: 100%;
+            }
+
+            mjx-container {
+                max-width: 100% !important;
+                overflow-x: auto;
+                white-space: normal !important;
+            }
+
+            .paper-sheet {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Level 1 Practice</h1>
-        <p>Content Coming Soon...</p>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
     </div>
+
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Level 1 Worksheet: The Human Eye</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Topic-wise Drill</span>
+                <span>Max. Questions: 60</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <div class="topic-header">Topic 1: Human Eye - Structure & Function</div>
+        <div class="question-block">
+            <ol>
+                <li>Draw a neat and labeled diagram of the human eye.</li>
+                <li>State the function of the crystalline lens in the human eye.</li>
+                <li>What is the role of the iris and pupil in controlling the amount of light entering the eye?</li>
+                <li>Define 'Power of Accommodation' of the eye. What is the maximum accommodation power for a normal
+                    eye?</li>
+                <li>Why is the blind spot called so? Explain its location.</li>
+                <li>What is the function of the retina? Name the two types of photoreceptor cells present in it.</li>
+                <li>Explain why we cannot see clearly for some time when we enter a dark room from bright sunlight.</li>
+                <li>What is the range of vision for a normal human eye? Define Near point and Far point.</li>
+                <li>Why does the eye lens not form a blurred image on the retina when viewing objects at different
+                    distances?</li>
+                <li>State the role of ciliary muscles in the working of the eye.</li>
+                <li>What is the function of the optic nerve?</li>
+                <li>Why do we have two eyes for vision instead of one? (Give two reasons).</li>
+                <li>What happens to the pupil when you shine a torch into someone's eyes?</li>
+                <li>Is the image formed on the retina real or virtual? Explain.</li>
+                <li>What keeps the eye lens in its position?</li>
+            </ol>
+        </div>
+
+        <div class="topic-header">Topic 2: Defects of Vision & Correction</div>
+        <div class="question-block">
+            <ol start="16">
+                <li>What is Myopia? Draw a ray diagram to show the image formation in a myopic eye.</li>
+                <li>How is Myopia corrected? Draw a diagram to show the correction.</li>
+                <li>List two main causes of Myopia.</li>
+                <li>What is Hypermetropia? Draw a ray diagram to show the image formation in a hypermetropic eye.</li>
+                <li>How is Hypermetropia corrected? Draw a ray diagram to show the correction.</li>
+                <li>List two main causes of Hypermetropia.</li>
+                <li>Differentiate between the Near Point of a Myopic eye and a Hypermetropic eye.</li>
+                <li>What is Presbyopia? Why does it occur?</li>
+                <li>How is Presbyopia corrected? What is a bifocal lens?</li>
+                <li>A student cannot read the blackboard while sitting in the last row. Name the defect he is suffering
+                    from. What kind of lens will the doctor suggest?</li>
+                <li>A person needs a lens of power -5.5 D for distant vision. What is the focal length of the lens
+                    required? Name the defect.</li>
+                <li>A person needs a lens of power +1.5 D for correcting his near vision. What is the focal length of
+                    the lens? Name the defect.</li>
+                <li>Explain why a hypermetropic person prefers to remove his spectacles while looking at distant
+                    objects.</li>
+                <li>Can a person suffer from both Myopia and Hypermetropia? If yes, name the defect and its correction.
+                </li>
+                <li>What is Cataract? How can it be corrected?</li>
+            </ol>
+        </div>
+
+        <div class="topic-header">Topic 3: Refraction through Prism & Dispersion</div>
+        <div class="question-block">
+            <ol start="31">
+                <li>Draw a ray diagram for the refraction of light through a glass prism. Label the angle of incidence
+                    ($i$), angle of refraction ($r$), angle of emergence ($e$), and angle of deviation ($D$).</li>
+                <li>Define Angle of Deviation. On what factors does it depend?</li>
+                <li>What is meant by the dispersion of white light? Name the colors in the sequence they appear.</li>
+                <li>Which color of white light bends the least and which bends the most during dispersion? Give reason.
+                </li>
+                <li>Explain the cause of dispersion of light through a glass prism.</li>
+                <li>Draw a diagram to show the formation of a spectrum of white light.</li>
+                <li>Who discovered that white light consists of seven colors? Describe his experiment with two prisms
+                    (Newton's Recombination).</li>
+                <li>Is the speed of light for all colors the same in a glass prism? Explain.</li>
+                <li>How is a Rainbow formed? Name the three phenomena involved in its formation.</li>
+                <li>What are the necessary conditions for observing a rainbow?</li>
+                <li>Why does a rainbow appear as a bow (arc)?</li>
+                <li>What is a monochromatic light? Can a prism disperse monochromatic light?</li>
+                <li>Why does the red light bend the least in a prism?</li>
+                <li>Differentiate between dispersion produced by a glass slab and a glass prism.</li>
+                <li>What is a primary rainbow and a secondary rainbow? (Briefly).</li>
+            </ol>
+        </div>
+
+        <div class="topic-header">Topic 4: Atmospheric Refraction & Scattering</div>
+        <div class="question-block">
+            <ol start="46">
+                <li>What is atmospheric refraction? Why does it occur?</li>
+                <li>Explain why stars twinkle while planets do not.</li>
+                <li>Why do stars appear slightly higher than their actual position? Explain with a diagram.</li>
+                <li>Explain the phenomenon of 'Advanced Sunrise and Delayed Sunset'. By how much time is the day
+                    lengthened?</li>
+                <li>Why does the apparent position of a star fluctuate?</li>
+                <li>What is Scattering of light? State the factors on which it depends.</li>
+                <li>What is Tyndall Effect? Give two examples observed in daily life.</li>
+                <li>Why does the clear sky appear blue? Explain.</li>
+                <li>What would be the color of the sky for an astronaut in space? Why?</li>
+                <li>Why do danger signal lights use red color?</li>
+                <li>Why does the Sun appear reddish at sunrise and sunset? Explain with a diagram.</li>
+                <li>Why does the Sun appear white at noon?</li>
+                <li>Explain the blue color of water in deep sea.</li>
+                <li>What is the relation between the wavelength of light and intensity of scattering (Rayleigh's Law)?
+                </li>
+                <li>Why does smoke appear blue?</li>
+            </ol>
+        </div>
+
+    </div>
+
 </body>
 
 </html>

@@ -1,0 +1,606 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 06: Spectrum - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Spectrum</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 06 (Deep Detail)</p>
+
+        <h2>1. Deviation and Dispersion</h2>
+        <div class="concept-blue">
+            <p><strong>Dispersion:</strong> The phenomenon of skipping of white light into its constituent colours.</p>
+            <p><strong>Cause:</strong> Different colours have different speeds in glass (Red is fastest, Violet is
+                slowest). Hence, they bend by different amounts.</p>
+        </div>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: PRISM DISPERSION]</span>
+            <div class="img-prompt">
+                Diagram of white light hitting a prism. Show splitting into 7 colors inside and emerging. Label Red at
+                top and Violet at bottom of the spectrum.
+            </div>
+        </div>
+
+        <h3>Spectrum Colours (VIBGYOR):</h3>
+        <ul>
+            <li><strong>Red:</strong> Minimum deviation (Bends least). Longest wavelength.</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q1: Colour Speed</span>
+            <p><span class="q-tag">CONCEPTUAL</span> In glass, which colour travels faster: Red or Violet?</p>
+            <p><strong>Ans:</strong> Red. ($v_{red} > v_{violet}$). This is why Red deviates less.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: Prism Factor</span>
+            <p><span class="q-tag">THINKING</span> What happens to the spectrum if we use a hollow prism?</p>
+            <p><strong>Ans:</strong> No dispersion. Light rays will emerge parallel to incident rays (like a glass slab)
+                if faces are parallel, or just refract without splitting if filled with air. Dispersion needs a medium
+                with varying refractive index for different colours.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q3: Dispersion
+                Check</span>
+            <p><strong>Q:</strong> Which colour of light travels fastest in vacuum?</p>
+            <p><strong>Ans:</strong> All colours travel with same speed ($c$) in vacuum.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q4: Recombination</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: NEWTON'S COLOUR DISC / RECOMBINATION]</span>
+                <div class="img-prompt">
+                    Two prisms inverted w.r.t to each other. White light enters first, disperses to 7 colors. 7 colors
+                    enter second inverted prism. Recombine to form white light. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">CONCEPTUAL</span> How can we recombine the seven colours of the spectrum to get white
+                light back?</p>
+            <p><strong>Ans:</strong> By placing an identical prism in an <strong>inverted position</strong> with respect
+                to the first prism. The second prism reverses the dispersion produced by the first.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Maximum Deviation</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Which colour of white light deviates the most and which deviates
+                the least when passing through a prism? Why?</p>
+            <p><strong>Ans:</strong> <strong>Violet</strong> deviates most (Shortest $\lambda$, slowest speed).
+                <strong>Red</strong> deviates least (Longest $\lambda$, fastest speed).
+            </p>
+        </div>
+
+
+
+        <h2>2. Electromagnetic Spectrum</h2>
+        <p>The ordered arrangement of electromagnetic waves in increasing/decreasing order of wavelength or frequency.
+        </p>
+
+        <div class="concept-green">
+            <h3>Properties common to all EM Waves:</h3>
+            <ul>
+                <li>Do not require a medium for propagation.</li>
+                <li>Travel with speed of light ($c = 3 \times 10^8$ m/s) in vacuum.</li>
+                <li>Transverse in nature.</li>
+            </ul>
+        </div>
+
+        <h3>Regions (Decreasing Wavelength / Increasing Frequency):</h3>
+        <ol>
+            <li><strong>Radio Waves:</strong> Radar, communications.</li>
+            <li><strong>Microwaves:</strong> Cooking, sat-com.</li>
+            <li><strong>Infrared (Heat Waves):</strong> Night vision, remote controls.</li>
+            <li><strong>Visible Light:</strong> Vision (4000 $\mathring{A}$ - 8000 $\mathring{A}$).</li>
+            <li><strong>Ultraviolet (UV):</strong> Sterilizing, Vitamin D. (Harmful to eyes).</li>
+            <li><strong>X-Rays:</strong> Fractures detection.</li>
+            <li><strong>Gamma Rays:</strong> Most penetrating, cancer treatment.</li>
+        </ol>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Identification</span>
+            <p><span class="q-tag">BOARD CHECK</span> Name the radiation used for: (a) Satellite Communication, (b)
+                Sterilizing surgical instruments.</p>
+            <p><strong>Ans:</strong> (a) Microwaves, (b) Ultraviolet rays.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Wavelength Order</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Arrange X-rays, Infrared and UV rays in increasing order of
+                frequency.</p>
+            <p><strong>Ans:</strong> Infrared < UV < X-rays.</p>
+        </div>
+
+        $$ c = \nu \lambda $$
+        <p>Where $c$ = speed of light, $\nu$ (nu) = frequency, $\lambda$ (lambda) = wavelength.</p>
+    </div>
+
+    <div class="practice-box">
+        <span class="practice-header">Practice Q8: Calculation</span>
+        <p><span class="q-tag">NUMERICAL</span> A radio station broadcasts at a frequency of 100 MHz. Calculate the
+            wavelength of the radio wave.</p>
+        <p><strong>Solution:</strong></p>
+        <p>$f = 100 \text{ MHz} = 100 \times 10^6 \text{ Hz} = 10^8 \text{ Hz}$.</p>
+        <p>$c = 3 \times 10^8 \text{ m/s}$.</p>
+        <p>$\lambda = c / f = (3 \times 10^8) / 10^8 = 3 \text{ m}$.</p>
+    </div>
+
+    <div class="practice-box">
+        <span class="practice-header">Practice Q9: Wave Frequency</span>
+        <p><span class="q-tag">NUMERICAL</span> Calculate the frequency of yellow light of wavelength 5500
+            $\mathring{A}$.</p>
+        <p><strong>Solution:</strong> $\lambda = 5500 \times 10^{-10} \text{ m}$. $c = 3 \times 10^8$.</p>
+        <p>$f = c/\lambda = \frac{3 \times 10^8}{5.5 \times 10^{-7}}$</p>
+        <p>$\approx 5.45 \times 10^{14} \text{ Hz}$.</p>
+    </div>
+
+    <div class="practice-box">
+        <span class="practice-header">Practice Q10: Usage</span>
+        <p><span class="q-tag">IDENTIFICATION</span> Name radiation for: (i) Photos in dark, (ii) Bone fracture.</p>
+        <p><strong>Ans:</strong> (i) Infrared, (ii) X-rays.</p>
+    </div>
+
+    <h2>3. Scattering of Light</h2>
+    <p>The process of absorption and re-emission of light energy by dust particles and air molecules.</p>
+
+    <div class="master-tip">
+        <span class="tip-header">RAYLEIGH SCATTERING</span>
+        $$ I \propto \frac{1}{\lambda^4} $$
+        <p>Violet/Blue (Shorter $\lambda$) scatters much more than Red (Longer $\lambda$).</p>
+    </div>
+
+    <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+        <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q11: Scattering
+            Basics</span>
+        <p><strong>Q:</strong> Why are clouds white?</p>
+        <p><strong>Ans:</strong> Large water droplets scatter all wavelengths equally.</p>
+    </div>
+
+    <h3>Applications:</h3>
+    <ul>
+        <li><strong>Blue Colour of Sky:</strong> Blue light is scattered most by atmospheric particles (size &lt;
+            $\lambda$).</li>
+        <li><strong>Red Colour of Sunrise/Sunset:</strong> Sun is near horizon, light travels maximum distance. Blue
+            is scattered away completely, leaving Red.</li>
+        <li><strong>White Clouds:</strong> Molecules are larger (water droplets), scattering all colours equally
+            $\implies$ White.</li>
+        <li><strong>Use of Red Light for Danger:</strong> Red scatters least, so it can penetrate fog/smoke and
+            travel long distances.</li>
+    </ul>
+
+    <div class="concept-blue">
+        <h3>More Applications:</h3>
+        <ul>
+            <li><strong>Ultraviolet (UV):</strong> Detected by Silver Chloride (AgCl) paper (Turns black/violet).
+                Used in Sterilization, Vitamin D synthesis.</li>
+        </ul>
+    </div>
+
+    <div class="practice-box">
+        <span class="practice-header">Practice Q12: Scatter Analysis</span>
+        <div class="img-placeholder" class="invert-dark">
+            <span>[IMAGE PLACEHOLDER: SCATTERING OF LIGHT]</span>
+            <div class="img-prompt">
+                Sunlight passing through atmosphere. Blue light scattering in all directions. Red light passing straight
+                through to observer. (Invert in dark mode).
+            </div>
+        </div>
+        <p><span class="q-tag">REASONING</span> Why is the red light used for danger signals?</p>
+        <p><strong>Ans:</strong> Red light has the longest wavelength in the visible spectrum. According to Rayleigh
+            scattering ($I \propto 1/\lambda^4$), it is scattered the least by fog or smoke, allowing it to travel long
+            distances and remain visible.</p>
+    </div>
+
+    <div class="practice-box">
+        <span class="practice-header">Practice Q13: Black Sky</span>
+        <p><span class="q-tag">THINKING</span> Why does the sky appear black to an astronaut?</p>
+        <p><strong>Ans:</strong> No atmosphere in space $\implies$ No scattering of light $\implies$ Sky appears black.
+        </p>
+    </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 09: Household Circuits - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Household Circuits</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 09 (Deep Detail)</p>
+
+        <h2>1. Power Distribution</h2>
+        <p>Power generated at power stations (11 kV) is stepped up (132 kV) for transmission to minimize heat loss
+            ($I^2R$), then stepped down at city substations.</p>
+
+        <div class="concept-blue">
+            <h3>Three Wire System</h3>
+            <ul>
+                <li><strong>Live Wire (Phase/Line):</strong> Carries current from source to appliance. Potential 220V.
+                    (New Colour: <strong>Brown</strong>).</li>
+                <li><strong>Neutral Wire:</strong> Returns current. Potential 0V. (New Colour: <strong>Blue</strong>).
+                </li>
+                <li><strong>Earth Wire:</strong> Safety wire. Potential 0V. (New Colour: <strong>Green/Yellow</strong>).
+                </li>
+            </ul>
+        </div>
+
+        <h2>2. Wiring System</h2>
+        <p><strong>Ring System:</strong> Appliances are connected in Parallel. Advantages:</p>
+        <ol>
+            <li>Each appliance gets full voltage (220V).</li>
+            <li>Each appliance works independently.</li>
+            <li>Current capacity of wire is higher (two paths).</li>
+        </ol>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q1: System Choice</span>
+            <p><span class="q-tag">REASONING</span> Why are appliances connected in parallel and not sequence?</p>
+            <p><strong>Ans:</strong> In series, resistance increases reducing current. Also, if one appliance fails, the
+                circuit breaks. Parallel allows independent operation at full voltage.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: Wiring Fault</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: FAULTY CIRCUIT FUSE IN NEUTRAL]</span>
+                <div class="img-prompt">
+                    Circuit diagram showing a Bulb connected to Mains. Measurements show Fuse is connected in the
+                    Neutral wire. Switch is in Live wire. Label "Faulty".
+                </div>
+            </div>
+            <p><span class="q-tag">ANALYSIS</span> Identify the error in the circuit diagram above. What is the danger?
+            </p>
+            <p><strong>Ans:</strong> The <strong>Fuse</strong> is connected in the Neutral wire. It should be in the
+                Live wire.</p>
+            <p><strong>Danger:</strong> If the fuse blows, the current stops, but the appliance remains connected to the
+                high potential Live wire. Anyone touching it can get a shock.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q3: Ring System</span>
+            <p><span class="q-tag">THINKING</span> What is the advantage of connecting appliances in parallel (Ring
+                System)?</p>
+            <p><strong>Ans:</strong> Independent operation, Constant Voltage (220V), and Reduced wire cost (Ring).</p>
+        </div>
+
+        <h2>3. Safety Components</h2>
+
+        <div class="reaction-type">
+            <h3>A. Fuse</h3>
+            <p>A safety device connected in Series with the <strong>Live Wire</strong>. </p>
+            <p><strong>Principle:</strong> Heating effect of current.</p>
+            <p><strong>Material:</strong> Alloy of Lead and Tin (Low melting point).</p>
+            <p><strong>Function:</strong> Melts and breaks the circuit if current exceeds safe limit (short circuit or
+                overload).</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q4: Fuse
+                Logic</span>
+            <p><strong>Q:</strong> Which wire is the fuse connected to?</p>
+            <p><strong>Ans:</strong> Live Wire. Always in series.</p>
+        </div>
+
+        <div class="reaction-type">
+            <h3>B. Switch</h3>
+            <p>Connected in Series with the <strong>Live Wire</strong>.</p>
+            <p><strong>Reason:</strong> If switch is on Neutral, the appliance remains connected to Live (High
+                Potential) even when off. User may get shock.</p>
+            <p><strong>Dual Control Switch:</strong> Used in staircases to operate one light from two places.</p>
+        </div>
+
+        <div class="reaction-type">
+            <h3>C. Earthing</h3>
+            <p>Connecting the metallic body of an appliance to the earth.</p>
+            <p><strong>Reason:</strong> If live wire touches the metal body, current flows to earth instantly (low
+                resistance path). Fuse blows, protecting the user from fatal shock.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q5: Earthing
+                Check</span>
+            <p><strong>Q:</strong> Why is local earthing required?</p>
+            <p><strong>Ans:</strong> To provide a safe low-resistance path for leakage current to ground, preventing
+                shock.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Safety Physics</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: EARTHING MECHANISM]</span>
+                <div class="img-prompt">
+                    Diagram showing Metallic Body of Heater connected to Earth wire. Live wire accidentally touching
+                    inner body. Current flowing largely to Earth instead of Person touching it.
+                </div>
+            </div>
+            <p><span class="q-tag">REASONING</span> How does earthing prevent electric shock?</p>
+            <p><strong>Ans:</strong> As earth wire has negligible resistance, the leakage current flows through it to
+                the ground instead of the human body (high resistance). This high current also instantly blows the fuse,
+                cutting off supply.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Fuse Rating</span>
+            <p><span class="q-tag">NUMERICAL</span> An electric oven of power 2.5 kW is used on a 250 V mains supply.
+                Calculate the current rating of the fuse to be used.</p>
+            <p><strong>Solution:</strong> $I = P/V = 2500/250 = 10 \text{ A}$. Use fuse slightly higher, e.g., 10 A or
+                13 A.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Switching Danger</span>
+            <p><span class="q-tag">REASONING</span> Why should a switch not be connected to the neutral wire?</p>
+            <p><strong>Ans:</strong> The appliance remains connected to Live wire even when switched off. Risk of shock
+                to user touching it.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q9: Fuse Location</span>
+            <p><span class="q-tag">CONCEPTUAL</span> A 5A fuse is protecting a refrigerator. If the fuse is moved from
+                Live to Neutral wire, will it still blow during a fault?</p>
+            <p><strong>Ans:</strong> Yes, it will still blow if current exceeds 5A (as current is same in series).
+                HOWEVER, it will not protect the user from shock because the appliance stays connected to Live
+                potential.</p>
+        </div>
+
+        <h2>4. Plugs and Sockets</h2>
+        <div class="concept-green">
+            <p><strong>3-Pin Plug:</strong></p>
+            <ul>
+                <li><strong>Top/Think Pin:</strong> Earth (Longer and thicker for safety - connects first, disconnects
+                    last).</li>
+                <li><strong>Left Pin:</strong> Live.</li>
+                <li><strong>Right Pin:</strong> Neutral.</li>
+            </ul>
+        </div>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: 3-PIN PLUG WIRING]</span>
+            <div class="img-prompt">
+                Diagram of a 3-pin plug interior. Show wires connected to pins. Label: Earth (Top, Green), Live (Right,
+                Brown) and Neutral (Left, Blue). *Note: Left/Right view is from back/wiring side*.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q10: Pin Logic</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Why are the pins of a plug split at the ends?</p>
+            <p><strong>Ans:</strong> To provide a <strong>spring action</strong>. It ensures a tight fit in the socket,
+                preventing loose connection and sparking.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q11: Earth Pin</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Why is the Earth pin thicker and longer?</p>
+            <p><strong>Ans:</strong> Longer: To connect Earth first (safety). Thicker: To prevent insertion into
+                Live/Neutral holes.</p>
+        </div>
+
+
+
+        <div class="master-tip">
+            <span class="tip-header">SAFETY RULE</span>
+            Always remember: <strong>Fuse</strong> and <strong>Switch</strong> must ALWAYS be on the <strong>Live
+                Wire</strong>.
+        </div>
+
+        <div class="concept-blue">
+            <h3>Colour Coding of Wires</h3>
+            <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+                <tr style="background:#e0e0e0;">
+                    <th style="border:1px solid #999; padding:8px;">Wire</th>
+                    <th style="border:1px solid #999; padding:8px;">Old Convention</th>
+                    <th style="border:1px solid #999; padding:8px;">New Convention</th>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #999; padding:8px;">Live (L)</td>
+                    <td style="border:1px solid #999; padding:8px; color: Red;">Red</td>
+                    <td style="border:1px solid #999; padding:8px; color: Brown;">Brown</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #999; padding:8px;">Neutral (N)</td>
+                    <td style="border:1px solid #999; padding:8px; color: Black;">Black</td>
+                    <td style="border:1px solid #999; padding:8px; color: Blue;">Blue</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #999; padding:8px;">Earth (E)</td>
+                    <td style="border:1px solid #999; padding:8px; color: Green;">Green</td>
+                    <td style="border:1px solid #999; padding:8px; color: Green;">Yellow/Green</td>
+                </tr>
+            </table>
+        </div>
+
+
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

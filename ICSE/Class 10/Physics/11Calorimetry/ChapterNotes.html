@@ -1,0 +1,635 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 11: Calorimetry - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Calorimetry</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 11 (Deep Detail)</p>
+
+        <h2>1. Heat Capacity</h2>
+
+        <div class="concept-blue">
+            <p><strong>Heat Capacity ($C'$):</strong> Amount of heat required to raise the temperature of the
+                <strong>whole body</strong> by 1°C (or 1 K).
+            </p>
+            <p>$C' = m \times c$. Unit: J/K.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">SPECIFIC HEAT CAPACITY (c)</div>
+            <p>Amount of heat required to raise the temperature of <strong>unit mass (1 kg)</strong> of a substance by
+                1°C.</p>
+            $$ Q = m c \Delta T $$
+            <p>Unit: J kg$^{-1}$ K$^{-1}$.</p>
+            <p><strong>Note:</strong> Water has very high specific heat capacity ($4200 \text{ J kg}^{-1} \text{
+                K}^{-1}$).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q1: Heat Calculation</span>
+            <p><span class="q-tag">NUMERICAL</span> Calculate the heat energy required to raise the temperature of 2 kg
+                of water from $10^\circ C$ to $50^\circ C$. ($c = 4200 \text{ J/kgK}$).</p>
+            <p><strong>Solution:</strong></p>
+            <p>$Q = mc \Delta T = 2 \times 4200 \times (50 - 10)$.</p>
+            <p>$Q = 8400 \times 40 = 336,000 \text{ J} = 336 \text{ kJ}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: Heat Capacity</span>
+            <p><span class="q-tag">NUMERICAL</span> A body of mass 1.5 kg requires 4500 J of heat to raise its
+                temperature by $10^\circ C$. Calculate its specific heat capacity.</p>
+            <p><strong>Solution:</strong></p>
+            <p>$c = \frac{Q}{m \Delta T} = \frac{4500}{1.5 \times 10}$</p>
+            <p>$= \frac{4500}{15} = 300 \text{ J/kgK}$.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q3: Coolant
+                Logic</span>
+            <p><strong>Q:</strong> Why is water used as a coolant in car radiators?</p>
+            <p><strong>Ans:</strong> High specific heat capacity ($4200 \text{ J/kgK}$). Can absorb large heat with
+                small temp rise.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q4: Concept Check</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Distinguish between Heat Capacity and Specific Heat Capacity.</p>
+            <p><strong>Ans:</strong> Heat Capacity is for the <strong>whole body</strong> ($C' = mc$). Specific Heat
+                Capacity is for <strong>unit mass</strong> ($c = C'/m$).</p>
+        </div>
+
+        <h3>Consequences of high Specific Heat Capacity of Water:</h3>
+        <ul>
+            <li>Water is used as coolant in car radiators.</li>
+            <li>Hot water bottles are used for fomentation (retain heat longer).</li>
+            <li>Climate near sea shore is moderate (Land/Sea breeze).</li>
+        </ul>
+
+        <h2>2. Principle of Calorimetry</h2>
+        <p>If no heat is lost to the surroundings:</p>
+
+        <div class="formula-box">
+            $$ \text{Heat Lost by Hot Body} $$
+            $$ = \text{Heat Gained by Cold Body} $$
+            <p><strong>Note:</strong> This principle is also known as the <strong>Method of Mixtures</strong>.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Mixing Problem</span>
+            <p><span class="q-tag">NUMERICAL</span> 100 g of hot water at $80^\circ C$ is added to 200 g of cold water
+                at $10^\circ C$. Find final temperature. (Neglect vessel heat).</p>
+            <p><strong>Solution:</strong></p>
+            <p>Let final temp be $T$.</p>
+            <p>Heat lost = $100 \times c \times (80 - T)$. Heat gained = $200 \times c \times (T - 10)$.</p>
+            <p>$100 (80-T) = 200 (T-10)$</p>
+            <p>$\implies 80 - T = 2T - 20$.</p>
+            <p>$3T = 100$</p>
+            <p>$\implies T = 33.33^\circ C$.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q6: Calorimetry
+                Check</span>
+            <p><strong>Q:</strong> What assumption is made in the principle of mixtures?</p>
+            <p><strong>Ans:</strong> No heat is lost to the surroundings or the container.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Water Equivalent</span>
+            <p><span class="q-tag">NUMERICAL</span> A copper vessel of mass 100g contains 150g of water at 50°C. How
+                much ice at 0°C is needed to cool it to 5°C? (Given $c_{Cu} = 0.4 \text{ J/gK}$, $c_{w} = 4.2 \text{
+                J/gK}$, $L_{ice} = 336 \text{ J/g}$).</p>
+            <p><strong>Solution:</strong></p>
+            <p>Heat Lost by (Water + Vessel) = $(150 \times 4.2 + 100 \times 0.4) \times (50-5)$</p>
+            <p>$= 670 \times 45 = 30150 \text{ J}$.</p>
+            <p>Heat Gained by Ice = $m \times 336 + m \times 4.2 \times (5-0) = 357m$.</p>
+            <p>$357m = 30150 \implies m = 84.45 \text{ g}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Mixture Temp</span>
+            <p><span class="q-tag">NUMERICAL</span> 40 g of water at 60°C is poured into a vessel containing 50 g of
+                water at 20°C. Calculate the final temperature. (Neglect vessel).</p>
+            <p><strong>Solution:</strong></p>
+            <p>$40c(60-T) = 50c(T-20)$</p>
+            <p>$\implies 4(60-T) = 5(T-20)$</p>
+            <p>$\implies 240-4T = 5T-100$</p>
+            <p>$\implies 9T=340$</p>
+            <p>$\implies T=37.77^\circ C$.</p>
+        </div>
+
+        <h2>3. Change of State (Latent Heat)</h2>
+        <p>Heat energy absorbed or released at constant temperature during change of state.</p>
+
+        <div class="reaction-type">
+            <p><strong>Latent Heat of Fusion ($L_f$):</strong> Solid $\leftrightarrow$ Liquid at Melting Point. ($Q = m
+                L_f$). For Ice: $L_f = 336 \text{ J/g} = 336000 \text{ J/kg}$.</p>
+            <p><strong>Latent Heat of Vaporisation ($L_v$):</strong> Liquid $\leftrightarrow$ Gas at Boiling Point. ($Q
+                = m L_v$). For Steam: $L_v = 2260 \text{ J/g}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q9: Ice to Water</span>
+            <p><span class="q-tag">NUMERICAL</span> Calculate heat required to melt 500g of ice at $0^\circ C$ to water
+                at $0^\circ C$. ($L_f = 336 \text{ J/g}$).</p>
+            <p><strong>Solution:</strong></p>
+            <p>$Q = m L_f = 500 \times 336$.</p>
+            <p>$Q = 168,000 \text{ J} = 168 \text{ kJ}$.</p>
+        </div>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: HEATING CURVE OF WATER]</span>
+            <div class="img-prompt">
+                Graph of Temperature vs Time. Show: 1. Ice warming (-10 to 0). 2. Flat line at 0 (Melting). 3. Water
+                warming (0 to 100). 4. Flat line at 100 (Boiling). 5. Steam warming (>100).
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q10: Graph Reading</span>
+            <p><span class="q-tag">GRAPH ANALYSIS</span> In the heating curve of ice, why does the temperature
+                remain constant during melting (Region 2)?</p>
+            <p><strong>Ans:</strong> The heat supplied during this phase is used as <strong>Latent Heat</strong> to
+                break the intermolecular bonds and change the state from solid to liquid, rather than increasing the
+                kinetic energy (temperature) of the molecules.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q11: Phase Change Total</span>
+            <p><span class="q-tag">NUMERICAL</span> Convert 100 g ice at -10°C to water at 10°C.</p>
+            <p><strong>Solution:</strong> 1. Ice (-10 to 0): $0.1 \times 2100 \times 10 = 2100 J$. 2. Melt: $0.1
+                \times 336000 = 33600 J$. 3. Water (0 to 10): $0.1 \times 4200 \times 10 = 4200 J$. Total = $39900
+                \text{ J}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q12: Steam Burns</span>
+            <p><span class="q-tag">REASONING</span> Why do steam burns feel more severe than boiling water burns?
+            </p>
+            <p><strong>Ans:</strong> Steam contains extra latent heat of vaporization ($2260 \text{ J/g}$).</p>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">NUMERICAL CHEAT SHEET</span>
+            When converting Ice at -10°C to Water at 50°C:
+            <ol>
+                <li>$Q_1$: Ice (-10 to 0) = $m \times c_{ice} \times \Delta T$.</li>
+                <li>$Q_2$: Melting at 0 = $m \times L_f$.</li>
+                <li>$Q_3$: Water (0 to 50) = $m \times c_{water} \times \Delta T$.</li>
+                <li>Total $Q = Q_1 + Q_2 + Q_3$.</li>
+            </ol>
+            <p>Remember: $1 \text{ calorie} = 4.2 \text{ Joules}$.</p>
+        </div>
+
+        <div class="concept-blue">
+            <h3>Natural Phenomena (High Specific Heat of Water)</h3>
+            <p><strong>Sea Breeze & Land Breeze:</strong> Due to high specific heat capacity, water warms up and
+                cools
+                down slower than land. This creates pressure differences causing breezes.</p>
+        </div>
+
+        <!-- PRACTICE QUESTIONS SECTION -->
+        <h2 style="margin-top: 3rem; border-color: #d35400; color: #d35400;">Classroom Practice Questions</h2>
+
+        <div class="practice-box">
+            <span class="practice-header">Question 1: Mixture</span>
+            <p><span class="q-tag">NUMERICAL</span> 40 g of water at 60°C is poured into a vessel containing 50 g of
+                water at 20°C. Calculate the final temperature of the mixture. (Neglect heat capacity of vessel).
+            </p>
+            <p><strong>Solution:</strong></p>
+            <p>Let final temp be $T$.</p>
+            <p>Heat Lost by Hot Water = $m_1 c (60 - T) = 40 \times c \times (60 - T)$.</p>
+            <p>Heat Gained by Cold Water = $m_2 c (T - 20) = 50 \times c \times (T - 20)$.</p>
+            <p>$40c(60-T) = 50c(T-20)$.</p>
+            <p>$\implies 4(60-T) = 5(T-20)$.</p>
+            <p>$240 - 4T = 5T - 100$</p>
+            <p>$\implies 9T = 340$</p>
+            <p>$\implies T = 37.77^\circ \text{C}$.</p>
+            <p><strong>Ans:</strong> 37.77°C.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Question 2: Phase Change</span>
+            <p><span class="q-tag">NUMERICAL</span> Calculate the amount of heat energy required to convert 100 g of
+                ice
+                at $-10^\circ \text{C}$ into water at $10^\circ \text{C}$. (Given $c_{ice} = 2100 \text{ J/kgK}$,
+                $c_{water} = 4200 \text{ J/kgK}$, $L_f = 336000 \text{ J/kg}$).</p>
+            <p><strong>Solution:</strong></p>
+            <p>Mass $m = 0.1 \text{ kg}$.</p>
+            <p>1. Ice (-10 to 0): $Q_1 = 0.1 \times 2100 \times 10 = 2100 \text{ J}$.</p>
+            <p>2. Melting: $Q_2 = 0.1 \times 336000 = 33600 \text{ J}$.</p>
+            <p>3. Water (0 to 10): $Q_3 = 0.1 \times 4200 \times 10 = 4200 \text{ J}$.</p>
+            <p>Total Heat $Q = 2100 + 33600 + 4200 = 39900 \text{ J}$.</p>
+            <p><strong>Ans:</strong> 39,900 J.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Question 3: Steam Burns</span>
+            <p><span class="q-tag">REASONING</span> Why do burns caused by steam at 100°C appear more severe than
+                those
+                caused by boiling water at 100°C?</p>
+            <p><strong>Solution:</strong></p>
+            <p>Steam at 100°C contains <strong>Latent Heat of Vaporization</strong> ($2260 \text{ J/g}$) in addition
+                to
+                the heat energy possessed by boiling water at the same temperature. When steam condenses on skin, it
+                releases this massive extra heat, causing more severe burns.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

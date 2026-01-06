@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 0 Light</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            /* Critical for mobile */
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            /* Seamless merge */
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                /* Adjust padding for small screens */
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            /* Light Mode */
+            height: auto;
+        }
+
+        /* Dark Mode Implementation */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Double Inversion for Watermark & Images */
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+            /* Dark Mode */
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            /* Scrolls with page */
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            /* Double inversion to keep icon looking normal-ish */
+            background: #333;
+            color: #fff;
+        }
+
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* Answer Specific Styles */
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .answer-item {
+            border-bottom: 1px dotted #ccc;
+            padding: 5px;
+            display: flex;
+            align-items: baseline;
+            font-size: 0.95rem;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .q-num {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 30px;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 0 (Light)</h2>
+            <div class="meta-strip"><span>Class: 10 Science</span><span>Topic: Reflection & Refraction</span><span>Max.
+                    Questions: 100</span></div>
+        </header>
+
+        <div class="answer-grid">
+            <div class="answer-item"><span class="q-num">1.</span>Sight/Vision</div>
+            <div class="answer-item"><span class="q-num">2.</span>Straight</div>
+            <div class="answer-item"><span class="q-num">3.</span>$3 \times 10^8$</div>
+            <div class="answer-item"><span class="q-num">4.</span>Luminous</div>
+            <div class="answer-item"><span class="q-num">5.</span>Light</div>
+            <div class="answer-item"><span class="q-num">6.</span>Reflection</div>
+            <div class="answer-item"><span class="q-num">7.</span>Same</div>
+            <div class="answer-item"><span class="q-num">8.</span>Virtual, Erect</div>
+            <div class="answer-item"><span class="q-num">9.</span>Same</div>
+            <div class="answer-item"><span class="q-num">10.</span>Lateral Inversion</div>
+            <div class="answer-item"><span class="q-num">11.</span>Concave</div>
+            <div class="answer-item"><span class="q-num">12.</span>Convex</div>
+            <div class="answer-item"><span class="q-num">13.</span>Pole</div>
+            <div class="answer-item"><span class="q-num">14.</span>Center of Curvature</div>
+            <div class="answer-item"><span class="q-num">15.</span>Radius of Curvature</div>
+            <div class="answer-item"><span class="q-num">16.</span>Principal Axis</div>
+            <div class="answer-item"><span class="q-num">17.</span>Aperture</div>
+            <div class="answer-item"><span class="q-num">18.</span>Principal Focus</div>
+            <div class="answer-item"><span class="q-num">19.</span>Focal Length</div>
+            <div class="answer-item"><span class="q-num">20.</span>2f</div>
+            <div class="answer-item"><span class="q-num">21.</span>True</div>
+            <div class="answer-item"><span class="q-num">22.</span>True</div>
+            <div class="answer-item"><span class="q-num">23.</span>False</div>
+            <div class="answer-item"><span class="q-num">24.</span>True</div>
+            <div class="answer-item"><span class="q-num">25.</span>False</div>
+            <div class="answer-item"><span class="q-num">26.</span>True</div>
+            <div class="answer-item"><span class="q-num">27.</span>True</div>
+            <div class="answer-item"><span class="q-num">28.</span>False</div>
+            <div class="answer-item"><span class="q-num">29.</span>True</div>
+            <div class="answer-item"><span class="q-num">30.</span>True</div>
+            <div class="answer-item"><span class="q-num">31.</span>True</div>
+            <div class="answer-item"><span class="q-num">32.</span>False</div>
+            <div class="answer-item"><span class="q-num">33.</span>False</div>
+            <div class="answer-item"><span class="q-num">34.</span>True</div>
+            <div class="answer-item"><span class="q-num">35.</span>True</div>
+            <div class="answer-item"><span class="q-num">36.</span>True</div>
+            <div class="answer-item"><span class="q-num">37.</span>True</div>
+            <div class="answer-item"><span class="q-num">38.</span>True</div>
+            <div class="answer-item"><span class="q-num">39.</span>False (Concave)</div>
+            <div class="answer-item"><span class="q-num">40.</span>True</div>
+            <div class="answer-item"><span class="q-num">41.</span>b) Refraction</div>
+            <div class="answer-item"><span class="q-num">42.</span>a) Towards normal</div>
+            <div class="answer-item"><span class="q-num">43.</span>b) Away from normal</div>
+            <div class="answer-item"><span class="q-num">44.</span>b) Snell's Law</div>
+            <div class="answer-item"><span class="q-num">45.</span>b) Refractive Index</div>
+            <div class="answer-item"><span class="q-num">46.</span>d) Vacuum</div>
+            <div class="answer-item"><span class="q-num">47.</span>c) The Medium</div>
+            <div class="answer-item"><span class="q-num">48.</span>b) 1.33</div>
+            <div class="answer-item"><span class="q-num">49.</span>b) 1.52</div>
+            <div class="answer-item"><span class="q-num">50.</span>c) Diamond (2.42)</div>
+            <div class="answer-item"><span class="q-num">51.</span>a) Lower speed</div>
+            <div class="answer-item"><span class="q-num">52.</span>b) Lateral Disp.</div>
+            <div class="answer-item"><span class="q-num">53.</span>d) All of these</div>
+            <div class="answer-item"><span class="q-num">54.</span>c) 0 deg</div>
+            <div class="answer-item"><span class="q-num">55.</span>d) No unit</div>
+            <div class="answer-item"><span class="q-num">56.</span>f (Converging)</div>
+            <div class="answer-item"><span class="q-num">57.</span>d (Diverging)</div>
+            <div class="answer-item"><span class="q-num">58.</span>h (Optical Center)</div>
+            <div class="answer-item"><span class="q-num">59.</span>b (1/f)</div>
+            <div class="answer-item"><span class="q-num">60.</span>i (Dioptre)</div>
+            <div class="answer-item"><span class="q-num">61.</span>g (Formula)</div>
+            <div class="answer-item"><span class="q-num">62.</span>a (v/u)</div>
+            <div class="answer-item"><span class="q-num">63.</span>c (Positive)</div>
+            <div class="answer-item"><span class="q-num">64.</span>j (Negative)</div>
+            <div class="answer-item"><span class="q-num">65.</span>e (Infinity)</div>
+            <div class="answer-item"><span class="q-num">66.</span>A</div>
+            <div class="answer-item"><span class="q-num">67.</span>A</div>
+            <div class="answer-item"><span class="q-num">68.</span>A</div>
+            <div class="answer-item"><span class="q-num">69.</span>A</div>
+            <div class="answer-item"><span class="q-num">70.</span>A</div>
+            <div class="answer-item"><span class="q-num">71.</span>10 cm</div>
+            <div class="answer-item"><span class="q-num">72.</span>-10 D</div>
+            <div class="answer-item"><span class="q-num">73.</span>+50 cm (0.5m)</div>
+            <div class="answer-item"><span class="q-num">74.</span>Plane Mirror</div>
+            <div class="answer-item"><span class="q-num">75.</span>2 x 10^8 m/s</div>
+            <div class="answer-item"><span class="q-num">76.</span>45 deg</div>
+            <div class="answer-item"><span class="q-num">77.</span>0 deg</div>
+            <div class="answer-item"><span class="q-num">78.</span>Infinite</div>
+            <div class="answer-item"><span class="q-num">79.</span>+1</div>
+            <div class="answer-item"><span class="q-num">80.</span>20 cm</div>
+            <div class="answer-item"><span class="q-num">81.</span>Refraction</div>
+            <div class="answer-item"><span class="q-num">82.</span>Concave Mirror</div>
+            <div class="answer-item"><span class="q-num">83.</span>No</div>
+            <div class="answer-item"><span class="q-num">84.</span>Yes</div>
+            <div class="answer-item"><span class="q-num">85.</span>Yes</div>
+            <div class="answer-item"><span class="q-num">86.</span>No</div>
+            <div class="answer-item"><span class="q-num">87.</span>Focus</div>
+            <div class="answer-item"><span class="q-num">88.</span>Between F1 and O</div>
+            <div class="answer-item"><span class="q-num">89.</span>Point-sized, Virtual</div>
+            <div class="answer-item"><span class="q-num">90.</span>Optical Center</div>
+            <div class="answer-item"><span class="q-num">91.</span>Refraction</div>
+            <div class="answer-item"><span class="q-num">92.</span>Dispersion</div>
+            <div class="answer-item"><span class="q-num">93.</span>Internal Reflection</div>
+            <div class="answer-item"><span class="q-num">94.</span>Scattering</div>
+            <div class="answer-item"><span class="q-num">95.</span>Least</div>
+            <div class="answer-item"><span class="q-num">96.</span>$0^{\circ}$</div>
+            <div class="answer-item"><span class="q-num">97.</span>Pole</div>
+            <div class="answer-item"><span class="q-num">98.</span>Converging</div>
+            <div class="answer-item"><span class="q-num">99.</span>2.42</div>
+            <div class="answer-item"><span class="q-num">100.</span>Convex</div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,772 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 01: Force - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            /* Core Colors */
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+
+            /* Theme Palettes */
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+
+            --red-border: #d32f2f;
+        }
+
+        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- DARK MODE (FILTER INVERSION) --- */
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* --- ADAPTIVE WATERMARK (V2.5 UNIFIED) --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            /* Light Mode Default */
+            transition: opacity 0.3s ease;
+        }
+
+        /* Dark Mode Override for Watermark */
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* --- PAPER SHEET LAYOUT --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* --- THEME        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- CONTENT STYLING --- */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        /* --- SPECIAL COMPONENTS --- */
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Concept Blocks */
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Reaction Type blocks */
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Image Placeholder */
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* --- PRINT OPTIMIZATION --- */
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ADAPTIVE WATERMARK -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- CONTENT PAPER -->
+    <div class="paper-sheet">
+        <h1>Force</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 01 (Deep Detail)</p>
+
+        <h2>1. Moment of a Force (Torque)</h2>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: MOMENT OF FORCE]</span>
+            <div class="img-prompt">
+                Diagram showing a spanner/wrench turning a nut. Label 'Force F' at the end of the handle, 'Pivot/Axis'
+                at the nut, and 'Distance d' between them. Show the curved arrow indicating circular motion.
+            </div>
+        </div>
+        <div class="concept-blue">
+            <p><strong>Translational Motion:</strong> When a force acts on a rigid body free to move, the body starts
+                moving in a straight line in the direction of force.</p>
+            <p><strong>Rotational Motion:</strong> When a body is pivoted at a point and a force is applied at a
+                suitable point, it rotates about the axis passing through the pivot.</p>
+        </div>
+
+        <p><strong>Definition:</strong> The turning effect of a force on a body about an axis is called the
+            <strong>Moment of Force</strong> or <strong>Torque</strong>.
+        </p>
+
+        <div class="formula-box">
+            <div class="formula-pill">FORMULA</div>
+            $$ \tau = F \times d_\perp $$
+            <p style="margin-top: 10px;"><strong>SI Unit:</strong> Newton-metre (Nm) &nbsp;|&nbsp; <strong>CGS
+                    Unit:</strong> Dyne-cm</p>
+            <p><strong>Relationship:</strong> $1 \text{ Nm} = 10^7 \text{ dyne-cm}$</p>
+        </div>
+
+        <h3>Factors affecting Moment of Force:</h3>
+        <ul>
+            <li>The magnitude of the force applied.</li>
+            <li>The perpendicular distance of the line of action of force from the axis of rotation. (Greater distance
+                $\rightarrow$ More turning effect).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q1: Moment Calculation</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: WRENCH TURNING NUT]</span>
+                <div class="img-prompt">
+                    Diagram of a wrench. Force F = 50N applied at end. Handle length r = 20cm. Show pivot at nut.
+                    (Invert colors for dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">NUMERICAL</span> Calculated the torque produced by a force of 50 N acting at the end
+                of a lever of length 20 cm.</p>
+            <p><strong>Solution:</strong> $\tau = F \times d = 50 \times 0.2 \text{ m} = 10 \text{ Nm}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: Force Requirement</span>
+            <p><span class="q-tag">CONCEPTUAL</span> A mechanic can open a nut by applying a force of 150 N while using
+                a lever handle of length 40 cm. How long a handle is required if he wants to open it by applying a force
+                of only 50 N?</p>
+            <p><strong>Solution:</strong></p>
+            <p>Moment required $\tau = 150 \times 0.4 = 60 \text{ Nm}$.</p>
+            <p>New Force $F' = 50 \text{ N}$. Let new length be $d'$.</p>
+            <p>$50 \times d' = 60 \implies d' = 1.2 \text{ m}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q3: Couple</span>
+            <p><span class="q-tag">CONCEPTUAL</span> A steering wheel of diameter 0.5 m is rotated anticlockwise by
+                applying two forces each of magnitude 5 N. Calculate the moment of the couple applied.</p>
+            <p><strong>Solution:</strong> Moment = Force $\times$ Couple Arm = $5 \times 0.5 = 2.5 \text{ Nm}$.</p>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">REAL LIFE EXAMPLES</span>
+            <ul>
+                <li><strong>Door Handle:</strong> Provided at the free end (max distance from hinges) to open with
+                    minimum force.</li>
+                <li><strong>Wrench:</strong> Has a long handle to produce large torque with small force to loosen nuts.
+                </li>
+                <li><strong>Steering Wheel:</strong> Force is applied tangentially to the rim.</li>
+            </ul>
+        </div>
+
+
+
+        <h3>Sign Convention</h3>
+        <ul>
+            <li><strong>Anticlockwise Moment:</strong> Taken as Positive (+ve).</li>
+            <li><strong>Clockwise Moment:</strong> Taken as Negative (-ve).</li>
+        </ul>
+
+        <div class="concept-green">
+            <h3>Couple</h3>
+            <p>Two equal and opposite parallel forces, not acting along the same line, form a <strong>Couple</strong>.
+            </p>
+            <p><strong>Effect:</strong> A couple produces pure rotational motion.</p>
+            <p><strong>Moment of Couple = Force $\times$ Couple Arm (Distance between forces).</strong></p>
+        </div>
+
+        <h2>2. Equilibrium of Bodies</h2>
+        <p>When a number of forces acting on a body produce no change in its state of rest or of motion, the body is
+            said to be in equilibrium.</p>
+
+        <div class="reaction-type">
+            <p><strong>Static Equilibrium:</strong> Body remains at rest under influence of forces. (e.g., Book on a
+                table).</p>
+            <p><strong>Dynamic Equilibrium:</strong> Body remains in motion (constant velocity) under influence of
+                forces. (e.g., Rain drop falling with terminal velocity, Electron revolving around nucleus).</p>
+        </div>
+
+        <h3>Conditions for Equilibrium:</h3>
+        <ol>
+            <li>The resultant of all forces acting on the body should be <strong>zero</strong>.</li>
+            <li>The algebraic sum of moments of all forces about the point of rotation should be <strong>zero</strong>.
+                (Sum of anticlockwise moments = Sum of clockwise moments).</li>
+        </ol>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q4: Seesaw Balance</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: SEESAW BALANCE]</span>
+                <div class="img-prompt">
+                    Seesaw diagram. Pivot in center. Boy A (40kg) at 1.5m left. Boy B (m kg) at 2m right. Show forces mg
+                    acting downwards. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">BOARD QUESTION</span> A boy of mass 40 kg sits at a distance of 1.5 m from the
+                fulcrum of a see-saw. Where should another boy of mass 30 kg sit to balance it?</p>
+            <p><strong>Solution:</strong> By Principle of Moments: $40 \times g \times 1.5 = 30 \times g \times d
+                \implies 60 = 30d \implies d = 2 \text{ m}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Metre Rule</span>
+            <p><span class="q-tag">NUMERICAL</span> A uniform metre rule rests horizontally on a knife edge at the 60 cm
+                mark when a mass of 10 g is suspended from one end. Draw a diagram and calculate the mass of the rule.
+            </p>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: METER RULE BALANCE]</span>
+                <div class="img-prompt">
+                    Meter rule diagram. Pivot at 60cm. Center of Gravity (Wait of rule) at 50cm (acting down). Mass 10g
+                    at 100cm mark (acting down). Balanced horizontal.
+                </div>
+            </div>
+            <p><strong>Solution:</strong></p>
+            <p>Pivot at 60cm. Mass of rule ($M$) acts at 50cm. Distance = $60-50 = 10 \text{ cm}$.</p>
+            <p>Mass 10g must be at 100cm (Longer arm) to balance. Distance = $100-60 = 40 \text{ cm}$.</p>
+            <p>Anticlockwise Moment = Clockwise Moment</p>
+            <p>$\implies M \times 10 = 10 \times 40 \implies M = 40 \text{ g}$.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">PRINCIPLE OF MOMENTS</div>
+            <p>According to the Principle of Moments, in equilibrium:</p>
+            $$ \sum \text{Anticlockwise} = \sum \text{Clockwise} $$
+            <p><em>(Used to solve measuring/seesaw problems)</em></p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Topic Check:
+                Equilibrium</span>
+            <p><strong>Q:</strong> If a body is pivoted at its Centre of Gravity, what is the moment of its weight about
+                the pivot?</p>
+            <p><strong>Ans:</strong> Zero. (Because perpendicular distance is zero).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Centre of Gravity</span>
+            <p><span class="q-tag">THINKING</span> Where does the centre of gravity of a hollow sphere lie? Is it
+                necessary for the C.G. to be inside the material of the body?</p>
+            <p><strong>Ans:</strong> The CG lies at the geometric centre. No, it is not necessary to be in the material
+                (e.g., Ring, Hollow Sphere).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Stability Analysis</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: FLASK STABILITY]</span>
+                <div class="img-prompt">
+                    Diagram of two flasks. Flask A: Broad base, heavy bottom. Flask B: Narrow base, top heavy. Show CG
+                    positions. Flask A has lower CG. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">REASONING</span> Why does a wide-based flask have greater stability?</p>
+            <p><strong>Ans:</strong> A wide base ensures the vertical line through the CG falls within the base even
+                when tilted significantly. A lower CG (due to heavy bottom) also increases stability.</p>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">NUMERICAL TIP</span>
+            For a uniform metre rule balanced at a knife-edge:
+            <ul>
+                <li>Weight ($mg$) of the rule acts at the <strong>50 cm mark</strong> (Centre of Gravity).</li>
+                <li>If pivot is not at 50 cm, include the moment due to the weight of the rule.</li>
+            </ul>
+        </div>
+
+        <h2>3. Centre of Gravity (CG)</h2>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: CENTER OF GRAVITY EXAMPLES]</span>
+            <div class="img-prompt">
+                Grid of shapes showing Centre of Gravity points: 1. Rod (middle), 2. Ring (center, outside material), 3.
+                Triangle (centroid), 4. Cylinder (midpoint of axis). Mark points as 'G'.
+            </div>
+        </div>
+        <p>The point about which the algebraic sum of moments of weights of all particles constituting the body is zero.
+            The entire weight of the body can be considered to act at this point.</p>
+
+        <h3>CG of Regular Bodies:</h3>
+        <ul>
+            <li><strong>Uniform Rod:</strong> Mid-point.</li>
+            <li><strong>Circular Disc / Ring:</strong> Geometric Centre.</li>
+            <li><strong>Triangular Lamina (Scalene):</strong> Intersection of medians (Centroid).</li>
+            <li><strong>Rectangle / Square:</strong> Intersection of diagonals.</li>
+            <li><strong>Hollow Cone:</strong> At height $h/3$ from base on axis.</li>
+            <li><strong>Solid Cone:</strong> At height $h/4$ from base on axis.</li>
+        </ul>
+
+
+
+        <p><em>Note: It is not necessary for the CG to be within the material of the body (e.g., Ring, Hollow
+                Sphere).</em></p>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice: Stability analysis</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: FLASK STABILITY]</span>
+                <div class="img-prompt">
+                    Diagram of two flasks. Flask A: Broad base, heavy bottom. Flask B: Narrow base, top heavy. Show CG
+                    positions. Flask A has lower CG. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">REASONING</span> Why does a wide-based flask have greater stability?</p>
+            <p><strong>Ans:</strong> A wide base ensures the vertical line through the CG falls within the base even
+                when tilted significantly. A lower CG (due to heavy bottom) also increases stability.</p>
+        </div>
+
+        <h2>4. Uniform Circular Motion</h2>
+        <div class="concept-green">
+            <p><strong>Motion:</strong> When a particle moves with a constant speed in a circular path, its motion is
+                uniform circular motion.</p>
+            <p><strong>Velocity:</strong> Variable (Direction changes continuously). Hence, it is an <strong>accelerated
+                    motion</strong>.</p>
+            <p><strong>Acceleration:</strong> Acts towards the centre (Centripetal Acceleration).</p>
+        </div>
+
+        <h3>Centripetal Force</h3>
+        <p>The force acting on a body moving in a circular path, directed towards the centre of the path.</p>
+        $$ F_c = \frac{mv^2}{r} $$
+        <p><strong>Examples:</strong></p>
+        <ul>
+            <li>Moon revolving around Earth: Gravitational force provides centripetal force.</li>
+            <li>Stone tied to string: Tension in string provides centripetal force.</li>
+        </ul>
+
+        <h3>Centrifugal Force</h3>
+        <p>A fictitious force (pseudo force) assumed by an observer moving with the body to explain why they feel pushed
+            outwards. It is equal in magnitude to centripetal force but acts away from the centre.</p>
+        <p><em>(Real force is only centripetal; centrifugal is a reaction/effect observed in non-inertial frame).</em>
+        </p>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Circular Motion Work</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: SATELLITE OR STONE CIRCULAR PATH]</span>
+                <div class="img-prompt">
+                    Diagram of stone rotating in circle. Force F towards center. Velocity v tangent. Angle 90 degrees.
+                    (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">CONCEPTUAL</span> A stone tied to a string is whirled in a horizontal circle. What is
+                the work done by the tension in the string over one complete revolution?</p>
+            <p><strong>Ans:</strong> <strong>Zero</strong>. The tension (force) acts perpendicular to the displacement
+                at every instant ($90^\circ$). $W = Fs \cos 90^\circ = 0$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q9: Centripetal vs Centrifugal</span>
+            <p><span class="q-tag">DIFFERENTIATION</span> State one similarity and one difference between Centripetal
+                and Centrifugal force.</p>
+            <p><strong>Ans:</strong></p>
+            <p><strong>Similarity:</strong> Both have same magnitude ($mv^2/r$).</p>
+            <p><strong>Difference:</strong> Centripetal acts <em>towards</em> centre (Real). Centrifugal acts
+                <em>away</em> from centre (Fictitious).
+            </p>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">BOARD EXAM TRENDS</span>
+            <ul>
+                <li>Numerical on Principle of Moments (See-saw type) is very common. Don't forget the ruler's own
+                    weight.</li>
+                <li>Difference between Uniform Linear and Uniform Circular motion (acceleration aspect).</li>
+                <li>Work done in Uniform Circular Motion is <strong>ZERO</strong> (Force is perpendicular to
+                    displacement).</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT FOR TOGGLE -->
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+
+            if (html.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

@@ -4,41 +4,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 3: Human Eye - Vardaan Learning Institute</title>
+    <title>Level 3: Human Eye - Vardaan Institute</title>
+
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
         body {
-            font-family: 'Times New Roman', serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.5;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .student-inputs {
+            margin-top: 1rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .line-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .container {
-            text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
         }
 
-        h1 {
-            color: #333;
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
         }
 
-        p {
-            color: #666;
+        /* Sections */
+        .section-title {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #004d40;
+            text-transform: uppercase;
+        }
+
+        html.dark-mode .section-title {
+            /* Global invert handles color */
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+        }
+
+        ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+
+        /* Mobile Scroll Fix */
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                max-width: 100%;
+            }
+
+            mjx-container {
+                max-width: 100% !important;
+                overflow-x: auto;
+                white-space: normal !important;
+            }
+
+            .paper-sheet {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Level 3 Practice</h1>
-        <p>Content Coming Soon...</p>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
     </div>
+
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Level 3 Worksheet: The Human Eye</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Advanced, HOTS & PYQs</span>
+                <span>Max. Questions: 45</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <div class="topic-header">Section A: Advanced Competency & Application</div>
+        <div class="question-block">
+            <ol>
+                <li>A person needs a lens of power -4.5 D for correction of her vision.
+                    (a) What kind of defect in vision is she suffering from?
+                    (b) What is the focal length of the corrective lens?
+                    (c) What is the nature of the corrective lens?</li>
+                <li>Why do stars appear to twinkle while the planets do not? Explain based on the concept of extended
+                    sources vs point sources.</li>
+                <li>A student sitting at the back of the classroom cannot read clearly the letters written on the
+                    blackboard. What advice will a doctor give to her? Draw ray diagram for the correction of this
+                    defect.</li>
+                <li>Explain the role of ciliary muscles in the power of accommodation. What happens to them when viewing
+                    distant vs near objects?</li>
+                <li>Describe the formation of a rainbow in the sky with the help of a diagram. What are the three
+                    essential conditions for observing it?</li>
+                <li>Why does the Sun appear reddish early in the morning? Will this phenomenon be observed by an
+                    observer on the Moon? Justify your answer.</li>
+                <li>Draw a ray diagram to show the refraction of light through a glass prism. Mark on it (a) the
+                    incident ray, (b) the emergent ray and (c) the angle of deviation. Explain why the emergent ray
+                    bends towards the base.</li>
+                <li>A person is able to see objects clearly only when these are lying at distances between 50 cm and 300
+                    cm from his eye.
+                    (a) Identify the dual defect.
+                    (b) Calculate the power of lenses required for the bifocal spectacles to correct this.</li>
+                <li>State the cause of dispersion of white light by a glass prism. How can we recombine the spectrum to
+                    get white light again?</li>
+                <li>What is atmospheric refraction? Explain how it affects the apparent length of the day.</li>
+            </ol>
+        </div>
+
+        <div class="topic-header">Section B: High Order Thinking Skills (HOTS)</div>
+        <div class="question-block">
+            <ol start="11">
+                <li>A person looking at a person wearing a shirt with a pattern of horizontal and vertical lines is able
+                    to see the vertical lines more distinctly than the horizontal ones. What is this defect due to? How
+                    is it corrected?</li>
+                <li>When white light enters a prism, which color of light deviates the most and which the least? If
+                    monochromatic light (e.g., Green) enters the prism, will it split into colors? Explain.</li>
+                <li>Why is the field of view of a human eye (two eyes) $180^\circ$ but with one eye it is only
+                    $150^\circ$? What is the advantage of having two eyes located on the front of our face?</li>
+                <li>Is it possible to see a rainbow at noon? Justify your answer.</li>
+                <li>A glass slab causes lateral displacement, whereas a glass prism causes angular dispersion. Explain
+                    why.</li>
+                <li>If the refractive index of the material of a prism is $\sqrt{2}$ and the angle of prism is
+                    $60^\circ$, find the angle of minimum deviation.</li>
+                <li>Why does a beam of light become visible when it enters a smoke-filled room through a small hole?
+                    Name the phenomenon.</li>
+                <li>Explain why the planets do not twinkle but stars do. If a star is viewed from the moon, will it
+                    twinkle?</li>
+                <li>Why is the colour of the clear sky blue? What would be the colour of the sky if the earth had no
+                    atmosphere?</li>
+                <li>Explain why a hypermetropic person prefers to remove his spectacles while looking at distant
+                    objects.</li>
+            </ol>
+        </div>
+
+        <div class="topic-header">Section C: Case-Based Questions</div>
+        <div class="question-block">
+            <p><strong>Case I:</strong> The human eye is like a camera. Its lens system forms an image on a
+                light-sensitive screen called the retina. The eye adjusts its focal length to focus on objects at
+                different distances.</p>
+            <ol start="21">
+                <li>Name the part of the eye which acts as a screen.</li>
+                <li>Which part of the eye controls the amount of light entering it?</li>
+                <li>What is the range of vision for a normal human eye?</li>
+                <li>What is the nature of the image formed on the retina?</li>
+            </ol>
+
+            <p style="margin-top: 20px;"><strong>Case II:</strong> A student focuses the image of a candle flame on a
+                white screen using a convex lens. He noted down the position of the candle, screen, and the lens.
+                <br>Position of candle = 12.0 cm
+                <br>Position of convex lens = 50.0 cm
+                <br>Position of screen = 88.0 cm
+            </p>
+            <ol start="25">
+                <li>What is the focal length of the convex lens?</li>
+                <li>Where will the image be formed if he shifts the candle towards the lens at a position of 31.0 cm?
+                </li>
+                <li>What will be the nature of the image formed if he further shifts the candle towards the lens?</li>
+                <li>Draw a ray diagram to show the formation of the image in case (iii) as said above.</li>
+            </ol>
+
+            <p style="margin-top: 20px;"><strong>Case III:</strong> Atmospheric refraction is the phenomenon of bending
+                of light on passing through earth's atmosphere. It causes many optical phenomena.</p>
+            <ol start="29">
+                <li>Why do stars appear higher than they actual are?</li>
+                <li>Why is the sun visible 2 minutes before actual sunrise?</li>
+                <li>Does the apparent position of a star remain stationary? Explain.</li>
+                <li>Why don't planets twinkle?</li>
+            </ol>
+        </div>
+
+        <div class="topic-header">Section D: Assertion-Reasoning</div>
+        <div class="question-block">
+            <p><strong>Directions:</strong> Choose the correct option:</p>
+            <ul style="list-style: none; padding-left: 0;">
+                <li>(a) Both A and R are true and R is the correct explanation of A.</li>
+                <li>(b) Both A and R are true but R is NOT the correct explanation of A.</li>
+                <li>(c) A is true but R is false.</li>
+                <li>(d) A is false but R is true.</li>
+            </ul>
+            <ol start="33">
+                <li><strong>Assertion:</strong> Red light travels faster in glass than violet
+                    light.<br><strong>Reason:</strong> Refractive index of glass is less for red light than for violet.
+                </li>
+                <li><strong>Assertion:</strong> A rainbow is always formed in the direction opposite to the
+                    sun.<br><strong>Reason:</strong> A rainbow is formed by the dispersion of sunlight by water
+                    droplets.</li>
+                <li><strong>Assertion:</strong> The sky appears dark to passengers flying at very high
+                    altitudes.<br><strong>Reason:</strong> Scattering of light is not prominent at such heights due to
+                    thin atmosphere.</li>
+                <li><strong>Assertion:</strong> Myopia is due to the excessive curvature of the eye
+                    lens.<br><strong>Reason:</strong> For a myopic eye, the image of a distant object is formed behind
+                    the retina.</li>
+                <li><strong>Assertion:</strong> A prism bends light towards its base.<br><strong>Reason:</strong> Light
+                    travels faster in glass than in air.</li>
+                <li><strong>Assertion:</strong> Danger signals are made of red light.<br><strong>Reason:</strong> The
+                    red light is scattered the most by smoke or fog.</li>
+                <li><strong>Assertion:</strong> White light is dispersed into seven colors by a
+                    prism.<br><strong>Reason:</strong> Different colors of light bend through different angles with
+                    respect to the incident ray.</li>
+                <li><strong>Assertion:</strong> A convex lens of suitable power is used for correcting
+                    hypermetropia.<br><strong>Reason:</strong> A convex lens converges the light rays.</li>
+            </ol>
+
+            <p style="margin-top: 20px;"><strong>Multiple Choice Questions:</strong></p>
+            <ol start="41">
+                <li>The defect of vision in which a person cannot see the distant objects clearly but can see nearby
+                    objects distinctively is called: (a) Myopia (b) Hypermetropia (c) Presbyopia (d) Cataract</li>
+                <li>The splitting of white light into its component colors is called: (a) Refraction (b) Reflection (c)
+                    Dispersion (d) Scattering</li>
+                <li>Which of the following colors is scattered the least by fog, dust, or smoke? (a) Violet (b) Blue (c)
+                    Red (d) Yellow</li>
+                <li>The human eye forms the image of an object at its: (a) Cornea (b) Iris (c) Pupil (d) Retina</li>
+                <li>The amount of light entering the eye is controlled by: (a) Ciliary muscles (b) Pupil (c) Cornea (d)
+                    Iris</li>
+            </ol>
+        </div>
+
+    </div>
+
 </body>
 
 </html>

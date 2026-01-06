@@ -1,13 +1,437 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Mathematics - Probability - ChapterNotes</title>
-    <style>body { background-color: #0a0514; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; } h1 { color: #aa33ff; }</style>
-</head>
-<body>
-    <h1>ChapterNotes</h1>
-    <h2>Probability</h2>
-    <p>Content coming soon...</p>
-</body>
-</html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14: Probability - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            /* Core Colors */
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+
+            /* Theme Palettes */
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+
+            --red-border: #d32f2f;
+        }
+
+        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- DARK MODE (FILTER INVERSION) --- */
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* --- ADAPTIVE WATERMARK (V2.5 UNIFIED) --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            /* Light Mode Default */
+            transition: opacity 0.3s ease;
+        }
+
+        /* Dark Mode Override for Watermark */
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* --- PAPER SHEET LAYOUT --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            /* seamless paper: no shadow, no border */
+            box-shadow: none;
+            border: none;
+            width: 210mm;
+            /* A4 Width */
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+            /* Above watermark */
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Double Inversion for Toggle Button */
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Light Mode State */
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        /* Dark Mode State */
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+
+        /* --- CONTENT STYLING --- */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- SPECIAL COMPONENTS --- */
+
+        /* Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            background-color: #fff;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Concept Blocks */
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .concept-pink {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Placeholder Images (No Border) */
+        .placeholder-image {
+            width: 100%;
+            padding: 3rem;
+            margin: 2rem 0;
+            background-color: #f5f5f5;
+            color: #888;
+            font-weight: 600;
+            text-align: center;
+            font-style: italic;
+            border-radius: 4px;
+        }
+
+        /* Table Styling for Conditions */
+        .condition-table {
+            width: 100%;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            /* Enable horizontal scroll */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            /* Hide scrollbar Firefox */
+            -ms-overflow-style: none;
+            /* Hide scrollbar IE/Edge */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .condition-table::-webkit-scrollbar {
+            display: none;
+            /* Hide scrollbar WebKit */
+        }
+
+        .condition-table table {
+            width: 100%;
+            min-width: 600px;
+            /* Force scroll on small screens */
+            border-collapse: collapse;
+        }
+
+        .condition-table th,
+        .condition-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        /* ... (existing styles) ... */
+
+        /* ... (Section 1) ... */
+
+        <h2>1. Theoretical Probability</h2><div class="formula-box"><div class="formula-pill">DEFINITION</div><div class="placeholder-image">[AI IMAGE PROMPT: An Urn/Bag containing Red,
+        Blue,
+        and Green balls. A hand reaching in to pick one. Visualizing "Randomness" and "Favorable Outcomes" .] </div><p>$$ P(E)=\frac {
+            \text {
+                Number of outcomes favourable to E
+            }
+        }
+
+            {
+            \text {
+                Number of all possible outcomes
+            }
+        }
+
+        $$</p><p style="margin-top:10px;"><strong>Key Rules:</strong></p>
+
+        /* ... (keep text) ... */
+        </div><h2>2. Key Outcome Models</h2><div class="concept-blue"><h3>Coins (Heads/Tails)</h3><div class="placeholder-image">[AI IMAGE PROMPT: A Tree Diagram for 3 Coins toss. Showing branching paths: H/T ->HH/HT... ending in 8 outcomes (HHH, HHT, etc.).] </div><ul><li><strong>1 Coin:</strong> {
+            H,
+            T
+        }
+
+        (Total 2).</li><li><strong>2 Coins:</strong> {
+            HH,
+            HT,
+            TH,
+            TT
+        }
+
+        (Total 4).</li><li><strong>3 Coins:</strong> {
+            HHH,
+            HHT,
+            HTH,
+            THH,
+            HTT,
+            THT,
+            TTH,
+            TTT
+        }
+
+        (Total 8).</li></ul><p><strong>Trick:</strong>Total outcomes=$2^n$ (where n is number of coins).</p></div><div class="concept-green"><h3>Dice (1 to 6)</h3><div class="placeholder-image">[AI IMAGE PROMPT: A 6x6 Grid Table showing all 36 outcomes of Two Dice. (1, 1) to (6, 6). Highlight the diagonal "Doublets"(1, 1),
+        (2, 2) etc.] </div><ul><li><strong>1 Die:</strong> {
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+        }
+
+        (Total 6).</li><li><strong>2 Dice:</strong>Total $6 \times 6=36$ outcomes.</li><li><strong>Doublets:</strong>(1, 1),
+        (2, 2)...(6, 6) are 6 favorable outcomes.</li></ul></div><div class="concept-pink"><h3>Playing Cards (Standard Deck of 52)</h3><div class="placeholder-image">[AI IMAGE PROMPT: A Flowchart/Hierarchy of a Deck of Cards. Top: 52 Cards. Split into Red (26) and Black (26). Red split into Hearts/Diamonds. Black split into Spades/Clubs. Showing Face Cards (K, Q, J) in each.] </div><ul style="columns: 2;"><li><strong>Total Cards:</strong>52</li><li><strong>Suits (13 each):</strong>Spades (Black),
+        Clubs (Black),
+        Hearts (Red),
+        Diamonds (Red).</li><li><strong>Face Cards:</strong>K,
+        Q,
+        J in each suit (Total 12).</li><li><strong>Aces:</strong>4.</li></ul><p><strong>Caution:</strong>"Ace" is NOT a face card.</p></div><h2>3. Important Exam Problems (PYQ Trends)</h2><div class="master-tip"><span class="tip-header">THE LEAP YEAR PROBLEM</span><strong>Q: Find probability that a Leap Year has 53 Sundays.</strong><br><strong>Logic:</strong><br>1. Leap Year=366 days=52 weeks+2 extra days. <br>2. 52 weeks have 52 Sundays. We need one more Sunday from 2 extra days. <br>3. Possible pairs for 2 days: (Sun, Mon),
+        (Mon, Tue),
+        (Tue, Wed),
+        (Wed, Thu),
+        (Thu, Fri),
+        (Fri, Sat),
+        (Sat,
+            Sun). <br>4. Favorable (Sun, Mon) and (Sat, Sun) $\rightarrow$ 2 outcomes. <br>5. Total outcomes=7. <br><strong>Answer: $2/7$</strong>. (For Non-Leap Year, it is $1/7$). </div></div>< !-- SCRIPT FOR TOGGLE --><script>function toggleTheme() {
+            const html=document.documentElement;
+            html.classList.toggle('dark-mode');
+
+            if (html.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            }
+
+            else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        if (localStorage.getItem('theme')==='dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+
+        </script></body></html>

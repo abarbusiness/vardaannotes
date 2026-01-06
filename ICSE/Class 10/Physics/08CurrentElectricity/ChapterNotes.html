@@ -1,0 +1,633 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 08: Current Electricity - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            transition: all 0.5s ease;
+        }
+
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Current Electricity</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 08 (Deep Detail)</p>
+
+        <h2>1. Ohm's Law</h2>
+        <div class="concept-blue">
+            <p><strong>Statement:</strong> The current ($I$) flowing in a conductor is directly proportional to the
+                potential difference ($V$) applied across its ends, provided physical conditions (temperature, etc.)
+                remain constant.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">FORMULA</div>
+            $$ V = I \times R $$
+            <p>Where $R$ is the Resistance of the conductor.</p>
+            <p><strong>Ohmic Conductors:</strong> Obey Ohm's Law (e.g., all metals). V-I graph is a straight line
+                passing through origin.</p>
+            <p><strong>Non-Ohmic Conductors:</strong> Do not obey Ohm's Law (e.g., diode, filament bulb). V-I graph is a
+                curve.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q1: Ohm's Law
+                Check</span>
+            <p><strong>Q:</strong> Is a filament lamp an ohmic resistor?</p>
+            <p><strong>Ans:</strong> No. Its resistance increases with temperature (Non-Ohmic).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: V-I Graph</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Draw the V-I graph for an Ohmic conductor and a Non-Ohmic conductor
+                (Diode).</p>
+            <p><strong>Ans:</strong> Ohmic: Straight line passing through origin. Non-Ohmic: Curve (not straight).</p>
+        </div>
+
+        <h2>2. Resistance</h2>
+        <p>The obstruction offered to the flow of current.</p>
+
+        <h3>Factors affecting Resistance:</h3>
+        <ul>
+            <li><strong>Length ($l$):</strong> $R \propto l$.</li>
+            <li><strong>Area of Cross-section ($A$):</strong> $R \propto \frac{1}{A}$.</li>
+            <li><strong>Nature of Material:</strong> Depends on resistivity ($\rho$).</li>
+            <li><strong>Temperature:</strong> Resistance of metals increases with temperature.</li>
+        </ul>
+
+        <div class="formula-box">
+            $$ R = \rho \frac{l}{A} $$
+            <p>$\rho$ (Rho) is Specific Resistance or Resistivity.</p>
+            <p><strong>Unit of R:</strong> Ohm ($\Omega$).</p>
+            <p><strong>Unit of $\rho$:</strong> Ohm-metre ($\Omega \cdot m$).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q3: Resistivity</span>
+            <p><span class="q-tag">NUMERICAL</span> A wire of length 2 m and area $10^{-6} \text{ m}^2$ has a resistance
+                of $0.04 \Omega$. Find its resistivity.</p>
+            <p><strong>Solution:</strong></p>
+            <p>$\rho = \frac{R A}{l} = \frac{0.04 \times 10^{-6}}{2}$.</p>
+            <p>$\rho = 0.02 \times 10^{-6} = 2 \times 10^{-8} \Omega \text{ m}$.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q4: Resistance
+                Dependence</span>
+            <p><strong>Q:</strong> If a wire is doubled on itself, what happens to its resistance?</p>
+            <p><strong>Ans:</strong> Length halves ($l/2$), Area doubles ($2A$). $R' \propto \frac{l/2}{2A} =
+                \frac{1}{4}R$. Resistance becomes one-fourth.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Stretching Wire</span>
+            <p><span class="q-tag">THINKING</span> A wire of resistance $10 \Omega$ is stretched to double its length.
+                What is its new resistance?</p>
+            <p><strong>Solution:</strong></p>
+            <p>When length doubles ($l' = 2l$), area becomes half ($A' = A/2$).</p>
+            <p>$R' = n^2 R = 2^2 \times 10 = 40 \Omega$.</p>
+        </div>
+
+        <h2>3. EMF and Internal Resistance</h2>
+        <div class="reaction-type">
+            <p><strong>EMF (Electromotive Force) $\varepsilon$:</strong> Potential difference when circuit is OPEN (No
+                current drawn).</p>
+            <p><strong>Terminal Voltage ($V$):</strong> Potential difference when circuit is CLOSED (Current drawn).</p>
+            <p><strong>Voltage Drop:</strong> $V = \varepsilon - I r$ (where $r$ is internal resistance of cell).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Voltage Drop Graph</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: V VS I GRAPH]</span>
+                <div class="img-prompt">
+                    Graph of Terminal Voltage (V) on Y-axis vs Current (I) on X-axis. Straight line with negative slope.
+                    Y-intercept is EMF. Slope is -r. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">GRAPH ANALYSIS</span> From the graph of V vs I for a cell, how can you determine EMF
+                and internal resistance?</p>
+            <p><strong>Ans:</strong> 1. Y-intercept = <strong>EMF ($\varepsilon$)</strong>. 2. Slope = <strong>Internal
+                    Resistance (-r)</strong>.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Internal Resistance</span>
+            <p><span class="q-tag">NUMERICAL</span> A cell of EMF 1.5 V and internal resistance $1 \Omega$ is connected
+                to two resistors of $4 \Omega$ and $20 \Omega$ in series. Calculate voltage drop across the $20 \Omega$
+                resistor.</p>
+            <p><strong>Solution:</strong></p>
+            <p>Total External Resistance $R = 4 + 20 = 24 \Omega$. Total $R_{net} = 24 + 1 = 25 \Omega$.</p>
+            <p>Current $I = 1.5/25 = 0.06 \text{ A}$. $V_{20} = I \times 20 = 0.06 \times 20 = 1.2 \text{ V}$.</p>
+        </div>
+
+        <h2>4. Combination of Resistors</h2>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: SERIES VS PARALLEL]</span>
+            <div class="img-prompt">
+                Use circuit diagrams to show Resistors in Series vs Parallel. Label current 'I' path and Voltage 'V'
+                drops clearly.
+            </div>
+        </div>
+
+        <div class="concept-green">
+            <h3>Series Combination</h3>
+            <ul>
+                <li>Current is same in all resistors.</li>
+                <li>Voltage divides ($V = V_1 + V_2$).</li>
+                <li>Total $R_s = R_1 + R_2 + R_3$.</li>
+                <li><strong>Result:</strong> Resistance increases to maximum.</li>
+            </ul>
+        </div>
+
+        <div class="concept-green">
+            <h3>Parallel Combination</h3>
+            <ul>
+                <li>Voltage is same across all resistors.</li>
+                <li>Current divides ($I = I_1 + I_2$).</li>
+                <li>$\frac{1}{R_p} = \frac{1}{R_1} + \frac{1}{R_2} + \dots$</li>
+                <li><strong>Result:</strong> Resistance decreases to minimum.</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Mixed Circuit</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: MIXED RESISTORS CIRCUIT]</span>
+                <div class="img-prompt">
+                    Circuit Diagram: 6V Battery. Two resistors R1(3 ohm) and R2(6 ohm) in Parallel. This group is in
+                    series with R3(2 ohm). Ammeter in series. Voltmeter across Parallel group. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">NUMERICAL</span> Calculate: (a) Total Resistance, (b) Total Current, (c) Reading of
+                Voltmeter connected across the parallel combination ($3 \Omega$ and $6 \Omega$).</p>
+            <p><strong>Solution:</strong></p>
+            <p>(a) $1/R_p = 1/3 + 1/6 = 3/6 = 1/2$. So $R_p = 2 \Omega$. Total $R = 2 + 2 = 4 \Omega$.</p>
+            <p>(b) Current $I = V/R = 6/4 = 1.5 \text{ A}$.</p>
+            <p>(c) Voltage across parallel group $V_p = I \times R_p = 1.5 \times 2 = 3 \text{ V}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q9: Combination of Resistors</span>
+            <p><span class="q-tag">NUMERICAL</span> Two resistors of $4 \Omega$ and $6 \Omega$ are connected in
+                parallel. This combination is connected in series with a $2.6 \Omega$ resistor and a battery of 6V of
+                negligible internal resistance. Calculate current.</p>
+            <p><strong>Solution:</strong></p>
+            <p>1. Parallel: $R_p = (4 \times 6)/(4+6) = 24/10 = 2.4 \Omega$.</p>
+            <p>2. Total $R = 2.4 + 2.6 = 5 \Omega$.</p>
+            <p>3. current $I = V/R = 6/5 = 1.2 \text{ A}$.</p>
+        </div>
+
+
+
+        <h2>5. Electrical Energy and Power</h2>
+
+        <div class="formula-box">
+            <div class="formula-pill">POWER FORMULA</div>
+            <p>Basic: $P = V \times I$</p>
+            <p>Using Ohm's Law ($V=IR$): $P = I^2 R$ (Heat loss in series).</p>
+            <p>Using Ohm's Law ($I=V/R$): $P = \frac{V^2}{R}$ (Appliances in parallel).</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">HEAT ENERGY</div>
+            $$ H = I^2 R t $$
+            <p style="text-align: center; margin-top: -10px;">(Joule's Law of Heating)</p>
+            $$ H = V I t $$
+            $$ H = V I t $$
+            <p><strong>Commercial Unit of Energy:</strong> kWh (Board of Trade Unit).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q10: Bulb Rating</span>
+            <p><span class="q-tag">NUMERICAL</span> An electric bulb is rated '220 V, 100 W'. (a) What is its
+                resistance? (b) What is the safe limit of current?</p>
+            <p><strong>Solution:</strong></p>
+            <p>(a) $R = V^2 / P = (220 \times 220) / 100 = 484 \Omega$.</p>
+            <p>(b) $I = P / V = 100 / 220 \approx 0.45 \text{ A}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q11: Bill Calculation</span>
+            <p><span class="q-tag">NUMERICAL</span> An electric heater of 2 kW is used for 4 hours daily. Calculate the
+                cost for 30 days if rate is ₹5 per unit.</p>
+            <p><strong>Solution:</strong> Energy/day = $2 \times 4 = 8 \text{ kWh}$. Total Energy = $240 \text{ units}$.
+                Cost = $240 \times 5 = 1200 \text{ ₹}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q12: Electric Power</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Two bulbs 60W and 100W are connected in series. Which one glows
+                brighter?</p>
+            <p><strong>Solution:</strong> In Series, $I$ is same. $P = I^2 R$. $R_{60W} > R_{100W}$. So 60W bulb glows
+                brighter.</p>
+        </div>
+    </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,693 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 03: Machines - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Machines</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 03 (Deep Detail)</p>
+
+        <h2>1. Basic Concepts</h2>
+        <div class="concept-blue">
+            <p><strong>Machine:</strong> A device which enables us to obtain a gain in force or gain in speed or change
+                the direction of force.</p>
+            <p><strong>Functions:</strong></p>
+            <ul>
+                <li><strong>Force Multiplier:</strong> Lifts heavy load with small effort (e.g., Jack, Lever).</li>
+                <li><strong>Speed Multiplier:</strong> Gains speed (e.g., Scissors with long blades).</li>
+                <li><strong>Changing Direction:</strong> Makes work convenient (e.g., Single fixed pulley).</li>
+            </ul>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">IMPORTANT</span>
+            A machine <strong>CANNOT</strong> allow us to gain both force and speed simultaneously. $P_{out}$ is always
+            $\le P_{in}$.
+        </div>
+
+        <h2>2. Technical Terms</h2>
+
+        <div class="formula-box">
+            <div class="formula-pill">MECHANICAL ADVANTAGE (MA)</div>
+            $$ MA = \frac{\text{Load (L)}}{\text{Effort (E)}} $$
+            <ul>
+                <li>$MA > 1$: Force Multiplier (e.g., Crowbar).</li>
+                <li>$MA < 1$: Speed Multiplier (e.g., Scissors).</li>
+                <li>$MA = 1$: Change in direction (e.g., See-saw).</li>
+            </ul>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">VELOCITY RATIO (VR)</div>
+            $$ VR = \frac{V_E}{V_L} = \frac{d_E}{d_L} $$
+            <p><em>($d_E$ = displacement of effort, $d_L$ = displacement of load)</em></p>
+            <p>VR depends on the <strong>geometry/design</strong> of the machine and does not change with friction.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">EFFICIENCY ($\eta$)</div>
+            $$ \eta = \frac{\text{Work Output}}{\text{Work Input}} = \frac{MA}{VR} $$
+            <p>For Ideal Machine: $\eta = 1$ (100%), so $MA = VR$.</p>
+            <p>For Practical Machine: $\eta < 1$, so $MA < VR$ (due to friction/weight of parts).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q1: Efficiency Logic</span>
+            <p><span class="q-tag">REASONING</span> Can a machine have an efficiency of 100%? If not, why?</p>
+            <p><strong>Ans:</strong> No practical machine is 100% efficient. Energy is always wasted in overcoming
+                friction between moving parts and lifting the weight of the machine parts (like pulleys or lever arms).
+                Thus, Output Work < Input Work.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: MA vs VR</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Explain why the Mechanical Advantage (MA) of a machine is always
+                less than its Velocity Ratio (VR) in practice?</p>
+            <p><strong>Ans:</strong> $\eta = MA/VR$. Since efficiency $\eta < 1$ due to friction and weight of moving
+                    parts, $MA < VR$.</p>
+        </div>
+
+        <h2>3. Levers</h2>
+        <p>A rigid bar capable of turning about a fixed point (Fulcrum).</p>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: CLASSES OF LEVERS]</span>
+            <div class="img-prompt">
+                Diagrams showing Class 1, 2, and 3 levers. For each, clearly mark F (Fulcrum), L (Load), and E (Effort).
+                Include one real-life example sketch for each (e.g., scissors, nutcracker, tongs).
+            </div>
+        </div>
+        <p><strong>Principle of Levers:</strong> Load $\times$ Load Arm = Effort $\times$ Effort Arm.</p>
+
+        <div class="reaction-type">
+            <h3>Types of Levers</h3>
+            <p><strong>Class I (F in middle - L F E):</strong> Fulcrum between Load and Effort.</p>
+            <ul>
+                <li>Examples: Scissors, Crowbar, See-saw, Pliers.</li>
+                <li>MA can be $>1$, $<1$, or $=1$.</li>
+            </ul>
+
+            <p><strong>Class II (L in middle - F L E):</strong> Load between Fulcrum and Effort.</p>
+            <ul>
+                <li>Examples: Nutcracker, Wheelbarrow, Bottle Opener.</li>
+                <li>MA is always <strong>> 1</strong> (Force Multiplier).</li>
+            </ul>
+
+            <ul>
+                <li>Examples: Sugar tongs, Forearm, Knife.</li>
+                <li>MA is always <strong>
+                        < 1</strong> (Speed Multiplier).</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q3: Lever Analysis</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: HUMAN FOREARM LEVER]</span>
+                <div class="img-prompt">
+                    Diagram of human forearm holding a ball. Elbow is Fulcrum (F). Biceps muscle provides Effort (E)
+                    upward. Ball is Load (L) at hand. Show E is between F and L. (Class III). (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">APPLICATION</span> Classify the human forearm as a lever. What is its mechanical
+                advantage status?</p>
+            <p><strong>Ans:</strong> <strong>Class III Lever</strong> (Effort is between Fulcrum and Load). Its MA is
+                always <strong>less than 1</strong>, meaning it acts as a speed multiplier (hands move faster than
+                biceps contraction).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q4: Crowbar (Class I)</span>
+            <p><span class="q-tag">NUMERICAL</span> A crowbar of length 120 cm has its fulcrum situated at a distance of
+                20 cm from the load. Calculate mechanical advantage.</p>
+            <p><strong>Solution:</strong> Length=120cm. Load Arm ($L_{arm}$)=20cm. Effort Arm
+                ($E_{arm}$)=$120-20=100cm$.</p>
+            <p>$MA = E_{arm}/L_{arm} = 100/20 = 5$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Fire Tongs (Class III)</span>
+            <p><span class="q-tag">THINKING</span> Why do we use fire tongs if they have a mechanical advantage less
+                than 1?</p>
+            <p><strong>Ans:</strong> Safety. They extend reach to handle hot objects. Even though effort required is
+                more, the safety and convenience are the advantages.</p>
+        </div>
+
+
+
+        <h2>4. Pulleys</h2>
+
+        <h3>A. Single Fixed Pulley</h3>
+        <ul>
+            <li>Fixed to a rigid support.</li>
+            <li>$L = T$ and $E = T$.</li>
+            <li><strong>MA = 1, VR = 1, Efficiency $\approx$ 100%.</strong></li>
+            <li><strong>Use:</strong> To change direction of effort (e.g., drawing water from well).</li>
+        </ul>
+
+        <h3>B. Single Movable Pulley</h3>
+        <ul>
+            <li>Pulley moves with the load.</li>
+            <li>$L = 2T$ and $E = T$.</li>
+            <li><strong>MA = 2, VR = 2.</strong></li>
+            <li><strong>Use:</strong> Force Multiplier.</li>
+        </ul>
+
+        <h3>C. Combination of Pulleys (Block and Tackle)</h3>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: BLOCK AND TACKLE]</span>
+            <div class="img-prompt">
+                Diagram of a Block and Tackle system with 5 pulleys (3 fixed, 2 movable). Show rope winding. Clearly
+                label Tension vectors 'T', Load 'L' downwards, and Effort 'E' downwards at the free end.
+            </div>
+        </div>
+        <p>System with two blocks: Upper dynamic (fixed) and Lower movable.</p>
+        <ul>
+            <li><strong>Number of Pulleys ($n$):</strong> Total pulleys in system.</li>
+            <li><strong>MA = $n$</strong> (Ideal).</li>
+            <li><strong>VR = $n$</strong> (Always equal to number of pulleys/strands supporting load).</li>
+            <li><strong>Effort required:</strong> $E = L/n$.</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Block and Tackle (VR 4)</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: BLOCK AND TACKLE 4 PULLEYS]</span>
+                <div class="img-prompt">
+                    A Block and Tackle system with 4 pulleys (2 in fixed block, 2 in movable block). Show string winding
+                    starting from *hook of fixed block* (since n is even). Mark Tension 'T' on all 4 strands support
+                    load + 1 effort strand. Equation: L=4T, E=T. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">DIAGRAM & NUMERICAL</span> A woman draws water from a well using a block and tackle
+                system of velocity ratio 4.</p>
+            <p>(i) Draw a labelled diagram of the system.</p>
+            <p>(ii) If she exerts a pull of 200 N, what is the maximum load she can raise? (Assume $\eta = 100\%$).</p>
+            <p><strong>Solution:</strong></p>
+            <p>(ii) $MA = VR = 4$. $MA = Load/Effort$</p>
+            <p>$\implies 4 = L / 200 \implies L = 800 \text{ N}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: System with VR 5</span>
+            <p><span class="q-tag">NUMERICAL</span> A block and tackle system has 5 pulleys. An effort of 1000 N is
+                needed in the downward direction to raise a load of 4500 N. Calculate (a) MA, (b) VR, (c) Efficiency.
+            </p>
+            <p><strong>Solution:</strong> $n=5 \implies VR=5$. $E=1000, L=4500$.</p>
+            <p>MA = $4500/1000 = 4.5$.</p>
+            <p>$\eta = MA/VR = 4.5/5 = 0.9 = 90\%$.</p>
+        </div>
+
+        <div class="concept-green">
+            <h3>Effect of Rope Weight & Friction</h3>
+            <p>In actual systems, Efficiency < 100%.</p>
+                    <ul>
+                        <li>MA decreases (Effective load decreases due to pulley weight).</li>
+                        <li>VR remains same (depends on strands).</li>
+                        <li>$\eta = \frac{MA}{VR} \times 100\%$.</li>
+                    </ul>
+        </div>
+
+
+
+        <div class="master-tip">
+            <span class="tip-header">NUMERICAL ADVICE</span>
+            <ul>
+                <li>For Block & Tackle systems: simply count the number of string segments supporting the lower movable
+                    block. That number is your <strong>VR</strong>.</li>
+                <li>If efficiency is given (e.g., 80%), use $MA = \eta \times VR$ to find the actual $MA$, then use $MA
+                    = L/E$ to find Effort or Load.</li>
+                <li>Don't confuse Class II and Class III. Remember <strong>FLE</strong> (1-2-3 rule:
+                    <strong>F</strong>ulcrum middle=1, <strong>L</strong>oad middle=2, <strong>E</strong>ffort
+                    middle=3).
+                </li>
+                <li>Weight of the movable block reduces the MA of the system but VR remains unchanged.</li>
+            </ul>
+        </div>
+
+        <!-- PRACTICE QUESTIONS SECTION -->
+        <h2 style="margin-top: 3rem; border-color: #d35400; color: #d35400;">Classroom Practice Questions</h2>
+
+        <div class="practice-box">
+            <span class="practice-header">Question 1: Levers</span>
+            <p><span class="q-tag">CONCEPTUAL</span> A crowbar of length 120 cm has its fulcrum situated at a distance
+                of 20 cm from the load. Calculate mechanical advantage.</p>
+            <p><strong>Solution:</strong></p>
+            <p>Length of crowbar = 120 cm. Fulcrum is at 20 cm from load.</p>
+            <p>Load Arm ($L_{arm}$) = 20 cm.</p>
+            <p>Effort Arm ($E_{arm}$) = Total length - Load Arm (Assuming load at end) = $120 - 20 = 100 \text{ cm}$.
+                (Note: Crowbar is Class I lever).</p>
+            <p>$MA = \frac{\text{Effort Arm}}{\text{Load Arm}} = \frac{100}{20} = 5$.</p>
+            <p><strong>Ans:</strong> MA is 5.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Question 2: Block and Tackle</span>
+            <p><span class="q-tag">NUMERICAL</span> A block and tackle system has 5 pulleys. An effort of 1000 N is
+                needed in the downward direction to raise a load of 4500 N. Calculate (a) MA, (b) VR, (c) Efficiency.
+            </p>
+            <p><strong>Solution:</strong></p>
+            <p>Given: $n = 5$ (Total pulleys), $E = 1000 \text{ N}$, $L = 4500 \text{ N}$.</p>
+            <p>(a) $MA = \frac{L}{E} = \frac{4500}{1000} = 4.5$</p>
+            <p>(b) $VR = n = 5$ (Number of pulleys)</p>
+            <p>(c) $\eta = \frac{MA}{VR} \times 100\% = \frac{4.5}{5} \times 100\%$</p>
+            <p>$= 0.9 \times 100\% = 90\%$</p>
+            <p><strong>Ans:</strong> MA = 4.5, VR = 5, Efficiency = 90%.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Question 3: Fire Tongs (Class III)</span>
+            <p><span class="q-tag">THINKING</span> Why do we use fire tongs if they have a mechanical advantage less
+                than 1?</p>
+            <p><strong>Solution:</strong></p>
+            <p>Fire tongs are Class III levers where effort is in the middle. We use them not to multiply force, but for
+                safety (handling hot objects from a distance) and convenience. Even though MA < 1, they provide a safe
+                    extension of our hands.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Single Movable Pulley</span>
+            <p><span class="q-tag">DERIVATION</span> For a single movable pulley, if the weight of the pulley is $w$,
+                derive the expression for MA.</p>
+            <p><strong>Solution:</strong></p>
+            <p>In equilibrium, Upward Forces = Downward Forces.</p>
+            <p>$L + w = 2T \implies T = \frac{L+w}{2}$. And Effort $E = T$.</p>
+            <p>So, $E = \frac{L+w}{2} \implies 2E = L + w$</p>
+            <p>$\implies L = 2E - w$.</p>
+            <p>$MA = \frac{L}{E} = \frac{2E - w}{E} = 2 - \frac{w}{E}$.</p>
+            <p><strong>Result:</strong> MA is less than 2 due to weight of pulley.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q9: Single Fixed Pulley</span>
+            <p><span class="q-tag">REASONING</span> Why is a single fixed pulley used if its MA is only 1?</p>
+            <p><strong>Ans:</strong> To change the direction of effort. It allows effort to be applied downwards (using
+                body weight) rather than lifting upwards.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

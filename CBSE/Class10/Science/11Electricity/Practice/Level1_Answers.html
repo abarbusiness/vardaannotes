@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 1 Electricity</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #4caf50;
+            --blue-bg: #e3f2fd;
+            --blue-border: #2196f3;
+            --pink-bg: #fce4ec;
+            --pink-border: #ec407a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark - Fixed Position & High Z-Index for Print */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
+        }
+
+        /* Answer Styles */
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px 12px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #004d40;
+        }
+
+        html.dark-mode .topic-header {
+            /* Global invert handles color */
+        }
+
+        .ans-block {
+            margin-top: 15px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .ans-label {
+            font-weight: bold;
+            margin-right: 5px;
+            color: #d32f2f;
+        }
+
+        html.dark-mode .ans-label {
+            color: #ff8a80;
+        }
+
+        .diagram-placeholder {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            background: #f5f5f5;
+            border: 2px dashed #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 15px;
+            margin: 20px 0;
+            position: relative;
+            background: #fff;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #000;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed red;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            background: #fffafa;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (STRICT) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* Essential for some browsers */
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                background: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                z-index: 9999;
+                display: flex !important;
+                visibility: visible !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 1 (Electricity)</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Topic-wise Drill</span>
+                <span>Max. Questions: 60</span>
+            </div>
+        </header>
+
+        <div class="topic-header">Topic 1: Electric Current and Circuit</div>
+        <div class="ans-block"><span class="ans-label">1.</span> Rate of flow of electric charge is called electric
+            current. SI unit: Ampere (A).</div>
+        <div class="ans-block"><span class="ans-label">2.</span> A continuous and closed path of an electric current.
+            (Diagram: Draw battery, switch, bulb, ammeter in series).
+            <div class="diagram-placeholder">[Diagram: Simple Circuit]</div>
+        </div>
+        <div class="ans-block"><span class="ans-label">3.</span> $Q = ne$ $\Rightarrow n = Q/e$ $= 1 / (1.6 \times
+            10^{-19})$ $= 6.25 \times 10^{18}$ electrons.</div>
+        <div class="ans-block"><span class="ans-label">4.</span> $Q = It$. $I=0.5$A, $t=10 \text{ min} = 600$s. <br> $Q
+            = 0.5 \times 600 = 300$ C.</div>
+        <div class="ans-block"><span class="ans-label">5.</span> Conventional current flows opposite to the direction of
+            flow of electrons.</div>
+        <div class="ans-block"><span class="ans-label">6.</span> To create a potential difference which makes the charge
+            flow.</div>
+        <div class="ans-block"><span class="ans-label">7.</span> One Ampere is the current flowing when 1 Coulomb of
+            charge flows through a cross-section in 1 second.</div>
+        <div class="ans-block"><span class="ans-label">8.</span> Ammeter. Connected in series.</div>
+        <div class="ans-block"><span class="ans-label">9.</span> Potential difference across the conductor.</div>
+        <div class="ans-block"><span class="ans-label">10.</span> $n=10^{20}$, $t=1$s. <br> $Q=ne$ $= 10^{20} \times 1.6
+            \times 10^{-19}$ $= 16$ C. <br> $I = Q/t = 16/1 = 16$ A.</div>
+        <div class="ans-block"><span class="ans-label">11.</span> Open: Key is off, current doesn't flow. Closed: Key is
+            on, current flows.</div>
+        <div class="ans-block"><span class="ans-label">12.</span> Scalar. It has direction but follows algebraic sum
+            laws, not vector addition.</div>
+        <div class="ans-block"><span class="ans-label">13.</span> Free electrons.</div>
+        <div class="ans-block"><span class="ans-label">14.</span> Charge exists in discrete packets; total charge is
+            integral multiple of charge of electron ($Q=ne$).</div>
+        <div class="ans-block"><span class="ans-label">15.</span> $I = Q/t = 60 / (2 \times 60) = 60/120 = 0.5$ A.</div>
+
+        <div class="topic-header">Topic 2: Potential Difference and Ohm’s Law</div>
+        <div class="ans-block"><span class="ans-label">16.</span> Work done to move unit positive charge from one point
+            to another. Device: Voltmeter.</div>
+        <div class="ans-block"><span class="ans-label">17.</span> At constant temperature, current is directly
+            proportional to potential difference. $V=IR$.
+            <div class="diagram-placeholder">[Diagram: Ohm's Law Verification]</div>
+        </div>
+        <div class="ans-block"><span class="ans-label">18.</span> $W = VQ = 15 \times 3 = 45$ J.</div>
+        <div class="ans-block"><span class="ans-label">19.</span> 1 Volt is 1 Joule of work done to move 1 Coulomb
+            charge. (1 J/C).</div>
+        <div class="ans-block"><span class="ans-label">20.</span> Nuclear forces hold electrons. Conductors have free
+            electrons that move easily.</div>
+        <div class="ans-block"><span class="ans-label">21.</span> Straight line passing through origin. Slope represents
+            Resistance ($R$).</div>
+        <div class="ans-block"><span class="ans-label">22.</span> $I = V/R = 220 / 50 = 4.4$ A.</div>
+        <div class="ans-block"><span class="ans-label">23.</span> Curved line. Example: Diode or Filament bulb.</div>
+        <div class="ans-block"><span class="ans-label">24.</span> According to Ohm's law ($I \propto V$), if V doubles,
+            Current also doubles.</div>
+        <div class="ans-block"><span class="ans-label">25.</span> Because it measures PD across two points and has high
+            resistance so it doesn't draw current.</div>
+        <div class="ans-block"><span class="ans-label">26.</span> Infinite resistance.</div>
+        <div class="ans-block"><span class="ans-label">27.</span> $V_{AB} = V_A - V_B = 100 - (-10) = 110$ V. $W = QV =
+            5 \times 110 = 550$ J.</div>
+        <div class="ans-block"><span class="ans-label">28.</span> No. Fails for Diodes, Transistors, Electrolytes.</div>
+        <div class="ans-block"><span class="ans-label">29.</span> Collision of drifting electrons with atoms/ions
+            generates heat.</div>
+        <div class="ans-block"><span class="ans-label">30.</span> $V=12$V, $I=2.5$mA = $0.0025$A. $R = V/I = 12 / 0.0025
+            = 4800 \Omega = 4.8 \text{ k}\Omega$.</div>
+
+
+        <div class="topic-header">Topic 3: Factors Affecting Resistance & Combination</div>
+        <div class="ans-block"><span class="ans-label">31.</span> Length, Area, Nature of material, Temperature.</div>
+        <div class="ans-block"><span class="ans-label">32.</span> Alloys have higher resistivity and do not oxidize
+            (burn) easily potential difference high temperatures.</div>
+        <div class="ans-block"><span class="ans-label">33.</span> Volume constant. If $L \to 2L$, then $A \to A/2$. <br>
+            $R_{new} \propto (2L)/(A/2)$ $= 4(L/A) = 4R$. Resistance becomes 4 times.</div>
+        <div class="ans-block"><span class="ans-label">34.</span> Series: $V = V_1+V_2+V_3$ <br> $\Rightarrow IR_s =
+            IR_1+IR_2+IR_3$ <br> $\Rightarrow R_s = R_1+R_2+R_3$.</div>
+        <div class="ans-block"><span class="ans-label">35.</span> Parallel: $I = I_1+I_2+I_3$ <br> $\Rightarrow V/R_p =
+            V/R_1+V/R_2+V/R_3$ <br> $\Rightarrow 1/R_p = 1/R_1+1/R_2+1/R_3$.</div>
+        <div class="ans-block"><span class="ans-label">36.</span> (i) If one device fails, all stop. (ii) All get
+            different voltages if resistances vary (voltage division).</div>
+        <div class="ans-block"><span class="ans-label">37.</span> Same resistors in parallel: $R_{eq} = R/n = 10/2 = 5
+            \Omega$.</div>
+        <div class="ans-block"><span class="ans-label">38.</span> Cut into 5 parts $\to$ each part $R/5$. Parallel:
+            $1/R' = 5/(R/5) = 25/R \Rightarrow R' = R/25$. Ratio $R/R' = 25$.</div>
+        <div class="ans-block"><span class="ans-label">39.</span> $R = \rho L/A \Rightarrow \rho = RA/L$. $R=2$, $L=1$.
+            $A = \pi (d/2)^2$ $= 3.14 \times (2 \times 10^{-4})^2$ $= 3.14 \times 4 \times 10^{-8}$ $= 1.256 \times
+            10^{-7} m^2$. <br> $\rho = 2 \times 1.256 \times 10^{-7} / 1$ $= 2.5 \times 10^{-7} \Omega$ m.</div>
+        <div class="ans-block"><span class="ans-label">40.</span> Resistance is property of the object (depends on
+            dimensions). Resistivity is property of material (independent of dimensions).</div>
+        <div class="ans-block"><span class="ans-label">41.</span> $P = V^2/R \Rightarrow R \propto 1/P$. Lower power
+            means higher resistance. 60W bulb has higher resistance.</div>
+        <div class="ans-block"><span class="ans-label">42.</span> $1/R = 1/2 + 1/3 + 1/6 = (3+2+1)/6 = 6/6 = 1$. $R_{eq}
+            = 1 \Omega$.</div>
+        <div class="ans-block"><span class="ans-label">43.</span> Circuit breaks, current stops, all stop working.</div>
+        <div class="ans-block"><span class="ans-label">44.</span> (i) 9 $\Omega$: Two in parallel ($6||6=3$) + One in
+            series ($3+6=9$). (ii) 4 $\Omega$: Two in series ($6+6=12$) parallel with third ($12||6 \Rightarrow
+            (12\times6)/(12+6) = 72/18 = 4$).</div>
+        <div class="ans-block"><span class="ans-label">45.</span> It means resistance of a copper wire of length 1m and
+            area $1m^2$ is $1.62 \times 10^{-8} \Omega$.</div>
+
+        <div class="topic-header">Topic 4: Heating Effect & Electric Power</div>
+        <div class="ans-block"><span class="ans-label">46.</span> Heat produced $H = I^2 R t$. (Directly proportional to
+            square of current, resistance, and time).</div>
+        <div class="ans-block"><span class="ans-label">47.</span> Cord connects (Copper - low R, negligible heat).
+            Element heats (Nichrome - high R, high heat).</div>
+        <div class="ans-block"><span class="ans-label">48.</span> $H = VQ$ (or VIt). given Q=96000, t=1hr (irrelevant
+            here if we use VQ), V=50. $H = 50 \times 96000 = 4,800,000$ J = $4.8 \times 10^6$ J.</div>
+        <div class="ans-block"><span class="ans-label">49.</span> Max rate ($P=840$): $I = 840/220$ $= 3.82$ A, <br> $R
+            = 220/3.82$ $= 57.6 \Omega$. <br> Min rate ($P=360$): $I = 360/220$ $= 1.64$ A, <br> $R = 220/1.64$ $=
+            134.15 \Omega$.
+        </div>
+        <div class="ans-block"><span class="ans-label">50.</span> Electric Power.</div>
+        <div class="ans-block"><span class="ans-label">51.</span> $P = VI = 220 \times 5 = 1100$ W. Energy $E = P \times
+            t = 1.1 \text{ kW} \times 2 \text{ h} = 2.2$ kWh.</div>
+        <div class="ans-block"><span class="ans-label">52.</span> kWh. $1 \text{ kWh} = 3.6 \times 10^6$ J.</div>
+        <div class="ans-block"><span class="ans-label">53.</span> Low resistivity minimizes energy loss as heat.</div>
+        <div class="ans-block"><span class="ans-label">54.</span> TV: $250 \times 1 = 250$ Wh. Toaster: $1200 \times
+            (10/60) = 1200/6 = 200$ Wh. TV uses more.</div>
+        <div class="ans-block"><span class="ans-label">55.</span> Works on heating effect. Melts if current exceeds
+            rating. Rated in Amperes (e.g., 5A, 10A).</div>
+        <div class="ans-block"><span class="ans-label">56.</span> $R = V^2/P = 220^2 / 100 = 48400 / 100 = 484 \Omega$.
+        </div>
+        <div class="ans-block"><span class="ans-label">57.</span> Series ($R_s = 2R$), Parallel ($R_p = R/2$). Same V.
+            <br> $H = V^2 t / R$. Ratio $H_s/H_p$ $= (V^2 t / 2R) / (V^2 t / (R/2))$ $= (1/2R) \times (R/2)$ $= 1/4
+            \Rightarrow 1:4$.
+        </div>
+        <div class="ans-block"><span class="ans-label">58.</span> By Joule's Law derivation, work done against
+            resistance is converted to heat, and power $P \propto I^2$.</div>
+        <div class="ans-block"><span class="ans-label">59.</span> Argon or Nitrogen (Chemicaly inactive). To prolong
+            filament life (prevent oxidation).</div>
+        <div class="ans-block"><span class="ans-label">60.</span> $E \text{ per day} = 400 \times 8 = 3200 \text{ Wh} =
+            3.2 \text{ kWh}$. For 30 days: $3.2 \times 30 = 96$ kWh. Cost: $96 \times 3 = \text{Rs } 288$.</div>
+    </div>
+</body>
+
+</html>

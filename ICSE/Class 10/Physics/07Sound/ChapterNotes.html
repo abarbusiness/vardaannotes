@@ -1,0 +1,641 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 07: Sound - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Sound</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 07 (Deep Detail)</p>
+
+        <h2>1. Reflection of Sound (Echo)</h2>
+        <div class="concept-blue">
+            <p><strong>Echo:</strong> The sound heard after reflection from a distant obstacle (like a cliff) after the
+                original sound has ceased.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-pill">ECHO CONDITIONS</div>
+            <p>1. Minimum distance ($d$) between source and reflector should be <strong>17 metres</strong> (in air).</p>
+            <p>2. Time interval between original and reflected sound must be at least <strong>0.1 seconds</strong>.</p>
+            <p>Where $v$ = speed of sound, $d$ = distance, $t$ = time of echo.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q1: Depth Calculation</span>
+            <p><span class="q-tag">NUMERICAL</span> A ship sends a sonar signal and receives the echo after 4 seconds.
+                If speed of sound in water is 1450 m/s, find depth of ocean.</p>
+            <p><strong>Solution:</strong></p>
+            <p>Total time $t = 4 \text{ s}$. Speed $v = 1450$.</p>
+            <p>$d = \frac{v \times t}{2} = \frac{1450 \times 4}{2}$</p>
+            <p>$= 1450 \times 2 = 2900 \text{ m}$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: Distance Check</span>
+            <p><span class="q-tag">NUMERICAL</span> A person stands at distance $x$ from a cliff and claps. Echo is
+                heard after 0.8 s. Find $x$. ($v_{air} = 340 \text{ m/s}$).</p>
+            <p><strong>Solution:</strong></p>
+            <p>$x = \frac{v \times t}{2} = \frac{340 \times 0.8}{2} = 170 \times 0.8 = 136 \text{ m}$.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q3: Echo
+                Basics</span>
+            <p><strong>Q:</strong> Can you hear an echo in a small room? Why?</p>
+            <p><strong>Ans:</strong> No. Distance is less than 17 m, so reflected sound merges with original sound
+                (Reverberation).</p>
+        </div>
+
+        <h3>Uses of Echo (SONAR):</h3>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: SONAR DIAGRAM]</span>
+            <div class="img-prompt">
+                Diagram showing a ship sending ultrasonic waves to the ocean floor and receiving the echo. Label
+                Transmitter, Receiver, and Depth 'd'.
+            </div>
+        </div>
+        <ul>
+            <li><strong>SONAR (Sound Navigation And Ranging):</strong> Uses Ultrasonic waves to detect depth of ocean or
+                enemy submarines.</li>
+            <li><strong>Medical Science:</strong> Ultrasound (Ultrasonography) to investigate internal organs.</li>
+            <li><strong>Bats & Dolphins:</strong> Use echo location to navigate and find prey.</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q4: Graph Analysis</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: DISPLACEMENT DISTANCE GRAPH]</span>
+                <div class="img-prompt">
+                    A wave graph (Sine wave). Y-axis: Displacement (cm). X-axis: Distance (cm). Show one complete wave
+                    from x=0 to x=20. Peak at y=5. Label Amplitude (A) and Wavelength (Lambda). (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">NUMERICAL</span> From the displacement-distance graph shown above, find the Amplitude
+                and Wavelength.</p>
+            <p><strong>Solution:</strong></p>
+            <p>1. <strong>Amplitude:</strong> Maximum displacement from mean position. Peak is at $y=5$. So, $A = 5
+                \text{ cm}$.</p>
+            <p>2. <strong>Wavelength ($\lambda$):</strong> Length of one complete wave cycles. Graph completes one cycle
+                at $x=20$. So, $\lambda = 20 \text{ cm}$.</p>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">NUMERICAL TIP: Double Echo</span>
+            In Echo problems involving a person standing between two cliffs:
+            <ul>
+                <li>First Echo: From nearest cliff ($d_1$). Time $t_1$.</li>
+                <li>Second Echo: From farther cliff ($d_2$). Time $t_2$.</li>
+                <li>Distance between cliffs = $d_1 + d_2 = \frac{v t_1}{2} + \frac{v t_2}{2}$.</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Double Echo</span>
+            <p><span class="q-tag">NUMERICAL</span> A man stands between two cliffs and fires a gun. He hears the first
+                echo after 1.5 s and the second echo after 2.5 s. If the speed of sound is 340 m/s, calculate the
+                distance between the cliffs.</p>
+            <p><strong>Solution:</strong></p>
+            <p><strong>Solution:</strong></p>
+            <p>$d = d_1 + d_2 = \frac{v t_1}{2} + \frac{v t_2}{2}$</p>
+            <p>$= \frac{170 \times (1.5 + 2.5)}{1}$</p>
+            <p>$= 170 \times 4 = 680 \text{ m}$.</p>
+        </div>
+
+
+
+        <h2>2. Characteristics of Vibration</h2>
+
+        <div class="reaction-type">
+            <h3>A. Natural Vibrations (Free)</h3>
+            <p>Vibrations of a body in the absence of any external resistive force. The body vibrates with its
+                <strong>Natural Frequency</strong> and constant amplitude.
+            </p>
+            <p><em>(Possible only in vacuum).</em></p>
+
+            <h3>B. Damped Vibrations</h3>
+            <p>Vibrations in a medium (like air) where amplitude decreases with time due to friction/resistance.
+                Finally, the body stops.</p>
+
+            <h3>C. Forced Vibrations</h3>
+            <p>Vibrations of a body under the influence of an external periodic force. The body vibrates with the
+                <strong>frequency of the applied force</strong>, not its natural frequency.
+            </p>
+        </div>
+
+        <h2>3. Resonance</h2>
+        <p>A special case of forced vibration when the <strong>Frequency of External Force = Natural Frequency</strong>
+            of the body.</p>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: PENDULUM RESONANCE]</span>
+            <div class="img-prompt">
+                Diagram of coupled pendulums. One pendulum vibrating causes another of the same length to start
+                vibrating with maximum amplitude.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Resonance Setup</span>
+            <p><span class="q-tag">EXPERIMENT</span> Four pendulums A, B, C, and D are suspended from the same elastic
+                string. A and C are of the same length, while B is shorter and D is longer. If A is set into vibration,
+                what do you observe?</p>
+            <p><strong>Ans:</strong> Pendulum C will start vibrating with <strong>maximum amplitude</strong> because its
+                length is equal to A, so its natural frequency matches A's frequency (Resonance). B and D will vibrate
+                with small amplitudes (Forced Vibration).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Resonance Condition</span>
+            <p><span class="q-tag">CONCEPTUAL</span> What is the essential condition for resonance?</p>
+            <p><strong>Ans:</strong> The frequency of the driving force (external periodic force) must be
+                <strong>exactly
+                    equal</strong> to the natural frequency of the vibrating body.
+            </p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Forced vs Resonant</span>
+            <p><span class="q-tag">REASONING</span> Why are stringed instruments provided with a hollow sound box?</p>
+            <p><strong>Ans:</strong> The hollow box provides a large volume of air. The vibrating string causes the air
+                to
+                vibrate (Forced Vibration). The large surface area and resonance amplifies the sound.</p>
+        </div>
+
+
+
+        <h2>4. Characteristics of Sound</h2>
+
+        <h3>A. Loudness</h3>
+        <ul>
+            <li>Distinguishes a loud sound from a faint one.</li>
+            <li>Depends on <strong>Amplitude</strong> (${Amplitude}^2$).</li>
+            <li>Unit: Decibel (dB).</li>
+        </ul>
+
+        <h3>B. Pitch (Shrillness)</h3>
+        <ul>
+            <li>Distinguishes a shrill note from a flat/grave note.</li>
+            <li>Depends on <strong>Frequency</strong>. (Higher Frequency $\to$ Higher Pitch).</li>
+            <li>Example: Woman's voice (High pitch) vs Man's voice (Low pitch).</li>
+        </ul>
+
+        <h3>C. Quality (Timbre)</h3>
+        <ul>
+            <li>Distinguishes two sounds of same loudness and pitch emitted by different instruments.</li>
+            <li>Depends on <strong>Waveform</strong> (Number of overtones/harmonics).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q9: Waveform ID</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: WAVEFORMS TUNING FORK VS PIANO]</span>
+                <div class="img-prompt">
+                    Two graphs. (a) Pure sine wave (Tuning Fork). (b) Complex wave with same fundamental frequency but
+                    jagged shape (Piano/Violin). Label 'Quality differs'. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">CONCEPTUAL</span> Two sounds have the same loudness and pitch but different quality.
+                Draw
+                their waveforms.</p>
+            <p><strong>Ans:</strong> See diagram. One is a pure sine wave (monotone), the other is complex (rich in
+                subsidiary notes). This difference in <strong>waveform</strong> gives them different quality.</p>
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Practice Q10: Pitch
+                Check</span>
+            <p><strong>Q:</strong> Who has a higher pitch voice: a mosquito or a lion?</p>
+            <p><strong>Ans:</strong> Mosquito. (High frequency buzzing). Lion's roar is loud (High Amplitude) but low
+                pitch.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q11: Loudness Ratio</span>
+            <p><span class="q-tag">NUMERICAL</span> Two waves have amplitudes in the ratio 1:4. What is the ratio of
+                their loudness (intensity)?</p>
+            <p><strong>Solution:</strong> $I \propto A^2$. Ratio = $(1/4)^2 = 1:16$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q12: Factors of Pitch</span>
+            <p><span class="q-tag">CONCEPTUAL</span> How does the pitch of a stretched string depend on its length and
+                tension?</p>
+            <p><strong>Ans:</strong> $f \propto \frac{1}{L}$ and $f \propto \sqrt{T}$. Shorter string and Higher Tension
+                $\implies$ Higher Pitch.</p>
+        </div>
+
+        <div class="concept-green">
+            <h3>Subjective vs Objective Nature</h3>
+            <p><strong>Loudness:</strong> Subjective. Depends on listener's ear sensitivity.</p>
+            <p><strong>Intensity:</strong> Objective. Measurable quantity (Energy per unit area per second).</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

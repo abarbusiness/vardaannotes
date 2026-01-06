@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 3 Light</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            /* Critical for mobile */
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            /* Seamless merge */
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                /* Adjust padding for small screens */
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            /* Light Mode */
+            height: auto;
+        }
+
+        /* Dark Mode Implementation */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Double Inversion for Watermark & Images */
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+            /* Dark Mode */
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            /* Scrolls with page */
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            /* Double inversion to keep icon looking normal-ish */
+            background: #333;
+            color: #fff;
+        }
+
+        /* Answer Styles */
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        html.dark-mode .topic-header {
+            /* Global invert handles color */
+        }
+
+        .ans-block {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            padding-top: 10px;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .ans-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-right: 5px;
+        }
+
+        .diagram-placeholder {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            border: 2px dashed #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            color: #666;
+            background: #fdfdfd;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 3 (Light)</h2>
+            <div class="meta-strip"><span>Class: 10 Science</span><span>Topic: Light (High Order
+                    Thinking)</span><span>Matches Level 3 Worksheet</span></div>
+        </header>
+
+        <div class="topic-header">Section A: Case-Based Questions</div>
+        <div class="ans-block"><span class="ans-title">1.</span> Image forms at Focus. So $v = f$ (Focal length).</div>
+        <div class="ans-block"><span class="ans-title">2.</span> A <b>Rectangular Hyperbola</b>. As $u$ increases, $v$
+            decreases non-linearly.</div>
+        <div class="ans-block"><span class="ans-title">3.</span> At Infinity. (Source at Focus $\to$ Parallel rays).
+        </div>
+        <div class="ans-block"><span class="ans-title">4.</span> Moves away from Focus to Infinity.</div>
+
+        <div class="ans-block"><span class="ans-title">5.</span> Angle of incidence is equal to angle of emergence
+            ($\angle i = \angle e$).</div>
+        <div class="ans-block"><span class="ans-title">6.</span> Lateral Displacement (or Lateral Shift).</div>
+        <div class="ans-block"><span class="ans-title">7.</span> $v = c/n = (3 \times 10^8) / 1.5 = 2 \times 10^8$ m/s.
+        </div>
+
+        <div class="topic-header">Section B: High Order Thinking (HOTS)</div>
+        <div class="ans-block"><span class="ans-title">8.</span> Divergent (Concave): $f = -30$, $v = -15$ (Always
+            virtual).<br>
+            $1/u = 1/v - 1/f$ $= 1/(-15) - 1/(-30)$ <br> $= -2/30 + 1/30 = -1/30$.<br>
+            $u = -30$ cm. Object placed at Focus.<br>
+            $m = v/u = (-15)/(-30) = +0.5$. Size = $5 \times 0.5 = 2.5$ cm.
+            <div class="diagram-placeholder"
+                style="width: 100%; max-width: 400px; height: 200px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center; margin: 15px auto; color: #555; background: #fdfdfd; font-style: italic; padding: 10px;">
+                [Generate Image: Ray diagram for a Concave Lens. Object at 30cm (2F). Rays diverge. Virtual image formed
+                at 15cm (F) on same side. Erect and Diminished.]</div>
+
+        </div>
+
+        <div class="ans-block"><span class="ans-title">9.</span> Refractive index of glass w.r.t water ${}_w n_g = n_g /
+            n_w$ $= (3/2) / (4/3)$ $= 9/8 = 1.125$.<br>
+            Speed of light in water $v_w = c/n_w$ $= 3 \times 10^8 / (4/3)$ $= 2.25 \times 10^8$ m/s.</div>
+
+        <div class="ans-block"><span class="ans-title">10.</span> Power $P = +3.5 + (-2.5) = +1.0$ D.<br>
+            Focal length $f = 1/P = 1$ m $= +100$ cm.<br>
+            Object at $u = -50$ cm. $1/v = 1/f + 1/u$ $= 1/100 - 1/50$ $= -1/100$.<br>
+            $v = -100$ cm. Image is Virtual, Erect, Magnified.</div>
+
+        <div class="ans-block"><span class="ans-title">11.</span> Yes. <br> <b>Magnified Real:</b> Object placed between
+            F and 2F. <br> <b>Magnified Virtual:</b> Object placed between F and Optical Center (O).</div>
+
+        <div class="ans-block"><span class="ans-title">12.</span> (i) Focus the reflected light onto the paper for some
+            time. <br> (ii) Concave Mirror (Converging). <br> (iii) Much smaller (Point-sized), as object (Sun) is at
+            infinity.</div>
+
+        <div class="ans-block"><span class="ans-title">13.</span> Real, Inverted, Same Size $\to$ Object is at $2F_1$.
+            <br> If moved 5 cm towards lens (into F-2F region), image moves beyond $2F_2$, becomes <b>Magnified</b>.
+        </div>
+
+        <div class="ans-block"><span class="ans-title">14.</span> Air to Water (Rarer to Denser): Bends towards normal.
+            <br> Angle of refraction $r < 45^\circ$. <br> Proof: $\sin i / \sin r = 1.33$. $\sin r = \sin 45 / 1.33$.
+                Since $1.33 > 1$, $\sin r < \sin 45$, so $r < 45$.</div>
+
+                    <div class="ans-block"><span class="ans-title">15.</span> Diamond has a very high Refractive Index
+                        (2.42), resulting in a very small Critical Angle ($24.4^\circ$). <br> Most light entering gets
+                        trapped inside due to multiple Total Internal Reflections, making it sparkle. Glass ($n=1.5$)
+                        has larger critical angle ($42^\circ$), so less trapping.</div>
+
+                    <div class="ans-block"><span class="ans-title">16.</span> If mirror rotates by $\theta$, the
+                        Reflected Ray rotates by $2\theta$. (Geometric proof involves angle of incidence changing by
+                        $\theta$, so angle of reflection changes by $\theta$, total deviation change $2\theta$).</div>
+
+                    <div class="ans-block"><span class="ans-title">17.</span> No. A convex mirror is a Diverging mirror.
+                        It spreads sunlight out instead of focusing it to a point. Thus, it cannot generate enough heat
+                        to burn paper.</div>
+
+                    <div class="ans-block"><span class="ans-title">18.</span> <b>Liquid Lens:</b> $n_{liquid} (1.6) >
+                        n_{lens} (1.5)$. <br> Since the surrounding medium is optically denser, the nature of the lens
+                        is reversed. A convex lens will behave as a <b>Diverging Lens</b>.</div>
+
+                    <div class="ans-block"><span class="ans-title">19.</span> Convex mirrors are used as side mirrors.
+                        They form <b>Diminished</b> images. Since we judge distance by image size, smaller images are
+                        perceived as being further away than they actually are. Hence the warning.</div>
+
+                    <div class="ans-block"><span class="ans-title">20.</span> Formula: $\sin C = 1/n$. <br> $\sin C =
+                        1/1.5$ $= 2/3 = 0.666$. <br> $C = \sin^{-1}(0.666) \approx 41.8^\circ$.</div>
+        </div>
+</body>
+
+</html>

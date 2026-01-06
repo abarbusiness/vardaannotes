@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 1 Human Eye</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #4caf50;
+            --blue-bg: #e3f2fd;
+            --blue-border: #2196f3;
+            --pink-bg: #fce4ec;
+            --pink-border: #ec407a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
+        }
+
+        /* Answer Styles */
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px 12px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #004d40;
+        }
+
+        .ans-block {
+            margin-top: 15px;
+            margin-bottom: 12px;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .ans-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-right: 5px;
+        }
+
+        .diagram-placeholder {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            border: 2px dashed #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            color: #666;
+            background: #fdfdfd;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 15px;
+            margin: 20px 0;
+            position: relative;
+            background: #fff;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #000;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed red;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            background: #fffafa;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (STRICT) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            /* standard */
+            word-break: break-word;
+            /* non-standard but needed for some browsers */
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 1 (Human Eye)</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Topic-wise Drill Solutions</span>
+                <span>Max. Questions: 60</span>
+            </div>
+        </header>
+
+        <div class="topic-header">Topic 1: Human Eye - Structure & Function</div>
+        <div class="ans-block"><span class="ans-title">1.</span>
+            <div class="diagram-placeholder">[Diagram: Human Eye with Cornea, Iris, Pupil, Crystalline Lens, Ciliary
+                Muscles, Retina, Optic Nerve labeled]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">2.</span> It provides fine adjustment of focal length required to
+            focus objects at different distances on the retina.</div>
+        <div class="ans-block"><span class="ans-title">3.</span> Iris controls the size of the pupil. Pupil regulates
+            the amount of light entering the eye (dilates in dim light, constricts in bright light).</div>
+        <div class="ans-block"><span class="ans-title">4.</span> The ability of the eye lens to adjust its focal length
+            is called accommodation. Maximum power = 4 D.</div>
+        <div class="ans-block"><span class="ans-title">5.</span> It is the junction of the optic nerve and retina. No
+            photoreceptor cells (rods/cones) are present, so no vision is possible here.</div>
+        <div class="ans-block"><span class="ans-title">6.</span> Retina acts as a screen to form the image. Cells: Rods
+            (intensity/dim light) and Cones (color/bright light).</div>
+        <div class="ans-block"><span class="ans-title">7.</span> In bright light, pupil is small. Upon entering dark, it
+            takes time to expand (dilate) to allow more light. This time lag causes temporary blindness.</div>
+        <div class="ans-block"><span class="ans-title">8.</span> Range: 25 cm to Infinity. Near Point = 25 cm. Far Point
+            = Infinity.</div>
+        <div class="ans-block"><span class="ans-title">9.</span> Ciliary muscles change the curvature of the eye lens to
+            change its focal length ($f$), keeping the image distance ($v$) constant (distance between lens and retina).
+        </div>
+        <div class="ans-block"><span class="ans-title">10.</span> Ciliary muscles modify the curvature of the eye lens
+            to focus objects at varying distances.</div>
+        <div class="ans-block"><span class="ans-title">11.</span> Transmits electrical signals generated by retina to
+            the brain for processing.</div>
+        <div class="ans-block"><span class="ans-title">12.</span> (i) Wider field of view ($180^\circ$ vs $150^\circ$).
+            (ii) Depth perception (3D vision).</div>
+        <div class="ans-block"><span class="ans-title">13.</span> The pupil constricts (becomes smaller) to reduce light
+            entry.</div>
+        <div class="ans-block"><span class="ans-title">14.</span> Real and Inverted. Because the eye lens is a convex
+            lens.</div>
+        <div class="ans-block"><span class="ans-title">15.</span> Suspensory ligaments connected to the ciliary muscles.
+        </div>
+
+        <div class="topic-header">Topic 2: Defects of Vision & Correction</div>
+        <div class="ans-block"><span class="ans-title">16.</span> <b>Myopia:</b> Near-sightedness. Distant objects are
+            blurred. Image forms in front of retina.
+            <div class="diagram-placeholder">[Diagram: Myopic Eye - Rays converging before retina]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">17.</span> Corrected by Concave Lens.
+            <div class="diagram-placeholder">[Diagram: Correction of Myopia with Concave Lens]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">18.</span> (i) Excessive curvature of eye lens. (ii) Elongation
+            of eyeball.</div>
+        <div class="ans-block"><span class="ans-title">19.</span> <b>Hypermetropia:</b> Far-sightedness. Near objects
+            are blurred. Image forms behind retina.
+            <div class="diagram-placeholder">[Diagram: Hypermetropic Eye - Rays meeting behind retina]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">20.</span> Corrected by Convex Lens.
+            <div class="diagram-placeholder">[Diagram: Correction of Hypermetropia with Convex Lens]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">21.</span> (i) Focal length of eye lens is too long. (ii) Eyeball
+            is too short.</div>
+        <div class="ans-block"><span class="ans-title">22.</span> Myopic: Near point is normal (25 cm), Far point is
+            less than infinity. Hypermetropic: Near point is > 25 cm, Far point is normal.</div>
+        <div class="ans-block"><span class="ans-title">23.</span> <b>Presbyopia:</b> Old-age hypermetropia due to
+            weakening of ciliary muscles and hardening of lens.</div>
+        <div class="ans-block"><span class="ans-title">24.</span> Bifocal lens (Upper: Concave for distance, Lower:
+            Convex for reading).</div>
+        <div class="ans-block"><span class="ans-title">25.</span> Defect: Myopia (Near-sightedness). Lens: Concave Lens.
+        </div>
+        <div class="ans-block"><span class="ans-title">26.</span> Power $P = -5.5$ D. $f = 1/P = -1/5.5 = -0.18$ m = -18
+            cm. Defect: Myopia.</div>
+        <div class="ans-block"><span class="ans-title">27.</span> Power $P = +1.5$ D. $f = 1/1.5 = +0.67$ m = +67 cm.
+            Defect: Hypermetropia/Presbyopia.</div>
+        <div class="ans-block"><span class="ans-title">28.</span> A hypermetropic eye has a normal Far Point (infinity).
+            They only need convex lens (+ power) to read/see near objects, not for distance.</div>
+        <div class="ans-block"><span class="ans-title">29.</span> Yes, Presbyopia often accompanies Myopia. Correction:
+            Bifocal lenses.</div>
+        <div class="ans-block"><span class="ans-title">30.</span> Clouding of the crystalline lens in old age, leading
+            to loss of vision. Correction: Cataract Surgery (IOL implantation).</div>
+
+        <div class="topic-header">Topic 3: Refraction through Prism & Dispersion</div>
+        <div class="ans-block"><span class="ans-title">31.</span>
+            <div class="diagram-placeholder">[Diagram: Refraction through Prism showing i, r, e, D]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">32.</span> Angle between incident ray and emergent ray. Depends
+            on: Angle of prism (A), Refractive index ($n$), Angle of incidence ($i$).</div>
+        <div class="ans-block"><span class="ans-title">33.</span> Splitting of white light into constituent colors
+            (VIBGYOR).</div>
+        <div class="ans-block"><span class="ans-title">34.</span> Least bends: Red (Max wavelength). Most bends: Violet
+            (Min wavelength). $Deviation \propto 1/\lambda$.</div>
+        <div class="ans-block"><span class="ans-title">35.</span> Different colors have different speeds in glass
+            (refractive index varies with wavelength: $n_v > n_r$), so they bend by different angles.</div>
+        <div class="ans-block"><span class="ans-title">36.</span>
+            <div class="diagram-placeholder">[Diagram: Spectrum formation on screen]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">37.</span> Isaac Newton. Recombination: Two identical prisms
+            placed inverted to each other; first disperses, second recombines to form white light.</div>
+        <div class="ans-block"><span class="ans-title">38.</span> No. $Speed = c/n$. Since $n$ is different for
+            different colors, speed is different (Red is fastest, Violet is slowest in glass).</div>
+        <div class="ans-block"><span class="ans-title">39.</span> Natural spectrum caused by dispersion of sunlight by
+            raindrops. Steps: Refraction, Dispersion, Total Internal Reflection, Refraction.</div>
+        <div class="ans-block"><span class="ans-title">40.</span> (i) Sun behind observer. (ii) Water droplets
+            (rain/mist) in front.</div>
+        <div class="ans-block"><span class="ans-title">41.</span> Because raindrops are spherical, and the cone of rays
+            reaching the eye from all such drops forms a circular arc.</div>
+        <div class="ans-block"><span class="ans-title">42.</span> Monochromatic means single color/wavelength. No, prism
+            cannot disperse it (only deviation occurs).</div>
+        <div class="ans-block"><span class="ans-title">43.</span> Because Red has the longest wavelength, its refractive
+            index is lowest, so it deviates least.</div>
+        <div class="ans-block"><span class="ans-title">44.</span> Glass slab: Emergent ray parallel to incident (Lateral
+            shift only, no dispersion recombines). Prism: Emergent ray deviates (Angular dispersion).</div>
+        <div class="ans-block"><span class="ans-title">45.</span> Primary: One internal reflection (Brighter, Red
+            outer). Secondary: Two internal reflections (Fainter, Violet outer).</div>
+
+        <div class="topic-header">Topic 4: Atmospheric Refraction & Scattering</div>
+        <div class="ans-block"><span class="ans-title">46.</span> Refraction of light by earth's atmosphere due to
+            varying optical density of air layers (fluctuating temperature/density).</div>
+        <div class="ans-block"><span class="ans-title">47.</span> Stars are point sources; atmospheric turbulence causes
+            path of light to fluctuate, changing intensity (twinkle). Planets are extended sources; fluctuations cancel
+            out.</div>
+        <div class="ans-block"><span class="ans-title">48.</span> Light from stars bends towards normal as it enters
+            denser lower atmosphere. Eye traces ray back in straight line, seeing star at a higher apparent position.
+        </div>
+        <div class="ans-block"><span class="ans-title">49.</span> Sun is visible 2 mins before actual sunrise and 2 mins
+            after sunset due to atmospheric refraction. Total day length increases by 4 mins.</div>
+        <div class="ans-block"><span class="ans-title">50.</span> Due to continuous change in density and refractive
+            index of atmospheric air layers.</div>
+        <div class="ans-block"><span class="ans-title">51.</span> Phenomenon of spreading of light by minute particles.
+            Depends on particle size ($a$) vs wavelength ($\lambda$).</div>
+        <div class="ans-block"><span class="ans-title">52.</span> Scattering of light by colloidal particles. Examples:
+            Sunlight through canopy, Dust beam in dark room.</div>
+        <div class="ans-block"><span class="ans-title">53.</span> Rayleigh Scattering: Air molecules are smaller than
+            wavelength of visible light. They scatter blue light (shorter $\lambda$) more than red (longer $\lambda$).
+        </div>
+        <div class="ans-block"><span class="ans-title">54.</span> Black. No atmosphere to scatter light.</div>
+        <div class="ans-block"><span class="ans-title">55.</span> Red has longest wavelength, scattered least by
+            fog/smoke, so it can travel long distances to reach the eye.</div>
+        <div class="ans-block"><span class="ans-title">56.</span> At horizon, light travels longer distance through
+            atmosphere. Blue is scattered away; only Red/Orange (longer $\lambda$) reaches our eyes.</div>
+        <div class="ans-block"><span class="ans-title">57.</span> At noon, sun is overhead. Light travels shorter
+            distance. Scattering is less, all colors reach eye $\to$ appear white.</div>
+        <div class="ans-block"><span class="ans-title">58.</span> Water molecules absorb red wavelengths and scatter
+            blue wavelengths.</div>
+        <div class="ans-block"><span class="ans-title">59.</span> $Intensity \propto 1/\lambda^4$. (Shorter wavelength
+            scatters much more).</div>
+        <div class="ans-block"><span class="ans-title">60.</span> Smoke particles are larger than air molecules but
+            small enough to scatter blue end of spectrum preferentially.</div>
+
+    </div>
+</body>
+
+</html>

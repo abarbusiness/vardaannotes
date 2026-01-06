@@ -4,41 +4,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 0: Magnetic Effects - Vardaan Learning Institute</title>
+    <title>Level 0: Magnetic Effects - Vardaan Institute</title>
+
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
         body {
-            font-family: 'Times New Roman', serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.5;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .match-table th,
+            .match-table td {
+                font-size: 0.9rem;
+                padding: 5px;
+            }
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 20px;
+        }
+
+        .match-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        .match-table th,
+        .match-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .match-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        html.dark-mode .match-table th {
+            background-color: #333;
+            color: #fff;
+            border-color: #555;
+        }
+
+        html.dark-mode .match-table td {
+            border-color: #555;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .student-inputs {
+            margin-top: 1rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .line-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            margin-left: 10px;
+            background: transparent;
+            outline: none;
+        }
+
+        /* --- ORDERED LIST STYLING --- */
+        ol {
+            margin-left: 25px;
+            padding-left: 15px;
+        }
+
+        @media screen and (max-width: 800px) {
+            ol {
+                margin-left: 10px;
+                padding-left: 20px;
+            }
+        }
+
+        /* Watermark - Fixed Position & High Z-Index for Print */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .container {
-            text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
         }
 
-        h1 {
-            color: #333;
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
         }
 
-        p {
-            color: #666;
+        /* Sections */
+        .section-title {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #004d40;
+            text-transform: uppercase;
+        }
+
+        html.dark-mode .section-title {
+            /* Global invert handles color */
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+        }
+
+        ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+
+        @media print {
+            body {
+                background: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                z-index: 9999;
+                display: flex !important;
+                visibility: visible !important;
+            }
+        }
+
+        /* Mobile Scroll Fix */
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                max-width: 100%;
+            }
+
+            mjx-container {
+                max-width: 100% !important;
+                overflow-x: auto;
+                white-space: normal !important;
+            }
+
+            .paper-sheet {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Level 0 Practice</h1>
-        <p>Content Coming Soon...</p>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
     </div>
+
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Level 0 Worksheet: Magnetic Effects of Electric Current</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Foundation & Objective</span>
+                <span>Max. Questions: 100</span>
+            </div>
+            <div class="student-inputs">
+                <div class="input-group">Name: <input type="text" class="line-input"></div>
+                <div class="input-group">Date: <input type="text" class="line-input"></div>
+            </div>
+        </header>
+
+        <div class="section-title">Section A: Multiple Choice Questions (1-20)</div>
+        <div class="question-block">
+            <ol>
+                <li>Who discovered the magnetic effect of current? (a) Faraday (b) Oersted (c) Ampere (d) Maxwell</li>
+                <li>The magnetic field lines inside a current carrying solenoid are: (a) Curved (b) Circular (c)
+                    Parallel and Straight (d) Irregular</li>
+                <li>The direction of magnetic field produced by a straight current carrying conductor is given by: (a)
+                    Maxwell's Right Hand Thumb Rule (b) Fleming's Left Hand Rule (c) Fleming's Right Hand Rule (d) Ohms
+                    Law</li>
+                <li>The unit of magnetic field strength is: (a) Joule (b) Tesla (c) Watt (d) Volt</li>
+                <li>A device that converts electrical energy into mechanical energy is: (a) Generator (b) Motor (c)
+                    Galvanometer (d) Ammeter</li>
+                <li>The phenomenon of electromagnetic induction was discovered by: (a) Oersted (b) Faraday (c) Newton
+                    (d) Bohr</li>
+                <li>Which of the following serves as the core of an electromagnet? (a) Steel (b) Soft Iron (c) Copper
+                    (d) Aluminum</li>
+                <li>In domestic circuits, the color of the insulation of the live wire is: (a) Black (b) Green (c) Red
+                    (d) Yellow</li>
+                <li>The frequency of AC supply in India is: (a) 45 Hz (b) 50 Hz (c) 60 Hz (d) 100 Hz</li>
+                <li>A fuse is always connected in _______ wire. (a) Live (b) Neutral (c) Earth (d) Any of these</li>
+                <li>The magnetic field is strongest at: (a) Middle of magnet (b) Poles (c) Nowhere (d) Everywhere same
+                </li>
+                <li>Overloading happens when: (a) Live and Neutral wire touch (b) Too many appliances connected to a
+                    single socket (c) Voltage drops (d) Circuit is open</li>
+                <li>Short circuiting occurs when: (a) Insulation is damaged (b) Live touches Neutral (c) Current
+                    increases abruptly (d) All of these</li>
+                <li>The potential of earth wire is: (a) 220V (b) 110V (c) 0V (d) Fluctuating</li>
+                <li>AC generator works on the principle of: (a) Force on conductor (b) Electromagnetic Induction (c)
+                    Heating effect (d) Chemical effect</li>
+                <li>Commutator is used in: (a) AC Generator (b) DC Motor (c) Transformer (d) Inductor</li>
+                <li>To increase the strength of an electromagnet, we can: (a) Increase current (b) Increase number of
+                    turns (c) Use soft iron core (d) All of these</li>
+                <li>The direction of induced current is given by: (a) Fleming's Right Hand Rule (b) Fleming's Left Hand
+                    Rule (c) Right Hand Thumb Rule (d) Screw Rule</li>
+                <li>Magnetic field lines: (a) Intersect at 90 degrees (b) Intersect at 45 degrees (c) Never intersect
+                    (d) Merge at poles</li>
+                <li>An electric fuse works on the: (a) Chemical effect of current (b) Magnetic effect of current (c)
+                    Lighting effect of current (d) Heating effect of current</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section B: Fill in the Blanks (21-40)</div>
+        <div class="question-block">
+            <ol start="21">
+                <li>A magnet attracts materials like _______, Cobalt and Nickel.</li>
+                <li>Like magnetic poles _______ each other.</li>
+                <li>Unlike magnetic poles _______ each other.</li>
+                <li>Magnetic field lines emerge from the _______ pole outside the magnet.</li>
+                <li>Inside a magnet, field lines go from _______ to _______ pole.</li>
+                <li>A current carrying straight wire produces a field in the form of _______ circles.</li>
+                <li>A coil of many turns of wire wrapped in shape of cylinder is called a _______.</li>
+                <li>The device used to test the presence of small current is _______.</li>
+                <li>Current that changes direction periodically is called _______ current.</li>
+                <li>Current that flows in one direction only is called _______ current.</li>
+                <li>The safe limit of current for domestic line is mainly _______ A and 15 A.</li>
+                <li>_______ wire is used to protect user from electric shock.</li>
+                <li>Kilowatt-hour is the unit of _______.</li>
+                <li>Magnetic field is a quantity that has both magnitude and _______.</li>
+                <li>Two magnetic field lines never _______ each other.</li>
+                <li>The pattern of magnetic field around a straight conductor can be traced using a _______.</li>
+                <li>In a battery, the longer line represents the _______ terminal.</li>
+                <li>The strength of magnetic field produced by a solenoid is directly proportional to the _______.</li>
+                <li>Soft iron is a _______ magnetic material.</li>
+                <li>Hard steel is used to make _______ magnets.</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section C: True or False (41-60)</div>
+        <div class="question-block">
+            <ol start="41">
+                <li>Magnetic field lines are closed curves.</li>
+                <li>A compass needle is a small bar magnet.</li>
+                <li>No force acts on a stationary charge in a magnetic field.</li>
+                <li>A current carrying solenoid behaves like a bar magnet.</li>
+                <li>Fleming's Left Hand Rule gives the direction of induced current.</li>
+                <li>An electric motor converts mechanical energy into electrical energy.</li>
+                <li>Copper is a magnetic material.</li>
+                <li>Earth's magnetic field resembles that of a bar magnet.</li>
+                <li>A fuse wire has a high melting point.</li>
+                <li>Parallel connection is used in domestic wiring.</li>
+                <li>The potential difference between live and neutral wire is 220V.</li>
+                <li>Green insulation is used for the live wire.</li>
+                <li>A freely suspended magnet always points in East-West direction.</li>
+                <li>Monopoles (isolated poles) can exist.</li>
+                <li>Magnetic field lines are crowded where the field is strong.</li>
+                <li>Oersted discovered the heating effect of current.</li>
+                <li>Electric generator is based on electromagnetic induction.</li>
+                <li>Force on a current carrying conductor is maximum when it is parallel to the magnetic field.</li>
+                <li>MCBs are used as a safety device in place of fuses.</li>
+                <li>AC can be transmitted over long distances with less energy loss.</li>
+            </ol>
+        </div>
+
+        <div class="section-title">Section D: Match the Following (61-80)</div>
+        <div class="question-block">
+            <p><strong>Set 1: Discoveries & Rules</strong></p>
+            <div class="table-responsive">
+                <table class="match-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">Column A</th>
+                            <th style="width: 50%;">Column B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>61. Oersted</td>
+                            <td>(a) Direction of Induced Current</td>
+                        </tr>
+                        <tr>
+                            <td>62. Faraday</td>
+                            <td>(b) Direction of Force on Conductor</td>
+                        </tr>
+                        <tr>
+                            <td>63. Fleming's Left Hand Rule</td>
+                            <td>(c) Magnetic Effect of Current</td>
+                        </tr>
+                        <tr>
+                            <td>64. Fleming's Right Hand Rule</td>
+                            <td>(d) Direction of Magnetic Field</td>
+                        </tr>
+                        <tr>
+                            <td>65. Maxwell's Thumb Rule</td>
+                            <td>(e) Electromagnetic Induction</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>Set 2: Devices & Functions</strong></p>
+            <div class="table-responsive">
+                <table class="match-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">Column A</th>
+                            <th style="width: 50%;">Column B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>66. Motor</td>
+                            <td>(a) Protects component from high current</td>
+                        </tr>
+                        <tr>
+                            <td>67. Generator</td>
+                            <td>(b) Electrical to Mechanical Energy</td>
+                        </tr>
+                        <tr>
+                            <td>68. Fuse</td>
+                            <td>(c) Detects presence of current</td>
+                        </tr>
+                        <tr>
+                            <td>69. Galvanometer</td>
+                            <td>(d) Mechanical to Electrical Energy</td>
+                        </tr>
+                        <tr>
+                            <td>70. Solenoid</td>
+                            <td>(e) Acts like a bar magnet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>Set 3: Wires & Colors (Old/New Convention mixed)</strong></p>
+            <div class="table-responsive">
+                <table class="match-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">Column A</th>
+                            <th style="width: 50%;">Column B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>71. Live Wire</td>
+                            <td>(a) Green</td>
+                        </tr>
+                        <tr>
+                            <td>72. Neutral Wire</td>
+                            <td>(b) Red</td>
+                        </tr>
+                        <tr>
+                            <td>73. Earth Wire</td>
+                            <td>(c) Black</td>
+                        </tr>
+                        <tr>
+                            <td>74. 50 Hz</td>
+                            <td>(d) Mains Potential Difference</td>
+                        </tr>
+                        <tr>
+                            <td>75. 220 V</td>
+                            <td>(e) Frequency of AC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>Set 4: Materials & Properties</strong></p>
+            <div class="table-responsive">
+                <table class="match-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">Column A</th>
+                            <th style="width: 50%;">Column B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>76. Soft Iron</td>
+                            <td>(a) SI Unit of Magnetic Field</td>
+                        </tr>
+                        <tr>
+                            <td>77. Steel</td>
+                            <td>(b) Permanent Magnet</td>
+                        </tr>
+                        <tr>
+                            <td>78. Tesla</td>
+                            <td>(c) Temporary Magnet Core</td>
+                        </tr>
+                        <tr>
+                            <td>79. Alnico</td>
+                            <td>(d) Alloy for Magnets</td>
+                        </tr>
+                        <tr>
+                            <td>80. Concentric Circles</td>
+                            <td>(e) Field around straight wire</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-title">Section E: One Word Answer (81-100)</div>
+        <div class="question-block">
+            <ol start="81">
+                <li>Name the instrument used to find the direction of magnetic field.</li>
+                <li>What is the angle between magnetic field and current for maximum force?</li>
+                <li>What is the angle between magnetic field and current for zero force?</li>
+                <li>Name the device which reverses the direction of current in a motor.</li>
+                <li>Which rule gives the direction of magnetic field due to a loop?</li>
+                <li>What prevents electric shock when touching a metallic appliance?</li>
+                <li>Does a stationary charge experience force in a magnetic field?</li>
+                <li>What is the nature of magnetic field lines inside a solenoid?</li>
+                <li>State the polarity of the face of the loop carrying clockwise current.</li>
+                <li>State the polarity of the face of the loop carrying anti-clockwise current.</li>
+                <li>Which physical quantity is represented by the degree of closeness of field lines?</li>
+                <li>Name the type of current supplied by a battery.</li>
+                <li>Name the type of current supplied to our houses.</li>
+                <li>What happens to the field if current in a wire is doubled?</li>
+                <li>What happens to the field if distance from the wire is doubled?</li>
+                <li>Who gave the law of heating effect? (Related to Fuse).</li>
+                <li> Name a natural magnet.</li>
+                <li>What is the full form of MCB?</li>
+                <li>What type of magnetic field is produced by the earth?</li>
+                <li>Can we separate the poles of a magnet?</li>
+            </ol>
+        </div>
+
+    </div>
+
 </body>
 
 </html>

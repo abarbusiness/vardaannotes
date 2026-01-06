@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 2 Electricity</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #4caf50;
+            --blue-bg: #e3f2fd;
+            --blue-border: #2196f3;
+            --pink-bg: #fce4ec;
+            --pink-border: #ec407a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                width: 100%;
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark - Fixed Position & High Z-Index for Print */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            height: auto;
+        }
+
+        /* Dark Mode */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+        }
+
+        html.dark-mode img:not(.watermark-image),
+        html.dark-mode .diagram-placeholder {
+            filter: invert(1);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: #fff;
+        }
+
+        /* Answer Styles */
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px 12px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #004d40;
+        }
+
+        html.dark-mode .topic-header {
+            /* Global invert handles color */
+        }
+
+        .ans-block {
+            margin-top: 15px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .ans-label {
+            font-weight: bold;
+            margin-right: 5px;
+            color: #d32f2f;
+        }
+
+        html.dark-mode .ans-label {
+            color: #ff8a80;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (STRICT) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* Essential for some browsers */
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        .diagram-placeholder {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            background: #f5f5f5;
+            border: 2px dashed #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 15px;
+            margin: 20px 0;
+            position: relative;
+            background: #fff;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #000;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed red;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            background: #fffafa;
+        }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                background: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                z-index: 9999;
+                display: flex !important;
+                visibility: visible !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 2 (Electricity)</h2>
+            <div class="meta-strip">
+                <span>Class: 10 Science</span>
+                <span>Topic: Practice Modules</span>
+                <span>Max. Questions: 50</span>
+            </div>
+        </header>
+
+        <div class="module-header">Module 1: Circuit Diagram Analysis</div>
+        <div class="ans-block"><span class="ans-label">1.</span> Battery (3 cells series = 6V), R1=5, R2=8, R3=12, Key.
+            All in series.
+            <div class="diagram-placeholder">[Schematic: 6V Battery - Key - 5Ω - 8Ω - 12Ω]</div>
+        </div>
+        <div class="ans-block"><span class="ans-label">2.</span> $R_{eq} = 5+8+12=25 \Omega$. $I = V/R = 6/25 = 0.24$ A
+            (Ammeter). <br> Voltage across 12$\Omega$: $V = I \times R = 0.24 \times 12 = 2.88$ V (Voltmeter).</div>
+        <div class="ans-block"><span class="ans-label">3.</span> (i) 9 $\Omega$: Two in parallel ($6||6=3$) + One in
+            series ($3+6=9$). <br> (ii) 4 $\Omega$: Two in series ($6+6=12$) parallel with third ($12||6 \Rightarrow
+            72/18 = 4$).</div>
+        <div class="ans-block"><span class="ans-label">4.</span> Diagram showing 2, 3, 6 ohm resistors connected across
+            common points A and B. $1/R = 1/2+1/3+1/6 = 1 \Omega$.
+            <div class="diagram-placeholder">[Diagram: Parallel resistors]</div>
+        </div>
+        <div class="ans-block"><span class="ans-label">5.</span> Circle wire of R divided into two semicircles of R/2
+            each. Diameter points connect these two in parallel. $R_{eq} = (R/2 || R/2) = (R/2)/2 = R/4$.</div>
+        <div class="ans-block"><span class="ans-label">6.</span> (i) Max: Series ($nR$). (ii) Min: Parallel ($R/n$).
+            Ratio: $nR / (R/n) = n^2$.</div>
+        <div class="ans-block"><span class="ans-label">7.</span> Parallel part: $3||6$ $\Rightarrow (3 \times 6)/(3+6) =
+            2 \Omega$. <br> Total $R = 2 + 4 = 6 \Omega$.</div>
+        <div class="ans-block"><span class="ans-label">8.</span> $I = V_{bat} / R_{tot} = 12 / 6 = 2$ A.</div>
+        <div class="ans-block"><span class="ans-label">9.</span> Current is 2A (series). $V_4 = I \times R = 2 \times 4
+            = 8$ V.</div>
+        <div class="ans-block"><span class="ans-label">10.</span> PD across parallel combo = $V_{bat} - V_4 = 12 - 8 =
+            4$ V. Current in 6 $\Omega$ = $V/R = 4/6 = 0.67$ A.</div>
+        <div class="ans-block"><span class="ans-label">11.</span> Ammeter in series with loop. Voltmeter in parallel
+            across the specific resistor.
+            <div class="diagram-placeholder">[Diagram: Ammeter Series, Voltmeter Parallel]</div>
+        </div>
+        <div class="ans-block"><span class="ans-label">12.</span> In series, there is only one path. If one fuse blows,
+            path is broken (open circuit).</div>
+        <div class="ans-block"><span class="ans-label">13.</span> Parallel ensures: (1) If one appliance fails, others
+            work. (2) Each appliance gets full mains voltage (220V). (3) Total resistance decreases, current potential
+            is sufficient.</div>
+        <div class="ans-block"><span class="ans-label">14.</span> Diagram: Two bulbs parallel to 220V source. Switches
+            for each.
+            <div class="diagram-placeholder">[Diagram: Parallel Lamps]</div>
+        </div>
+        <div class="ans-block"><span class="ans-label">15.</span> Safety device to prevent excess current. Placed in
+            series with Live wire. Symbol: Rectangle with line through it or sine wave inside.</div>
+
+        <div class="module-header">Module 2: Numerical Proficiency</div>
+        <div class="ans-block"><span class="ans-label">16.</span> $I = V/R = 250 / 500 = 0.5$ A.</div>
+        <div class="ans-block"><span class="ans-label">17.</span> $V = IR = 2 \times 20 = 40$ V.</div>
+        <div class="ans-block"><span class="ans-label">18.</span> $R = V/I = 0.8 / 0.2 = 4 \Omega$.</div>
+        <div class="ans-block"><span class="ans-label">19.</span> $\rho = RA/L$ $= (2 \times 10^{-2} \times 1.7 \times
+            10^{-6}) / 2$ $= 1.7 \times 10^{-8} \Omega$ m.</div>
+        <div class="ans-block"><span class="ans-label">20.</span> Volume const. $L \to 2L$, $A \to A/2$. $R_{new} =
+            \rho(2L)/(A/2) = 4(\rho L/A) = 4R$. $4 \times 20 = 80 \Omega$.</div>
+        <div class="ans-block"><span class="ans-label">21.</span> (i) Min Current: Series ($15 \Omega$). $I = 6/15 =
+            0.4$ A. (ii) Max Current: Parallel ($5||10 = 3.33 \Omega$). $I = 6/3.33 = 1.8$ A.</div>
+        <div class="ans-block"><span class="ans-label">22.</span> (i) Separate: $I = 220/24 = 9.17$ A. (ii) Series ($48
+            \Omega$): $I = 220/48 = 4.58$ A. (iii) Parallel ($12 \Omega$): $I = 220/12 = 18.33$ A.</div>
+        <div class="ans-block"><span class="ans-label">23.</span> (i) Series: $R_{eq}=3, I=2A$. <br> Power in 2$\Omega$
+            = $I^2R$ $= 4 \times 2 = 8$ W. <br>(ii) Parallel: Voltage is 4V across each. <br> Power in 2$\Omega$ =
+            $V^2/R$ $= 16/2 = 8$ W. Result: Equal Power (8W).</div>
+        <div class="ans-block"><span class="ans-label">24.</span> Total Power $P = 100+60 = 160$ W. $I = P/V = 160/220 =
+            0.727$ A.</div>
+        <div class="ans-block"><span class="ans-label">25.</span> Energy TV = $250 \times 1 = 250$ Wh. Toaster = $1200
+            \times (10/60) = 200$ Wh. TV uses more.</div>
+        <div class="ans-block"><span class="ans-label">26.</span> Rate of heat = Power. $P = I^2 R = 15^2 \times 8 = 225
+            \times 8 = 1800$ W. (Time is irrelevant for 'rate').</div>
+        <div class="ans-block"><span class="ans-label">27.</span> $H = V^2 t / R$. $t=1$. <br> $100 = V^2 / 4$
+            $\Rightarrow V^2 = 400$ $\Rightarrow V = 20$ V.</div>
+        <div class="ans-block"><span class="ans-label">28.</span> $P = VI = 220 \times 0.50 = 110$ W.</div>
+        <div class="ans-block"><span class="ans-label">29.</span> $P=0.4$ kW. Time = $8 \times 30 = 240$ h. Energy =
+            $0.4 \times 240 = 96$ kWh. Cost = $96 \times 3 = \text{Rs } 288$.</div>
+        <div class="ans-block"><span class="ans-label">30.</span> $E = P \times t$ $= 500 \text{ W}$ $\times (4 \times
+            3600) \text{ s}$ $= 500 \times 14400$ $= 7,200,000$ J.</div>
+        <div class="ans-block"><span class="ans-label">31.</span> (i) $P = VI$ $= 2.5 \times 0.75 = 1.875$ W. <br> (ii)
+            $R = V/I$ $= 2.5 / 0.75 = 3.33 \Omega$. <br> (iii) $E = P \times t$ $= 1.875 \times 4 = 7.5$ Wh.</div>
+        <div class="ans-block"><span class="ans-label">32.</span> $H = VQ$ $= 50 \times 96000$ $= 4,800,000$ J $= 4.8
+            \times 10^6$ J.</div>
+        <div class="ans-block"><span class="ans-label">33.</span> $E = VIt$ $= 12 \times 4 \times (10 \times 60)$ $= 48
+            \times 600$ $= 28,800$ J.</div>
+        <div class="ans-block"><span class="ans-label">34.</span> Rated $I = P/V = 60/250 = 0.24$ A. <br> $R = V^2/P =
+            250^2/60 = 1041.6 \Omega$. <br> At 200V: $P' = V'^2/R = 200^2 / 1041.6$ $= 40000 / 1041.6 = 38.4$ W. Power
+            drops.
+        </div>
+        <div class="ans-block"><span class="ans-label">35.</span> Formula $P = V^2/R \Rightarrow$ Lower Wattage has
+            higher Resistance. Bulb B (10W) has higher R. In series, $P = I^2 R$. Higher R consumes more power. So, 10W
+            bulb glows brighter.</div>
+
+        <div class="module-header">Module 3: Scientific Reasoning</div>
+        <div class="ans-block"><span class="ans-label">36.</span> (1) Very high melting point ($3380^{\circ}$C), doesn't
+            melt at white heat. (2) High resistivity, retains heat.</div>
+        <div class="ans-block"><span class="ans-label">37.</span> Alloys have higher resistivity (produce more heat) and
+            do not oxidise (burn) easily at high temperatures compared to pure metals.</div>
+        <div class="ans-block"><span class="ans-label">38.</span> Voltage division makes appliances dim; if one fails,
+            circuit breaks; total resistance increases too much.</div>
+        <div class="ans-block"><span class="ans-label">39.</span> $R \propto 1/A$. More area = more path for electrons =
+            less collisions = less resistance.</div>
+        <div class="ans-block"><span class="ans-label">40.</span> Rubber is an insulator; prevents current from flowing
+            through the electrician's body to earth.</div>
+        <div class="ans-block"><span class="ans-label">41.</span> Extremely low resistivity to minimize power loss
+            ($I^2R$) during transmission.</div>
+        <div class="ans-block"><span class="ans-label">42.</span> Temp increase $\to$ atoms vibrate more amplitude $\to$
+            more collisions with drifting electrons $\to$ higher resistance.</div>
+        <div class="ans-block"><span class="ans-label">43.</span> To melt quickly when current exceeds the safe limit,
+            breaking the circuit.</div>
+        <div class="ans-block"><span class="ans-label">44.</span> So it doesn't change the current of the circuit when
+            placed in series.</div>
+        <div class="ans-block"><span class="ans-label">45.</span> So it draws negligible current when placed in
+            parallel.</div>
+        <div class="ans-block"><span class="ans-label">46.</span> Provides a low-resistance path to ground for leakage
+            current, protecting the user from shock.</div>
+        <div class="ans-block"><span class="ans-label">47.</span> Alloy resistivity is weak function of temperature
+            (almost constant). Pure metals increase significantly.</div>
+        <div class="ans-block"><span class="ans-label">48.</span> Independent operation and full voltage to each bulb.
+        </div>
+        <div class="ans-block"><span class="ans-label">49.</span> Drawing more current than the circuit rating (e.g.,
+            connecting too many high-power appliances). Causes heating/fire.</div>
+        <div class="ans-block"><span class="ans-label">50.</span> Live and Neutral wires touch directly ($R \approx 0$).
+            Current becomes infinite. Fuse melts due to high heat ($I^2Rt$) and breaks circuit.</div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,664 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 04: Refraction at Plane Surfaces - Vardaan Master Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p,
+        li {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        /* Components */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            padding-top: 1.8rem;
+            margin: 2rem 0;
+            margin-top: 2.5rem;
+            position: relative;
+            background-color: #fff;
+            overflow: visible;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            font-style: normal;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-green {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reaction-type {
+            background-color: var(--pink-bg);
+            border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+
+
+        /* Practice Question Box */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* --- EQUATION RESPONSIVE FIXES --- */
+        mjx-container {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            max-width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Only display math ($$..$$) should be block level */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            margin: 0.5em 0;
+        }
+
+        /* Make parent containers handle overflow */
+        .practice-box,
+        .concept-blue,
+        .concept-green,
+        .reaction-type,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Long inline equations */
+        p,
+        li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Refraction at Plane Surfaces</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Physics • Chapter 04 (Deep Detail)</p>
+
+        <h2>1. Refraction of Light</h2>
+        <div class="concept-blue">
+            <p><strong>Definition:</strong> The bending of light when it passes from one transparent medium to another
+                is called Refraction.</p>
+            <p><strong>Cause:</strong> Change in speed of light in different media.</p>
+        </div>
+
+        <h3>Rules of Refraction:</h3>
+        <ul>
+            <li><strong>Rarer to Denser (e.g., Air to Glass):</strong> Light bends <strong>TOWARDS</strong> the normal.
+                ($i > r$)</li>
+            <li><strong>Denser to Rarer (e.g., Glass to Air):</strong> Light bends <strong>AWAY</strong> from the
+                normal. ($i < r$)</li>
+        </ul>
+
+        <div class="formula-box">
+            <div class="formula-pill">SNELL'S LAW</div>
+            <p>1. The incident ray, the refracted ray, and the normal at the point of incidence, all lie in the same
+                plane.</p>
+            <p>2. The ratio of the sine of the angle of incidence to the sine of the angle of refraction is constant for
+                a given pair of media.</p>
+            $$ \frac{\sin i}{\sin r} = \mu \text{ (Refractive Index)} $$
+        </div>
+
+        <div class="practice-box" style="border-color: #43a047; background-color: #e8f5e9;">
+            <span class="practice-header" style="color: #2e7d32; border-bottom-style: solid;">Topic Check: Snell's
+                Law</span>
+            <p><strong>Q:</strong> Light travels from air to water. If $\mu_w = 1.33$, will it bend towards or away from
+                normal?</p>
+            <p><strong>Ans:</strong> Towards. (Rarer to Denser).</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q1: Bending Logic</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: SNELL LAW REFRACTION]</span>
+                <div class="img-prompt">
+                    Ray traveling from Medium A (n=1.5) to Medium B (n=1.2). Show ray bending AWAY from normal. Mark
+                    angle i and r. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">REASONING</span> A ray of light passes from glass ($\mu=1.5$) to water ($\mu=1.33$).
+                Will it bend towards or away from the normal? Calculate the ratio $\frac{\sin i}{\sin r}$.</p>
+            <p><strong>Solution:</strong> Glass to Water means Denser to Rarer. Ray bends <strong>Away</strong> from
+                normal.</p>
+            <p>Refractive index of water w.r.t glass = $_g\mu_w$</p>
+            <p>$= \frac{\mu_w}{\mu_g} = \frac{1.33}{1.5} \approx 0.89$.</p>
+            </p>
+            <p>So, $\frac{\sin i}{\sin r} = 0.89$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q2: Wave Properties</span>
+            <p><span class="q-tag">CONCEPTUAL</span> When light travels from air to glass, which property of the wave
+                remains unchanged?</p>
+            <p><strong>Ans:</strong> <strong>Frequency</strong> remains unchanged. Speed and Wavelength decrease.</p>
+        </div>
+
+        <h2>2. Refractive Index ($\mu$)</h2>
+        <p>It is a measure of how much a medium slows down light.</p>
+
+        <div class="formula-box">
+            $$ \mu = \frac{\text{Speed in vacuum (c)}}{\text{Speed in medium (v)}} $$
+            <p>Speed of light in vacuum $c = 3 \times 10^8$ m/s.</p>
+            <p><strong>Examples:</strong> $\mu_{glass} = 1.5$, $\mu_{water} = 1.33$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q3: Calculation</span>
+            <p><span class="q-tag">NUMERICAL</span> The speed of light in air is $3 \times 10^8$ m/s and in glass is $2
+                \times 10^8$ m/s. Calculate refractive index.</p>
+            <p><strong>Solution:</strong> $\mu = c/v = 3/2 = 1.5$.</p>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">CONCEPT CHECK</span>
+            Higher Refractive Index $\implies$ Denser Optical Medium $\implies$ Slower Speed of Light $\implies$ More
+            Bending.
+        </div>
+
+        <h2>3. Refraction Through a Glass Block</h2>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: GLASS SLAB REFRACTION]</span>
+            <div class="img-prompt">
+                Diagram of refraction through a glass slab. Label Incident Ray, Refracted Ray, Emergent Ray, Angle i, r,
+                e. Show Emergent ray parallel to incident ray. Mark Lateral Displacement.
+            </div>
+        </div>
+        <p>When a ray passes through a rectangular glass slab:</p>
+        <ol>
+            <li>Ray Refracts at first surface (Air $\to$ Glass): Bends towards normal.</li>
+            <li>Ray Refracts at second surface (Glass $\to$ Air): Bends away from normal.</li>
+            <li><strong>Result:</strong> Emergent Ray is parallel to Incident Ray but shifted sideways.</li>
+        </ol>
+
+        <div class="concept-green">
+            <h3>Lateral Displacement</h3>
+            <p>The perpendicular distance between the incident ray produced forward and the emergent ray.</p>
+            <p><strong>Factors increasing Lateral Displacement:</strong></p>
+            <ul>
+                <li>Refractive index of glass.</li>
+                <li>Thickness of glass slab.</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q4: Diagram Check</span>
+            <div class="img-placeholder" class="invert-dark">
+                <span>[IMAGE PLACEHOLDER: GLASS SLAB LATERAL DISPLACEMENT]</span>
+                <div class="img-prompt">
+                    Rectangular glass slab. Incident ray at angle 'i'. Refracted ray bends towards normal 'r'. Emergent
+                    ray 'e' is parallel to incident. Mark 'Lateral Displacement' x. (Invert in dark mode).
+                </div>
+            </div>
+            <p><span class="q-tag">BOARD CHECK</span> Draw a ray diagram to show the refraction of a monochromatic ray
+                through a parallel sided glass block. Show that incident ray is parallel to emergent ray.</p>
+            <p><strong>Verification:</strong> Apply Snell's Law at both surfaces. Since surfaces are parallel, angle of
+                refraction at first surface equals angle of incidence at second surface ($r_1 = r_2$). Thus, final
+                emergence angle $e = i$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q5: Lateral Displacement Factors</span>
+            <p><span class="q-tag">THINKING</span> Does the lateral displacement produced by a glass slab depend on the
+                thickness of the slab? If yes, how?</p>
+            <p><strong>Solution:</strong> Yes. Directly proportional. Thicker slab $\implies$ More shift.</p>
+        </div>
+
+
+
+        <h2>4. Real and Apparent Depth</h2>
+        <p>An object placed in a denser medium (like water) appears raised when viewed from a rarer medium (air).</p>
+
+        <div class="formula-box">
+            <p><strong>Shift:</strong> The distance by which the object appears raised.</p>
+            $$ \text{Shift} = \text{Real Depth} \times \left(1 - \frac{1}{\mu}\right) $$
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q6: Microscope Problem</span>
+            <p><span class="q-tag">NUMERICAL</span> A microscope is focused on a mark on a paper. A glass slab of
+                thickness 3 cm and refractive index 1.5 is placed over the mark. By how much amount should the
+                microscope be moved to focus the mark again?</p>
+            <p><strong>Solution:</strong> The image will shift upwards by:</p>
+            <p>$\text{Shift} = \text{Real Thickness} \times (1 - 1/\mu)$</p>
+            <p>$S = 3 \times (1 - 1/1.5) = 3 \times (1 - 2/3)$</p>
+            <p>$= 3 \times (1/3) = 1 \text{ cm}$.</p>
+            <p><strong>Ans:</strong> Move microscope up by 1 cm.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q7: Coin in Water</span>
+            <p><span class="q-tag">NUMERICAL</span> A coin placed at the bottom of a beaker appears to be raised by 4
+                cm. If the refractive index of water is $4/3$, find the depth of the water in the beaker.</p>
+            <p><strong>Solution:</strong> Shift=4. Formula $S = \text{Real} \times (1 - 1/\mu)$.</p>
+            <p>$4 = x(1 - 3/4) = x(1/4)$. Therefore $x = 16 \text{ cm}$.</p>
+        </div>
+
+        <h2>5. Prism</h2>
+        <p>A transparent medium bounded by two plane surfaces inclined at an angle (Angle of Prism $A$).</p>
+
+        <div class="formula-box">
+            <div class="formula-pill">DEVIATION FORMULA</div>
+            $$ i + e = A + \delta $$
+            <p>Where $i$ = angle of incidence, $e$ = angle of emergence, $A$ = Angle of prism, $\delta$ = Angle of
+                deviation.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Q8: Deviation Factors</span>
+            <p><span class="q-tag">CONCEPTUAL</span> Which color of white light deviates the most and which one least
+                when passing through a prism?</p>
+            <p><strong>Ans:</strong> Violet deviates most (highest $\mu$). Red deviates least (lowest $\mu$).</p>
+        </div>
+
+        <h2>6. Total Internal Reflection (TIR)</h2>
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: TOTAL INTERNAL REFLECTION]</span>
+            <div class="img-prompt">
+                Three diagrams showing rays from denser to rarer: 1. Refraction (i < C). 2. Grazing emergence (i=C). 3.
+                    Total Internal Reflection (i> C).
+            </div>
+        </div>
+        <p>When a ray travels from <strong>Denser to Rarer</strong> medium:</p>
+
+        <div class="concept-blue">
+            <p><strong>Critical Angle ($C$):</strong> The angle of incidence in denser medium for which the angle of
+                refraction in rarer medium is $90^\circ$.</p>
+            <p><strong>Conditions for TIR:</strong></p>
+            <ol>
+                <li>Light must travel from Denser to Rarer medium.</li>
+                <li>Angle of incidence must be greater than Critical Angle ($i > C$).</li>
+            </ol>
+        </div>
+
+        <p>For Glass ($ \mu = 1.5 $), $C \approx 42^\circ$.</p>
+    </div>
+
+    <div class="practice-box">
+        <span class="practice-header">Practice Q9: Prism Path (TIR)</span>
+        <div class="img-placeholder" class="invert-dark">
+            <span>[IMAGE PLACEHOLDER: PRISM TIR 90 DEGREE]</span>
+            <div class="img-prompt">
+                A total reflecting prism (Isosceles Right Angled Prism ABC, B=90). A ray enters normally on face AB.
+                Show path: hits AC at 45 deg, TIR occurs (since 45 > 42), reflects and exits normally from BC. (Invert
+                in dark mode).
+            </div>
+        </div>
+        <p><span class="q-tag">DIAGRAM</span> Complete the path of the ray entering the prism normally. ($C =
+            42^\circ$).</p>
+        <p><strong>Solution:</strong></p>
+        <p>1. Enters AB undeflected ($i=0$).</p>
+        <p>2. Hits hypotenuse AC at $45^\circ$.</p>
+        <p>3. Since $45^\circ > 42^\circ$ (Critical angle), <strong>TIR</strong> takes place.</p>
+        <p>4. Ray deviates by $90^\circ$ and emerges from BC.</p>
+    </div>
+
+    <div class="practice-box">
+        <span class="practice-header">Practice Q10: Right Angled Prism</span>
+        <p><span class="q-tag">CONCEPTUAL</span> A ray of light is incident normally on one of the faces of a
+            right-angled isosceles prism. Draw the path of the ray. (Take $\mu = 1.5$)</p>
+        <p><strong>Solution:</strong> See diagram above. Ray enters normally, TIR at hypotenuse ($45^\circ > 42^\circ$),
+            emerges normally from other leg.</p>
+    </div>
+
+
+
+    <div class="master-tip">
+        <span class="tip-header">BOARD EXAM FAVORITE</span>
+        <strong>Total Reflecting Prisms:</strong> Right-angled isosceles prisms ($45^\circ$-$90^\circ$-$45^\circ$)
+        are used to deviate light by $90^\circ$ or $180^\circ$ using TIR. Practice these ray diagrams thoroughly
+        (Periscope, Binoculars).
+    </div>
+
+    <div class="concept-blue">
+        <h3>Factors Affecting Angle of Deviation (Prism)</h3>
+        <ul>
+            <li><strong>Angle of Prism ($A$):</strong> Deviation increases with $A$.</li>
+            <li><strong>Refractive Index ($\mu$):</strong> Direct relation. Higher $\mu \implies$ Higher $\delta$.
+                (Flint glass deviates more than Crown glass).</li>
+            <li><strong>Color of Light:</strong> Violet deviates most, Red deviates least ($\delta_V > \delta_R$).
+            </li>
+            <li><strong>Angle of Incidence ($i$):</strong> Deviation first decreases to a minimum ($\delta_{min}$)
+                and then increases. At minimum deviation, ray passes symmetrically ($i = e$, $r_1 = r_2$).</li>
+        </ul>
+    </div>
+
+    </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }</script>
+</body>
+
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers: Level 1 Light</title>
+    <!-- CMU Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #4caf50;
+            --blue-bg: #e3f2fd;
+            --blue-border: #2196f3;
+            --pink-bg: #fce4ec;
+            --pink-border: #ec407a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: var(--main-font);
+            line-height: 1.6;
+        }
+
+        /* Seamless Paper Logic */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            /* Critical for mobile */
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            box-shadow: none;
+            /* Seamless merge */
+            border: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                padding: 15px;
+                /* Adjust padding for small screens */
+                width: 100%;
+                /* padding-right: 15px; */
+                /* Ensure content isn't cut off */
+            }
+
+            .institute-name {
+                font-size: 1.4rem;
+            }
+
+            .exam-title {
+                font-size: 1.1rem;
+            }
+
+            .meta-strip {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+
+        .institute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            /* Light Mode */
+            height: auto;
+        }
+
+        /* Dark Mode Implementation */
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Double Inversion for Watermark & Images */
+        html.dark-mode .watermark-image {
+            opacity: 0.08;
+            /* Dark Mode */
+            /* filter: invert(1) hue-rotate(180deg); REMOVED: Global inversion handles it */
+        }
+
+        /* Invert images BACK to normal if they are photos, or keep inverted if diagrams? 
+           Spec says: "Dark Mode Inversion: ... images will inherently invert ... desired for diagrams"
+           BUT "Double Inversion: ... apply filter to button itself again"
+           Let's follow spec: Images inherently invert. 
+           Wait, User previously complained about "white box" watermark. 
+           If I don't double invert the watermark image container, the global invert makes white bg -> black bg. 
+           The watermark image usually has white bg. So it becomes black bg. 
+           So NO double inversion on watermark image is correct behavior for "Seamless Dark Mode".
+        */
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            /* Scrolls with page */
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            /* Double inversion to keep icon looking normal-ish */
+            background: #333;
+            color: #fff;
+        }
+
+        /* MathJax Mobile Fix */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* Answer Styles */
+        .topic-header {
+            background: #e0f7fa;
+            padding: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #006064;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        html.dark-mode .topic-header {
+            /* Global invert makes this dark cyan/teal automatically */
+        }
+
+        .ans-block {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            padding-top: 10px;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .ans-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-right: 5px;
+        }
+
+        .diagram-placeholder {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            border: 2px dashed #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            color: #666;
+            background: #fdfdfd;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 15px;
+            margin: 20px 0;
+            position: relative;
+            background: #fff;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #000;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+
+        /* Master Tip */
+        .master-tip {
+            border: 2px dashed red;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            background: #fffafa;
+        }
+
+        /* --- EQUATION WRAPPING FIXES (STRICT) --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            /* Essential for some browsers */
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            body {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">◑</button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1 class="institute-name">VARDAAN LEARNING INSTITUTE</h1>
+            <h2 class="exam-title">Answer Key: Level 1 (Light)</h2>
+            <div class="meta-strip"><span>Class: 10 Science</span><span>Topic: Light Solutions</span><span>Max.
+                    Questions: 55</span></div>
+        </header>
+
+        <div class="topic-header">Topic 1: Reflection - Plane Mirror Laws</div>
+        <div class="ans-block"><span class="ans-title">1.</span> <b>Laws of Reflection:</b> (i) The incident ray, the
+            reflected ray, and the normal to the reflecting surface at the point of incidence, all lie in the same
+            plane. (ii) The angle of incidence is equal to the angle of reflection ($\angle i = \angle r$).</div>
+        <div class="ans-block"><span class="ans-title">2.</span> Angle with mirror surface = 30°. Therefore, Angle of
+            Incidence $i = 90^\circ - 30^\circ = 60^\circ$. By laws of reflection, Angle of Reflection $r = i =
+            60^\circ$.</div>
+        <div class="ans-block"><span class="ans-title">3.</span> <b>Lateral Inversion:</b> The phenomenon where the left
+            side of an object appears as the right side of the image in a plane mirror. Example: 'AMBULANCE' written
+            backwards.</div>
+        <div class="ans-block"><span class="ans-title">4.</span> Object distance $u = 2$ m. Image distance in plane
+            mirror = Object distance = 2 m. Total distance = $2 + 2 = 4$ m.</div>
+        <div class="ans-block"><span class="ans-title">5.</span> Minimum size of plane mirror required = $H/2$ (Half the
+            height of the person).</div>
+
+        <div class="topic-header">Topic 2: Spherical Mirrors - Terminology & Ray Rules</div>
+        <div class="ans-block"><span class="ans-title">6.</span> <b>Principal Focus (Concave):</b> Point on principal
+            axis where parallel rays converge after reflection.</div>
+        <div class="ans-block"><span class="ans-title">7.</span> Ray retraces its path. A ray passing through Center of
+            Curvature falls normally ($\angle i = 0$) on the mirror, so it reflects back along same line ($\angle r =
+            0$).</div>
+        <div class="ans-block"><span class="ans-title">8.</span> $R = 2f$.</div>
+        <div class="ans-block"><span class="ans-title">9.</span> $R = +30$ cm. $f = R/2 = +15$ cm.</div>
+        <div class="ans-block"><span class="ans-title">10.</span> Virtual, Erect, and Diminished.</div>
+
+        <div class="topic-header">Topic 3: Ray Diagrams - Concave Mirror</div>
+        <div class="ans-block"><span class="ans-title">11.</span> Object at C: Image at C. Real, Inverted, Same Size.
+            <div class="diagram-placeholder"
+                style="width: 100%; max-width: 400px; height: 200px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center; margin: 15px auto; color: #555; background: #fdfdfd; font-style: italic; padding: 10px;">
+                [Generate Image: Ray diagram for Concave Mirror. Object at C. Real, Inverted Image at C. Same size.]
+            </div>
+        </div>
+        <div class="ans-block"><span class="ans-title">12.</span> Object between P and F: Image behind mirror, Virtual,
+            Erect, Magnified.
+            <div class="diagram-placeholder"
+                style="width: 100%; max-width: 400px; height: 200px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center; margin: 15px auto; color: #555; background: #fdfdfd; font-style: italic; padding: 10px;">
+                [Generate Image: Ray diagram for Concave Mirror. Object between P and F. Virtual, Erect, Magnified Image
+                behind mirror.]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">13.</span> Between C and F. Image forms beyond C.</div>
+        <div class="ans-block"><span class="ans-title">14.</span> To produce a magnified, erect image of the tooth
+            (Object placed within focus).</div>
+        <div class="ans-block"><span class="ans-title">15.</span> Image at Focus (F). Real, Inverted, Highly Diminished
+            (Point-sized).
+            <div class="diagram-placeholder"
+                style="width: 100%; max-width: 400px; height: 200px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center; margin: 15px auto; color: #555; background: #fdfdfd; font-style: italic; padding: 10px;">
+                [Generate Image: Ray diagram for Concave Mirror. Parallel rays from Infinity converging at Focus (F).]
+            </div>
+        </div>
+
+        <div class="topic-header">Topic 4: Mirror Formula Numericals</div>
+        <div class="ans-block"><span class="ans-title">16.</span> $h=5, u=-20, f=-15$ (Concave).<br>
+            $1/v = 1/f - 1/u$ $= 1/(-15) - 1/(-20)$ $= -4/60 + 3/60$ $= -1/60$. <br>
+            $v = -60$ cm. Real, Inverted, Magnified ($m = -v/u$ $= -(-60)/-20$ $= -3$). Size = 15 cm.</div>
+        <div class="ans-block"><span class="ans-title">17.</span> Convex: $R=+3, f=+1.5, u=-5$.<br>
+            $1/v = 1/1.5 - 1/(-5)$ $= 10/15 + 3/15$ $= 13/15$.<br>
+            $v \approx 1.15$ m (Behind mirror). Virtual, Erect.</div>
+        <div class="ans-block"><span class="ans-title">18.</span> $u=-10$. Real image means same side ($v=-20$).<br>
+            $1/f = 1/(-20) + 1/(-10)$ $= -3/20$. $f = -6.67$ cm. Concave Mirror.</div>
+        <div class="ans-block"><span class="ans-title">19.</span> Real means Inverted. $m = -3$.</div>
+        <div class="ans-block"><span class="ans-title">20.</span> Diverging (Convex): $f=+20, u=-25$.<br>
+            $1/v = 1/20 + 1/25$ $= 9/100$. $v = +11.1$ cm. Virtual, Erect.</div>
+
+        <div class="topic-header">Topic 5: Refraction - Snell's Law & Refractive Index</div>
+        <div class="ans-block"><span class="ans-title">21.</span> $n_m = c/v$.</div>
+        <div class="ans-block"><span class="ans-title">22.</span> $v = c/n$ $= 3 \times 10^8 / 1.5$ $= 2 \times 10^8$
+            m/s.
+        </div>
+        <div class="ans-block"><span class="ans-title">23.</span> Speed in diamond is much less ($1/2.42$ times $c$).
+            Optically dense.</div>
+        <div class="ans-block"><span class="ans-title">24.</span> Ray bends towards normal (Air to Glass), then away
+            from normal (Glass to Air). Emergent ray parallel to incident ray.
+            <div class="diagram-placeholder">[Diagram: Rectangular Glass Slab Refraction]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">25.</span> Ratio of sine of angle of incidence to sine of angle
+            of refraction is constant. $\frac{\sin i}{\sin r} = n$.</div>
+
+        <div class="topic-header">Topic 6: Lenses - Terminology & Image Formation</div>
+        <div class="ans-block"><span class="ans-title">26.</span> Convex: Converging, Thicker at center. Concave:
+            Diverging, Thinner at center.</div>
+        <div class="ans-block"><span class="ans-title">27.</span> Object at $2F_1 \to$ Image at $2F_2$. Real, Inverted,
+            Same Size.
+            <div class="diagram-placeholder"
+                style="width: 100%; max-width: 400px; height: 200px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center; margin: 15px auto; color: #555; background: #fdfdfd; font-style: italic; padding: 10px;">
+                [Generate Image: Ray diagram for Convex Lens. Object at 2F1. Real, Inverted Image formed at 2F2. Same
+                size.]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">28.</span> Object between O and $F_1 \to$ Virtual, Erect,
+            Magnified.
+            <div class="diagram-placeholder"
+                style="width: 100%; max-width: 400px; height: 200px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center; margin: 15px auto; color: #555; background: #fdfdfd; font-style: italic; padding: 10px;">
+                [Generate Image: Ray diagram for Convex Lens. Object between F1 and Optical Center. Virtual, Erect,
+                Magnified Image on same side.]</div>
+        </div>
+        <div class="ans-block"><span class="ans-title">29.</span> At $2F_1$.</div>
+        <div class="ans-block"><span class="ans-title">30.</span> Concave lens always forms Virtual, Erect, Diminished
+            image between O and F.
+            <div class="diagram-placeholder"
+                style="width: 100%; max-width: 400px; height: 200px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center; margin: 15px auto; color: #555; background: #fdfdfd; font-style: italic; padding: 10px;">
+                [Generate Image: Ray diagram for Concave Lens. Object anywhere. Virtual, Erect, Diminished Image between
+                F and O.]</div>
+        </div>
+
+        <div class="topic-header">Topic 7: Lens Formula Numericals</div>
+        <div class="ans-block"><span class="ans-title">31.</span> $f=+10, v=+12$ (Real).<br>
+            $1/u = 1/v - 1/f$ $= 1/12 - 1/10$ $= -1/60$. $u = -60$ cm.</div>
+        <div class="ans-block"><span class="ans-title">32.</span> $u=-25, f=+10$.<br>
+            $1/v = 1/10 - 1/25$ $= 3/50$. $v = +16.67$ cm. Real, Inverted.</div>
+        <div class="ans-block"><span class="ans-title">33.</span> Concave: $f=-15, v=-10$ (Virtual).<br>
+            $1/u = 1/(-10) - 1/(-15)$ $= -1/30$. $u = -30$ cm.</div>
+        <div class="ans-block"><span class="ans-title">34.</span> $P=-2.0$ D. $f = 1/P = -0.5$ m = -50 cm. Concave Lens.
+        </div>
+        <div class="ans-block"><span class="ans-title">35.</span> $P=+1.5$ D. $f = 1/1.5 = +0.67$ m. Convex
+            (Converging).</div>
+
+        <div class="topic-header">Topic 8: Power of Lens Combinations</div>
+        <div class="ans-block"><span class="ans-title">36.</span> Power of a lens with focal length 1 meter.</div>
+        <div class="ans-block"><span class="ans-title">37.</span> $P = +2 - 0.5 = +1.5$ D.</div>
+        <div class="ans-block"><span class="ans-title">38.</span> $f = 1/1.5 = 0.67$ m.</div>
+        <div class="ans-block"><span class="ans-title">39.</span> To increase magnification, sharpness, and reduce
+            aberrations.</div>
+        <div class="ans-block"><span class="ans-title">40.</span> $P = P_1 + P_2 + P_3$.</div>
+
+        <div class="topic-header">Topic 9: HOTS - Refractive Index & Power</div>
+        <div class="ans-block"><span class="ans-title">41.</span> $n_w = 4/3, n_g = 3/2$.<br>
+            Refractive index of glass w.r.t water ${}_w n_g = n_g / n_w$ $= (3/2) / (4/3)$ $= 9/8$ $= 1.125$.</div>
+        <div class="ans-block"><span class="ans-title">42.</span> $P = -0.5$ D.<br>
+            $f = 1/P = 1/(-0.5) = -2$ m. Nature: Concave Lens (Diverging).</div>
+        <div class="ans-block"><span class="ans-title">43.</span> $v = 2 \times 10^8$ m/s, $c = 3 \times 10^8$ m/s.<br>
+            $n = c/v = 3/2 = 1.5$.</div>
+        <div class="ans-block"><span class="ans-title">44.</span> $P_1 = +3.5$ D, $P_2 = -2.5$ D.<br>
+            Net Power $P = +3.5 - 2.5 = +1.0$ D.<br>
+            Focal length $f = 1/P = 1/1 = +1$ m (+100 cm). Converging.</div>
+        <div class="ans-block"><span class="ans-title">45.</span> Unit of Refractive Index: It is a ratio of similar
+            quantities (speeds), so it has <b>No Unit</b>.</div>
+
+        <div class="topic-header">Topic 10: Critical Thinking & Reasoning</div>
+        <div class="ans-block"><span class="ans-title">46.</span> (i) Normal incidence ($i=0$). (ii) $n_1 = n_2$.</div>
+        <div class="ans-block"><span class="ans-title">47.</span> No. Real objects always produce virtual images in
+            convex mirrors.</div>
+        <div class="ans-block"><span class="ans-title">48.</span> Because it converges parallel rays to a focus.</div>
+        <div class="ans-block"><span class="ans-title">49.</span> Behave like prisms with bases towards principal axis.
+        </div>
+        <div class="ans-block"><span class="ans-title">50.</span> Focal length increases (Power decreases).</div>
+
+        <div class="topic-header">Topic 11: Speed of Light Numericals</div>
+        <div class="ans-block"><span class="ans-title">51.</span> $v = 3 \times 10^8 / 1.5$ $= 2 \times 10^8$ m/s.</div>
+        <div class="ans-block"><span class="ans-title">52.</span> $v = 3 \times 10^8 / (4/3)$ $= 2.25 \times 10^8$ m/s.
+        </div>
+        <div class="ans-block"><span class="ans-title">53.</span> $n = 3/2 = 1.5$.</div>
+        <div class="ans-block"><span class="ans-title">54.</span> $v = 3 / 2.42$ $\approx 1.24 \times 10^8$ m/s.</div>
+        <div class="ans-block"><span class="ans-title">55.</span> $n_{AB} = v_B/v_A = 2.5/2 = 1.25$.</div>
+
+    </div>
+</body>
+
+</html>
