@@ -1,0 +1,762 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetism - Master Notes | Vardaan Learning Institute</title>
+
+    <!-- Font: Outfit (As per Class 11 UI Analysis) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            chtml: { scale: 1.05 }
+        };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- UI ANALYSIS: COLORS FROM PROVIDED SNIPPET --- */
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            /* Purple Theme for Text */
+            --heading-main: #6a1b9a;
+            --heading-sub: #7b1fa2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #fff;
+            color: #000;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.7;
+        }
+
+        /* --- DARK MODE LOGIC --- */
+        html {
+            transition: filter .3s;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Invert images back so they look normal in dark mode */
+        /* Exception: Watermark is handled separately */
+        /* html.dark-mode img:not(.watermark-image) {
+            filter: invert(1) hue-rotate(180deg);
+        } */
+
+        /* --- WATERMARK --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .paper-sheet {
+            background: #fff;
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--heading-main);
+            margin-bottom: .5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--heading-main);
+            padding-bottom: .5rem;
+            color: var(--heading-main);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            color: var(--heading-sub);
+        }
+
+        p,
+        li {
+            margin-bottom: .8rem;
+            text-align: justify;
+        }
+
+        ul,
+        ol {
+            padding-left: 1.5rem;
+        }
+
+        /* --- COMPONENT BOXES --- */
+        .box-base {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            page-break-inside: avoid;
+        }
+
+        .definition-box {
+            background: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .derivation-box {
+            background: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .rule-box {
+            background: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .analysis-box {
+            background: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            background: #fff;
+            page-break-inside: avoid;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: .75rem;
+            font-weight: 700;
+        }
+
+        .master-tip {
+            border: 2px dashed #d32f2f;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            background: #ffebee;
+            font-style: italic;
+            page-break-inside: avoid;
+        }
+
+        /* --- TABLE --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: .9rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3e5f5;
+            font-weight: 600;
+            color: var(--heading-main);
+        }
+
+        /* --- IMAGE PLACEHOLDERS (PDF BOOK STYLE) --- */
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+            page-break-inside: avoid;
+        }
+
+        .content-image {
+            max-width: 80%;
+            /* Optimal Width */
+            max-height: 250px;
+            /* Reduced Height to be ideal */
+            height: auto;
+            border-radius: 4px;
+            display: block;
+            /* No Border or Shadow as requested */
+            border: none;
+            box-shadow: none;
+        }
+
+        .diagram-caption {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #444;
+            font-style: italic;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Mobile & Tablet Responsiveness */
+        @media screen and (max-width: 820px) {
+            .paper-sheet {
+                width: 100%;
+                max-width: 100%;
+                padding: 15px;
+                margin: 0;
+                border-radius: 0;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+                margin-top: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            .content-image {
+                max-width: 100%;
+                /* Full width on mobile */
+                height: auto;
+            }
+
+            .definition-box,
+            .rule-box,
+            .analysis-box,
+            .derivation-box,
+            .master-tip,
+            .formula-box {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            ul,
+            ol {
+                padding-left: 1.2rem;
+            }
+
+            /* Ensure tables scroll if too wide */
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            th,
+            td {
+                white-space: normal;
+                min-width: 120px;
+            }
+        }
+
+        @media print {
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                padding: 10mm;
+            }
+
+            body {
+                background: #fff;
+            }
+
+            .definition-box,
+            .rule-box,
+            .analysis-box,
+            .derivation-box {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image">
+    </div>
+
+    <!-- Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <!-- Header -->
+        <h1 style="color: var(--heading-main); letter-spacing: 1px;">Vardaan Learning Institute</h1>
+        <h1 style="font-size: 3rem; margin-bottom: 0;">MAGNETISM</h1>
+        <p style="text-align:center;color:#555;margin-bottom:2rem; font-style: italic;">Detailed Notes based on Syllabus
+            • Class X</p>
+
+        <!-- Chapter Roadmap Section -->
+        <div class="master-tip" style="background: #e3f2fd; border-color: #1565c0;">
+            <strong>★ WHAT WE WILL COVER IN THIS CHAPTER</strong>
+            <p>This chapter explores the fundamental concepts of Magnetism, focusing on how magnets influence materials
+                and how the Earth itself acts as a giant magnet. We will cover:</p>
+            <ul style="margin: 10px 0 0 0;">
+                <li><strong>Introduction to Natural & Artificial Magnets:</strong> Lodestone, bar magnets, and their
+                    properties.</li>
+                <li><strong>Induced Magnetism:</strong> How ordinary iron becomes a temporary magnet.</li>
+                <li><strong>Magnetic Field Lines:</strong> Visualizing the invisible force field around magnets.</li>
+                <li><strong>Earth's Magnetic Field:</strong> Understanding Earth's magnetic elements and evidence.</li>
+                <li><strong>Neutral Points:</strong> Identifying locations where magnetic forces cancel out.</li>
+                <li><strong>Electromagnets & Applications:</strong> Construction, properties, and the working of an
+                    Electric Bell.</li>
+            </ul>
+        </div>
+
+        <h2>1. Introduction</h2>
+
+        <!-- FIG 10.1 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.1 Setting of a freely suspended magnet.png" alt="Fig 10.1">
+            <div class="diagram-caption">Fig. 10.1: Setting of a freely suspended magnet</div>
+        </div>
+
+        <p>The first known magnets were pieces of <strong>lodestone</strong>, an ore of iron oxide ($Fe_3O_4$), found in
+            Magnesia (Asia Minor). This ore was found to possess two key properties:</p>
+        <ol>
+            <li><strong>Attractive Property:</strong> It attracts small pieces of iron, nickel, and cobalt.</li>
+            <li><strong>Directive Property:</strong> It sets itself along a definite direction (Geographic North-South)
+                when suspended freely.</li>
+        </ol>
+
+        <p>Natural magnets are often irregular and weak. Thus, we use <strong>Artificial Magnets</strong> (Bar magnets,
+            Horse-shoe magnets, Magnetic needles) made from iron or steel, which are stronger and have convenient
+            shapes.</p>
+
+        <div class="definition-box">
+            <h3>Properties of Magnets</h3>
+            <ul>
+                <li><strong>Directive Property:</strong> A freely suspended magnet always rests in the geographic
+                    North-South direction. The end pointing towards geographic North is called the North Pole.</li>
+                <li><strong>Attractive Property:</strong> Attraction is maximum at the poles (ends) and minimum at the
+                    centre (neutral zone).</li>
+                <li><strong>Like poles repel, unlike poles attract.</strong></li>
+                <li><strong>Poles exist in pairs:</strong> Magnetic monopoles do not exist. Breaking a magnet creates
+                    two smaller complete magnets.</li>
+            </ul>
+        </div>
+
+        <p><strong>Test for Magnetism:</strong> A magnet can attract both an unmagnetised iron piece and an opposite
+            pole of another magnet. However, repulsion only occurs between two like poles. Thus, <strong>Repulsion is
+                the surest test of magnetism.</strong></p>
+
+        <h2>2. Induced Magnetism</h2>
+
+        <!-- FIG 10.2 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.2 Induced magnetism (Iron filings attracted vs falling).png"
+                alt="Fig 10.2">
+            <div class="diagram-caption">Fig. 10.2: Induced magnetism (Iron filings attracted vs falling)</div>
+        </div>
+
+        <div class="definition-box">
+            <p><strong>Definition:</strong> The temporary magnetism acquired by a magnetic substance (like soft iron)
+                when it is kept near or in contact with a magnet is called <strong>Induced Magnetism</strong>.</p>
+        </div>
+
+        <p>When an unmagnetised iron bar is placed near a magnet, it acquires magnetic properties. The end of the bar
+            near the magnet develops opposite polarity (e.g., if near South pole, it becomes North), while the farther
+            end develops similar polarity.</p>
+
+        <div class="master-tip">
+            <p><strong>"Induction Precedes Attraction"</strong> - IMPORTANT!</p>
+            <p>A magnet does not attract a piece of iron directly. First, it induces opposite polarity on the near end
+                of the iron piece (Induction). Since unlike poles attract, the induced opposite pole is then attracted
+                to the magnet. Thus, induction always takes place before attraction.</p>
+        </div>
+
+        <h3>Chain of Nails Experiment</h3>
+
+        <!-- FIG 10.3 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.3 Magnetic Induction (Chain of nails).jpg" alt="Fig 10.3">
+            <div class="diagram-caption">Fig. 10.3: Magnetic Induction forming a chain of nails</div>
+        </div>
+
+        <p>If a bar magnet is brought near small iron nails, they form a chain as shown in <strong>Fig 10.3</strong>.
+            The magnet induces magnetism in the first nail, which induces it in the second, and so on. If the top magnet
+            is removed, all nails fall, proving that <strong>induced magnetism is temporary</strong>.</p>
+
+        <h2>3. Magnetic Field Lines</h2>
+
+        <!-- FIG 10.4 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.4 Arrangement of iron filings near a magnet.png"
+                alt="Fig 10.4">
+            <div class="diagram-caption">Fig. 10.4: Arrangement of iron filings near a magnet</div>
+        </div>
+
+        <p>The space around a magnet in which its magnetic influence can be experienced is called its <strong>Magnetic
+                Field</strong>. It is a vector quantity having both magnitude and direction.</p>
+
+        <div class="rule-box">
+            <h3>Properties of Magnetic Field Lines:</h3>
+            <ul>
+                <li>They are closed, continuous curves.</li>
+                <li><strong>Direction:</strong> From North to South outside the magnet, and South to North inside the
+                    magnet.</li>
+                <li>The tangent at any point on a field line represents the direction of the magnetic field at that
+                    point.</li>
+                <li><strong>Two field lines can NEVER intersect.</strong> (See Fig 10.5 below).</li>
+                <li>Crowded lines indicate a strong field; spaced out lines indicate a weak field.</li>
+                <li>They behave like stretched elastic strings, trying to contract longitudinally (attraction) and
+                    expand laterally (repulsion of like poles).</li>
+            </ul>
+        </div>
+
+        <!-- FIG 10.5 -->
+        <div class="diagram-container">
+            <img class="content-image"
+                src="Images/Fig. 10.5 Two magnetic field lines intersecting (Why it's impossible).png" alt="Fig 10.5">
+            <div class="diagram-caption">Fig. 10.5: Two magnetic field lines intersecting (Why it's impossible)</div>
+        </div>
+
+        <p><strong>Why can't two lines intersect?</strong> If they did, at the point of intersection, there would be two
+            tangents representing two different directions of the magnetic field, which is impossible.</p>
+
+        <h2>4. Earth's Magnetic Field</h2>
+
+        <!-- FIG 10.6 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.6 Inclination of magnetic needle at different places.png"
+                alt="Fig 10.6">
+            <div class="diagram-caption">Fig. 10.6: Inclination of magnetic needle at different places</div>
+        </div>
+
+        <p>The Earth acts as a huge magnet with its magnetic North pole situated near the geographic South pole and
+            vice-versa. This is why a compass points North (it's attracted to Earth's magnetic South pole located
+            there).</p>
+
+        <div class="analysis-box">
+            <h3>Evidence of Earth's Magnetism:</h3>
+            <ol>
+                <li>A freely suspended magnet always rests in North-South direction.</li>
+                <li>An iron rod buried in the earth along the N-S direction becomes a weak magnet after some time.</li>
+                <li>Neutral points are obtained on plotting field lines of a magnet (where Earth's field cancels
+                    magnetic field).</li>
+                <li>A magnetic needle rests at different angles with the horizontal (Angle of Dip) at different places.
+                </li>
+            </ol>
+        </div>
+
+        <h3>Magnetic Elements of Earth</h3>
+        <ul>
+            <li><strong>Magnetic Meridian:</strong> A vertical plane passing through the magnetic axis of a freely
+                suspended magnet.</li>
+            <li><strong>Geographic Meridian:</strong> A vertical plane passing through the geographic North-South axis.
+            </li>
+            <li><strong>Angle of Dip (Inclination):</strong> The angle which the axis of a freely suspended magnetic
+                needle makes with the horizontal.
+                <ul>
+                    <li>At Magnetic Equator, Dip = $0^\circ$ (Needle is horizontal).</li>
+                    <li>At Magnetic Poles, Dip = $90^\circ$ (Needle is vertical).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p>Earth's magnetic field lines are parallel and equidistant in a limited space, representing a <strong>Uniform
+                Magnetic Field</strong>.</p>
+
+        <!-- FIG 10.7 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.7 Inclination of magnetic needle at different places.jpg"
+                alt="Fig 10.7">
+            <div class="diagram-caption">Fig. 10.7: Plotting compass usage</div>
+        </div>
+
+        <h2>5. Non-Uniform Magnetic Fields</h2>
+        <p>The magnetic field around a bar magnet is <strong>non-uniform</strong> (the lines are curved). The lines are
+            crowded near poles where the field is strong and spaced out where it is weak.</p>
+
+        <!-- FIG 10.8 -->
+        <div class="diagram-container">
+            <img class="content-image"
+                src="Images/Fig. 10.8 Non-uniform magnetic field lines (a) Bar magnet (b) Horse-shoe (c) Unlike poles (d) Like poles.png"
+                alt="Fig 10.8">
+            <div class="diagram-caption">Fig. 10.8: Patterns of Non-Uniform Magnetic Fields</div>
+        </div>
+
+        <h2>6. Plotting Field Lines & Neutral Points</h2>
+        <div class="formula-box">
+            <p><strong>Neutral Points (X):</strong> Points where the net magnetic field is zero. This happens when the
+                magnetic field produced by the magnet is equal in magnitude and opposite in direction to the horizontal
+                component of the Earth's magnetic field ($B_H$).</p>
+        </div>
+
+        <h3>Case 1: Magnet with North Pole pointing Geographic North</h3>
+
+        <!-- FIG 10.9 -->
+        <div class="diagram-container">
+            <img class="content-image"
+                src="Images/Fig. 10.9 Magnetic field lines (N pointing North) & Neutral Points (East-West).png"
+                alt="Fig 10.9">
+            <div class="diagram-caption">Fig. 10.9: Field lines (N pointing North) & Neutral Points (East-West)</div>
+        </div>
+
+        <p>In this position, the neutral points lie on the <strong>Equatorial line</strong> (axis perpendicular to the
+            magnet's length) on either side of the magnet.</p>
+
+        <h3>Case 2: Magnet with South Pole pointing Geographic North</h3>
+
+        <!-- FIG 10.10 -->
+        <div class="diagram-container">
+            <img class="content-image"
+                src="Images/Fig. 10.10 Magnetic field lines (S pointing North) & Neutral Points (North-South).png"
+                alt="Fig 10.10">
+            <div class="diagram-caption">Fig. 10.10: Field lines (S pointing North) & Neutral Points (North-South)</div>
+        </div>
+
+        <p>In this position, the neutral points lie on the <strong>Axial line</strong> (axis along the magnet's length)
+            on either side of the magnet.</p>
+
+        <h2>7. Electromagnets</h2>
+        <p>An electromagnet is a temporary magnet made by passing current through a coil wound around a soft iron core.
+            It behaves as a magnet only as long as current flows.</p>
+
+        <div class="derivation-box">
+            <h3>Factors increasing strength of Electromagnet:</h3>
+            <ol>
+                <li>Increasing the <strong>Number of turns ($N$)</strong> in the solenoid.</li>
+                <li>Increasing the <strong>Current ($I$)</strong>.</li>
+                <li>Using a <strong>Soft Iron Core</strong> (which has high magnetic permeability).</li>
+                <li>Reducing the air gap between poles (e.g., in U-shaped magnets).</li>
+            </ol>
+        </div>
+
+        <h3>(a) I-Shaped (Bar) Electromagnet</h3>
+
+        <!-- FIG 10.14 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.14 I-shaped electromagnet.png" alt="Fig 10.14">
+            <div class="diagram-caption">Fig. 10.14: I-shaped (Bar) Electromagnet</div>
+        </div>
+
+        <p>It consists of a thin soft iron bar around which an insulated copper wire is wound in the form of a solenoid.
+            When current is passed, the bar gets magnetised.
+            <br><strong>Polarity Rule:</strong> Looking at a face, if current is <strong>Clockwise</strong>, it becomes
+            a <strong>South Pole</strong>. If <strong>Anticlockwise</strong>, it becomes a <strong>North Pole</strong>.
+        </p>
+
+        <h3>(b) U-Shaped (Horse-Shoe) Electromagnet</h3>
+
+        <!-- FIG 10.15 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.15 Horse-shoe electromagnet.png" alt="Fig 10.15">
+            <div class="diagram-caption">Fig. 10.15: Horse-shoe Electromagnet</div>
+        </div>
+
+        <p>It consists of a U-shaped soft iron core. The wire is wound on the two arms such that the current flows in
+            opposite directions in the two arms (when viewed from the ends). This creates a North pole at one end and a
+            South pole at the other. It is stronger than a bar electromagnet due to the smaller air gap.</p>
+
+        <h3>Comparison: Electromagnet vs Permanent Magnet</h3>
+        <table>
+            <tr>
+                <th>Electromagnet (Temporary)</th>
+                <th>Permanent Magnet (Steel)</th>
+            </tr>
+            <tr>
+                <td>Made of <strong>Soft Iron</strong>.</td>
+                <td>Made of <strong>Steel</strong>.</td>
+            </tr>
+            <tr>
+                <td>Magnetism is temporary (lost when current stops).</td>
+                <td>Magnetism is permanent.</td>
+            </tr>
+            <tr>
+                <td>Strength can be varied (by changing $I$ or $N$).</td>
+                <td>Strength is fixed.</td>
+            </tr>
+            <tr>
+                <td>Polarity can be reversed.</td>
+                <td>Polarity is always fixed.</td>
+            </tr>
+        </table>
+
+        <h2>8. Application: The Electric Bell</h2>
+
+        <!-- FIG 10.16 -->
+        <div class="diagram-container">
+            <img class="content-image" src="Images/Fig. 10.16 Electric bell and its wiring.png" alt="Fig 10.16">
+            <div class="diagram-caption">Fig. 10.16: Electric bell and its wiring</div>
+        </div>
+
+        <p><strong>Principle:</strong> It works on the magnetic effect of current (Electromagnetism).</p>
+
+        <div class="analysis-box">
+            <h3>Construction & Working</h3>
+            <ul>
+                <li><strong>Parts:</strong> Electromagnet (Horse-shoe), Soft iron armature, Hammer, Gong, Contact screw,
+                    Spring strip.</li>
+                <li><strong>Working Cycle:</strong>
+                    <ol>
+                        <li>When the switch is pressed, current flows, and the electromagnet gets magnetised.</li>
+                        <li>It attracts the soft iron armature, causing the hammer to strike the gong
+                            (<strong>DING!</strong>).</li>
+                        <li>As the armature moves towards the magnet, its contact with the adjustment screw is broken.
+                        </li>
+                        <li>The circuit breaks, current stops, and the electromagnet loses its magnetism.</li>
+                        <li>The metallic spring strip pulls the armature back to its original position.</li>
+                        <li>Contact is re-established with the screw, completing the circuit again.</li>
+                        <li>The cycle repeats rapidly, making the bell ring continuously as long as the switch is
+                            pressed.</li>
+                    </ol>
+                </li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; color: #888; border-top: 1px solid #eee; padding-top: 2rem;">
+            <p>Created by Team Vardaan with ❤️</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
