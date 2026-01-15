@@ -13,20 +13,21 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        :root {
-            /* Dark Theme - Warm Charcoal */
-            --bg-primary: #0d0d12;
-            --bg-secondary: #161620;
-            --bg-card: linear-gradient(145deg, rgba(25, 25, 35, 0.9), rgba(18, 18, 28, 0.95));
-            --bg-card-hover: linear-gradient(145deg, rgba(30, 30, 45, 0.95), rgba(22, 22, 35, 0.98));
+                :root {
+            /* Dark Theme - Premium Pure Black */
+            --bg-primary: #030303;
+            --bg-secondary: #080808;
+            --bg-card: #020203;
+            --bg-card-hover: #020203;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
             --text-muted: #6a6a7a;
             --accent-primary: #f97316;
             --accent-secondary: #ea580c;
             --accent-glow: rgba(249, 115, 22, 0.12);
-            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --border-accent: rgba(249, 115, 22, 0.35);
+            /* ... kept others ... */
             --success: #10b981;
             --warning: #f59e0b;
             --info: #3b82f6;
@@ -67,7 +68,7 @@
             scroll-behavior: smooth;
         }
 
-        body {
+                body {
             font-family: var(--font);
             background: var(--bg-primary);
             color: var(--text-primary);
@@ -76,12 +77,22 @@
             transition: background 0.4s ease, color 0.4s ease;
             -webkit-font-smoothing: antialiased;
 
-            /* Subtle Grid Background */
+            /* Creative Background: Ambient Orange Glow + Neutral Grid */
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center center;
+                radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center top, center center, center center;
+            background-attachment: fixed;
+        }
+        
+        [data-theme="light"] body {
+             background-image:
+                linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+             background-size: 40px 40px;
+             background-attachment: scroll;
         }
 
         [data-theme="light"] body {
@@ -628,30 +639,50 @@
             font-weight: 600;
         }
 
-        /* === MOBILE === */
-        @media (max-width: 640px) {
-            .header {
-                padding: 0.75rem 1rem;
-            }
-
-            .hero {
-                padding: 2rem 1rem 1.5rem;
-            }
-
-            .container {
-                padding: 1.5rem 1rem 3rem;
-            }
-
-            .card {
-                padding: 1.25rem;
-            }
-
-            .question {
-                font-size: 1rem;
-            }
+                                        /* === RESPONSIVE WRAPPING (FORCED) === */
+        
+        .question, .solution, .card {
+            width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
-        /* === WATERMARK OVERLAY === */
+        mjx-container {
+            max-width: 100% !important;
+            white-space: normal !important;
+            display: inline-block !important;
+            overflow: visible !important;
+            line-height: 1.8 !important;
+            font-size: 1rem !important;
+        }
+        
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        
+        td, th {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word; 
+            white-space: normal !important;
+        }
+
+        @media (max-width: 640px) {
+            .header { padding: 0.75rem 1rem; }
+            .hero { padding: 2rem 1rem 1.5rem; }
+            .container { padding: 0.5rem 0.75rem 3rem; }
+            .card { padding: 1rem; margin-bottom: 0.75rem; }
+            .question { font-size: 0.95rem; line-height: 1.6; }
+            .badge { font-size: 0.6rem; padding: 2px 5px; }
+            .question, .solution { overflow-x: visible; }
+            
+            /* Specific fix for tables in solution */
+            .solution table { display: table; width: 100%; }
+        }/* === WATERMARK OVERLAY === */
         .watermark-overlay {
             position: fixed;
             top: 0;
@@ -677,27 +708,22 @@
             filter: none;
         }
 
-        /* === QUESTION IMAGES === */
+                                /* === QUESTION IMAGES === */
         .question-image {
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .pyq-image {
-            max-width: 280px;
-            max-height: 200px;
-            width: auto;
+            display: block;
+            margin: 1.5rem auto;
+            max-width: 320px;
+            width: 100%;
             height: auto;
             border-radius: 8px;
             border: none;
         }
 
-        [data-theme="dark"] .pyq-image {
+        [data-theme="dark"] .question-image {
             filter: invert(1) hue-rotate(180deg);
+            opacity: 0.9;
         }
-
-
-        /* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
+/* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
         .image-placeholder {
             border: 3px dashed #ff6b6b;
             background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
@@ -775,7 +801,33 @@
             padding: 6px 12px;
             text-align: center;
         }
-    </style>
+            /* === FORCED TABLE FIX (SPECIFICITY OVERRIDE) === */
+        .question table, .solution table {
+            width: 100% !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            display: table !important; /* Ensure it stays a table */
+        }
+        
+        .question table td, .question table th,
+        .solution table td, .solution table th {
+            overflow-wrap: break-word !important;
+            word-wrap: break-word !important;
+            word-break: break-all !important; /* Force break even in mid-word if needed */
+            white-space: normal !important;
+            max-width: 0 !important; /* Forces cells to respect width sharing */
+        }
+        
+        /* Mobile Override for extreme cases */
+        @media (max-width: 480px) {
+             .question table, .solution table {
+                 font-size: 0.8rem; 
+             }
+             .question table td, .question table th {
+                 padding: 4px !important;
+             }
+        }
+</style>
 </head>
 
 <body>
@@ -899,7 +951,7 @@
                 was such that A and B were at the same vertical height of 40 m from the ground level. The angles of
                 elevation of A, B and C from O were \(60^\circ\), \(45^\circ\) and \(30^\circ\) respectively. A vertical
                 tower, SD has been erected at point S and a camera is set at the top of the tower for photography.
-                <div class="image-placeholder">[Image: 2025-30-S-Question38]</div>
+                <img src="images/2025-30-S-Question38.png" alt="2025-30-S-Question38" class="question-image">
                 (i) What is the length of the string of the kite at A ?<br>
                 (ii) If the length of the string of kite at C is 40 m, then find the height of that kite C from the
                 ground.<br>
@@ -962,7 +1014,7 @@
                 gazing up at its towering height. She measured the angle of elevation to the top and found it to be
                 \(60^\circ\). Then, she climbed a nearby observation deck, 40 metres higher than her original position
                 and noticed the angle of elevation to the top of lighthouse to be \(45^\circ\).
-                <div class="image-placeholder">[Image: 2025-30-1-Question36]</div>
+                <div class="image-placeholder">[Image: 2025-30-1-Question36]<br><img src="images/2025-30-S-QuestionNumber36.png" alt="2025-30-S-QuestionNumber36.png" class="question-image"></div>
                 Based on the above given information, answer the following questions :<br>
                 (i) If CD is h metres, find the distance BD in terms of 'h'. [1 Mark]<br>
                 (ii) Find distance BC in terms of 'h'. [1 Mark]<br>
@@ -1084,32 +1136,74 @@
                 <strong>Answer: (B)</strong>
             </div>
         </div>
-        <div class="card" data-marks="4">
+        <div class="card" data-marks="1">
             <div class="card-top">
-                <span class="badge badge-4">4 Marks</span>
-                <span class="card-meta">30-3 (Case Study)</span>
+                <span class="badge badge-1">1 Mark</span>
+                <span class="card-meta">30-3</span>
             </div>
-            <div class="question"><span class="question-number">Q36.</span> From the top of a building 200 m high,
-                the angles of depression of two cars parked on the ground are \(45^\circ\) and \(30^\circ\)
-                respectively. The cars are on the same side of the building.
-                <div class="image-placeholder">[Image: 2025-30-03-36]</div>
-                (i) Find the distance of the first car (angle \(45^\circ\)) from the base of the building.<br>
-                (ii) Find the distance of the second car (angle \(30^\circ\)) from the base of the building.<br>
-                (iii) Find the distance between the two cars.
+            <div class="question"><span class="question-number">Q20.</span> <strong>Assertion (A):</strong> A ladder
+                leaning against a wall, stands at a horizontal distance of 6 m from the wall. If the height of the wall
+                up to which the ladder reaches is 8 m, then the length of the ladder is 10 m.<br>
+                <strong>Reason (R):</strong> The ladder makes an angle of 60° with the ground.
+                <ul class="options">
+                    <li>(A) Both A and R are true and R is correct explanation of A</li>
+                    <li>(B) Both A and R are true but R is not correct explanation of A</li>
+                    <li>(C) A is true but R is false</li>
+                    <li>(D) A is false but R is true</li>
+                </ul>
             </div>
             <button class="sol-toggle" onclick="toggleSolution(this)">
                 <i class="fas fa-eye"></i> View Solution
             </button>
             <div class="solution">
-                Height \(h = 200\) m.<br>
-                <strong>(i) Car 1 (45°):</strong> \(\tan 45 = \frac{200}{x} \Rightarrow 1 = \frac{200}{x}
-                \Rightarrow x = 200\) m.<br>
-                <strong>(ii) Car 2 (30°):</strong> \(\tan 30 = \frac{200}{y} \Rightarrow \frac{1}{\sqrt{3}} =
-                \frac{200}{y} \Rightarrow y = 200\sqrt{3}\) m.<br>
-                <strong>(iii) Distance between cars:</strong> \(y - x = 200\sqrt{3} - 200 = 200(\sqrt{3} - 1)\) m.
-                \(\approx 200(0.732) = 146.4\) m.
+                <strong>Check A:</strong> By Pythagoras: \(L^2 = 6^2 + 8^2 = 36 + 64 = 100 \Rightarrow L = 10\) m.
+                <strong>True.</strong><br>
+                <strong>Check R:</strong> \(\tan \theta = \frac{8}{6} = \frac{4}{3} \approx 1.33\). But \(\tan 60° =
+                \sqrt{3} \approx 1.73\).<br>
+                So angle is not 60°. (Actual angle \(\approx 53.13°\)). <strong>False.</strong><br>
+                <strong>Answer: (C)</strong>
             </div>
         </div>
+        <div class="card" data-marks="4">
+            <div class="card-top">
+                <span class="badge badge-4">4 Marks</span>
+                <span class="card-meta">30-3 (Case Study)</span>
+            </div>
+            <div class="question"><span class="question-number">Q36.</span> A lighthouse stands tall on a cliff by the
+                sea, watching over ships that pass by. One day a ship is seen approaching the shore and from the top of
+                the lighthouse, the angles of depression of the ship are observed to be 30° and 45° as it moves from
+                point P to point Q. The height of the lighthouse is 50 metres.
+                <div class="image-placeholder">[Image: 2025-30-3-Question36]<br><img src="images/2025-30-2-QuestionNumber36.png" alt="2025-30-2-QuestionNumber36.png" class="question-image"></div>
+                Based on the information given above, answer the following questions :<br>
+                (i) Find the distance of the ship from the base of the lighthouse when it is at point Q, where the angle
+                of depression is 45°. [1 Mark]<br>
+                (ii) Find the measures of \(\angle\) PBA and \(\angle\) QBA. [1 Mark]<br>
+                (iii) (a) Find the distance travelled by the ship between points P and Q. [2 Marks]<br>
+                <div style="text-align: center; font-weight: bold; margin: 0.5rem 0; color: var(--accent-primary);">OR
+                </div>
+                (iii) (b) If the ship continues moving towards the shore and takes 10 minutes to travel from Q to A,
+                calculate the speed of the ship in km/h, from Q to A. [2 Marks]
+            </div>
+            <button class="sol-toggle" onclick="toggleSolution(this)">
+                <i class="fas fa-eye"></i> View Solution
+            </button>
+            <div class="solution">
+                Height of lighthouse \(h = 50\) m.<br><br>
+                <strong>(i)</strong> At Q (angle of depression 45°):<br>
+                \(\tan 45° = \frac{50}{AQ} \Rightarrow 1 = \frac{50}{AQ} \Rightarrow AQ = 50\) m.<br><br>
+                <strong>(ii)</strong> \(\angle PBA = 90° - 30° = 60°\) (alternate angle to angle of depression).<br>
+                \(\angle QBA = 90° - 45° = 45°\).<br><br>
+                <strong>(iii) (a)</strong> At P (angle of depression 30°):<br>
+                \(\tan 30° = \frac{50}{AP} \Rightarrow \frac{1}{\sqrt{3}} = \frac{50}{AP} \Rightarrow AP = 50\sqrt{3}\)
+                m.<br>
+                Distance PQ = \(AP - AQ = 50\sqrt{3} - 50 = 50(\sqrt{3} - 1) = 50(1.732 - 1) = 50 \times 0.732 = 36.6\)
+                m.<br><br>
+                <strong>(iii) (b)</strong> Distance QA = 50 m. Time = 10 min = \(\frac{1}{6}\) hour.<br>
+                Speed = \(\frac{50 \text{ m}}{10 \text{ min}} = 5\) m/min = \(\frac{5 \times 60}{1000}\) km/h = 0.3
+                km/h.
+            </div>
+        </div>
+
 
         <!-- 30-4 Paper Set -->
         <div class="card" data-marks="1">
@@ -1117,22 +1211,28 @@
                 <span class="badge badge-1">1 Mark</span>
                 <span class="card-meta">30-4</span>
             </div>
-            <div class="question"><span class="question-number">Q1.</span> A kite is attached to a string of length 30m.
-                The string makes an angle of \(60^\circ\) with the ground. If the height of kite is 'h', then value of
-                'h' is :
+            <div class="question"><span class="question-number">Q1.</span> A 30 m long rope is tightly stretched and
+                tied from the top of pole to the ground. If the rope makes an angle of 60° with the ground, the height
+                of the pole is :
                 <ul class="options">
-                    <li>(a) \(10 \sqrt{3}\) m</li>
-                    <li>(b) \(30 \sqrt{3}\) m</li>
-                    <li>(c) \(15\) m</li>
-                    <li>(d) \(15 \sqrt{3}\) m</li>
+                    <li>(a) \(10\sqrt{3}\) m</li>
+                    <li>(b) \(30\sqrt{3}\) m</li>
+                    <li>(c) 15 m</li>
+                    <li>(d) \(15\sqrt{3}\) m</li>
                 </ul>
             </div>
             <button class="sol-toggle" onclick="toggleSolution(this)">
                 <i class="fas fa-eye"></i> View Solution
             </button>
-            <div class="solution">\(\sin 60° = h/30 \Rightarrow h = 30(\sqrt{3}/2) =
-                15\sqrt{3}\).<br><strong>Answer: (d)</strong></div>
+            <div class="solution">
+                Let height of pole = h.<br>
+                \(\sin 60° = \frac{h}{30}\).<br>
+                \(\frac{\sqrt{3}}{2} = \frac{h}{30}\).<br>
+                \(h = 30 \times \frac{\sqrt{3}}{2} = 15\sqrt{3}\) m.<br>
+                <strong>Answer: (d)</strong>
+            </div>
         </div>
+
         <div class="card" data-marks="4">
             <div class="card-top">
                 <span class="badge badge-4">4 Marks</span>
@@ -1172,6 +1272,37 @@
                 Distance to travel to P is PT.<br>
                 Time = \(\frac{100/\sqrt{3}}{50/3} = \frac{100}{\sqrt{3}} \times \frac{3}{50} = 2\sqrt{3} = 2(1.732) =
                 3.464\) seconds.
+            </div>
+        </div>
+        <div class="card" data-marks="2">
+            <div class="card-top">
+                <span class="badge badge-2">2 Marks</span>
+                <span class="card-meta">30-4</span>
+            </div>
+            <div class="question"><span class="question-number">Q21. (A)</span> A 1.5 m tall boy is walking away from
+                the base of a lamp post which is 12 m high, at the speed of 2.5 m/sec. Find the length of his shadow
+                after 3 seconds.
+                <div style="text-align: center; font-weight: bold; margin: 1rem 0; color: var(--accent-primary);">OR
+                </div>
+                <span class="question-number">Q21. (B)</span> In parallelogram ABCD, side AD is produced to a point E
+                and BE intersects CD at F. Prove that \(\Delta ABE \sim \Delta CFB\).
+            </div>
+            <button class="sol-toggle" onclick="toggleSolution(this)">
+                <i class="fas fa-eye"></i> View Solution
+            </button>
+            <div class="solution">
+                <strong>(A)</strong> Let AB = lamp post = 12 m, CD = boy = 1.5 m.<br>
+                Let BD = distance walked = 2.5 × 3 = 7.5 m.<br>
+                Let DE = shadow length = x.<br>
+                Triangles ABE and CDE are similar (AA).<br>
+                \(\frac{AB}{CD} = \frac{BE}{DE}\).<br>
+                \(\frac{12}{1.5} = \frac{7.5 + x}{x}\).<br>
+                \(8 = \frac{7.5 + x}{x}\).<br>
+                \(8x = 7.5 + x \Rightarrow 7x = 7.5 \Rightarrow x = \frac{7.5}{7} = \frac{15}{14}\) m ≈ 1.07 m.<br><br>
+                <strong>(B)</strong> In \(\Delta ABE\) and \(\Delta CFB\):<br>
+                \(\angle ABE = \angle CBF\) (common angle at B).<br>
+                \(\angle AEB = \angle CFB\) (alternate angles, AE || BC as ABCD is parallelogram).<br>
+                By AA similarity, \(\Delta ABE \sim \Delta CFB\). <strong>Hence Proved.</strong>
             </div>
         </div>
 
@@ -1260,31 +1391,7 @@
                     (A)</strong></div>
         </div>
 
-        <div class="card" data-marks="1">
-            <div class="card-top">
-                <span class="badge badge-1">1 Mark</span>
-                <span class="card-meta">30-6</span>
-            </div>
-            <div class="question"><span class="question-number">Q4.</span> The angle of elevation of the top of a tower
-                from a point on the ground, which is 30 m away from the foot of the tower, is \(30^\circ\). The height
-                of the tower is
-                <ul class="options">
-                    <li>(A) \(10\sqrt{3}\) m</li>
-                    <li>(B) \(30\sqrt{3}\) m</li>
-                    <li>(C) \(15\sqrt{3}\) m</li>
-                    <li>(D) \(10\) m</li>
-                </ul>
-            </div>
-            <button class="sol-toggle" onclick="toggleSolution(this)">
-                <i class="fas fa-eye"></i> View Solution
-            </button>
-            <div class="solution">
-                \(\tan 30^\circ = \frac{h}{30}\).<br>
-                \(\frac{1}{\sqrt{3}} = \frac{h}{30}\).<br>
-                \(h = \frac{30}{\sqrt{3}} = 10\sqrt{3}\) m.<br>
-                <strong>Answer: (A)</strong>
-            </div>
-        </div>
+
         <!-- 30-4 Paper Set -->
         <div class="card" data-marks="4">
             <div class="card-top">
@@ -1406,3 +1513,20 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

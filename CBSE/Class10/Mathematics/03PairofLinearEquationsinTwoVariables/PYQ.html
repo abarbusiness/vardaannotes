@@ -13,20 +13,21 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        :root {
-            /* Dark Theme - Warm Charcoal */
-            --bg-primary: #0d0d12;
-            --bg-secondary: #161620;
-            --bg-card: linear-gradient(145deg, rgba(25, 25, 35, 0.9), rgba(18, 18, 28, 0.95));
-            --bg-card-hover: linear-gradient(145deg, rgba(30, 30, 45, 0.95), rgba(22, 22, 35, 0.98));
+                :root {
+            /* Dark Theme - Premium Pure Black */
+            --bg-primary: #030303;
+            --bg-secondary: #080808;
+            --bg-card: #020203;
+            --bg-card-hover: #020203;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
             --text-muted: #6a6a7a;
             --accent-primary: #f97316;
             --accent-secondary: #ea580c;
             --accent-glow: rgba(249, 115, 22, 0.12);
-            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --border-accent: rgba(249, 115, 22, 0.35);
+            /* ... kept others ... */
             --success: #10b981;
             --warning: #f59e0b;
             --info: #3b82f6;
@@ -67,7 +68,7 @@
             scroll-behavior: smooth;
         }
 
-        body {
+                body {
             font-family: var(--font);
             background: var(--bg-primary);
             color: var(--text-primary);
@@ -76,12 +77,22 @@
             transition: background 0.4s ease, color 0.4s ease;
             -webkit-font-smoothing: antialiased;
 
-            /* Subtle Grid Background */
+            /* Creative Background: Ambient Orange Glow + Neutral Grid */
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center center;
+                radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center top, center center, center center;
+            background-attachment: fixed;
+        }
+        
+        [data-theme="light"] body {
+             background-image:
+                linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+             background-size: 40px 40px;
+             background-attachment: scroll;
         }
 
         [data-theme="light"] body {
@@ -628,30 +639,50 @@
             font-weight: 600;
         }
 
-        /* === MOBILE === */
-        @media (max-width: 640px) {
-            .header {
-                padding: 0.75rem 1rem;
-            }
-
-            .hero {
-                padding: 2rem 1rem 1.5rem;
-            }
-
-            .container {
-                padding: 1.5rem 1rem 3rem;
-            }
-
-            .card {
-                padding: 1.25rem;
-            }
-
-            .question {
-                font-size: 1rem;
-            }
+                                        /* === RESPONSIVE WRAPPING (FORCED) === */
+        
+        .question, .solution, .card {
+            width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
-        /* === WATERMARK OVERLAY === */
+        mjx-container {
+            max-width: 100% !important;
+            white-space: normal !important;
+            display: inline-block !important;
+            overflow: visible !important;
+            line-height: 1.8 !important;
+            font-size: 1rem !important;
+        }
+        
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        
+        td, th {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word; 
+            white-space: normal !important;
+        }
+
+        @media (max-width: 640px) {
+            .header { padding: 0.75rem 1rem; }
+            .hero { padding: 2rem 1rem 1.5rem; }
+            .container { padding: 0.5rem 0.75rem 3rem; }
+            .card { padding: 1rem; margin-bottom: 0.75rem; }
+            .question { font-size: 0.95rem; line-height: 1.6; }
+            .badge { font-size: 0.6rem; padding: 2px 5px; }
+            .question, .solution { overflow-x: visible; }
+            
+            /* Specific fix for tables in solution */
+            .solution table { display: table; width: 100%; }
+        }/* === WATERMARK OVERLAY === */
         .watermark-overlay {
             position: fixed;
             top: 0;
@@ -677,27 +708,22 @@
             filter: none;
         }
 
-        /* === QUESTION IMAGES === */
+                                /* === QUESTION IMAGES === */
         .question-image {
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .pyq-image {
-            max-width: 280px;
-            max-height: 200px;
-            width: auto;
+            display: block;
+            margin: 1.5rem auto;
+            max-width: 320px;
+            width: 100%;
             height: auto;
             border-radius: 8px;
             border: none;
         }
 
-        [data-theme="dark"] .pyq-image {
+        [data-theme="dark"] .question-image {
             filter: invert(1) hue-rotate(180deg);
+            opacity: 0.9;
         }
-
-
-        /* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
+/* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
         .image-placeholder {
             border: 3px dashed #ff6b6b;
             background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
@@ -775,7 +801,33 @@
             padding: 6px 12px;
             text-align: center;
         }
-    </style>
+            /* === FORCED TABLE FIX (SPECIFICITY OVERRIDE) === */
+        .question table, .solution table {
+            width: 100% !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            display: table !important; /* Ensure it stays a table */
+        }
+        
+        .question table td, .question table th,
+        .solution table td, .solution table th {
+            overflow-wrap: break-word !important;
+            word-wrap: break-word !important;
+            word-break: break-all !important; /* Force break even in mid-word if needed */
+            white-space: normal !important;
+            max-width: 0 !important; /* Forces cells to respect width sharing */
+        }
+        
+        /* Mobile Override for extreme cases */
+        @media (max-width: 480px) {
+             .question table, .solution table {
+                 font-size: 0.8rem; 
+             }
+             .question table td, .question table th {
+                 padding: 4px !important;
+             }
+        }
+</style>
 </head>
 
 <body>
@@ -908,7 +960,7 @@
                     by 19 and then subtracting 1. It is given that the digit at ten's place is greater than that of
                     unit's
                     place. Find the 2-digit number.
-                    <div class="image-placeholder">[Image: 2025-30-S-Question31]</div>
+                    
                 </div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
@@ -1055,6 +1107,47 @@
                 </div>
             </div>
 
+            <div class="card" data-marks="4">
+                <div class="card-top">
+                    <span class="badge badge-4">4 Marks</span>
+                    <span class="card-meta">30-2 (Case Study)</span>
+                </div>
+                <div class="question"><span class="question-number">Q37. Case Study – 2</span><br>
+                    A school is organizing a grand cultural event to show the talent of its students. To accommodate the
+                    guests, the school plans to rent chairs and tables from a local supplier. It finds that rent for
+                    each chair is ₹50 and for each table is ₹200. The school spends ₹30,000 for renting the chairs and
+                    tables. Also, the total number of items (chairs and tables) rented are 300.
+                    <div class="image-placeholder">[Image: 2025-30-2-Question37]</div>
+                    If the school rents 'x' chairs and 'y' tables, answer the following questions :<br>
+                    (i) Write down the pair of linear equations representing the given information. [1 Mark]<br>
+                    (ii) (a) Find the number of chairs and number of tables rented by the school. [2 Marks]<br>
+                    <div style="text-align: center; font-weight: bold; margin: 0.5rem 0; color: var(--accent-primary);">
+                        OR</div>
+                    (ii) (b) If the school wants to spend a maximum of ₹27,000 on 300 items (tables and chairs), then
+                    find the number of chairs and tables it can rent. [2 Marks]<br>
+                    (iii) What is maximum number of tables that can be rented in ₹30,000 if no chairs are rented? [1
+                    Mark]
+                </div>
+                <button class="sol-toggle" onclick="toggleSolution(this)">
+                    <i class="fas fa-eye"></i> View Solution
+                </button>
+                <div class="solution">
+                    <strong>(i)</strong> Equations:<br>
+                    \(x + y = 300\) ... (Total items)<br>
+                    \(50x + 200y = 30000 \Rightarrow x + 4y = 600\) ... (Total cost)<br><br>
+                    <strong>(ii) (a)</strong> Subtracting eq (i) from eq (ii):<br>
+                    \(3y = 300 \Rightarrow y = 100\).<br>
+                    \(x = 300 - 100 = 200\).<br>
+                    <strong>200 chairs and 100 tables.</strong><br><br>
+                    <strong>(ii) (b)</strong> New equations:<br>
+                    \(x + y = 300\), \(50x + 200y = 27000 \Rightarrow x + 4y = 540\).<br>
+                    Subtracting: \(3y = 240 \Rightarrow y = 80\). \(x = 220\).<br>
+                    <strong>220 chairs and 80 tables.</strong><br><br>
+                    <strong>(iii)</strong> If no chairs: \(200y = 30000 \Rightarrow y = 150\).<br>
+                    <strong>Maximum 150 tables.</strong>
+                </div>
+            </div>
+
             <!-- 30-3 Paper Set -->
             <div class="card" data-marks="1">
                 <div class="card-top">
@@ -1148,7 +1241,7 @@
                 <div class="question"><span class="question-number">Q25.</span> Solve the following system of equations
                     algebraically :<br>
                     \(73x - 37y = 109\)<br>
-                    \(37x - 73y = 1\)</div>
+                    \(37x - 73y = 1\)<br><img src="images/2025-30-S-QuestionNumber25.png" alt="2025-30-S-QuestionNumber25.png" class="question-image"></div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
                 </button>
@@ -1414,3 +1507,16 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -13,20 +13,21 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        :root {
-            /* Dark Theme - Warm Charcoal */
-            --bg-primary: #0d0d12;
-            --bg-secondary: #161620;
-            --bg-card: linear-gradient(145deg, rgba(25, 25, 35, 0.9), rgba(18, 18, 28, 0.95));
-            --bg-card-hover: linear-gradient(145deg, rgba(30, 30, 45, 0.95), rgba(22, 22, 35, 0.98));
+                :root {
+            /* Dark Theme - Premium Pure Black */
+            --bg-primary: #030303;
+            --bg-secondary: #080808;
+            --bg-card: #020203;
+            --bg-card-hover: #020203;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
             --text-muted: #6a6a7a;
             --accent-primary: #f97316;
             --accent-secondary: #ea580c;
             --accent-glow: rgba(249, 115, 22, 0.12);
-            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --border-accent: rgba(249, 115, 22, 0.35);
+            /* ... kept others ... */
             --success: #10b981;
             --warning: #f59e0b;
             --info: #3b82f6;
@@ -67,7 +68,7 @@
             scroll-behavior: smooth;
         }
 
-        body {
+                body {
             font-family: var(--font);
             background: var(--bg-primary);
             color: var(--text-primary);
@@ -76,12 +77,22 @@
             transition: background 0.4s ease, color 0.4s ease;
             -webkit-font-smoothing: antialiased;
 
-            /* Subtle Grid Background */
+            /* Creative Background: Ambient Orange Glow + Neutral Grid */
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center center;
+                radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center top, center center, center center;
+            background-attachment: fixed;
+        }
+        
+        [data-theme="light"] body {
+             background-image:
+                linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+             background-size: 40px 40px;
+             background-attachment: scroll;
         }
 
         [data-theme="light"] body {
@@ -628,30 +639,50 @@
             font-weight: 600;
         }
 
-        /* === MOBILE === */
-        @media (max-width: 640px) {
-            .header {
-                padding: 0.75rem 1rem;
-            }
-
-            .hero {
-                padding: 2rem 1rem 1.5rem;
-            }
-
-            .container {
-                padding: 1.5rem 1rem 3rem;
-            }
-
-            .card {
-                padding: 1.25rem;
-            }
-
-            .question {
-                font-size: 1rem;
-            }
+                                        /* === RESPONSIVE WRAPPING (FORCED) === */
+        
+        .question, .solution, .card {
+            width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
-        /* === WATERMARK OVERLAY === */
+        mjx-container {
+            max-width: 100% !important;
+            white-space: normal !important;
+            display: inline-block !important;
+            overflow: visible !important;
+            line-height: 1.8 !important;
+            font-size: 1rem !important;
+        }
+        
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        
+        td, th {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word; 
+            white-space: normal !important;
+        }
+
+        @media (max-width: 640px) {
+            .header { padding: 0.75rem 1rem; }
+            .hero { padding: 2rem 1rem 1.5rem; }
+            .container { padding: 0.5rem 0.75rem 3rem; }
+            .card { padding: 1rem; margin-bottom: 0.75rem; }
+            .question { font-size: 0.95rem; line-height: 1.6; }
+            .badge { font-size: 0.6rem; padding: 2px 5px; }
+            .question, .solution { overflow-x: visible; }
+            
+            /* Specific fix for tables in solution */
+            .solution table { display: table; width: 100%; }
+        }/* === WATERMARK OVERLAY === */
         .watermark-overlay {
             position: fixed;
             top: 0;
@@ -677,27 +708,22 @@
             filter: none;
         }
 
-        /* === QUESTION IMAGES === */
+                                /* === QUESTION IMAGES === */
         .question-image {
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .pyq-image {
-            max-width: 280px;
-            max-height: 200px;
-            width: auto;
+            display: block;
+            margin: 1.5rem auto;
+            max-width: 320px;
+            width: 100%;
             height: auto;
             border-radius: 8px;
             border: none;
         }
 
-        [data-theme="dark"] .pyq-image {
+        [data-theme="dark"] .question-image {
             filter: invert(1) hue-rotate(180deg);
+            opacity: 0.9;
         }
-
-
-        /* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
+/* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
         .image-placeholder {
             border: 3px dashed #ff6b6b;
             background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
@@ -775,7 +801,33 @@
             padding: 6px 12px;
             text-align: center;
         }
-    </style>
+            /* === FORCED TABLE FIX (SPECIFICITY OVERRIDE) === */
+        .question table, .solution table {
+            width: 100% !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            display: table !important; /* Ensure it stays a table */
+        }
+        
+        .question table td, .question table th,
+        .solution table td, .solution table th {
+            overflow-wrap: break-word !important;
+            word-wrap: break-word !important;
+            word-break: break-all !important; /* Force break even in mid-word if needed */
+            white-space: normal !important;
+            max-width: 0 !important; /* Forces cells to respect width sharing */
+        }
+        
+        /* Mobile Override for extreme cases */
+        @media (max-width: 480px) {
+             .question table, .solution table {
+                 font-size: 0.8rem; 
+             }
+             .question table td, .question table th {
+                 padding: 4px !important;
+             }
+        }
+</style>
 </head>
 
 <body>
@@ -928,7 +980,7 @@
                     <div class="question-number">Q21. (b)</div> In the given figure, ABCD is a trapezium with AB || DC.
                     Find
                     the area of the shaded region.
-                    <div class="image-placeholder">[Image: 2025-30-S-Question21]</div>
+                    <img src="images/2025-30-S-Question21.png" alt="2025-30-S-Question21" class="question-image">
                 </div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
@@ -948,80 +1000,8 @@
                 </div>
             </div>
 
-            <div class="card" data-marks="1">
-                <div class="card-top">
-                    <span class="badge badge-1">1 Mark</span>
-                    <span class="card-meta">30-S</span>
-                </div>
-                <div class="question"><span class="question-number">Q10.</span> Area of a quadrant of a circle is
-                    \(38.5\)
-                    cm\({}^2\). Its diameter is :
-                    <div class="image-placeholder">[Image: 2025-30-S-Question10]</div>
-                    <ul class="options">
-                        <li>(A) 7 cm</li>
-                        <li>(B) 14 cm</li>
-                        <li>(C) 21 cm</li>
-                        <li>(D) 28 cm</li>
-                    </ul>
-                </div>
-                <button class="sol-toggle" onclick="toggleSolution(this)">
-                    <i class="fas fa-eye"></i> View Solution
-                </button>
-                <div class="solution">
-                    Area of Quadrant = \(\frac{1}{4} \pi r^2 = 38.5\).<br>
-                    \(\frac{1}{4} \times \frac{22}{7} \times r^2 = 38.5\).<br>
-                    \(\frac{11}{14} r^2 = 38.5 \Rightarrow r^2 = 38.5 \times \frac{14}{11} = 3.5 \times 14 = 49\).<br>
-                    \(r = 7\) cm.<br>
-                    Diameter = \(2r = 14\) cm.<br>
-                    <strong>Answer: (B)</strong>
-                </div>
-            </div>
-            <div class="card" data-marks="1">
-                <div class="card-top">
-                    <span class="badge badge-1">1 Mark</span>
-                    <span class="card-meta">30-S</span>
-                </div>
-                <div class="question"><span class="question-number">Q16.</span> The perimeter of a sector of a circle of
-                    radius 5.2 cm is 16.4 cm. The area of the sector is :
-                    <div class="image-placeholder">[Image: 2025-30-S-Question16]</div>
-                    <ul class="options">
-                        <li>(A) \(15.6\) cm\({}^2\)</li>
-                        <li>(B) \(16.6\) cm\({}^2\)</li>
-                        <li>(C) \(12.4\) cm\({}^2\)</li>
-                        <li>(D) \(14.6\) cm\({}^2\)</li>
-                    </ul>
-                </div>
-                <button class="sol-toggle" onclick="toggleSolution(this)">
-                    <i class="fas fa-eye"></i> View Solution
-                </button>
-                <div class="solution">
-                    Perimeter \(P = 2r + L = 16.4\).<br>
-                    \(2(5.2) + L = 16.4 \Rightarrow 10.4 + L = 16.4 \Rightarrow L = 6\) cm.<br>
-                    Area \(A = \frac{1}{2} L r = \frac{1}{2} \times 6 \times 5.2 = 3 \times 5.2 = 15.6\) cm\({}^2\).<br>
-                    <strong>Answer: (A)</strong>
-                </div>
-            </div>
-            <div class="card" data-marks="2">
-                <div class="card-top">
-                    <span class="badge badge-2">2 Marks</span>
-                    <span class="card-meta">30-S</span>
-                </div>
-                <div class="question"><span class="question-number">Q21.</span> Find the area of the minor segment of a
-                    circle of radius 14 cm, when the angle of the corresponding sector is \(60^\circ\).
-                    <div class="image-placeholder">[Image: 2025-30-S-Question21]</div>
-                </div>
-                <button class="sol-toggle" onclick="toggleSolution(this)">
-                    <i class="fas fa-eye"></i> View Solution
-                </button>
-                <div class="solution">
-                    Area of Sector = \(\frac{60}{360} \pi (14)^2 = \frac{1}{6} \times \frac{22}{7} \times 196 =
-                    \frac{308}{3} \approx 102.67\) cm\({}^2\).<br>
-                    Area of \(\Delta\) (Equilateral since \(60^\circ\)) = \(\frac{\sqrt{3}}{4} (14)^2 = 49\sqrt{3}
-                    \approx
-                    49(1.732) = 84.87\) cm\({}^2\).<br>
-                    Area of Segment = Area of Sector - Area of \(\Delta\) = \(102.67 - 84.87 = 17.8\) cm\({}^2\).
-                </div>
-            </div>
+
+
 
 
 
@@ -1032,8 +1012,8 @@
                     <span class="card-meta">30-1</span>
                 </div>
                 <div class="question"><span class="question-number">Q8.</span> A piece of wire 20 cm long is bent into
-                    an
-                    arc of radius \(\frac{60}{\pi}\) cm. The angle subtended is:
+                    the form of an arc of a circle of radius \(\frac{60}{\pi}\) cm. The angle subtended by the arc at
+                    the centre of the circle is :
                     <ul class="options">
                         <li>(A) \(30^\circ\)</li>
                         <li>(B) \(60^\circ\)</li>
@@ -1082,24 +1062,32 @@
                     <span class="badge badge-4">4 Marks</span>
                     <span class="card-meta">30-1 (Case Study)</span>
                 </div>
-                <div class="question"><span class="question-number">Q38. Case Study - 3</span><br>
-                    Brooch with silver wire... diameter 35 mm. 5 diameters divide into 10 equal sectors.
-                    <div class="image-placeholder">[Image: 2025-30-01-Question38]</div>
-                    (i) Find central angle of each sector.<br>
-                    (ii) Find length of arc ACB.<br>
-                    (iii) (a) Find area of each sector. OR (b) Total length of silver wire.
+                <div class="question"><span class="question-number">Q38.</span> <strong>Case Study - 3</strong><br>
+                    A brooch is a decorative piece often worn on clothing like jackets, blouses or dresses to add
+                    elegance. Made from precious metals and decorated with gemstones, brooches come in many shapes and
+                    designs.
+                    <br><br>
+                    One such brooch is made with silver wire in the form of a circle with diameter 35 mm. The wire is
+                    also used in making 5 diameters which divide the circle into 10 equal sectors as shown in the
+                    figure.
+                    <div class="image-placeholder">[Image: 2025-30-1-Question38]</div>
+                    <br><br>
+                    Based on the above given information, answer the following questions :<br>
+                    (i) Find the central angle of each sector. (1)<br>
+                    (ii) Find the length of the arc ACB. (1)<br>
+                    (iii) (a) Find the area of each sector of the brooch. (2)<br>
+                    <div style="text-align: center; font-weight: bold; margin: 0.5rem 0;">OR</div>
+                    (iii) (b) Find the total length of the silver wire used. (2)
                 </div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
                 </button>
                 <div class="solution">
-                    <strong>(i)</strong> \(360^\circ / 10 = 36^\circ\).<br>
-                    <strong>(ii)</strong> Assuming arc ACB refers to arc of one sector? Length = \(\frac{1}{10} \pi d =
-                    \frac{1}{10} \frac{22}{7} (35) = 11\) mm.<br>
-                    <strong>(iii) (a)</strong> Area = \(\frac{1}{10} \pi r^2 = \frac{1}{10} \frac{22}{7}
-                    (\frac{35}{2})^2 =
-                    96.25\) mm².<br>
-                    <strong>(iii) (b)</strong> Length = \(\pi d + 5d = 110 + 175 = 285\) mm.
+                    (i) Central angle = \(360^\circ / 10 = 36^\circ\).<br>
+                    (ii) Length of arc ACB = \(\frac{36}{360} \times \pi d = 11\) mm.<br>
+                    (iii) (a) Area of sector = \(\frac{36}{360} \times \pi r^2 = 96.25 \text{ mm}^2\).<br>
+                    <strong>OR</strong><br>
+                    (iii) (b) Total wire = \(\pi d + 5d = 110 + 175 = 285\) mm.
                 </div>
             </div>
 
@@ -1192,85 +1180,27 @@
                 </div>
             </div>
 
-            <div class="card" data-marks="1">
-                <div class="card-top">
-                    <span class="badge badge-1">1 Mark</span>
-                    <span class="card-meta">30-2</span>
-                </div>
-                <div class="question"><span class="question-number">Q12.</span> The area of a sector of angle \(p\) (in
-                    degrees) of a circle with radius R is:
-                    <ul class="options">
-                        <li>(A) \(\frac{p}{180} \times 2\pi R\)</li>
-                        <li>(B) \(\frac{p}{180} \times \pi R^2\)</li>
-                        <li>(C) \(\frac{p}{360} \times 2\pi R\)</li>
-                        <li>(D) \(\frac{p}{720} \times 2\pi R^2\)</li>
-                    </ul>
-                </div>
-                <button class="sol-toggle" onclick="toggleSolution(this)">
-                    <i class="fas fa-eye"></i> View Solution
-                </button>
-                <div class="solution">
-                    Area of sector = \(\frac{\theta}{360} \pi r^2\).<br>
-                    Here \(\theta = p, r = R\). Area = \(\frac{p}{360} \pi R^2\).<br>
-                    Multiplying numerator and denominator by 2: \(\frac{p}{720} 2\pi R^2\).<br>
-                    Matches option (D).<br>
-                    <strong>Answer: (D)</strong>
-                </div>
-            </div>
+
+
+
+
 
             <div class="card" data-marks="2">
                 <div class="card-top">
                     <span class="badge badge-2">2 Marks</span>
                     <span class="card-meta">30-2</span>
                 </div>
-                <div class="question"><span class="question-number">Q22.</span> Find the area of the minor segment of a
-                    circle of radius 14 cm, when the angle of the corresponding sector is \(60^\circ\).</div>
-                <button class="sol-toggle" onclick="toggleSolution(this)">
-                    <i class="fas fa-eye"></i> View Solution
-                </button>
-                <div class="solution">
-                    Area Segment = Area Sector - Area Triangle.<br>
-                    \(r = 14\), \(\theta = 60^\circ\).<br>
-                    Area Sector = \(\frac{60}{360} \times \frac{22}{7} \times 14 \times 14 = \frac{1}{6} \times 22
-                    \times 28
-                    = \frac{616}{6} \approx 102.67\) cm\(^2\).<br>
-                    Area Triangle (\(\theta=60\) is equilateral) = \(\frac{\sqrt{3}}{4} r^2 = \frac{1.732}{4} \times 196
-                    =
-                    <span class="card-meta">30-2</span>
-                </div>
-                <div class="question"><span class="question-number">Q3.</span> If an arc of a circle of diameter 10 cm
-                    subtends an angle of \(144^\circ\) at the centre, then the length of the arc is :
-                    <ul class="options">
-                        <li>(A) \(2\pi\) cm</li>
-                        <li>(B) \(4\pi\) cm</li>
-                        <li>(C) \(5\pi\) cm</li>
-                        <li>(D) \(6\pi\) cm</li>
-                    </ul>
-                </div>
-                <button class="sol-toggle" onclick="toggleSolution(this)">
-                    <i class="fas fa-eye"></i> View Solution
-                </button>
-                <div class="solution">
-                    \(r = 10/2 = 5\). \(\theta = 144^\circ\).<br>
-                    Length \(L = \frac{\theta}{360} \times 2\pi r = \frac{144}{360} \times 2\pi(5) = \frac{2}{5} \times
-                    10\pi = 4\pi\) cm.<br>
-                    <strong>Answer: (B)</strong>
-                </div>
-            </div>
-            <div class="card" data-marks="2">
-                <div class="card-top">
-                    <span class="badge badge-2">2 Marks</span>
-                    <span class="card-meta">30-2</span>
-                </div>
-                <div class="question"><span class="question-number">Q21. (a)</span> In the given figure... shape of top
-                    of table is sector... \(\angle AOB = 90^\circ, AO = 42\). Find perimeter.
-                    <div class="image-placeholder">[Image: 2025-30-2-21A]</div>
+                <div class="question"><span class="question-number">Q21. (a)</span> In the given figure, the shape of
+                    the top of a table is that of a sector of a circle with centre O and \(\angle AOB = 90^\circ\). If
+                    AO = OB = 42 cm, then find the perimeter of the top of the table.
+                    <div class="image-placeholder">[Image: 2025-30-2-Question21a]</div>
                 </div>
                 <div style="text-align: center; font-weight: bold; margin: 1rem 0; color: var(--accent-primary);">OR
                 </div>
-                <div class="question"><span class="question-number">Q21. (b)</span> Three sectors of radius 5 cm, angles
-                    \(35^\circ, 50^\circ, 95^\circ\). Find shaded area.
-                    <div class="image-placeholder">[Image: 2025-30-2-21B]</div>
+                <div class="question"><span class="question-number">Q21. (b)</span> In the given figure, three sectors
+                    of a circle of radius 5 cm, making angles \(35^\circ, 50^\circ\) and \(95^\circ\) at the centre are
+                    shaded. Find the area of the shaded region. [Use \(\pi = \frac{22}{7}\)]
+                    <div class="image-placeholder">[Image: 2025-30-2-Question21b]</div>
                 </div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
@@ -1292,8 +1222,8 @@
                     <span class="card-meta">30-2</span>
                 </div>
                 <div class="question"><span class="question-number">Q28.</span> The length of the hour hand of a clock
-                    is 10 cm. Find the area of the minor sector swept... between 5 a.m. to 8 a.m. Also, major sector.
-                </div>
+                    is 10 cm. Find the area of the minor sector swept by the hour hand of the clock between 5 a.m. to 8
+                    a.m. Also, find the area of the major sector.</div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
                 </button>
@@ -1352,30 +1282,6 @@
         </div>
         </div>
         <!-- 30-4 Paper Set -->
-        <div class="card" data-marks="4">
-            <div class="card-top">
-                <span class="badge badge-4">4 Marks</span>
-                <span class="card-meta">30-4 (Case Study)</span>
-            </div>
-            <div class="question"><span class="question-number">Q37.</span> In an annual sports meet foundation class of
-                a school has made the 'Olympic rings' using a rope of length 44 m to be displayed in the assembly. The
-                model is made in such a way that each circle touches two other circles as shown in the figure. O, A and
-                B are the centres of three circles and \(\Delta OAB\) is an equilateral triangle.
-                <div class="image-placeholder">[Image: 2025-30-4-Question37]</div>
-                Based on the above information, answer the following questions :<br>
-                (i) Find the radius of each circle.<br>
-                (ii) Find the measure of angle AOB.<br>
-                (iii) (a) Find the area of shaded region. [Take \(\sqrt{3} = 1.73\) and \(\pi = 3.14\)]<br>
-                <div style="text-align: center; font-weight: bold; margin: 0.5rem 0; color: var(--accent-primary);">OR
-                </div>
-                (iii) (b) Find the length of the rope which is not used in the shaded region.
-            </div>
-            <button class="sol-toggle" onclick="toggleSolution(this)">
-                <i class="fas fa-eye"></i> View Solution
-            </button>
-            <div class="solution"><strong>(i)</strong> \(2\pi r = 44 \Rightarrow r = 7\) m.<br><strong>(ii)</strong>
-                60° (Equilateral).<br><strong>(iii)</strong> Area involves sector - triangle calculation.</div>
-        </div>
 
 
 
@@ -1388,7 +1294,7 @@
             <div class="question"><span class="question-number">Q37.</span> A farmer has a circular piece of land of
                 radius 35 m. He wishes to construct his house in the form of largest possible square within the
                 land.
-                <div class="image-placeholder">[Image: 2025-30-5-37]</div>
+                <div class="image-placeholder">[Image: 2025-30-5-37]<br><img src="images/2025-30-S-QuestionNumber37.png" alt="2025-30-S-QuestionNumber37.png" class="question-image"></div>
                 Based on given information, answer the following:<br>
                 (i) Find the length of wire needed to fence the entire land.<br>
                 (ii) Find the length of each side of the square land on which house will be constructed.<br>
@@ -1422,6 +1328,7 @@
                 farmhouse which is in the form of a semicircle of diameter 70 m. He divides it into three parts by
                 taking a point P on the semicircle in such a way that \(\angle PAB = 30°\) as shown in the following
                 figure, where O is the centre of semicircle.<br>
+                <div class="image-placeholder">[Image: 2025-30-6-Question37]</div>
                 In part I, he planted saplings of Mango tree, in part II, he grew tomatoes and in part III, he grew
                 oranges.<br><br>
                 Based on given information, answer the following questions.<br>
@@ -1431,7 +1338,7 @@
                 <div style="text-align: center; font-weight: bold; margin: 0.5rem 0; color: var(--accent-primary);">
                     OR</div>
                 (b) Find the length of wire needed to fence the region III. [2 Marks]
-                <div class="image-placeholder">[Image: 30-6-3_Mathematics Standard.pdf - Question 37]</div>
+
             </div>
             <button class="sol-toggle" onclick="toggleSolution(this)">
                 <i class="fas fa-eye"></i> View Solution
@@ -1532,3 +1439,21 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

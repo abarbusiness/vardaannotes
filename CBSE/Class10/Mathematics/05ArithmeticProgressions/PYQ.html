@@ -13,20 +13,21 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        :root {
-            /* Dark Theme - Warm Charcoal */
-            --bg-primary: #0d0d12;
-            --bg-secondary: #161620;
-            --bg-card: linear-gradient(145deg, rgba(25, 25, 35, 0.9), rgba(18, 18, 28, 0.95));
-            --bg-card-hover: linear-gradient(145deg, rgba(30, 30, 45, 0.95), rgba(22, 22, 35, 0.98));
+                :root {
+            /* Dark Theme - Premium Pure Black */
+            --bg-primary: #030303;
+            --bg-secondary: #080808;
+            --bg-card: #020203;
+            --bg-card-hover: #020203;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
             --text-muted: #6a6a7a;
             --accent-primary: #f97316;
             --accent-secondary: #ea580c;
             --accent-glow: rgba(249, 115, 22, 0.12);
-            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --border-accent: rgba(249, 115, 22, 0.35);
+            /* ... kept others ... */
             --success: #10b981;
             --warning: #f59e0b;
             --info: #3b82f6;
@@ -67,7 +68,7 @@
             scroll-behavior: smooth;
         }
 
-        body {
+                body {
             font-family: var(--font);
             background: var(--bg-primary);
             color: var(--text-primary);
@@ -76,12 +77,22 @@
             transition: background 0.4s ease, color 0.4s ease;
             -webkit-font-smoothing: antialiased;
 
-            /* Subtle Grid Background */
+            /* Creative Background: Ambient Orange Glow + Neutral Grid */
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center center;
+                radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center top, center center, center center;
+            background-attachment: fixed;
+        }
+        
+        [data-theme="light"] body {
+             background-image:
+                linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+             background-size: 40px 40px;
+             background-attachment: scroll;
         }
 
         [data-theme="light"] body {
@@ -628,30 +639,50 @@
             font-weight: 600;
         }
 
-        /* === MOBILE === */
-        @media (max-width: 640px) {
-            .header {
-                padding: 0.75rem 1rem;
-            }
-
-            .hero {
-                padding: 2rem 1rem 1.5rem;
-            }
-
-            .container {
-                padding: 1.5rem 1rem 3rem;
-            }
-
-            .card {
-                padding: 1.25rem;
-            }
-
-            .question {
-                font-size: 1rem;
-            }
+                                        /* === RESPONSIVE WRAPPING (FORCED) === */
+        
+        .question, .solution, .card {
+            width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
-        /* === WATERMARK OVERLAY === */
+        mjx-container {
+            max-width: 100% !important;
+            white-space: normal !important;
+            display: inline-block !important;
+            overflow: visible !important;
+            line-height: 1.8 !important;
+            font-size: 1rem !important;
+        }
+        
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        
+        td, th {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word; 
+            white-space: normal !important;
+        }
+
+        @media (max-width: 640px) {
+            .header { padding: 0.75rem 1rem; }
+            .hero { padding: 2rem 1rem 1.5rem; }
+            .container { padding: 0.5rem 0.75rem 3rem; }
+            .card { padding: 1rem; margin-bottom: 0.75rem; }
+            .question { font-size: 0.95rem; line-height: 1.6; }
+            .badge { font-size: 0.6rem; padding: 2px 5px; }
+            .question, .solution { overflow-x: visible; }
+            
+            /* Specific fix for tables in solution */
+            .solution table { display: table; width: 100%; }
+        }/* === WATERMARK OVERLAY === */
         .watermark-overlay {
             position: fixed;
             top: 0;
@@ -677,27 +708,22 @@
             filter: none;
         }
 
-        /* === QUESTION IMAGES === */
+                                /* === QUESTION IMAGES === */
         .question-image {
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .pyq-image {
-            max-width: 280px;
-            max-height: 200px;
-            width: auto;
+            display: block;
+            margin: 1.5rem auto;
+            max-width: 320px;
+            width: 100%;
             height: auto;
             border-radius: 8px;
             border: none;
         }
 
-        [data-theme="dark"] .pyq-image {
+        [data-theme="dark"] .question-image {
             filter: invert(1) hue-rotate(180deg);
+            opacity: 0.9;
         }
-
-
-        /* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
+/* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
         .image-placeholder {
             border: 3px dashed #ff6b6b;
             background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
@@ -775,7 +801,33 @@
             padding: 6px 12px;
             text-align: center;
         }
-    </style>
+            /* === FORCED TABLE FIX (SPECIFICITY OVERRIDE) === */
+        .question table, .solution table {
+            width: 100% !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            display: table !important; /* Ensure it stays a table */
+        }
+        
+        .question table td, .question table th,
+        .solution table td, .solution table th {
+            overflow-wrap: break-word !important;
+            word-wrap: break-word !important;
+            word-break: break-all !important; /* Force break even in mid-word if needed */
+            white-space: normal !important;
+            max-width: 0 !important; /* Forces cells to respect width sharing */
+        }
+        
+        /* Mobile Override for extreme cases */
+        @media (max-width: 480px) {
+             .question table, .solution table {
+                 font-size: 0.8rem; 
+             }
+             .question table td, .question table th {
+                 padding: 4px !important;
+             }
+        }
+</style>
 </head>
 
 <body>
@@ -867,7 +919,7 @@
                 </div>
                 <div class="question"><span class="question-number">Q9.</span> The 6th term of the AP \(\sqrt{27},
                     \sqrt{75}, \sqrt{147}, ...\) is :
-                    <div class="image-placeholder">[Image: 2025-30-S-Question9]</div>
+                    
                     <ul class="options">
                         <li>(A) \(\sqrt{243}\)</li>
                         <li>(B) \(\sqrt{363}\)</li>
@@ -893,7 +945,7 @@
                 </div>
                 <div class="question"><span class="question-number">Q11.</span> If the 23rd term of an AP exceeds its
                     16th term by 21, then the common difference is :
-                    <div class="image-placeholder">[Image: 2025-30-S-Question11]</div>
+                    
                     <ul class="options">
                         <li>(A) 1</li>
                         <li>(B) 2</li>
@@ -919,7 +971,7 @@
                 <div class="question"><span class="question-number">Q36. Case Study - 1</span><br>
                     In the month of September, villagers of Ankurhut were falling ill... number of Paracetamol sold in
                     different shops were all 3-digit numbers, divisible by 13, taken in order.
-                    <div class="image-placeholder">[Image: 2025-30-S-Question36]</div>
+                    <img src="images/2025-30-S-Question36.png" alt="2025-30-S-Question36" class="question-image">
                     (i) How many Paracetamols were sold by the 7th pharmacy? [1 Mark]<br>
                     (ii) What was the difference between the number of Paracetamols sold by the 14th and the 9th
                     pharmacy? [1 Mark]<br>
@@ -1050,7 +1102,7 @@
                     <strong>Reason (R):</strong> Common difference of the AP: \(a_1, a_2, \dots\) is obtained by \(d =
                     a_n -
                     a_{n-1}\).
-                    <ul class="options">
+                    <br><img src="images/2025-30-S-QuestionNumber19.png" alt="2025-30-S-QuestionNumber19.png" class="question-image"><ul class="options">
                         <li>(D) A is false but R is true</li>
                     </ul>
                 </div>
@@ -1086,51 +1138,6 @@
                 </div>
             </div>
             <!-- 30-3 Paper Set -->
-            <div class="card" data-marks="4">
-                <div class="card-top">
-                    <span class="badge badge-5">4 Marks</span>
-                    <span class="card-meta">30-3 (Case Study)</span>
-                </div>
-                <div class="question"><span class="question-number">Q38 (Case Study).</span> In order to organise,
-                    Annual Sports Day, a school prepared an eight lane running track with an integrated football field
-                    inside the track area as shown below:
-                    <div class="image-placeholder">[Image: 30-6-3_Mathematics Standard.pdf - Question 38]</div>
-                    The length of innermost lane of the track is 400 m and each subsequent lane is 7.6 m longer than the
-                    preceding lane.<br><br>
-                    Based on given information, answer the following questions, using concept of Arithmetic
-                    Progression.<br><br>
-                    i. What is the length of the \(6^{th}\) lane? [1 Mark]<br>
-                    ii. How long is the \(8^{th}\) lane than that of \(4^{th}\) lane? [1 Mark]<br>
-                    iii. (a) While practicing for a race, a student took one round each in first six lanes. Find the
-                    total distance covered by the student. [2 Marks]<br>
-                    <div style="text-align: center; font-weight: bold; margin: 0.5rem 0; color: var(--accent-primary);">
-                        OR</div>
-                    (b) A student took one round each in lane 4 to lane 8. Find the total distance covered by the
-                    student. [2 Marks]
-                </div>
-                <button class="sol-toggle" onclick="toggleSolution(this)">
-                    <i class="fas fa-eye"></i> View Solution
-                </button>
-                <div class="solution">
-                    This is an AP with first term \(a = 400\) and common difference \(d = 7.6\).<br><br>
-                    <strong>(i) Length of 6th lane (\(a_6\)):</strong><br>
-                    \(a_n = a + (n-1)d\)<br>
-                    \(a_6 = 400 + 5(7.6) = 400 + 38 = 438\) m.<br><br>
-                    <strong>(ii) Difference between 8th and 4th lane:</strong><br>
-                    \(a_8 - a_4 = (a + 7d) - (a + 3d) = 4d\)<br>
-                    \(4 \times 7.6 = 30.4\) m.<br><br>
-                    <strong>(iii) (a) Total distance in first six lanes (\(S_6\)):</strong><br>
-                    \(S_n = \frac{n}{2}[2a + (n-1)d]\)<br>
-                    \(S_6 = \frac{6}{2}[2(400) + 5(7.6)]\)<br>
-                    \(S_6 = 3[800 + 38] = 3 \times 838 = 2514\) m.<br><br>
-                    <strong>(iii) (b) Total distance from lane 4 to 8:</strong><br>
-                    This includes lanes 4, 5, 6, 7, 8 (Total 5 lanes).<br>
-                    First term for this sum is \(a_4 = 400 + 3(7.6) = 422.8\) m.<br>
-                    Last term is \(a_8 = 400 + 7(7.6) = 453.2\) m.<br>
-                    Sum = \(\frac{n}{2}[a_{first} + a_{last}]\)<br>
-                    Sum = \(\frac{5}{2}[422.8 + 453.2] = \frac{5}{2}[876] = 5 \times 438 = 2190\) m.
-                </div>
-            </div>
             <div class="card" data-marks="5">
                 <div class="card-top">
                     <span class="badge badge-5">5 Marks</span>
@@ -1414,3 +1421,18 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

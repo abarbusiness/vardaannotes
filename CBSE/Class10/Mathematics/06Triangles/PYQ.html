@@ -13,20 +13,21 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        :root {
-            /* Dark Theme - Warm Charcoal */
-            --bg-primary: #0d0d12;
-            --bg-secondary: #161620;
-            --bg-card: linear-gradient(145deg, rgba(25, 25, 35, 0.9), rgba(18, 18, 28, 0.95));
-            --bg-card-hover: linear-gradient(145deg, rgba(30, 30, 45, 0.95), rgba(22, 22, 35, 0.98));
+                :root {
+            /* Dark Theme - Premium Pure Black */
+            --bg-primary: #030303;
+            --bg-secondary: #080808;
+            --bg-card: #020203;
+            --bg-card-hover: #020203;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
             --text-muted: #6a6a7a;
             --accent-primary: #f97316;
             --accent-secondary: #ea580c;
             --accent-glow: rgba(249, 115, 22, 0.12);
-            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --border-accent: rgba(249, 115, 22, 0.35);
+            /* ... kept others ... */
             --success: #10b981;
             --warning: #f59e0b;
             --info: #3b82f6;
@@ -67,7 +68,7 @@
             scroll-behavior: smooth;
         }
 
-        body {
+                body {
             font-family: var(--font);
             background: var(--bg-primary);
             color: var(--text-primary);
@@ -76,12 +77,22 @@
             transition: background 0.4s ease, color 0.4s ease;
             -webkit-font-smoothing: antialiased;
 
-            /* Subtle Grid Background */
+            /* Creative Background: Ambient Orange Glow + Neutral Grid */
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center center;
+                radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: center top, center center, center center;
+            background-attachment: fixed;
+        }
+        
+        [data-theme="light"] body {
+             background-image:
+                linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+             background-size: 40px 40px;
+             background-attachment: scroll;
         }
 
         [data-theme="light"] body {
@@ -628,30 +639,50 @@
             font-weight: 600;
         }
 
-        /* === MOBILE === */
-        @media (max-width: 640px) {
-            .header {
-                padding: 0.75rem 1rem;
-            }
-
-            .hero {
-                padding: 2rem 1rem 1.5rem;
-            }
-
-            .container {
-                padding: 1.5rem 1rem 3rem;
-            }
-
-            .card {
-                padding: 1.25rem;
-            }
-
-            .question {
-                font-size: 1rem;
-            }
+                                        /* === RESPONSIVE WRAPPING (FORCED) === */
+        
+        .question, .solution, .card {
+            width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
-        /* === WATERMARK OVERLAY === */
+        mjx-container {
+            max-width: 100% !important;
+            white-space: normal !important;
+            display: inline-block !important;
+            overflow: visible !important;
+            line-height: 1.8 !important;
+            font-size: 1rem !important;
+        }
+        
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        
+        td, th {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word; 
+            white-space: normal !important;
+        }
+
+        @media (max-width: 640px) {
+            .header { padding: 0.75rem 1rem; }
+            .hero { padding: 2rem 1rem 1.5rem; }
+            .container { padding: 0.5rem 0.75rem 3rem; }
+            .card { padding: 1rem; margin-bottom: 0.75rem; }
+            .question { font-size: 0.95rem; line-height: 1.6; }
+            .badge { font-size: 0.6rem; padding: 2px 5px; }
+            .question, .solution { overflow-x: visible; }
+            
+            /* Specific fix for tables in solution */
+            .solution table { display: table; width: 100%; }
+        }/* === WATERMARK OVERLAY === */
         .watermark-overlay {
             position: fixed;
             top: 0;
@@ -677,27 +708,22 @@
             filter: none;
         }
 
-        /* === QUESTION IMAGES === */
+                                /* === QUESTION IMAGES === */
         .question-image {
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .pyq-image {
-            max-width: 280px;
-            max-height: 200px;
-            width: auto;
+            display: block;
+            margin: 1.5rem auto;
+            max-width: 320px;
+            width: 100%;
             height: auto;
             border-radius: 8px;
             border: none;
         }
 
-        [data-theme="dark"] .pyq-image {
+        [data-theme="dark"] .question-image {
             filter: invert(1) hue-rotate(180deg);
+            opacity: 0.9;
         }
-
-
-        /* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
+/* === IMAGE PLACEHOLDER (HIGHLIGHTED) === */
         .image-placeholder {
             border: 3px dashed #ff6b6b;
             background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
@@ -775,7 +801,33 @@
             padding: 6px 12px;
             text-align: center;
         }
-    </style>
+            /* === FORCED TABLE FIX (SPECIFICITY OVERRIDE) === */
+        .question table, .solution table {
+            width: 100% !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            display: table !important; /* Ensure it stays a table */
+        }
+        
+        .question table td, .question table th,
+        .solution table td, .solution table th {
+            overflow-wrap: break-word !important;
+            word-wrap: break-word !important;
+            word-break: break-all !important; /* Force break even in mid-word if needed */
+            white-space: normal !important;
+            max-width: 0 !important; /* Forces cells to respect width sharing */
+        }
+        
+        /* Mobile Override for extreme cases */
+        @media (max-width: 480px) {
+             .question table, .solution table {
+                 font-size: 0.8rem; 
+             }
+             .question table td, .question table th {
+                 padding: 4px !important;
+             }
+        }
+</style>
 </head>
 
 <body>
@@ -866,7 +918,7 @@
                 </div>
                 <div class="question"><span class="question-number">Q6.</span> In the given figure, PQ || SR. The value
                     of x is :
-                    <div class="image-placeholder">[Image: 2025-30-S-Question6]</div>
+                    <img src="images/2025-30-S-Question6.png" alt="2025-30-S-Question6" class="question-image">
                     <ul class="options">
                         <li>(A) 3</li>
                         <li>(B) 5</li>
@@ -894,7 +946,7 @@
                 <div class="question"><span class="question-number">Q25.</span> In the given figure, Z is a point on the
                     side BC of \(\Delta ABC\) such that \(XZ || AB\) and \(YZ || AC\). If XY and CB produced meet at O,
                     then prove that \(ZO^2 = OB \times OC\).
-                    <div class="image-placeholder">[Image: 2025-30-S-Question25]</div>
+                    <img src="images/2025-30-S-Question25.png" alt="2025-30-S-Question25" class="question-image">
                 </div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
@@ -934,7 +986,7 @@
                 <div class="question"><span class="question-number">Q35.</span> In the figure, MNOP is a trapezium with,
                     MN || PO and PO = 2 MN. A line segment FE drawn parallel to MN intersects MP at F and NO at E such
                     that \(\frac{NE}{EO} = \frac{3}{4}\). Diagonal PN intersects FE at X. Prove that 7 FE = 10 MN.
-                    <div class="image-placeholder">[Image: 2025-30-S-Question35]</div>
+                    <img src="images/2025-30-S-QuestionNumber35.png" alt="2025-30-S-Question35" class="question-image">
                 </div>
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
@@ -1050,7 +1102,7 @@
             </div>
             <div class="question"><span class="question-number">Q9.</span> In the given figure, \(PQ || BC\). If
                 \(\frac{AP}{PB} = \frac{4}{13}\) and \(AC = 20.4\) cm, then the length of \(AQ\) is :
-                <div class="image-placeholder">[Image: 2025-30-2-Question9]</div>
+                <div class="image-placeholder">[Image: 2025-30-2-Question9]<br><img src="images/2025-30-2-QuestionNumber9.png" alt="2025-30-2-QuestionNumber9.png" class="question-image"></div>
                 <ul class="options">
                     <li>(A) 2.8 cm</li>
                     <li>(B) 5.8 cm</li>
@@ -1142,7 +1194,7 @@
                 of a triangle to intersect the other two sides in distinct points divides the other two sides in the
                 same ratio. Hence, in the figure given below, prove that \(\frac{AM}{MB} = \frac{AN}{ND}\), if \(LM ||
                 CB\) and \(LN || CD\).
-                <div class="image-placeholder">[Image: 2025-30-2-Question32]</div>
+                <div class="image-placeholder">[Image: 2025-30-2-Question32]<br><img src="images/2025-30-2-QuestionNumber32.png" alt="2025-30-2-QuestionNumber32.png" class="question-image"></div>
             </div>
             <button class="sol-toggle" onclick="toggleSolution(this)">
                 <i class="fas fa-eye"></i> View Solution
@@ -1160,62 +1212,8 @@
             </div>
         </div>
 
-        <div class="card" data-marks="1">
-            <div class="card-top">
-                <span class="badge badge-1">1 Mark</span>
-                <span class="card-meta">30-2</span>
-            </div>
-            <div class="question"><span class="question-number">Q13.</span> In \(\Delta ABC\), \(DE || BC\) such that
-                \(AD = 2.4\) cm, \(AE = 3.2\) cm and \(EC = 4.8\) cm. If \(BD = 4.5\) cm, then the length of \(AB\) is :
-                <ul class="options">
-                    <li>(A) 10.5 cm</li>
-                    <li>(B) 8.4 cm</li>
-                    <li>(C) 7.2 cm</li>
-                    <li>(D) 6.4 cm</li>
-                </ul>
-            </div>
-            <button class="sol-toggle" onclick="toggleSolution(this)">
-                <i class="fas fa-eye"></i> View Solution
-            </button>
-            <div class="solution">
-                By Basic Proportionality Theorem (Thales Theorem): \(\frac{AD}{DB} = \frac{AE}{EC}\).<br>
-                \(\frac{2.4}{4.5} = \frac{AE}{EC}\).<br>
-                Given \(AE = 3.2, EC = 4.8\). Ratio \(\frac{3.2}{4.8} = \frac{2}{3}\).<br>
-                Also \(\frac{2.4}{4.5} = \frac{24}{45} = \frac{8}{15}\).<br>
-                (Note: The values in the question seem inconsistent, assuming finding AB compatible with one of the
-                ratios).<br>
-                If we use \(AD/DB = AE/EC \Rightarrow AD/4.5 = 2/3 \Rightarrow AD = 3\). Then \(AB = 3 + 4.5 = 7.5\)
-                (Not in options).<br>
-                If we find \(AB\) directly from \(AD\): \(AB = AD + BD = 2.4 + 4.5 = 6.9\).<br>
-                Let's check if \(AD\) finds \(x\).<br>
-                <strong>Answer: (C) 7.2 cm (Approximation/Best Fit)</strong>
-            </div>
         </div>
 
-        <div class="card" data-marks="3">
-            <div class="card-top">
-                <span class="badge badge-3">3 Marks</span>
-                <span class="card-meta">30-2</span>
-            </div>
-            <div class="question"><span class="question-number">Q32.</span> In Figure, \(\Delta ABC\) is right-angled at
-                B. \(AB = 5\) cm and \(BC = 12\) cm. If \(\Delta ABC \sim \Delta DEF\), then find the length of the
-                sides of \(\Delta DEF\), given that its perimeter is 60 cm.</div>
-            <button class="sol-toggle" onclick="toggleSolution(this)">
-                <i class="fas fa-eye"></i> View Solution
-            </button>
-            <div class="solution">
-                In \(\Delta ABC\), \(AC = \sqrt{AB^2 + BC^2} = \sqrt{5^2 + 12^2} = \sqrt{25 + 144} = \sqrt{169} = 13\)
-                cm.<br>
-                Perimeter of \(\Delta ABC = 5 + 12 + 13 = 30\) cm.<br>
-                Given \(\Delta ABC \sim \Delta DEF\). Ratio of perimeters = Ratio of corresponding sides.<br>
-                \(\frac{\text{Perimeter}(DEF)}{\text{Perimeter}(ABC)} = \frac{60}{30} = 2\).<br>
-                So, sides of \(\Delta DEF\) are 2 times the sides of \(\Delta ABC\).<br>
-                \(DE = 2 \times 5 = 10\) cm.<br>
-                \(EF = 2 \times 12 = 24\) cm.<br>
-                \(DF = 2 \times 13 = 26\) cm.<br>
-                <strong>Sides are 10 cm, 24 cm, 26 cm.</strong>
-            </div>
-        </div>
         <!-- 30-3 Paper Set -->
         <div class="card" data-marks="1">
             <div class="card-top">
@@ -1739,3 +1737,20 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
