@@ -88,11 +88,18 @@ try {
                     const qNumMatch = q.match(/Q(\d+[a-z]?)/i);
                     const qNum = qNumMatch ? qNumMatch[1] : 'unknown';
 
-                    // Check if question has image placeholder and convert it
+                    // Check if question has image placeholder
                     const hasImage = part.includes('class="image-placeholder"');
                     let imageHTML = '';
+
                     if (hasImage) {
-                        imageHTML = `<div class="question-image"><img src="images/q${qNum}.png" alt="Question ${qNum} Figure" class="pyq-image"></div>`;
+                        // targeted regex to find [Image: filename.png] inside the part
+                        const imgNameMatch = part.match(/\[Image: (.*?)\.png\]/);
+                        const imgName = imgNameMatch ? imgNameMatch[1] : `q${qNum}`; // fallback to qNum
+
+                        // Create image tag
+                        // Using .png as standard, assuming user will provide .png or we can use generic match
+                        imageHTML = `<div class="question-image"><img src="images/${imgName}.png" alt="Question Figure" class="pyq-image"></div>`;
                     }
 
                     // Remove old image placeholder text from question

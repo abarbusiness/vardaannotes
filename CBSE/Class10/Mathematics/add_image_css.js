@@ -22,7 +22,7 @@ const cssRule = `
             width: auto;
             height: auto;
             border-radius: 8px;
-            border: 1px solid var(--border-subtle);
+            border: none;
         }
         [data-theme="dark"] .pyq-image {
             filter: invert(1) hue-rotate(180deg);
