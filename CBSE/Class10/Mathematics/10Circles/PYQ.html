@@ -655,9 +655,45 @@
             max-width: 100% !important;
             white-space: normal !important;
             display: inline-block !important;
-            overflow: visible !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
             line-height: 1.8 !important;
             font-size: 1rem !important;
+            padding-bottom: 4px;
+            /* Space for scrollbar */
+        }
+
+        /* Custom Scrollbar for Equations & Tables */
+        mjx-container::-webkit-scrollbar,
+        .table-wrapper::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        mjx-container::-webkit-scrollbar-thumb,
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 2px;
+        }
+
+        mjx-container::-webkit-scrollbar-track,
+        .table-wrapper::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .question table,
+        .solution table {
+            margin: 0 !important;
+            /* Margin handled by wrapper */
+            border: none !important;
+            /* Border handled by wrapper */
         }
 
         table {
@@ -836,13 +872,12 @@
         }
 
         /* === FORCED TABLE FIX (SPECIFICITY OVERRIDE) === */
+        /* We now use .table-wrapper for responsiveness, so we remove the forced width/display styles 
+           that might conflict or cause layout issues inside the wrapper. */
         .question table,
         .solution table {
             width: 100% !important;
-            table-layout: fixed !important;
             border-collapse: collapse !important;
-            display: table !important;
-            /* Ensure it stays a table */
         }
 
         .question table td,
@@ -851,11 +886,7 @@
         .solution table th {
             overflow-wrap: break-word !important;
             word-wrap: break-word !important;
-            word-break: break-all !important;
-            /* Force break even in mid-word if needed */
             white-space: normal !important;
-            max-width: 0 !important;
-            /* Forces cells to respect width sharing */
         }
 
         /* Mobile Override for extreme cases */
@@ -1049,10 +1080,28 @@
                     <i class="fas fa-eye"></i> View Solution
                 </button>
                 <div class="solution">
-                    Standard theorem. Join center O to all points of contact and vertices.<br>
-                    Pairs of adjacent triangles formed by vertices are congruent (RHS).<br>
-                    Sum of angles at center is \(360^\circ\).<br>
-                    Sum of angles subtended by opposite sides is \((\alpha + \beta) + (\gamma + \delta) = 180^\circ\).
+                    Let the quadrilateral ABCD circumscribe the circle with centre O.<br>
+                    Let the points of contact be P, Q, R, S on sides AB, BC, CD, DA respectively.<br>
+                    Join OP, OQ, OR, OS. Also join OA, OB, OC, OD.<br>
+                    In \(\Delta OAP\) and \(\Delta OAS\):<br>
+                    \(AP = AS\) (Tangents from A), \(OP = OS\) (Radii), \(OA = OA\) (Common).<br>
+                    \(\therefore \Delta OAP \cong \Delta OAS\) (SSS). \(\Rightarrow \angle 1 = \angle 8\).<br>
+                    Similarly, \(\angle 2 = \angle 3, \angle 4 = \angle 5, \angle 6 = \angle 7\).<br>
+                    Sum of all angles at O = \(360^\circ\).<br>
+                    \(2(\angle 1 + \angle 2 + \angle 5 + \angle 6) = 360^\circ\) (Grouping angles for opposite
+                    sides).<br>
+                    Wait, we want \(\angle AOB + \angle COD\).<br>
+                    \(\angle AOB = \angle 1 + \angle 2\). \(\angle COD = \angle 5 + \angle 6\).<br>
+                    \(2(\angle 2 + \angle 3 + \angle 6 + \angle 7)\) ? No.<br>
+                    Actually: \(\angle 1=\angle 8, \angle 2=\angle 3, \angle 4=\angle 5, \angle 6=\angle 7\).<br>
+                    Sum = \((\angle 1+\angle 8) + (\angle 2+\angle 3) + (\angle 4+\angle 5) + (\angle 6+\angle 7) =
+                    360\).<br>
+                    \(2\angle 1 + 2\angle 2 + 2\angle 5 + 2\angle 6 = 360 \Rightarrow \angle 1 + \angle 2 + \angle 5 +
+                    \angle 6 = 180\).<br>
+                    \((\angle 1+\angle 2) + (\angle 5+\angle 6) = 180 \Rightarrow \angle AOB + \angle COD =
+                    180^\circ\).<br>
+                    Similarly \(\angle BOC + \angle DOA = 180^\circ\).<br>
+                    <strong>Hence Proved.</strong>
                 </div>
             </div>
 
@@ -1163,10 +1212,13 @@
                     <strong>(a)</strong> \(OC \perp BD \Rightarrow \angle OCD = 90^\circ\).<br>
                     \(\angle ACD + \angle OCA = 90^\circ\). Since \(OA = OC, \angle OCA = \angle OAC = \angle BAC\).<br>
                     Substituting, \(\angle BAC + \angle ACD = 90^\circ\).<br>
-                    <strong>(b)</strong> Standard theorem proof: Join center to all points of contact. Use congruence of
-                    adjacent triangles (\(\Delta AOS \cong \Delta AOP\), etc.) to show sum of angles is \(360^\circ\)
-                    and
-                    opposite pairs sum to \(180^\circ\).
+                    <strong>(b)</strong> (Refer to Q26 solution for full proof logic):<br>
+                    - Join the centre O to all points of contact and vertices.<br>
+                    - Prove adjacent triangles congruent (RHS).<br>
+                    - Group the angles subtended by opposite sides.<br>
+                    - Since sum of all central angles is \(360^\circ\), the sum of angles subtended by opposite sides is
+                    half of \(360^\circ\), i.e., \(180^\circ\).<br>
+                    Hence, they are supplementary.
                 </div>
             </div>
 
@@ -1490,8 +1542,22 @@
                 <button class="sol-toggle" onclick="toggleSolution(this)">
                     <i class="fas fa-eye"></i> View Solution
                 </button>
-                <div class="solution">Rectangle circumscribing circle is square. Side = Diameter = 20. Perimeter = 80
-                    cm.
+                <div class="solution">
+                    Given: Rectangle ABCD circumscribes a circle of radius \(r = 10\) cm.<br>
+                    To Prove: ABCD is a square.<br>
+                    Proof: Let ABCD touch the circle at P, Q, R, S.<br>
+                    Since ABCD is a rectangle, \(\angle A = \angle B = \angle C = \angle D = 90^\circ\).<br>
+                    \(OR \perp DC\) and \(OS \perp AD\) (Radius \(\perp\) Tangent).<br>
+                    In quadrilateral ORDS, \(\angle D = 90^\circ, \angle R = 90^\circ, \angle S = 90^\circ\).<br>
+                    Also \(OR = OS = r\) (Radii).<br>
+                    Thus, ORDS is a square. \(\Rightarrow DR = DS = r\).<br>
+                    Similarly, APOS, BQOP, CRQO are squares (or by symmetry tangents from corner of rectangle are equal
+                    and form square with radius).<br>
+                    \(AP = AS = r, BP = BQ = r\).<br>
+                    Side \(AB = AP + PB = r + r = 2r\).<br>
+                    Side \(BC = BQ + QC = r + r = 2r\).<br>
+                    Since adjacent sides are equal (\(AB = BC = 20\) cm) in a rectangle, it is a square.<br>
+                    <strong>Perimeter:</strong> \(4 \times \text{side} = 4 \times 20 = 80\) cm.
                 </div>
             </div>
 
