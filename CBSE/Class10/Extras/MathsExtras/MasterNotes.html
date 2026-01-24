@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Master Notes (Ch 1-14 Deep Dive)</title>
+    <!-- MathJax for Latex Rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+
+        :root {
+            --paper-color: #ffffff;
+            --ink-color: #2c3e50;
+            --highlight-yellow: #fff9c4;
+            --highlight-green: #e8f5e9;
+            --highlight-pink: #fce4ec;
+            --highlight-blue: #e3f2fd;
+            --proof-bg: #f3e5f5;
+            --tip-bg: #e0f7fa;
+            --pyq-bg: #fff3e0;
+            --accent-red: #c62828;
+            --accent-blue: #1565c0;
+            --accent-purple: #7b1fa2;
+            --box-border: #333;
+        }
+
+        body {
+            background-color: #fff;
+            font-family: 'Comic Sans MS', 'Comic Neue', cursive;
+            margin: 0;
+            padding: 20px;
+            color: var(--ink-color);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            min-height: 297mm;
+            background-color: var(--paper-color);
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Dark Mode */
+        html {
+            transition: filter .3s;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.11;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Typography */
+        h1 {
+            text-align: center;
+            font-size: 2.8em;
+            color: #2e7d32;
+            text-transform: uppercase;
+            border-bottom: 4px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 5px;
+            margin-top: 50px;
+            font-size: 2em;
+            page-break-before: always;
+        }
+
+        h2:first-of-type {
+            page-break-before: auto;
+        }
+
+        h3 {
+            color: var(--accent-red);
+            margin-top: 35px;
+            font-size: 1.5em;
+            border-left: 5px solid var(--accent-red);
+            padding-left: 10px;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            color: var(--accent-purple);
+            text-decoration: underline wavy #aaa;
+        }
+
+        p,
+        li {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #37474f;
+        }
+
+        strong {
+            color: #c62828;
+        }
+
+        /* Component Boxes */
+        .highlight-box {
+            border: 2px solid var(--box-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .box-yellow {
+            background-color: var(--highlight-yellow);
+            border-color: #fbc02d;
+        }
+
+        .box-green {
+            background-color: var(--highlight-green);
+            border-color: #388e3c;
+        }
+
+        .box-blue {
+            background-color: var(--highlight-blue);
+            border-color: #1976d2;
+        }
+
+        .box-pink {
+            background-color: var(--highlight-pink);
+            border-color: #c2185b;
+        }
+
+        .proof-box {
+            border: 2px solid #7b1fa2;
+            background-color: var(--proof-bg);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .proof-box::before {
+            content: "📜 PROOF (Exam Favorite)";
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #7b1fa2;
+            color: white;
+            padding: 2px 10px;
+            font-size: 0.8em;
+            border-radius: 4px;
+        }
+
+        .tip-box {
+            border: 2px dashed #0097a7;
+            background-color: var(--tip-bg);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .tip-box::before {
+            content: "🔥 WORKING RULE / ALGORITHM";
+            display: block;
+            font-weight: bold;
+            color: #0097a7;
+            border-bottom: 1px dashed #0097a7;
+            margin-bottom: 10px;
+        }
+
+        .pyq-box {
+            border: 2px solid #e65100;
+            background-color: var(--pyq-bg);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .pyq-box::before {
+            content: "🏆 MOST REPEATED PYQ CONCEPTS";
+            display: block;
+            font-weight: bold;
+            color: #e65100;
+            text-align: center;
+            border-bottom: 2px solid #e65100;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        .img-container {
+            margin: 20px auto;
+            text-align: center;
+            width: 100%;
+        }
+
+        .img-placeholder {
+            border: 2px dashed #999;
+            background: #fafafa;
+            padding: 30px;
+            color: #666;
+            font-style: italic;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #333;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        @media print {
+
+            .theme-toggle,
+            .watermark-overlay {
+                display: none;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">Toggle</button>
+
+    <div class="paper-sheet">
+        <h1 style="text-align:center; font-family:'Segoe UI'; margin-bottom:10px;">VARDAAN LEARNING INSTITUTE</h1>
+        <h2 style="text-align:center; margin-top:0; color:#000;">Maths Master Notes (Ch 1-14 Deep Dive)</h2>
+        <p style="text-align:center; font-style:italic;">Detailed Analysis of Complete Syllabus</p>
+
+        <!-- CHAPTER 1 -->
+        <h2>CHAPTER 1: REAL NUMBERS</h2>
+
+        <div class="pyq-box">
+            1. Proving \( \sqrt{p} \) is irrational (Guarantee 3 Marks).<br>
+            2. Proving \( a + b\sqrt{p} \) is irrational (Guarantee 2 Marks).<br>
+            3. HCF/LCM Word Problems (Bells, Circular Track).
+        </div>
+
+        <h3>1. Types of Numbers</h3>
+        <p>• <strong>Prime Number:</strong> Has exactly two factors: 1 and itself (e.g., 2, 3, 5, 7).<br>
+            • <strong>Composite Number:</strong> Has more than two factors (e.g., 4, 6, 8, 9).<br>
+            <em>Note:</em> 1 is neither Prime nor Composite.
+        </p>
+
+        <h3>2. Fundamental Theorem of Arithmetic</h3>
+        <div class="highlight-box box-blue">
+            "Every composite number can be written as a product of primes in a unique way."<br>
+            <strong>Application: Finding HCF & LCM</strong><br>
+            • <strong>HCF:</strong> Product of smallest power of each common prime factor.<br>
+            • <strong>LCM:</strong> Product of greatest power of each prime factor involved.
+        </div>
+
+        <div class="tip-box">
+            <strong>Relation Formula:</strong><br>
+            \( \text{HCF}(a, b) \times \text{LCM}(a, b) = a \times b \)<br>
+            (Valid only for 2 numbers).
+        </div>
+
+        <h3>3. Irrationality Proofs</h3>
+        <div class="proof-box">
+            <strong>Proof: \( \sqrt{2} \) is irrational.</strong><br>
+            1. Let \( \sqrt{2} = a/b \) (where a, b are coprime).<br>
+            2. \( 2 = a^2/b^2 \Rightarrow 2b^2 = a^2 \).<br>
+            3. So, 2 divides \( a^2 \), hence 2 divides \( a \). Let \( a=2c \).<br>
+            4. \( 2b^2 = (2c)^2 = 4c^2 \Rightarrow b^2 = 2c^2 \).<br>
+            5. So, 2 divides \( b^2 \), hence 2 divides \( b \).<br>
+            6. Contradiction: \( a, b \) share factor 2. Hence assumption wrong.
+        </div>
+
+        <!-- CHAPTER 2 -->
+        <h2>CHAPTER 2: POLYNOMIALS</h2>
+
+        <h3>1. Degree & Types</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Degree</th>
+                    <th>Form</th>
+                    <th>Max Zeroes</th>
+                </tr>
+                <tr>
+                    <td>Linear</td>
+                    <td>1</td>
+                    <td>\( ax + b \)</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>Quadratic</td>
+                    <td>2</td>
+                    <td>\( ax^2 + bx + c \)</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>Cubic</td>
+                    <td>3</td>
+                    <td>\( ax^3 + bx^2 + cx + d \)</td>
+                    <td>3</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>2. Geometrical Meaning</h3>
+        <p>Zeroes are the <strong>x-coordinates</strong> of the points where graph \( y = p(x) \) intersects the X-axis.
+        </p>
+        <div class="tip-box">
+            <strong>Graph Shapes (Quadratic):</strong><br>
+            • \( a > 0 \): Parabola opens UP \( \cup \)<br>
+            • \( a < 0 \): Parabola opens DOWN \( \cap \)<br>
+                • Touch X-axis: Repeated Roots.<br>
+                • Cut X-axis: Distinct Roots.
+        </div>
+
+        <h3>3. Relationship of Zeroes</h3>
+        <div class="highlight-box box-green">
+            If \( \alpha, \beta \) are zeroes of \( ax^2 + bx + c \):<br>
+            • \( \alpha + \beta = -\frac{b}{a} \)<br>
+            • \( \alpha \beta = \frac{c}{a} \)
+        </div>
+
+        <div class="tip-box">
+            <strong>To Form a Polynomial:</strong><br>
+            If Sum (S) and Product (P) are given:<br>
+            \( p(x) = k[x^2 - Sx + P] \)
+        </div>
+
+        <!-- CHAPTER 3 -->
+        <h2>CHAPTER 3: PAIR OF LINEAR EQUATIONS</h2>
+
+        <h3>1. Forms & Consistency</h3>
+        <p>System: \( a_1x + b_1y + c_1 = 0 \), \( a_2x + b_2y + c_2 = 0 \).</p>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Condition</th>
+                    <th>Graph</th>
+                    <th>Solution</th>
+                    <th>Type</th>
+                </tr>
+                <tr>
+                    <td>\( a_1/a_2 \neq b_1/b_2 \)</td>
+                    <td>Intersecting</td>
+                    <td>Unique</td>
+                    <td>Consistent</td>
+                </tr>
+                <tr>
+                    <td>\( a_1/a_2 = b_1/b_2 = c_1/c_2 \)</td>
+                    <td>Coincident</td>
+                    <td>Infinite</td>
+                    <td>Dependent</td>
+                </tr>
+                <tr>
+                    <td>\( a_1/a_2 = b_1/b_2 \neq c_1/c_2 \)</td>
+                    <td>Parallel</td>
+                    <td>None</td>
+                    <td>Inconsistent</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>2. Algebraic Methods</h3>
+        <div class="highlight-box box-yellow">
+            <strong>Substitution Method:</strong><br>
+            1. Find value of 'y' from eq 1.<br>
+            2. Put it in eq 2 -> Solve for 'x'.<br>
+            3. Put 'x' back in step 1 -> Find 'y'.
+        </div>
+        <div class="highlight-box box-pink">
+            <strong>Elimination Method (Recommended):</strong><br>
+            1. Multiply equations to equate coefficients of x or y.<br>
+            2. Add or Subtract to eliminate that variable.<br>
+            3. Solve for remaining variable.
+        </div>
+
+        <h3>3. Word Problems Categorization</h3>
+        <div class="tip-box">
+            <strong>1. Fraction:</strong> Let fraction be \( x/y \). condition 1 -> eq 1. condition 2 -> eq 2.<br>
+            <strong>2. Age:</strong> Present age \( x \). 5 years ago \( x-5 \). 5 years later \( x+5 \).<br>
+            <strong>3. Digits:</strong> Unit digit \( y \), Ten's digit \( x \). Number = \( 10x + y \). Reversing = \(
+            10y + x \).<br>
+            <strong>4. Upstream:</strong> Speed \( (x-y) \). <strong>Downstream:</strong> \( (x+y) \). Time =
+            Dist/Speed.
+        </div>
+
+        <!-- CHAPTER 4 -->
+        <h2>CHAPTER 4: QUADRATIC EQUATIONS</h2>
+
+        <h3>1. Standard Form & Factorization</h3>
+        <p>\( ax^2 + bx + c = 0 \). (a \( \neq \) 0).<br>
+            <strong>Factorization:</strong> Split middle term \( b \) into \( p+q \) such that \( p \times q = a \times
+            c \).
+        </p>
+
+        <h3>2. Quadratic Formula</h3>
+        <div class="highlight-box box-blue">
+            \[ x = \frac{-b \pm \sqrt{D}}{2a} \]
+            here Discriminant \( D = b^2 - 4ac \).
+        </div>
+
+        <h3>3. Nature of Roots</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Value of D</th>
+                    <th>Nature</th>
+                </tr>
+                <tr>
+                    <td>\( D > 0 \)</td>
+                    <td>2 Real Distinct Roots</td>
+                </tr>
+                <tr>
+                    <td>\( D = 0 \)</td>
+                    <td>2 Real Equal Roots</td>
+                </tr>
+                <tr>
+                    <td>\( D < 0 \)</td>
+                    <td>No Real Roots</td>
+                </tr>
+            </table>
+        </div>
+        <div class="tip-box">
+            <strong>Problem Solving Strategy:</strong><br>
+            If question says "Find k for equal roots", immediately set \( D = 0 \) i.e., \( b^2 - 4ac = 0 \).
+        </div>
+
+        <!-- CHAPTER 5 -->
+        <h2>CHAPTER 5: ARITHMETIC PROGRESSIONS</h2>
+
+        <h3>1. Basics</h3>
+        <p>Sequence where difference between consecutive terms is constant.<br>
+            \( a, a+d, a+2d \dots \)</p>
+
+        <h3>2. General Term (nth Term)</h3>
+        <div class="highlight-box box-green">
+            \[ a_n = a + (n-1)d \]
+            • \( a_n \): Value of term at position n.<br>
+            • \( n \): Position number (always natural number).
+        </div>
+
+        <h3>3. Sum of First n Terms</h3>
+        <div class="highlight-box box-yellow">
+            \[ S_n = \frac{n}{2}[2a + (n-1)d] \]
+            OR (if last term \( l \) is known):<br>
+            \[ S_n = \frac{n}{2}(a + l) \]
+        </div>
+
+        <div class="tip-box">
+            <strong>Selection of Terms:</strong><br>
+            • 3 terms: \( a-d, a, a+d \) (Sum = 3a).<br>
+            • 4 terms: \( a-3d, a-d, a+d, a+3d \) (Sum = 4a).
+        </div>
+
+        <!-- CHAPTER 6 -->
+        <h2>CHAPTER 6: TRIANGLES</h2>
+        <div class="pyq-box">
+            1. BPT Theorem Proof (4/5 Marks - Very Important).<br>
+            2. Similarity Problems (Shadow/Ladder type).<br>
+            3. Ratio of Areas (Concept often asked).
+        </div>
+
+        <h3>1. Basic Proportionality Theorem (BPT)</h3>
+        <div class="proof-box">
+            <strong>Statement:</strong> If line \( DE \parallel BC \), then \( \frac{AD}{DB} = \frac{AE}{EC} \).<br>
+            <strong>Proof Steps (Memorize Diagram):</strong><br>
+            1. Area(\( \Delta ADE \))/\( \Delta BDE \) = \( AD/DB \) (Common height EN).<br>
+            2. Area(\( \Delta ADE \))/\( \Delta DEC \) = \( AE/EC \) (Common height DM).<br>
+            3. \( \Delta BDE \) and \( \Delta DEC \) are equal in area (Same base DE, between same parallels).<br>
+            4. Hence Ratio 1 = Ratio 2. \( \therefore AD/DB = AE/EC \).
+        </div>
+
+        <h3>2. Similarity Criteria</h3>
+        <div class="highlight-box box-green">
+            • <strong>AAA / AA:</strong> Most used. Angles equal = Similar.<br>
+            • <strong>Ratio of Areas:</strong> \( \frac{\text{Ar}(\Delta_1)}{\text{Ar}(\Delta_2)} = (\frac{S_1}{S_2})^2
+            \).
+        </div>
+
+        <!-- CHAPTER 7 -->
+        <h2>CHAPTER 7: COORDINATE GEOMETRY</h2>
+        <div class="pyq-box">
+            1. Distance Formula (Equidistant points - Find x/y).<br>
+            2. Section Formula (Find ratio k:1).<br>
+            3. Mid-point formula (Parallelogram vertices).
+        </div>
+
+        <div class="tip-box">
+            <strong>Parallelogram Trick:</strong><br>
+            If A, B, C, D are vertices of a parallelogram, diagonals bisect each other.<br>
+            \( \text{Mid}(AC) = \text{Mid}(BD) \)<br>
+            \( \frac{x_1+x_3}{2} = \frac{x_2+x_4}{2} \) and \( \frac{y_1+y_3}{2} = \frac{y_2+y_4}{2} \).
+        </div>
+
+        <!-- CHAPTER 8 -->
+        <h2>CHAPTER 8: TRIGONOMETRY</h2>
+        <div class="pyq-box">
+            1. Prove Identity: \( \frac{\sin\theta - \cos\theta + 1}{\sin\theta + \cos\theta - 1} = \frac{1}{\sec\theta
+            -
+            \tan\theta} \) type.<br>
+            2. Values: Evaluate \( 5\cos^2 60 + 4\sec^2 30 - \tan^2 45 \).
+        </div>
+
+        <h3>1. Trig Table (Hand Trick)</h3>
+        <div class="highlight-box box-yellow">
+            <strong>Sin \(\theta\) Rule:</strong> \( \sqrt{0,1,2,3,4} / 2 \).<br>
+            • 0°: 0<br>
+            • 30°: 1/2<br>
+            • 45°: \( 1/\sqrt{2} \)<br>
+            • 60°: \( \sqrt{3}/2 \)<br>
+            • 90°: 1
+        </div>
+
+        <h3>2. Identities Strategy</h3>
+        <div class="tip-box">
+            <strong>Golden Rule for Proofs:</strong><br>
+            1. Convert Tan/Sec/Cosec/Cot to <strong>Sin</strong> and <strong>Cos</strong>.<br>
+            2. Take LCM.<br>
+            3. Apply \( \sin^2 A + \cos^2 A = 1 \).
+        </div>
+
+        <!-- CHAPTER 9 -->
+        <h2>CHAPTER 9: APPLICATIONS OF TRIG</h2>
+        <div class="highlight-box box-blue">
+            <strong>1. Broken Tree:</strong> Tree breaks, top touches ground. Forms right triangle.<br>
+            <strong>2. Two Ships:</strong> Angles of depression. Use \( \tan \theta \) twice.
+        </div>
+
+        <!-- CHAPTER 10 -->
+        <h2>CHAPTER 10: CIRCLES</h2>
+        <div class="pyq-box">
+            1. Theorem 10.2: Tangents from external point are equal (Must Do Proof).<br>
+            2. Quadrilateral circumscribing circle: AB + CD = AD + BC.<br>
+            3. Angle between tangents + Angle at center = 180°.
+        </div>
+
+        <div class="tip-box">
+            <strong>Key Property (Angle Inclination):</strong><br>
+            The angle between two tangents drawn from an external point to a circle is supplementary to the angle
+            subtended by the line-segment joining the points of contact at the center.<br>
+            \( \angle APB + \angle AOB = 180^\circ \).
+        </div>
+
+        <h3>1. Tangent Proof (Theorem 10.2)</h3>
+        <div class="proof-box">
+            <strong>Proof (RHS Method):</strong><br>
+            In \( \Delta OAP \) and \( \Delta OBP \):<br>
+            • \( \angle OAP = \angle OBP = 90^\circ \) (Radius \( \perp \) Tangent).<br>
+            • \( OP = OP \) (Common).<br>
+            • \( OA = OB \) (Radii).<br>
+            • By RHS, \( \Delta OAP \cong \Delta OBP \). Hence \( PA = PB \).
+        </div>
+
+        <!-- CHAPTER 11 -->
+        <h2>CHAPTER 11: AREAS RELATED TO CIRCLES</h2>
+        <div class="pyq-box">
+            1. Area of Minor Segment (Use \( \theta/360 \times \pi r^2 - \text{Area of } \Delta \)).<br>
+            2. Clock hand problems.<br>
+            3. Horse tied to a peg (Quadrant Area).
+        </div>
+
+        <h3>1. Important Formulas</h3>
+        <div class="highlight-box box-green">
+            • <strong>Area of Sector:</strong> \( \frac{\theta}{360} \times \pi r^2 \)<br>
+            • <strong>Length of Arc:</strong> \( \frac{\theta}{360} \times 2\pi r \)<br>
+            • <strong>Area of Quadrant:</strong> \( \frac{1}{4} \pi r^2 \) (Since \( \theta=90^\circ \)).
+        </div>
+
+        <div class="tip-box">
+            <strong>Clock Logic:</strong><br>
+            • Minute Hand: Moves \( 6^\circ \) per minute.<br>
+            (e.g., 20 mins = \( 20 \times 6 = 120^\circ \)).<br>
+            • Hour Hand: Moves \( 30^\circ \) per hour.<br><br>
+            <strong>Cost Problems:</strong><br>
+            \( \text{Total Cost} = \text{Rate} \times \text{Quantity (Area/Length)} \).
+        </div>
+
+        <!-- CHAPTER 12 -->
+        <h2>CHAPTER 12: SURFACE AREAS & VOLUMES</h2>
+        <div class="pyq-box">
+            1. Combination: Capsule (Cyl + 2 Hemi).<br>
+            2. Melting: \( V_{big} = n \times V_{small} \).<br>
+            3. Embankment (Hollow Cylinder).
+        </div>
+
+        <h3>1. Formula Cheat Sheet</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Solid</th>
+                    <th>CSA</th>
+                    <th>TSA</th>
+                    <th>Volume</th>
+                </tr>
+                <tr>
+                    <td>Cylinder</td>
+                    <td>\( 2\pi rh \)</td>
+                    <td>\( 2\pi r(r+h) \)</td>
+                    <td>\( \pi r^2h \)</td>
+                </tr>
+                <tr>
+                    <td>Cone</td>
+                    <td>\( \pi rl \)</td>
+                    <td>\( \pi r(l+r) \)</td>
+                    <td>\( \frac{1}{3}\pi r^2h \)</td>
+                </tr>
+                <tr>
+                    <td>Sphere</td>
+                    <td>\( 4\pi r^2 \)</td>
+                    <td>\( 4\pi r^2 \)</td>
+                    <td>\( \frac{4}{3}\pi r^3 \)</td>
+                </tr>
+                <tr>
+                    <td>Hemisphere</td>
+                    <td>\( 2\pi r^2 \)</td>
+                    <td>\( 3\pi r^2 \)</td>
+                    <td>\( \frac{2}{3}\pi r^3 \)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tip-box">
+            <strong>Embankment (Hollow Cylinder):</strong><br>
+            Earth dug out (Cylinder \( \pi r^2 h \)) = Volume of Embankment.<br>
+            Vol of Embankment = \( \pi (R^2 - r^2) \times H \).<br>
+            (Where \( R \) = outer radius, \( r \) = inner radius).
+        </div>
+
+        <!-- CHAPTER 13 -->
+        <h2>CHAPTER 13: STATISTICS</h2>
+        <div class="pyq-box">
+            1. Missing Frequency (f1, f2) in Median.<br>
+            2. Calculate Mean (Assumed Mean).
+        </div>
+
+        <h3>1. Mean (\( \bar{x} \))</h3>
+        <div class="proof-box">
+            <strong>Assumed Mean Method:</strong><br>
+            1. Choose middle \( x_i \) as 'a'.<br>
+            2. Find deviation \( d_i = x_i - a \).<br>
+            3. \( \bar{x} = a + \frac{\sum f_i d_i}{\sum f_i} \).
+        </div>
+
+        <h3>2. Median (Most Important)</h3>
+        <div class="highlight-box box-purple">
+            \[ \text{Median} = l + \left( \frac{\frac{n}{2} - cf}{f} \right) \times h \]
+            <strong>Correctly Finding Median Class:</strong><br>
+            Step 1: Calculate N (Total Freq).<br>
+            Step 2: Find N/2.<br>
+            Step 3: Check CF column. The first value > N/2 indicates the Median Class.
+        </div>
+
+        <div class="exam-key">
+            <strong>Empirical Formula (1 Mark):</strong><br>
+            \( 3 \times \text{Median} = \text{Mode} + 2 \times \text{Mean} \)
+        </div>
+
+        <!-- CHAPTER 14 -->
+        <h2>CHAPTER 14: PROBABILITY</h2>
+        <div class="pyq-box">
+            1. Cards (Face cards, Red cards prob).<br>
+            2. Dice (Doublet, Sum > 10).<br>
+            3. Leap Year (53 Sundays).
+        </div>
+
+        <h3>1. Sample Spaces</h3>
+        <div class="tip-box">
+            <strong>Coins:</strong><br>
+            2 Coins (4): {HH, HT, TH, TT}<br>
+            3 Coins (8): {HHH, HHT, HTH, THH, HTT, THT, TTH, TTT}<br><br>
+            <strong>Dice (Doublets):</strong><br>
+            (1,1), (2,2), (3,3), (4,4), (5,5), (6,6) -> Total 6.
+        </div>
+
+        <div class="tip-box">
+            <strong>Leap Year Logic:</strong><br>
+            Leap Year = 366 days = 52 Weeks + 2 Extra Days.<br>
+            Extra days can be: (Sun,Mon), (Mon,Tue)...(Sat,Sun).<br>
+            P(53 Sundays) = 2/7.<br>
+            Non-Leap Year = 365 days = 52 Weeks + 1 Extra Day.<br>
+            P(53 Sundays) = 1/7.
+        </div>
+
+        <div class="practice-zone">
+            <span class="practice-header">🎯 FINAL EXAM CHECKLIST</span>
+            <ol>
+                <li><strong>Real Numbers:</strong> Proof of \( \sqrt{3} \) irrational.</li>
+                <li><strong>Triangles:</strong> BPT Proof.</li>
+                <li><strong>Circles:</strong> Tangent Proof.</li>
+                <li><strong>Stats:</strong> Median Formula.</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; padding: 20px; border-top: 1px solid #ddd; color: #777;">
+            <em>Powered by <strong>Vardaan Comet</strong> 🚀</em>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
