@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions: Light & Current - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: var(--bg-color-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            padding: 20mm;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* EQUATION WRAPPING FIXES */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            display: inline-block;
+        }
+
+        /* --- WATERMARK STYLES --- */
+        .watermark-overlay {
+            position: fixed;
+            /* Static on screen, repeats on print */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            /* Visible on top of paper */
+            pointer-events: none;
+            /* Allows clicking through to text */
+            overflow: hidden;
+        }
+
+        .watermark-image {
+            width: 600px;
+            /* Medium to Large on Desktop */
+            height: 600px;
+            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.12;
+            /* Adjust transparency */
+            transform: rotate(-30deg);
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.15;
+            filter: invert(1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .q-text {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-step {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .final-ans {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-shadow: none;
+                border: none;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            /* Responsive Watermark Size */
+            .watermark-image {
+                width: 80vw;
+                height: 80vw;
+            }
+
+            .sub-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .solution-step {
+                margin-left: 10px;
+                font-size: 0.95em;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none !important;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            /* Watermark Print Specifics */
+            .watermark-overlay {
+                position: fixed !important;
+                /* Critical for repeating on every page */
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: -1 !important;
+                /* Move behind text for print */
+                opacity: 1 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .watermark-image {
+                width: 500px !important;
+                opacity: 0.15 !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <div class="watermark-image"></div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Detailed Solution Sheet: Numericals</h2>
+            <div class="sub-header">
+                <span>Class: 10 (CBSE)</span>
+                <span>Subject: Science</span>
+                <span>Type: Answer Key & Solutions</span>
+            </div>
+        </header>
+
+        <!-- SECTION A -->
+        <div class="section-title">SECTION A: LIGHT - REFLECTION & REFRACTION</div>
+
+        <div class="question-block">
+            <div class="q-text">Q1. Concave Mirror Problem</div>
+            <div class="solution-step">
+                Given: Height of object $h_o = +5$ cm. <br>
+                Focal length $f = -10$ cm (concave mirror). <br>
+                Object distance $u = -20$ cm. <br>
+                Mirror formula: $\frac{1}{v} + \frac{1}{u} = \frac{1}{f}$ <br>
+                $\frac{1}{v} + \frac{1}{-20} = \frac{1}{-10} \Rightarrow \frac{1}{v} = \frac{1}{-10} + \frac{1}{20}$
+                <br>
+                $\frac{1}{v} = \frac{-2 + 1}{20} = \frac{-1}{20} \Rightarrow v = -20$ cm. <br>
+                Magnification $m = -\frac{v}{u} = -\frac{-20}{-20} = -1$. <br>
+                $m = \frac{h_i}{h_o} \Rightarrow -1 = \frac{h_i}{5} \Rightarrow h_i = -5$ cm. <br>
+                Position: 20 cm from mirror on same side. <br>
+                Nature: Real and Inverted. Size: Same size as object (5 cm).
+            </div>
+            <div class="final-ans">Answer: v = -20 cm, Real, Inverted, h_i = 5 cm</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q2. Convex Lens Problem</div>
+            <div class="solution-step">
+                Given: Focal length $f = +15$ cm (convex lens). <br>
+                Image distance $v = -10$ cm (As $f=15$ cm and if image is real it would be $>15$ cm usually, but here
+                $v=10$ cm indicates virtual image on same side). <br>
+                Lens formula: $\frac{1}{v} - \frac{1}{u} = \frac{1}{f}$ <br>
+                $\frac{1}{-10} - \frac{1}{u} = \frac{1}{15} \Rightarrow -\frac{1}{u} = \frac{1}{15} + \frac{1}{10}$ <br>
+                $-\frac{1}{u} = \frac{2+3}{30} = \frac{5}{30} = \frac{1}{6} \Rightarrow u = -6$ cm. <br>
+                Magnification $m = \frac{v}{u} = \frac{-10}{-6} = \frac{5}{3} \approx 1.67$.
+            </div>
+            <div class="final-ans">Answer: u = -6 cm, m = 1.67</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q3. Refractive Index</div>
+            <div class="solution-step">
+                Refractive index $n_g = 1.50$. <br>
+                Speed of light in vacuum $c = 3 \times 10^8 \text{ ms}^{-1}$. <br>
+                Formula: $n_g = \frac{c}{v}$ where v is speed in glass. <br>
+                $v = \frac{c}{n_g} = \frac{3 \times 10^8}{1.50} = 2 \times 10^8 \text{ ms}^{-1}$.
+            </div>
+            <div class="final-ans">Answer: $2 \times 10^8$ m/s</div>
+        </div>
+
+        <!-- SECTION B -->
+        <div class="section-title">SECTION B: ELECTRICITY</div>
+
+        <div class="question-block">
+            <div class="q-text">Q4. Wire Resistance</div>
+            <div class="solution-step">
+                Diameter $d = 0.5$ mm = $5 \times 10^{-4}$ m. Radius $r = 2.5 \times 10^{-4}$ m. <br>
+                Resistivity $\rho = 1.6 \times 10^{-8} \Omega \text{ m}$. Resistance $R = 10 \Omega$. <br>
+                Area $A = \pi r^2 = 3.14 \times (2.5 \times 10^{-4})^2 = 3.14 \times 6.25 \times 10^{-8} \approx 19.625
+                \times 10^{-8} \text{ m}^2$. <br>
+                $R = \rho \frac{l}{A} \Rightarrow l = \frac{R A}{\rho}$. <br>
+                $l = \frac{10 \times 19.625 \times 10^{-8}}{1.6 \times 10^{-8}} = \frac{196.25}{1.6} \approx 122.7$ m.
+                <br>
+                If diameter is doubled, Area becomes 4 times ($A \propto d^2$). <br>
+                Since $R \propto \frac{1}{A}$, Resistance becomes $\frac{1}{4}$th.
+            </div>
+            <div class="final-ans">Answer: Length ≈ 122.7 m; Resistance becomes 1/4th</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q5. Rate of Heat (Power)</div>
+            <div class="solution-step">
+                Resistance $R = 8 \Omega$. Current $I = 15$ A. <br>
+                Rate at which heat is developed is Power $P$. <br>
+                $P = I^2 R = (15)^2 \times 8 = 225 \times 8 = 1800$ W = 1800 J/s.
+            </div>
+            <div class="final-ans">Answer: 1800 Watts</div>
+        </div>
+
+        <div class="question-block">
+            <div class="q-text">Q6. Parallel Current</div>
+            <div class="solution-step">
+                Power $P_1 = 100$ W, $P_2 = 60$ W. Voltage $V = 220$ V. <br>
+                Current $I_1 = \frac{P_1}{V} = \frac{100}{220} = \frac{10}{22}$ A. <br>
+                Current $I_2 = \frac{P_2}{V} = \frac{60}{220} = \frac{6}{22}$ A. <br>
+                Total Current $I = I_1 + I_2 = \frac{10+6}{22} = \frac{16}{22} = \frac{8}{11} \approx 0.727$ A.
+            </div>
+            <div class="final-ans">Answer: 0.73 A</div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

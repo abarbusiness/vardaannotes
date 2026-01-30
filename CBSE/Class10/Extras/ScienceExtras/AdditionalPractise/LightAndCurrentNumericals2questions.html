@@ -1,0 +1,872 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numericals: Light & Current (Set 2) - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: var(--bg-color-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Map .page to Set 1's .paper-sheet style */
+        .page {
+            width: 210mm;
+            padding: 20mm;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        /* WATERMARK */
+        .watermark-container {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .watermark-img {
+            opacity: 0.08;
+            transform: rotate(-30deg);
+            width: 500px;
+        }
+
+        html.dark-mode .watermark-img {
+            opacity: 0.15;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: var(--main-font);
+            /* Override Roboto */
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .header h2 {
+            font-family: var(--main-font);
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+            color: #000;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-family: var(--main-font);
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+            color: #000;
+        }
+
+        /* SECTIONS */
+        .section-heading {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+            color: #000;
+            font-family: var(--main-font);
+            border-radius: 0;
+            /* Remove user's border-radius */
+        }
+
+        /* QUESTIONS */
+        .question-block {
+            margin-bottom: 20px;
+            padding-bottom: 0;
+            border-bottom: none;
+            /* Remove user's border */
+            page-break-inside: avoid;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .question-text {
+            font-size: 1.05em;
+            line-height: 1.6;
+            text-align: justify;
+            font-family: var(--main-font);
+            width: 100%;
+        }
+
+        .question-number {
+            font-family: var(--main-font);
+            font-weight: bold;
+            color: #000;
+            margin-right: 5px;
+            font-size: inherit;
+        }
+
+        /* IMAGES - Enhanced Constraints */
+        .question-image {
+            max-width: 80%;
+            /* Ideal size constraints */
+            max-height: 350px;
+            /* Prevent vertical sprawl */
+            height: auto;
+            display: block;
+            margin: 15px auto;
+            border: none !important;
+            /* Explicitly requested: NO BORDER */
+            padding: 0;
+        }
+
+        /* THEME TOGGLE */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s ease;
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+            font-family: var(--main-font);
+            color: #000;
+        }
+
+        /* RESPONSIVE */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .page {
+                width: 100%;
+                padding: 15px;
+                margin: 0 auto;
+                box-shadow: none;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .question-image {
+                max-width: 100%;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .header h2 {
+                font-size: 16px;
+            }
+
+            .meta-info {
+                font-size: 12px;
+                flex-direction: column;
+                gap: 5px;
+                align-items: center;
+            }
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle,
+            .no-print {
+                display: none !important;
+            }
+
+            .page {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-heading {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .watermark-container {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+                display: flex !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            .question-block {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Watermark -->
+    <div class="watermark-container">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-img">
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="page">
+        <div class="header">
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Master Numerical Question Bank</h2>
+            <div class="meta-info">
+                <span>Class: 10 CBSE</span>
+                <span>Subject: Physics (Light & Electricity)</span>
+                <span>Total Questions: 80</span>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- LIGHT: REFLECTION AND REFRACTION (40 Questions) -->
+        <!-- ============================================== -->
+        <div class="section-heading">Part A: Light - Reflection & Refraction</div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">1.</span> An object 4.0 cm in size is placed at
+                25.0 cm in front of a concave mirror of focal length 15.0 cm. At what distance from the mirror should a
+                screen be placed in order to obtain a sharp image? Find the nature and the size of the image.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">2.</span> A convex mirror used for rear-view on an
+                automobile has a radius of curvature of 3.00 m. If a bus is located at 5.00 m from this mirror, find the
+                position, nature, and size of the image.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">3.</span> The magnification produced by a plane
+                mirror is +1. What does this mean? Compare this with a concave mirror producing a magnification of -1.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">4.</span> An object is placed at a distance of 10
+                cm from a convex mirror of focal length 15 cm. Find the position and nature of the image.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">5.</span> A concave mirror produces three times
+                magnified (enlarged) real image of an object placed at 10 cm in front of it. Where is the image located?
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">6.</span> An object 2.0 cm high is placed at a
+                distance of 16 cm from a concave mirror, which produces a real image 3.0 cm high. (i) Find the focal
+                length of the mirror. (ii) Find the position of the image.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">7.</span> Find the focal length of a convex mirror
+                whose radius of curvature is 32 cm. If an object is placed 20 cm from the pole, calculate the image
+                distance.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">8.</span> When an object is placed at a distance of
+                60 cm from a convex mirror, the magnification produced is 1/2. Where should the object be placed to get
+                a magnification of 1/3?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">9.</span> A dentist uses a small mirror. If the
+                dentist holds the mirror 2 cm from the tooth and the mirror has a radius of curvature of 6 cm (concave),
+                determine the magnification of the image seen.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">10.</span> Draw a ray diagram for the formation of
+                an image by a concave mirror when the object is placed between the center of curvature (C) and the
+                principal focus (F).</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">11.</span> Light enters from air to glass having
+                refractive index 1.50. What is the speed of light in the glass? The speed of light in vacuum is 3 × 10⁸
+                m/s.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">12.</span> The refractive index of diamond is 2.42.
+                What is the meaning of this statement? Calculate the speed of light in diamond.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">13.</span> A ray of light travelling in air enters
+                obliquely into water. Does the light ray bend towards the normal or away from the normal? Why? Draw a
+                diagram to support your answer.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">14.</span> Light travels from medium A to medium B.
+                The angle of incidence is 60° and the angle of refraction is 45°. Calculate the refractive index of
+                medium B with respect to medium A.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">15.</span> The refractive index of water is 4/3 and
+                that of glass is 3/2 with respect to air. What is the refractive index of glass with respect to water?
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">16.</span> A coin placed at the bottom of a tank
+                appears to be raised when viewed from above. Explain this phenomenon with a ray diagram.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">17.</span> Determine the speed of light in a medium
+                if the refractive index of the medium is 1.33.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">18.</span> A light ray enters a rectangular glass
+                slab. Draw the path of the ray and define the terms: Angle of Incidence, Angle of Refraction, and Angle
+                of Emergence. Prove that the emergent ray is parallel to the incident ray.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">19.</span> A concave lens has focal length of 15
+                cm. At what distance should the object from the lens be placed so that it forms an image at 10 cm from
+                the lens? Also, find the magnification produced by the lens.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">20.</span> A 2.0 cm tall object is placed
+                perpendicular to the principal axis of a convex lens of focal length 10 cm. The distance of the object
+                from the lens is 15 cm. Find the nature, position, and size of the image.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">21.</span> Find the power of a concave lens of
+                focal length 2 m.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">22.</span> A convex lens forms a real and inverted
+                image of a needle at a distance of 50 cm from it. Where is the needle placed in front of the convex lens
+                if the image is equal to the size of the object? Also, find the power of the lens.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">23.</span> Two thin lenses of power +3.5 D and -2.5
+                D are placed in contact. Find the power and focal length of the lens combination.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">24.</span> An object placed 50 cm from a lens
+                produces a virtual image at a distance of 10 cm in front of the lens. Identify the nature of the lens
+                and calculate its focal length.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">25.</span> A doctor has prescribed a corrective
+                lens of power +1.5 D. Find the focal length of the lens. Is the prescribed lens diverging or converging?
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">26.</span> The image of a candle flame formed by a
+                lens is obtained on a screen placed on the other side of the lens. If the image is three times the size
+                of the flame and the distance between lens and image is 80 cm, at what distance should the candle be
+                placed from the lens? What is the nature of the image?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">27.</span> Draw a ray diagram to show the formation
+                of an image by a convex lens when the object is placed between F1 and 2F1.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">28.</span> An object is placed at a distance of 30
+                cm from a concave lens of focal length 15 cm. Use lens formula to determine the distance of the image
+                from the lens.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">29.</span> A convex lens of focal length 20 cm
+                produces a real image at a distance of 40 cm. Find the object distance and magnification.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">30.</span> A needle placed 45 cm from a lens forms
+                an image on a screen placed 90 cm on the other side of the lens. Identify the type of lens and its focal
+                length.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">31.</span> One-half of a convex lens is covered
+                with a black paper. Will this lens produce a complete image of the object? Verify your answer
+                experimentally. Explain your observations.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">32.</span> An object is placed at the focus of a
+                concave lens. Construct a ray diagram to locate the image.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">33.</span> Refractive index of media A, B, C, and D
+                are: A=1.33, B=1.44, C=1.52, D=1.65. In which of the four media is the speed of light (i) Maximum (ii)
+                Minimum?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">34.</span> If the angle of incidence is 0°
+                (incident normally), what is the angle of reflection? Draw the diagram.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">35.</span> Calculate the distance at which an
+                object should be placed in front of a convex lens of focal length 10 cm to obtain a virtual image of
+                double its size.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">36.</span> A security mirror used in a big showroom
+                has a radius of curvature of 5 m. If a customer is standing at a distance of 20 m from the cash counter
+                (assuming mirror is at the counter), find the position, nature and size of the image formed in the
+                security mirror.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">37.</span> Under what condition does a concave
+                mirror form a virtual image? Illustrate with a ray diagram.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">38.</span> An object is placed 15 cm from a convex
+                mirror of radius of curvature 60 cm. Find the position of the image and its magnification.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">39.</span> A lens has a power of -4.0 D. What is
+                its focal length and nature? If an object is placed 20 cm from it, where will the image form?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">40.</span> A student uses a lens of focal length 5
+                cm as a simple magnifying glass. What is the nature of the lens? If the object is placed 3 cm from the
+                lens, calculate the magnification.</div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- ELECTRICITY (40 Questions) -->
+        <!-- ============================================== -->
+        <div class="section-heading">Part B: Electricity</div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">41.</span> A current of 0.5 A is drawn by a
+                filament of an electric bulb for 10 minutes. Find the amount of electric charge that flows through the
+                circuit.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">42.</span> How much work is done in moving a charge
+                of 2 C across two points having a potential difference of 12 V?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">43.</span> Calculate the number of electrons
+                constituting one coulomb of charge. (Charge on 1 electron = 1.6 × 10⁻¹⁹ C).</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">44.</span> A 6V battery is connected across a lamp.
+                The current flowing is 0.25 A. Calculate the resistance of the lamp.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">45.</span> A copper wire has a diameter of 0.5 mm
+                and resistivity of 1.6 × 10⁻⁸ Ω m. What will be the length of this wire to make its resistance 10 Ω? How
+                much does the resistance change if the diameter is doubled?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">46.</span> The potential difference between the
+                terminals of an electric heater is 60 V when it draws a current of 4 A from the source. What current
+                will the heater draw if the potential difference is increased to 120 V?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">47.</span> A wire of given material having length l
+                and area of cross-section A has a resistance of 4 Ω. What would be the resistance of another wire of the
+                same material having length l/2 and area of cross-section 2A?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">48.</span> Resistance of a metal wire of length 1 m
+                is 26 Ω at 20°C. If the diameter of the wire is 0.3 mm, what will be the resistivity of the metal at
+                that temperature?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">49.</span> V-I graph for two wires A and B are
+                shown in the figure. Which wire has greater resistance? Justify.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">50.</span> Three resistors of 5 Ω, 10 Ω and 30 Ω
+                are connected in parallel with a battery of 6 V. Calculate: (a) the current through each resistor, (b)
+                the total current in the circuit, and (c) the total circuit resistance.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">51.</span> In the circuit diagram given below,
+                suppose the resistors R1, R2 and R3 have the values 5 Ω, 10 Ω, 30 Ω, respectively, which have been
+                connected to a battery of 12 V. Calculate the current through each resistor and the total current.</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769675307/a1a653b8-6e3c-4e39-8bda-b65e829692f5.png"
+                alt="Question 51 Diagram" class="question-image">
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">52.</span> An electric lamp of 100 Ω, a toaster of
+                resistance 50 Ω, and a water filter of resistance 500 Ω are connected in parallel to a 220 V source.
+                What is the resistance of an electric iron connected to the same source that takes as much current as
+                all three appliances, and what is the current through it?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">53.</span> How can three resistors of resistances 2
+                Ω, 3 Ω, and 6 Ω be connected to give a total resistance of (a) 4 Ω, (b) 1 Ω? Draw diagrams for both.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">54.</span> A battery of 9 V is connected in series
+                with resistors of 0.2 Ω, 0.3 Ω, 0.4 Ω, 0.5 Ω and 12 Ω, respectively. How much current would flow through
+                the 12 Ω resistor?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">55.</span> Find the equivalent resistance between
+                points A and B in the following network.</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769675506/87bb78f0-7dad-436d-8bea-c132706246e4.png"
+                alt="Question 55 Diagram" class="question-image">
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">56.</span> Study the following electric circuit and
+                calculate the potential difference across the 4 Ω resistor.</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769675793/c7bdeadf-4307-435f-bef9-fbea940f7a18.png"
+                alt="Question 56 Diagram" class="question-image">
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">57.</span> Two lamps, one rated 100 W at 220 V, and
+                the other 60 W at 220 V, are connected in parallel to electric mains supply. What current is drawn from
+                the line if the supply voltage is 220 V?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">58.</span> An electric iron consumes energy at a
+                rate of 840 W when heating is at the maximum rate and 360 W when the heating is at the minimum. The
+                voltage is 220 V. What are the current and the resistance in each case?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">59.</span> 100 J of heat is produced each second in
+                a 4 Ω resistance. Find the potential difference across the resistor.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">60.</span> Compute the heat generated while
+                transferring 96000 coulomb of charge in one hour through a potential difference of 50 V.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">61.</span> An electric bulb is connected to a 220 V
+                generator. The current is 0.50 A. What is the power of the bulb?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">62.</span> An electric refrigerator rated 400 W
+                operates 8 hours/day. What is the cost of the energy to operate it for 30 days at Rs 3.00 per kWh?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">63.</span> Several electric bulbs designed to be
+                used on a 220 V electric supply line, are rated 10 W. How many lamps can be connected in parallel with
+                each other across the two wires of 220 V line if the maximum allowable current is 5 A?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">64.</span> A hot plate of an electric oven
+                connected to a 220 V line has two resistance coils A and B, each of 24 Ω resistance, which may be used
+                separately, in series, or in parallel. What are the currents in the three cases?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">65.</span> Which uses more energy, a 250 W TV set
+                in 1 hr, or a 1200 W toaster in 10 minutes?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">66.</span> An electric heater of resistance 8 Ω
+                draws 15 A from the service mains 2 hours. Calculate the rate at which heat is developed in the heater.
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">67.</span> Two conducting wires of the same
+                material and of equal lengths and equal diameters are first connected in series and then parallel in a
+                circuit across the same potential difference. The ratio of heat produced in series and parallel
+                combinations would be?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">68.</span> A fuse wire melts at 5 A. If it is
+                desired that the fuse wire of same material melt at 10 A, should the new wire have a smaller or larger
+                radius? Explain mathematically.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">69.</span> Calculate the total resistance and total
+                current in the given circuit.</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769675914/338d4447-1e8c-48f3-a01f-0bd75dd8b4e6.png"
+                alt="Question 69 Diagram" class="question-image">
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">70.</span> A wire of resistance 20 Ω is bent in the
+                form of a closed circle. What is the effective resistance between the two points at the ends of any
+                diameter of the circle?</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">71.</span> Three resistors are connected as shown
+                in the diagram. Through the resistor 5 Ω, a current of 1 A is flowing. What is the potential difference
+                across AB and across AC?</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769675990/91d7d4d2-b768-4516-a63a-f0e32053db42.png"
+                alt="Question 71 Diagram" class="question-image">
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">72.</span> Find the reading of the Ammeter and
+                Voltmeter in the given circuit.</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769676060/62ed6334-a837-4dd7-b1fc-8d510c9c27ea.png"
+                alt="Question 72 Diagram" class="question-image">
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">73.</span> A torch bulb is rated 2.5 V and 750 mA.
+                Calculate: (a) its power, (b) its resistance, and (c) the energy consumed if this bulb is lighted for 4
+                hours.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">74.</span> In a house, two 60W bulbs are lighted
+                for 4 hours, and three 100W bulbs for 5 hours every day. Calculate the electric energy consumed in 30
+                days.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">75.</span> Derive the expression for equivalent
+                resistance of three resistors R1, R2, and R3 connected in series.</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769676157/be1e150a-a303-41f7-91e0-8f3194a845fe.png"
+                alt="Question 75 Diagram" class="question-image">
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">76.</span> A cylindrical conductor of length 'l'
+                and uniform area of cross-section 'A' has resistance 'R'. Another conductor of length '2l' and
+                resistance 'R' of the same material has area of cross-section 'A''. Find the ratio A'/A.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">77.</span> An electric kettle is rated at 230 V,
+                1000 W. It is used to boil water for 5 minutes. Calculate the heat energy produced.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">78.</span> Explain why the filament of an electric
+                bulb gets hot but the connecting wires do not, even though the same current flows through them. Prove
+                mathematically using Joule's Law.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">79.</span> A piece of wire of resistance R is cut
+                into five equal parts. These parts are then connected in parallel. If the equivalent resistance of this
+                combination is R', then find the ratio R/R'.</div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text"><span class="question-number">80.</span> In the circuit diagram shown, find: (i)
+                Total resistance (ii) Current shown by ammeter A.</div>
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1769676196/538bd216-9af1-42c6-b661-4a28250b7c21.png"
+                alt="Question 80 Diagram" class="question-image">
+        </div>
+
+        <div class="footer">
+            <p>Created by Team Vardaan with <span class="heart">❤️</span></p>
+            <p>Powered by Team Vardaan</p>
+        </div>
+        <button class="answer-key-btn no-print"
+            style="display: block; margin: 40px auto 20px; padding: 10px 20px; background-color: #333; color: #fff; border: none; font-family: var(--main-font); cursor: pointer; border-radius: 4px;"
+            onclick="window.location.href='LightAndCurrentNumericals2answers.html'">See Detailed Solutions</button>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

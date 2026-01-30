@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numericals: Light & Current - Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/ams'] },
+            tex: {
+                packages: { '[+]': ['ams'] },
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                scale: 1.05,
+                mtextInheritFont: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Computer Modern Serif Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: var(--bg-color-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            padding: 20mm;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+            /* Ensure paper is above background */
+        }
+
+        /* EQUATION WRAPPING FIXES */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            display: inline-block;
+        }
+
+        .watermark-container {
+            pointer-events: none;
+            position: fixed;
+            /* Fixed on screen ensures it stays centered */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .watermark-img {
+            opacity: 0.08;
+            transform: rotate(-30deg);
+            width: 500px;
+        }
+
+        html.dark-mode .watermark-container {
+            /* Adjustments for dark mode visibility if needed */
+        }
+
+        html.dark-mode .watermark-img {
+            opacity: 0.15;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding-left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            page-break-inside: avoid;
+        }
+
+        .question-content {
+            width: 92%;
+            font-size: 1.05em;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .marks {
+            font-weight: bold;
+            font-size: 13px;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            /* CHANGED from fixed to absolute */
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        .answer-key-btn {
+            display: block;
+            margin: 40px auto 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            font-family: var(--main-font);
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .answer-key-section {
+            display: none;
+            margin-top: 20px;
+            border-top: 2px dashed #ccc;
+            padding-top: 20px;
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 0.9em;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-shadow: none;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+        }
+
+        /* PRINT SETTINGS */
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle,
+            .answer-key-btn {
+                display: none !important;
+            }
+
+            /* Make paper transparent so watermark shows through */
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                background: transparent !important;
+            }
+
+            .section-title {
+                background-color: #eee !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            /* Watermark Configuration for Print */
+            .watermark-container {
+                position: fixed !important;
+                /* Forces repetition on every page */
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                z-index: -1 !important;
+                /* Behind text */
+                opacity: 0.1 !important;
+                display: flex !important;
+                width: 100% !important;
+                height: 100% !important;
+                pointer-events: none;
+            }
+
+            .watermark-img {
+                width: 500px;
+                transform: rotate(-30deg);
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm 20mm;
+            }
+
+            .question {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Watermark moved outside paper-sheet to body for better Print handling -->
+    <div class="watermark-container">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-img">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Additional Practise: Numericals - Light & Current</h2>
+            <div class="sub-header">
+                <span>Class: 10 (CBSE)</span>
+                <span>Subject: Science</span>
+                <span>Topic: Physics Numericals</span>
+            </div>
+        </header>
+
+        <!-- SECTION A: LIGHT -->
+        <div class="section-title">SECTION A: LIGHT - REFLECTION & REFRACTION</div>
+
+        <div class="question">
+            <div class="question-content">
+                1. An object of height 5 cm is placed perpendicular to the principal axis of a concave mirror of focal
+                length 10 cm. If the distance of the object from the mirror is 20 cm, determine the position, nature and
+                size of the image formed.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                2. A convex lens has a focal length of 15 cm. At what distance should an object be placed from the lens
+                so that it forms an image at 10 cm from the lens? Also, find the magnification produced by the lens.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                3. Light enters from air to glass having refractive index 1.50. What is the speed of light in the glass?
+                The speed of light in vacuum is $3 \times 10^8 \text{ ms}^{-1}$.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <!-- SECTION B: ELECTRICITY -->
+        <div class="section-title">SECTION B: ELECTRICITY</div>
+
+        <div class="question">
+            <div class="question-content">
+                4. A copper wire has a diameter of 0.5 mm and resistivity of $1.6 \times 10^{-8} \Omega \text{ m}$. What
+                will be the length of this wire to make its resistance $10 \Omega$? How much does the resistance change
+                if the diameter is doubled?
+            </div>
+            <span class="marks">[4]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                5. An electric heater of resistance $8 \Omega$ draws 15 A from the service mains 2 hours. Calculate the
+                rate at which heat is developed in the heater.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                6. Two lamps, one rated 100 W at 220 V and the other 60 W at 220 V, are connected in parallel to
+                electric mains supply. What current is drawn from the line if the supply voltage is 220 V?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+        <button class="answer-key-btn no-print"
+            onclick="window.location.href='LightAndCurrentNumericalsanswers.html'">See Detailed Solutions</button>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
