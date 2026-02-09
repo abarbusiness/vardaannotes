@@ -10,37 +10,48 @@
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root {
-            --yellow-bg: #fff9c4;
-            --yellow-border: #fbc02d;
-            --green-bg: #e8f5e9;
-            --green-border: #43a047;
-            --blue-bg: #e3f2fd;
-            --blue-border: #1e88e5;
-            --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            /* Palette adapted from Master Notes (Oscillations) */
+            --paper-color: #ffffff;
+            --ink-color: #2c3e50;
+            --highlight-yellow: #fff9c4;
+            --highlight-green: #e8f5e9;
+            --highlight-pink: #fce4ec;
+            --highlight-blue: #e3f2fd;
+            --accent-red: #c62828;
+            --accent-blue: #1565c0;
+            --accent-purple: #7b1fa2;
+            --box-border: #333;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
-            padding: 0
+            padding: 0;
         }
 
         body {
-            background: #fff;
-            color: #000;
+            background-color: #fff;
+            color: var(--ink-color);
             font-family: 'Outfit', sans-serif;
-            line-height: 1.7
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
         html {
-            transition: filter .3s
+            transition: filter .3s;
+            scroll-behavior: smooth;
         }
 
         html.dark-mode {
-            filter: invert(1) hue-rotate(180deg)
+            filter: invert(1) hue-rotate(180deg);
         }
 
+        /* Watermark */
         .watermark-overlay {
             position: fixed;
             top: 0;
@@ -51,29 +62,31 @@
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            z-index: 9999
+            z-index: 9999;
         }
 
         .watermark-image {
             width: 600px;
             max-width: 80%;
-            opacity: 0.05
+            opacity: 0.11;
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important
+            opacity: 0.08 !important;
         }
 
+        /* Paper Sheet */
         .paper-sheet {
-            background: #fff;
             width: 210mm;
             max-width: 100%;
-            margin: 0 auto;
+            min-height: 297mm;
+            background-color: var(--paper-color);
             padding: 20mm;
+            box-sizing: border-box;
             position: relative;
-            z-index: 10
         }
 
+        /* Theme Toggle */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -118,166 +131,271 @@
             transform: scale(1) rotate(0deg);
         }
 
-        h1 {
-            font-size: 2.5rem;
+        /* Headers */
+        .header-institute {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.9rem;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
             text-align: center;
-            color: #6a1b9a;
-            margin-bottom: .5rem
+        }
+
+        .header-title {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            color: #000;
+            font-size: 2.2rem;
+            font-weight: 800;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .header-subtitle {
+            text-align: center;
+            font-size: 1em;
+            color: #555;
+            font-weight: 500;
+            padding: 5px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #2e7d32;
+            text-transform: uppercase;
+            border-bottom: 4px solid #333;
+            padding-bottom: 15px;
+            margin: 30px 0;
+            font-weight: 700;
         }
 
         h2 {
-            font-size: 1.5rem;
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 5px;
+            margin-top: 50px;
+            font-size: 1.8rem;
             font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #6a1b9a;
-            padding-bottom: .5rem;
-            color: #6a1b9a
+        }
+
+        h2:first-of-type {
+            page-break-before: auto;
         }
 
         h3 {
-            font-size: 1.2rem;
+            color: var(--accent-red);
+            margin-top: 35px;
+            font-size: 1.4rem;
+            border-left: 5px solid var(--accent-red);
+            padding-left: 10px;
+            display: block;
+            font-weight: 600;
+        }
+
+        /* Content Boxes */
+
+        /* Chapter Overview */
+        .rule-box {
+            border: 2px solid #fbc02d;
+            background-color: var(--highlight-yellow);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Definitions */
+        .definition-box {
+            border: 2px solid #4a148c;
+            background-color: #f3e5f5;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Derivations */
+        .derivation-box {
+            border: 3px solid #333;
+            border-radius: 10px;
+            background-color: #fff;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 4px 4px 0px #eee;
+        }
+
+        .derivation-box::after {
+            content: "DERIVATION";
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            padding: 4px 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* Formulas */
+        .formula-box {
+            border: 2px solid #e65100;
+            background-color: #fff3e0;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .formula-box::before {
+            content: "📝 FORMULA";
+            font-weight: bold;
+            display: block;
+            margin-bottom: 12px;
+            color: #e65100;
+            text-align: center;
+            border-bottom: 1px dashed #e65100;
+            padding-bottom: 5px;
+        }
+
+        .highlight-formula {
+            background-color: #fff;
+            border: 2px solid #7b1fa2;
+            border-radius: 6px;
+            padding: 12px 18px;
+            margin: 15px 0;
+            display: inline-block;
+            font-weight: bold;
+            color: #4a148c;
+            box-shadow: 2px 2px 0px rgba(123, 31, 162, 0.2);
+        }
+
+        /* Practice */
+        .practice-box {
+            border: 2px dashed #2e7d32;
+            background-color: #e8f5e9;
+            padding: 40px 20px 20px 20px;
+            margin: 35px 0;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .practice-header {
+            background-color: #2e7d32;
+            color: #fff !important;
+            padding: 5px 15px;
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: inline-block;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Analysis/Concepts */
+        .analysis-box {
+            background-color: var(--highlight-blue);
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            margin: 25px 0;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        td {
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            padding: 12px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        /* Diagrams */
+        .diagram-container {
+            text-align: center;
+            background: #fff;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .img-caption {
+            font-size: 0.95rem;
+            margin-top: 12px;
+            font-style: italic;
+            color: #444;
             font-weight: 500;
-            margin-top: 1.5rem;
-            color: #7b1fa2
+            display: block;
+        }
+
+        strong,
+        b {
+            color: #c62828;
         }
 
         p,
         li {
-            margin-bottom: .8rem
-        }
-
-        ul,
-        ol {
-            padding-left: 1.5rem
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: .8rem
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: center
-        }
-
-        th {
-            background: #f3e5f5;
-            font-weight: 600
-        }
-
-        /* No borders for content boxes as per user request */
-        .definition-box,
-        .rule-box,
-        .analysis-box {
-            background: #ffffff;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-        }
-
-        /* Keep Derivation Box distinct (Purple) but NO border */
-        .derivation-box {
-            background: #f3e5f5;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-        }
-
-        .highlight-formula {
-            background-color: #ffffff;
-            border: 2px solid #7b1fa2;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 10px 0;
-            display: inline-block;
-            font-weight: bold;
-        }
-
-        .master-tip {
-            border: 2px dashed #d32f2f;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            background: #ffebee;
-            font-style: italic
-        }
-
-        .formula-box {
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0 #000;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            position: relative;
-            background: #fff
-        }
-
-        .formula-box::after {
-            content: "FORMULA";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #000;
-            color: #fff;
-            padding: 2px 8px;
-            font-size: .75rem
-        }
-
-        .practice-box {
-            background: #fff8e1;
-            border: 2px solid #ff6f00;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0
-        }
-
-        .practice-header {
-            font-weight: 700;
-            color: #d35400;
-            margin-bottom: .5rem
-        }
-
-        .q-tag {
-            background: #d35400;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: .75rem;
-            margin-right: 5px
-        }
-
-        @media screen and (max-width:800px) {
-            .paper-sheet {
-                width: 95%;
-                padding: 15px
-            }
-
-            table {
-                font-size: .65rem
-            }
-
-            h1 {
-                font-size: 1.8rem
-            }
+            margin-bottom: 12px;
         }
 
         @media print {
-            html.dark-mode {
-                filter: none !important
-            }
-
             .theme-toggle {
-                display: none
+                display: none !important;
             }
 
             .paper-sheet {
+                box-shadow: none;
+                margin: 0;
                 width: 100%;
-                padding: 10mm
+                padding: 0;
+            }
+
+            body {
+                background-color: white !important;
+            }
+
+            h2 {
+                page-break-before: auto;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .header-title {
+                font-size: 1.8rem;
+                white-space: normal;
             }
         }
     </style>
@@ -287,6 +405,7 @@
     <div class="watermark-overlay"><img
             src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
             class="watermark-image"></div>
+
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
         <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -307,196 +426,412 @@
     </button>
 
     <div class="paper-sheet">
-        <h1>Waves</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">CBSE Class 11 Physics â€¢ Chapter 14</p>
+        <!-- Header -->
+        <h1 class="header-institute">VARDAAN LEARNING INSTITUTE <span style="margin: 0 10px; color: #ccc;">|</span>
+            POWERED BY VARDAAN COMET</h1>
+        <h2 class="header-title">Waves</h2>
+        <p class="header-subtitle">CBSE Class 11 Physics • Chapter 14 • Detailed Notes</p>
 
         <div class="rule-box">
             <p><strong>Chapter Overview</strong></p>
-            <p>This chapter covers the fundamental concepts of <strong>Waves</strong>. Ensure you understand the
-                definitions and derivations thoroughly.</p>
+            <p>This chapter covers the detailed physics of <strong>Wave Motion</strong>, including mechanical waves,
+                equation of progressive waves, reflection, superposition, standing waves, beats, and the Doppler effect.
+            </p>
         </div>
 
-
-        <!-- 14.1 Introduction -->
         <!-- 14.1 Introduction -->
         <h2>14.1 Introduction to Waves</h2>
         <div class="definition-box">
+            <p><strong>Wave Motion:</strong> It is a mode of energy transfer from one point to another without the
+                permanent transport of matter. Patterns of disturbance move through the medium.</p>
+            <p><strong>Mechanism:</strong> Particles of the medium oscillate about their mean positions. The disturbance
+                is handed over from one particle to the next due to <strong>Elasticity</strong> and
+                <strong>Inertia</strong> of the medium.
+            </p>
             <ul>
-                <li><strong>Wave Motion:</strong> Disturbance that propagates through a medium, transferring energy and momentum without transport of matter.</li>
-                <li><strong>Transverse Wave:</strong> Particles oscillate perpendicular to direction of wave propagation (e.g., Light, String waves).</li>
-                <li><strong>Longitudinal Wave:</strong> Particles oscillate parallel to direction of wave propagation (e.g., Sound).</li>
+                <li><strong>Elasticity:</strong> Brings the particle back to mean position.</li>
+                <li><strong>Inertia:</strong> Allows the particle to overshoot the mean position and continue
+                    oscillation.</li>
             </ul>
         </div>
+
+        <div class="analysis-box">
+            <p><strong>Types of Waves based on Medium:</strong></p>
+            <ul>
+                <li><strong>Mechanical Waves:</strong> Require material medium (Solid, Liquid, Gas). Examples: Sound
+                    waves, Water waves, Seismic waves, Strings. governed by Newton's Laws.</li>
+                <li><strong>Electromagnetic Waves:</strong> Do not require medium. Can travel in vacuum. Examples:
+                    Light, Radio, X-rays. Speed $c = 3 \times 10^8$ m/s.</li>
+                <li><strong>Matter Waves:</strong> Associated with moving particles (Quantum nature). Example: Electron
+                    microscope.</li>
+            </ul>
+        </div>
+
+        <!-- 14.2 Transverse vs Longitudinal -->
+        <h2>14.2 Transverse and Longitudinal Waves</h2>
+        <p>Comparison based on particle vibration direction relative to wave propagation.</p>
+
+        <div class="diagram-container">
+            <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background Grid -->
+                <defs>
+                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="1" />
+                    </pattern>
+                    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L6,3 z" fill="#333" />
+                    </marker>
+                </defs>
+                <rect width="800" height="300" fill="url(#grid)" />
+
+                <!-- Transverse -->
+                <g transform="translate(50, 40)">
+                    <text x="0" y="-10" font-weight="bold" fill="#1565c0" font-size="16">A. Transverse Wave</text>
+                    <line x1="0" y1="50" x2="300" y2="50" stroke="#ccc" stroke-dasharray="4" />
+                    <path d="M0,50 C40,5 60,5 100,50 C140,95 160,95 200,50 C240,5 260,5 300,50" fill="none"
+                        stroke="#c62828" stroke-width="3" />
+
+                    <!-- Vibration Indicator -->
+                    <line x1="100" y1="20" x2="100" y2="80" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow)"
+                        marker-start="url(#arrow)" />
+                    <text x="110" y="40" font-size="12" fill="#1565c0">Particle ($\perp$)</text>
+
+                    <!-- Wave Dir -->
+                    <line x1="220" y1="20" x2="280" y2="20" stroke="#2e7d32" stroke-width="2"
+                        marker-end="url(#arrow)" />
+                    <text x="220" y="15" font-size="12" fill="#2e7d32">Wave Dir.</text>
+                </g>
+
+                <!-- Longitudinal -->
+                <g transform="translate(450, 40)">
+                    <text x="0" y="-10" font-weight="bold" fill="#1565c0" font-size="16">B. Longitudinal Wave</text>
+
+                    <!-- Compressions/Rarefactions -->
+                    <g stroke="#333" stroke-width="1">
+                        <!-- C -->
+                        <rect x="10" y="20" width="20" height="60" fill="#ddd" opacity="0.5" />
+                        <line x1="12" y1="20" x2="12" y2="80" />
+                        <line x1="16" y1="20" x2="16" y2="80" />
+                        <line x1="20" y1="20" x2="20" y2="80" />
+                        <line x1="24" y1="20" x2="24" y2="80" />
+                        <!-- R -->
+                        <line x1="50" y1="20" x2="50" y2="80" />
+                        <line x1="80" y1="20" x2="80" y2="80" />
+                        <!-- C -->
+                        <rect x="110" y="20" width="20" height="60" fill="#ddd" opacity="0.5" />
+                        <line x1="112" y1="20" x2="112" y2="80" />
+                        <line x1="116" y1="20" x2="116" y2="80" />
+                        <line x1="120" y1="20" x2="120" y2="80" />
+                        <line x1="124" y1="20" x2="124" y2="80" />
+                    </g>
+
+                    <text x="20" y="100" font-size="12" text-anchor="middle">Compression</text>
+                    <text x="65" y="100" font-size="12" text-anchor="middle">Rarefaction</text>
+
+                    <!-- Vibration Indicator -->
+                    <line x1="180" y1="50" x2="220" y2="50" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow)"
+                        marker-start="url(#arrow)" />
+                    <text x="180" y="40" font-size="12" fill="#1565c0">Particle ($\parallel$)</text>
+                </g>
+            </svg>
+            <span class="img-caption">Visualizing Transverse (Crests/Troughs) and Longitudinal (Compression/Rarefaction)
+                waves.</span>
+        </div>
+        <div class="diagram-container">
+            <img src="images/sound_propagation.png" alt="Propagation of Sound"
+                style="max-width: 100%; height: auto; border-radius: 8px;">
+            <span class="img-caption">Figure 14.1: Propagation of Sound showing Compressions and Rarefactions.</span>
+        </div>
+
+        <table>
+            <tr>
+                <th>Property</th>
+                <th>Transverse Wave</th>
+                <th>Longitudinal Wave</th>
+            </tr>
+            <tr>
+                <td><strong>Particle Vibrations</strong></td>
+                <td>Perpendicular ($\perp$) to wave propagation.</td>
+                <td>Parallel ($\parallel$) to wave propagation.</td>
+            </tr>
+            <tr>
+                <td><strong>Formation</strong></td>
+                <td>Travels in the form of <strong>Crests</strong> (Pos. Max) and <strong>Troughs</strong> (Neg. Max).
+                </td>
+                <td>Travels in the form of <strong>Compressions</strong> (High Density) and
+                    <strong>Rarefactions</strong> (Low Density).
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Medium Required</strong></td>
+                <td>Requires Rigidity (Shear modulus). Solids and Surface of Liquids.</td>
+                <td>Requires Elasticity of Volume (Bulk modulus). Solids, Liquids, and Gases.</td>
+            </tr>
+            <tr>
+                <td><strong>Pressure Variation</strong></td>
+                <td>No pressure variation in the medium.</td>
+                <td>Pressure and density vary at every point.</td>
+            </tr>
+            <tr>
+                <td><strong>Polarization</strong></td>
+                <td>Can be polarized.</td>
+                <td>Cannot be polarized.</td>
+            </tr>
+        </table>
 
         <!-- 14.3 Progressive Wave -->
-        <h2>14.3 Progressive Wave Equation</h2>
+        <h2>14.3 Progressive Wave (Travelling Wave)</h2>
         <div class="derivation-box">
-            <p><strong>Displacement Relation:</strong> For a plane progressive harmonic wave traveling in +x direction:</p>
+            <p><strong>Equation of a Plane Progressive Harmonic Wave:</strong></p>
+            <p>Consider a wave traveling along the positive x-axis. The displacement $y$ of a particle at position $x$
+                and time $t$ is:</p>
             <div class="highlight-formula">$$ y(x, t) = A \sin(kx - \omega t + \phi) $$</div>
+            <p><strong>Simplest Case ($\phi=0$):</strong> $y = A \sin(kx - \omega t)$</p>
+
+            <p><strong>Detailed Analysis of Terms:</strong></p>
             <ul>
-                <li>$y$: Displacement of particle at position $x$ at time $t$.</li>
-                <li>$A$: Amplitude.</li>
-                <li>$\omega$: Angular Frequency ($2\pi\nu$).</li>
-                <li>$k$: Wave Number ($2\pi/\lambda$).</li>
-                <li>$\phi$: Initial Phase.</li>
+                <li><strong>$y(x,t)$</strong>: Instantaneous displacement of particle at $x$ at time $t$.</li>
+                <li><strong>$A$ (Amplitude)</strong>: Maximum displacement from mean positions.</li>
+                <li><strong>$\omega$ (Angular Frequency)</strong>: Rate of change of phase with time. $\omega =
+                    \frac{2\pi}{T}$.</li>
+                <li><strong>$k$ (Angular Wave Number)</strong>: Rate of change of phase with position. $k =
+                    \frac{2\pi}{\lambda}$.</li>
+                <li><strong>$(kx - \omega t + \phi)$</strong>: Total Phase. Determines the state of motion.</li>
             </ul>
-            <p><strong>Phase Difference ($\Delta \phi$):</strong> $\Delta \phi = \frac{2\pi}{\lambda} \Delta x = k \Delta x$.</p>
         </div>
 
-        <!-- 14.4 Wave Speed -->
-        <h2>14.4 Speed of a Traveling Wave</h2>
         <div class="analysis-box">
-            <p><strong>Wave Velocity ($v$):</strong> $v = \frac{\omega}{k} = \nu \lambda$.</p>
-            <ul>
-                <li><strong>Speed on Stretched String:</strong> $v = \sqrt{\frac{T}{\mu}}$ (where $\mu$ is mass per unit length).</li>
-                <li><strong>Speed of Sound (Newton-Laplace):</strong> $v = \sqrt{\frac{\gamma P}{\rho}}$ (where $\gamma$ is adiabatic ratio).</li>
-            </ul>
+            <p><strong>Relation between Phase Diff ($\Delta \phi$), Path Diff ($\Delta x$), and Time Diff ($\Delta
+                    t$):</strong></p>
+            <p>1. Phase difference for two particles separated by distance $\Delta x$:</p>
+            <div class="highlight-formula">$$ \Delta \phi = \frac{2\pi}{\lambda} \Delta x $$</div>
+            <p>2. Phase difference for the SAME particle after time interval $\Delta t$:</p>
+            <div class="highlight-formula">$$ \Delta \phi = \frac{2\pi}{T} \Delta t $$</div>
         </div>
 
         <div class="practice-box">
             <span class="practice-header">Practice Problem 1</span>
-            <p><strong>Q:</strong> A wave is represented by $y = 0.05 \sin(80x - 3t)$ (SI units). Find amplitude, wavelength, frequency, and velocity.</p>
-            <p><strong>Ans:</strong> Compare with $y = A \sin(kx - \omega t)$.<br>
-            $A = \mathbf{0.05 \text{ m}}$.<br>
-            $k = 80 \Rightarrow \frac{2\pi}{\lambda} = 80 \Rightarrow \lambda = \frac{\pi}{40} \approx \mathbf{0.078 \text{ m}}$.<br>
-            $\omega = 3 \Rightarrow 2\pi\nu = 3 \Rightarrow \nu = \frac{3}{2\pi} \approx \mathbf{0.48 \text{ Hz}}$.<br>
-            $v = \frac{\omega}{k} = \frac{3}{80} = \mathbf{0.0375 \text{ m/s}}$.</p>
+            <p><strong>Q:</strong> A wave equation is $y = 0.05 \sin(80x - 3t)$. Find velocity and wavelength. (SI
+                units)</p>
+            <p><strong>Solution:</strong> Compare with standard $y = A \sin(kx - \omega t)$.</p>
+            <ul>
+                <li>$k = 80$ rad/m $\Rightarrow \frac{2\pi}{\lambda} = 80 \Rightarrow \lambda = \frac{2\pi}{80} =
+                    \frac{\pi}{40}$ m.</li>
+                <li>$\omega = 3$ rad/s.</li>
+                <li>Wave Velocity $v = \frac{\omega}{k} = \frac{3}{80} = 0.0375$ m/s.</li>
+            </ul>
         </div>
 
+        <!-- 14.4 Wave Speed -->
+        <h2>14.4 Speed of a Travelling Wave</h2>
 
+        <div class="formula-box">
+            $$ v = \frac{\omega}{k} = \frac{2\pi\nu}{2\pi/\lambda} = \nu \lambda $$
+            <p>Wave velocity depends ONLY on the properties of the medium (Elasticity $E$ and Inertia $\rho$).</p>
+            $$ v = \sqrt{\frac{E}{\rho}} $$
+        </div>
+
+        <h3>Case 1: Transverse Wave on Stretched String</h3>
+        <div class="definition-box">
+            <p>Speed depends on Tension ($T$) and Linear Mass Density ($\mu = m/L$).</p>
+            <div class="highlight-formula">$$ v = \sqrt{\frac{T}{\mu}} $$</div>
+            <p>Note: $v$ does not depend on frequency or wavelength directly.</p>
+        </div>
+
+        <h3>Case 2: Longitudinal Wave (Sound) in Fluids</h3>
+        <div class="derivation-box">
+            <p><strong>Newton's Formula (Historical):</strong></p>
+            <p>Newton assumed sound propagation is an <strong>Isothermal Process</strong> (Temp remains constant). For
+                isothermal change, Bulk Modulus $B = P$ (Pressure).</p>
+            <p>Formula: $v = \sqrt{\frac{P}{\rho}}$.</p>
+            <p>At STP ($P=1.01 \times 10^5$ Pa, $\rho = 1.29$ kg/m$^3$), $v \approx 280$ m/s.</p>
+            <p><em>Discrepancy:</em> Experimental value is ~331 m/s. Newton's formula failed (15% error).</p>
+
+            <hr style="border-top:1px dashed #333; margin:15px 0;">
+
+            <p><strong>Laplace's Correction (Accurate):</strong></p>
+            <p>Laplace argued that sound travels fast; compressions/rarefactions occur rapidly. Heat doesn't have time
+                to exchange. Hence, it is an <strong>Adiabatic Process</strong>.</p>
+            <p>For adiabatic change, Bulk Modulus $B_{ad} = \gamma P$, where $\gamma = C_p/C_v$ is the adiabatic index.
+            </p>
+            <div class="highlight-formula">$$ v = \sqrt{\frac{\gamma P}{\rho}} $$</div>
+            <p>For air (diatomic), $\gamma = 1.4$. $v = \sqrt{1.4} \times 280 \approx 331.3$ m/s. <strong>Matches
+                    perfectly!</strong></p>
+        </div>
+
+        <!-- Factors Affecting Speed -->
+        <div class="rule-box">
+            <p><strong>Factors Affecting Speed of Sound in Gas:</strong></p>
+            <ol>
+                <li><strong>Temperature:</strong> $v \propto \sqrt{T}$. Speed increases by 0.61 m/s for every $1^\circ$C
+                    rise.</li>
+                <li><strong>Molecular Weight:</strong> $v \propto \frac{1}{\sqrt{M}}$. (Hydrogen transmits sound faster
+                    than Oxygen).</li>
+                <li><strong>Humidity:</strong> Moist air is lighter ($\rho$ decreases) than dry air. Hence speed
+                    <strong>increases</strong> with humidity.
+                </li>
+                <li><strong>Pressure:</strong> NO EFFECT (at constant temperature), because $P/\rho$ remains constant.
+                </li>
+            </ol>
+        </div>
 
         <!-- 14.5 Superposition -->
         <h2>14.5 Principle of Superposition</h2>
         <div class="definition-box">
-            <p><strong>Statement:</strong> When two or more waves overlap, the resultant displacement at any point is the vector sum of individual displacements.</p>
-            <div class="highlight-formula">$$ y = y_1 + y_2 $$</div>
+            <p>When two waves interfere, the resultant displacement is the vector sum of individual displacements.</p>
+            $$ \vec{y} = \vec{y}_1 + \vec{y}_2 $$
         </div>
 
-        <!-- 14.6 Reflection / Standing Waves -->
+        <!-- 14.6 Reflection & Standing Waves -->
         <h2>14.6 Reflection & Standing Waves</h2>
+
         <div class="analysis-box">
-             <p><strong>Reflection from Rigid Boundary:</strong> Phase change of $\pi$ ($180^\circ$). Pulse inverts.</p>
-             <p><strong>Reflection from Open Boundary:</strong> No phase change. Pulse does not invert.</p>
+            <p><strong>Boundary Conditions:</strong></p>
+            <ul>
+                <li><strong>Rigid/Fixed End:</strong> Wave reflects with $\pi$ phase change (Crest $\to$ Trough). Node
+                    forms at boundary.</li>
+                <li><strong>Free/Open End:</strong> Wave reflects with 0 phase change (Crest $\to$ Crest). Antinode
+                    forms at boundary.</li>
+            </ul>
+            <div class="diagram-container">
+                <img src="images/wave_reflection.png" alt="Reflection of Waves"
+                    style="max-width: 100%; height: auto; border-radius: 8px;">
+                <span class="img-caption">Figure 14.2: Reflection of Waves at Fixed and Free Ends.</span>
+            </div>
         </div>
 
+        <h3>Analytical Treatment of Standing Waves</h3>
         <div class="derivation-box">
-            <p><strong>Standing (Stationary) Waves:</strong> Formed by superposition of two identical waves traveling in opposite directions.</p>
-            <p>$y_1 = A \sin(kx - \omega t)$, $y_2 = A \sin(kx + \omega t)$.</p>
-            <p>$y = y_1 + y_2 = 2A \sin kx \cos \omega t$.</p>
-            <ul>
-                <li><strong>Nodes:</strong> Points of zero amplitude ($\sin kx = 0 \Rightarrow x = n\lambda/2$).</li>
-                <li><strong>Antinodes:</strong> Points of max amplitude ($\sin kx = \pm 1 \Rightarrow x = (n + \frac{1}{2})\lambda/2$).</li>
-            </ul>
+            <p>Two waves of same amplitude and frequency traveling in opposite directions:</p>
+            <p>Incident: $y_1 = A \sin(kx - \omega t)$</p>
+            <p>Reflected: $y_2 = A \sin(kx + \omega t)$ (Assumption: reflection from open end for simpler math)</p>
+            <p>Resultant $y = y_1 + y_2 = A[\sin(kx-\omega t) + \sin(kx+\omega t)]$</p>
+            <p>Using $\sin C + \sin D = 2 \sin \frac{C+D}{2} \cos \frac{C-D}{2}$:</p>
+            <div class="highlight-formula">$$ y = 2A \sin(kx) \cos(\omega t) $$</div>
+            <p>This is NOT a traveling wave (no $kx \pm \omega t$ term). Amplitudes vary with position $x$.</p>
+
+            <p><strong>Nodes (Min Amplitude = 0):</strong> $\sin kx = 0 \Rightarrow kx = n\pi \Rightarrow x =
+                \frac{n\lambda}{2}$.</p>
+            <p><strong>Antinodes (Max Amplitude = 2A):</strong> $\sin kx = \pm 1 \Rightarrow x =
+                (n+\frac{1}{2})\frac{\lambda}{2}$.</p>
+        </div>
+
+        <h3>Modes of Vibration</h3>
+        <div class="diagram-container">
+            <img src="images/string_harmonics.png" alt="String Harmonics"
+                style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">
+            <span class="img-caption">Figure 14.3: Modes of Vibration of a Stretched String.</span>
         </div>
 
         <div class="diagram-container">
-            <svg viewBox="0 0 600 250">
-                <!-- Axes -->
-                <line x1="50" y1="125" x2="550" y2="125" stroke="#ccc" stroke-dasharray="4"/>
-                
-                <!-- String boundaries -->
-                <rect x="50" y="50" width="5" height="150" fill="#333"/>
-                <rect x="550" y="50" width="5" height="150" fill="#333"/>
-                
-                <!-- Standing Wave 1 (Fundamental) -->
-                <path d="M55 125 Q 300 25 545 125" fill="none" stroke="#1e88e5" stroke-width="2"/>
-                <path d="M55 125 Q 300 225 545 125" fill="none" stroke="#1e88e5" stroke-width="2" stroke-dasharray="2"/>
-                
-                <!-- Labels -->
-                <circle cx="55" cy="125" r="4" fill="#d32f2f"/>
-                <text x="35" y="125" font-weight="bold" fill="#d32f2f">N</text>
-                <circle cx="545" cy="125" r="4" fill="#d32f2f"/>
-                <text x="560" y="125" font-weight="bold" fill="#d32f2f">N</text>
-                
-                <text x="300" y="115" font-weight="bold" fill="#1e88e5">A (Antinode)</text>
-                
-                <text x="300" y="20" font-weight="bold" text-anchor="middle">Fundamental Mode (First Harmonic)</text>
-                <text x="300" y="40" font-size="12" text-anchor="middle">$L = \lambda/2 \Rightarrow \nu_1 = v/2L$</text>
-
-            </svg>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">Figure 14.1: Standing Wave (Fundamental Mode)</p>
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px; margin: 10px;">
+                    <img src="images/closed_pipe_harmonics.png" alt="Closed Pipe Harmonics"
+                        style="max-width: 100%; height: auto; border-radius: 8px;">
+                    <span class="img-caption">Figure 14.4: Closed Organ Pipe (Odd Harmonics).</span>
+                </div>
+                <div style="flex: 1; min-width: 300px; margin: 10px;">
+                    <img src="images/open_pipe_harmonics.png" alt="Open Pipe Harmonics"
+                        style="max-width: 100%; height: auto; border-radius: 8px;">
+                    <span class="img-caption">Figure 14.5: Open Organ Pipe (All Harmonics).</span>
+                </div>
+            </div>
         </div>
 
-        <div class="practice-box">
-            <span class="practice-header">Practice Problem 2 (Harmonics)</span>
-            <p><strong>Q:</strong> A pipe closed at one end is 20 cm long. Find fundamental frequency if speed of sound is 340 m/s.</p>
-            <p><strong>Ans:</strong> Closed Pipe Fundamental: $L = \lambda/4 \Rightarrow \lambda = 4L$.<br>
-            $\nu = \frac{v}{\lambda} = \frac{v}{4L}$.<br>
-            $\nu = \frac{340}{4 \times 0.2} = \frac{340}{0.8} = \frac{3400}{8} = \mathbf{425 \text{ Hz}}$.</p>
+        <div class="rule-box">
+            <p><strong>Harmonics Summary:</strong></p>
+            <ul>
+                <li><strong>Stretched String / Open Pipe:</strong> Frequencies are $v/2L, 2v/2L, 3v/2L \dots$ Ratio
+                    $1:2:3$ (All harmonics present). Quality of sound is richer.</li>
+                <li><strong>Closed Pipe:</strong> Frequencies are $v/4L, 3v/4L, 5v/4L \dots$ Ratio $1:3:5$ (Only Odd
+                    harmonics).</li>
+            </ul>
         </div>
-
-
 
         <!-- 14.7 Beats -->
         <h2>14.7 Beats</h2>
-        <div class="definition-box">
-            <p><strong>Phenomenon:</strong> Periodic variation in intensity of sound when two waves of slightly different frequencies superimpose.</p>
+        <div class="derivation-box">
+            <p><strong>Phenomenon:</strong> When two waves of nearly equal frequencies $\nu_1$ and $\nu_2$ moving in
+                same direction interfere, the intensity rises and falls periodically.</p>
+            <p><strong>Derivation:</strong></p>
+            <p>$y_1 = A \cos(2\pi\nu_1 t)$, $y_2 = A \cos(2\pi\nu_2 t)$.</p>
+            <p>$y = y_1 + y_2 = 2A \cos[\pi(\nu_1-\nu_2)t] \cos[\pi(\nu_1+\nu_2)t]$.</p>
+            <p>Amplitude term is $A_{mod} = 2A \cos[\pi(\nu_1-\nu_2)t]$.</p>
+            <p>Intensity $I \propto A_{mod}^2$. MaxIMA when $\cos[\dots] = \pm 1$. This happens with frequency $\nu_1 -
+                \nu_2$.</p>
             <div class="highlight-formula">$$ \nu_{beat} = |\nu_1 - \nu_2| $$</div>
-            <p>Used in tuning musical instruments.</p>
+            <p><strong>Practical Limit:</strong> Human ear can detect beats only if difference $\nu_{beat} < 10$ Hz
+                    (Persistence of hearing=0.1s).</p>
+                    <div class="diagram-container">
+                        <img src="images/beats_graph.png" alt="Beats Phenomenon"
+                            style="max-width: 100%; height: auto; border-radius: 8px;">
+                        <span class="img-caption">Figure 14.6: Beats formation.</span>
+                    </div>
         </div>
 
         <!-- 14.8 Doppler Effect -->
         <h2>14.8 Doppler Effect</h2>
-        <div class="analysis-box">
-            <p><strong>Definition:</strong> Apparent change in frequency of wave due to relative motion between source and observer.</p>
+        <div class="definition-box">
+            <p>The apparent change in frequency of sound due to the relative motion between the Source (S) and Observer
+                (O).</p>
+            <p><strong>General Formula:</strong></p>
             <div class="highlight-formula">$$ \nu' = \nu \left( \frac{v \pm v_o}{v \mp v_s} \right) $$</div>
-            <ul>
-                <li>$v$: Speed of sound (~340 m/s).</li>
-                <li>$v_o$: Speed of Observer (+ if moving towards source).</li>
-                <li>$v_s$: Speed of Source (- if moving towards observer).</li>
-            </ul>
+            <p>Where $v$ is speed of sound. Directions taken as positive in direction of sound travel ($S \to O$).</p>
         </div>
-        
+
+        <table>
+            <tr>
+                <th>Case</th>
+                <th>Condition</th>
+                <th>Formula</th>
+                <th>Result</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Source moving towards Observer (at rest)</td>
+                <td>$\nu' = \nu \left( \frac{v}{v - v_s} \right)$</td>
+                <td>$\nu' > \nu$</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Source moving away from Observer (at rest)</td>
+                <td>$\nu' = \nu \left( \frac{v}{v + v_s} \right)$</td>
+                <td>$\nu' < \nu$</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Observer moving towards Source (at rest)</td>
+                <td>$\nu' = \nu \left( \frac{v + v_o}{v} \right)$</td>
+                <td>$\nu' > \nu$</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Observer moving away from Source (at rest)</td>
+                <td>$\nu' = \nu \left( \frac{v - v_o}{v} \right)$</td>
+                <td>$\nu' < \nu$</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Both moving towards each other</td>
+                <td>$\nu' = \nu \left( \frac{v + v_o}{v - v_s} \right)$</td>
+                <td>$\nu' > \nu$ (Max increase)</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Both moving away from each other</td>
+                <td>$\nu' = \nu \left( \frac{v - v_o}{v + v_s} \right)$</td>
+                <td>$\nu' < \nu$ (Max decrease)</td>
+            </tr>
+        </table>
+
         <div class="diagram-container">
-            <svg viewBox="0 0 600 200">
-                <defs>
-                    <radialGradient id="waveGrad" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" style="stop-color:transparent" />
-                        <stop offset="90%" style="stop-color:#90caf9" />
-                        <stop offset="100%" style="stop-color:#1e88e5" />
-                    </radialGradient>
-                </defs>
-                
-                <!-- Source Moving Right -->
-                <circle cx="200" cy="100" r="10" fill="#d32f2f"/>
-                <text x="200" y="90" text-anchor="middle" font-weight="bold" fill="#d32f2f">S (Source)</text>
-                <line x1="200" y1="100" x2="250" y2="100" stroke="#d32f2f" stroke-width="2" marker-end="url(#arrowSHM)"/>
-                <text x="230" y="90" font-size="10" fill="#d32f2f">$v_s$</text>
-
-                <!-- Obscerver Static -->
-                <circle cx="500" cy="100" r="10" fill="#43a047"/>
-                 <text x="500" y="90" text-anchor="middle" font-weight="bold" fill="#43a047">O (Observer)</text>
-
-                <!-- Wavefronts (Crowded right, spaced left) -->
-                <circle cx="210" cy="100" r="20" fill="none" stroke="#1e88e5" opacity="0.8"/>
-                <circle cx="220" cy="100" r="40" fill="none" stroke="#1e88e5" opacity="0.6"/>
-                <circle cx="230" cy="100" r="60" fill="none" stroke="#1e88e5" opacity="0.4"/>
-                <circle cx="240" cy="100" r="80" fill="none" stroke="#1e88e5" opacity="0.2"/>
-                
-                <text x="400" y="150" font-size="12" fill="#555">High Freq ($\lambda \downarrow$)</text>
-                <text x="100" y="150" font-size="12" fill="#555">Low Freq ($\lambda \uparrow$)</text>
-                
-            </svg>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">Figure 14.2: Doppler Effect (Source moving towards Observer)</p>
-        </div>
-
-        <div class="practice-box">
-            <span class="practice-header">Practice Problem 3 (Doppler)</span>
-            <p><strong>Q:</strong> A train whistling at 400 Hz approaches a station at 10 m/s. What is the frequency heard by a stationary observer on the platform? ($v = 340$ m/s).</p>
-            <p><strong>Ans:</strong> Observer stationary ($v_o = 0$). Source approaching ($v_s$ is -ve in denominator).<br>
-            $\nu' = \nu \left( \frac{v}{v - v_s} \right)$.<br>
-            $\nu' = 400 \left( \frac{340}{340 - 10} \right) = 400 \left( \frac{340}{330} \right)$.<br>
-            $\nu' = 400 \times 1.03 = \mathbf{412 \text{ Hz}}$. (Frequency increases).</p>
-        </div>
-
-
-
-        <div class="master-tip">
-            <p><strong>Study Tip:</strong> Master the derivations in this chapter as they are frequently asked in exams.
-                Practice numericals based on the formulas.</p>
+            <img src="images/doppler_effect.png" alt="Doppler Effect"
+                style="max-width: 100%; height: auto; border-radius: 8px;">
+            <span class="img-caption">Figure 14.7: Doppler Effect showing wavefront compression.</span>
         </div>
 
     </div>
+
     <script>
         function toggleTheme() {
             const html = document.documentElement;

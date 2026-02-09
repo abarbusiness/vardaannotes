@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONLY PHYSICS TEST 01</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vardaan-green: #006400;
+            --light-mint: #ebfaeb;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* --- WATERMARK --- */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            z-index: 9999;
+            /* Changed to sit ON TOP of content */
+            opacity: 0.12;
+            /* Adjusted opacity for overlay */
+            pointer-events: none;
+            /* Ensures you can click/select text 'through' the watermark */
+            /* width: 80%; Removed to allow original size */
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .watermark img {
+            /* Removed width/height constraints to display original size */
+        }
+
+        /* Fallback text style if image fails */
+        .watermark-text-fallback {
+            font-size: 5rem;
+            font-weight: bold;
+            color: var(--vardaan-green);
+            opacity: 0.5;
+            white-space: nowrap;
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            /* Removed background opacity trick since watermark is now on top */
+            background: #fff;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: var(--vardaan-green);
+            margin: 0;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+        }
+
+        .sub-header {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .divider-thick {
+            height: 3px;
+            background-color: var(--vardaan-green);
+            margin: 10px 0;
+            border: none;
+        }
+
+        .divider-thin {
+            height: 1px;
+            background-color: var(--vardaan-green);
+            margin: 10px 0;
+            border: none;
+        }
+
+        .exam-details {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .instructions {
+            text-align: center;
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            color: #444;
+        }
+
+        /* --- SECTIONS --- */
+        .section-header {
+            background-color: var(--light-mint);
+            padding: 10px;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .section-header h2 {
+            color: var(--vardaan-green);
+            margin: 0;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+
+        /* --- QUESTIONS --- */
+        ol.question-list {
+            list-style-position: outside;
+            padding-left: 20px;
+        }
+
+        ol.question-list>li {
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        ol.question-list>li>span,
+        ol.question-list>li>div,
+        ol.question-list>li>p {
+            font-weight: normal;
+            display: inline-block;
+            vertical-align: top;
+            width: 95%;
+        }
+
+        /* Multiple Choice Grid */
+        .mcq-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            font-weight: normal;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .mcq-options li::before {
+            content: "(" attr(data-label) ") ";
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* --- IMAGE PLACEHOLDERS --- */
+        .image-placeholder {
+            border: 2px dashed var(--vardaan-green);
+            background-color: #fafafa;
+            padding: 20px;
+            margin: 15px auto;
+            text-align: center;
+            border-radius: 8px;
+            max-width: 85%;
+        }
+
+        .image-placeholder h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+
+        .prompt-box {
+            background-color: var(--vardaan-green);
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* --- IMAGE STYLES --- */
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px auto;
+            display: block;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: gray;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        /* Sub-questions (a, b, c) */
+        .sub-questions {
+            list-style-type: lower-alpha;
+            /* a, b, c */
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        .sub-sub-questions {
+            list-style-type: lower-roman;
+            /* i, ii, iii */
+            font-weight: normal;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .mcq-options {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- WATERMARK -->
+    <div class="watermark" id="watermark-container">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Watermark"
+            onerror="this.style.display='none'; document.getElementById('watermark-container').innerHTML = '<div class=\'watermark-text-fallback\'>VARDAAN LEARNING</div>';">
+    </div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <div class="sub-header">Created by Team Vardaan with &hearts;</div>
+        </header>
+
+        <hr class="divider-thick">
+
+        <div class="exam-details">
+            <span>ONLY PHYSICS TEST 01</span>
+            <span>Time: 2 Hours</span>
+        </div>
+        <div class="exam-details">
+            <span>Class: 10 (Science)</span>
+            <span>Max. Marks: 80</span>
+        </div>
+
+        <hr class="divider-thin">
+
+        <div class="instructions">
+            General Instructions: All questions are compulsory. Use of calculators is not permitted. <br>
+            Draw neat and labeled diagrams wherever necessary.
+        </div>
+
+        <!-- SECTION A -->
+        <div class="section-header">
+            <h2>Section A (Multiple Choice Questions) - 1 Mark Each</h2>
+        </div>
+
+        <ol class="question-list">
+            <li>
+                <span>The image formed by a concave mirror is observed to be virtual, erect and larger than the object.
+                    Where should be the position of the object?</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Between principal focus and centre of curvature</li>
+                    <li data-label="b">At the centre of curvature</li>
+                    <li data-label="c">Beyond the centre of curvature</li>
+                    <li data-label="d">Between the pole of the mirror and its principal focus</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>The change in focal length of an eye lens is caused by the action of the:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Pupil</li>
+                    <li data-label="b">Retina</li>
+                    <li data-label="c">Ciliary muscles</li>
+                    <li data-label="d">Iris</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>A cylindrical conductor of length <i>l</i> and uniform area of cross-section <i>A</i> has
+                    resistance <i>R</i>. Another conductor of length 2<i>l</i> and resistance <i>R</i> of the same
+                    material has area of cross-section:</span>
+                <ul class="mcq-options">
+                    <li data-label="a"><i>A</i>/2</li>
+                    <li data-label="b">3<i>A</i>/2</li>
+                    <li data-label="c">2<i>A</i></li>
+                    <li data-label="d">3<i>A</i></li>
+                </ul>
+            </li>
+
+            <li>
+                <span>The magnetic field inside a long straight solenoid-carrying current:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Is zero</li>
+                    <li data-label="b">Decreases as we move towards its end</li>
+                    <li data-label="c">Increases as we move towards its end</li>
+                    <li data-label="d">Is the same at all points</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>Which of the following terms does not represent electrical power in a circuit?</span>
+                <ul class="mcq-options">
+                    <li data-label="a"><i>I</i><sup>2</sup><i>R</i></li>
+                    <li data-label="b"><i>IR</i><sup>2</sup></li>
+                    <li data-label="c"><i>VI</i></li>
+                    <li data-label="d"><i>V</i><sup>2</sup>/<i>R</i></li>
+                </ul>
+            </li>
+
+            <li>
+                <span>The danger signals installed at the top of tall buildings are red in colour. These can be easily
+                    seen from a distance because among all other colours, the red light:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Is scattered the most by smoke or fog</li>
+                    <li data-label="b">Is scattered the least by smoke or fog</li>
+                    <li data-label="c">Is absorbed the most by smoke or fog</li>
+                    <li data-label="d">Moves fastest in air</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>A student carries out an experiment and plots the V-I graph of three samples of nichrome wire with
+                    resistances <i>R</i><sub>1</sub>, <i>R</i><sub>2</sub> and <i>R</i><sub>3</sub> respectively. Which
+                    of the following is true?</span>
+
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1770376396/vi_graph_zo2tcs.png"
+                    alt="V-I Graph" class="question-image" style="max-width: 400px;">
+
+                <ul class="mcq-options">
+                    <li data-label="a"><i>R</i><sub>1</sub> = <i>R</i><sub>2</sub> = <i>R</i><sub>3</sub></li>
+                    <li data-label="b"><i>R</i><sub>1</sub> > <i>R</i><sub>2</sub> > <i>R</i><sub>3</sub></li>
+                    <li data-label="c"><i>R</i><sub>3</sub> > <i>R</i><sub>2</sub> > <i>R</i><sub>1</sub></li>
+                    <li data-label="d"><i>R</i><sub>2</sub> > <i>R</i><sub>3</sub> > <i>R</i><sub>1</sub></li>
+                </ul>
+            </li>
+
+            <li>
+                <span>The phenomena of electromagnetic induction is:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">The process of charging a body</li>
+                    <li data-label="b">The process of generating magnetic field due to a current</li>
+                    <li data-label="c">Producing induced current in a coil due to relative motion</li>
+                    <li data-label="d">The process of rotating a coil of an electric motor</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>When light enters from air to glass, the angle of incidence and angle of refraction in the glass
+                    are related as:</span>
+                <ul class="mcq-options">
+                    <li data-label="a"><i>i</i>
+                        < <i>r</i>
+                    </li>
+                    <li data-label="b"><i>i</i> > <i>r</i></li>
+                    <li data-label="c"><i>i</i> = <i>r</i></li>
+                    <li data-label="d">No relation</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>Commercial unit of electrical energy is kilowatt-hour (kWh). 1 kWh is equal to:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">3.6 &times; 10<sup>5</sup> J</li>
+                    <li data-label="b">3.6 &times; 10<sup>6</sup> J</li>
+                    <li data-label="c">36 &times; 10<sup>5</sup> J</li>
+                    <li data-label="d">3.6 &times; 10<sup>4</sup> J</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>An electric fuse works on the:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Chemical effect of current</li>
+                    <li data-label="b">Magnetic effect of current</li>
+                    <li data-label="c">Lighting effect of current</li>
+                    <li data-label="d">Heating effect of current</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>At noon the sun appears white as:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Light is least scattered</li>
+                    <li data-label="b">All the colours of the white light are scattered away</li>
+                    <li data-label="c">Blue colour is scattered the most</li>
+                    <li data-label="d">Red colour is scattered the most</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>For a steady current <i>I</i> flowing through a resistor of resistance <i>R</i> for time <i>t</i>,
+                    the heat produced <i>H</i> is given by:</span>
+                <ul class="mcq-options">
+                    <li data-label="a"><i>H</i> = <i>VIt</i></li>
+                    <li data-label="b"><i>H</i> = <i>I</i><sup>2</sup><i>Rt</i></li>
+                    <li data-label="c"><i>H</i> = <i>V</i><sup>2</sup><i>t</i>/<i>R</i></li>
+                    <li data-label="d">All of these</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>The laws of reflection hold good for:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Plane mirror only</li>
+                    <li data-label="b">Concave mirror only</li>
+                    <li data-label="c">Convex mirror only</li>
+                    <li data-label="d">All mirrors irrespective of their shape</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>Two resistors of resistance 2&Omega; and 4&Omega; when connected to a battery will have:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Same current flowing through them when connected in parallel</li>
+                    <li data-label="b">Same current flowing through them when connected in series</li>
+                    <li data-label="c">Same potential difference across them when connected in series</li>
+                    <li data-label="d">Different potential difference across them when connected in parallel</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>A full length image of a distant tall building can definitely be seen by using:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">A concave mirror</li>
+                    <li data-label="b">A convex mirror</li>
+                    <li data-label="c">A plane mirror</li>
+                    <li data-label="d">Both concave as well as plane mirror</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>The resistivity does not change if:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">The material is changed</li>
+                    <li data-label="b">The temperature is changed</li>
+                    <li data-label="c">The shape of the resistor is changed</li>
+                    <li data-label="d">Both material and temperature are changed</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>What is the minimum resistance which can be made using five resistors each of 1/5 &Omega;?</span>
+                <ul class="mcq-options">
+                    <li data-label="a">1/5 &Omega;</li>
+                    <li data-label="b">1/25 &Omega;</li>
+                    <li data-label="c">1/10 &Omega;</li>
+                    <li data-label="d">25 &Omega;</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>In the case of Hypermetropia, the image of a nearby object is formed:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">On the retina</li>
+                    <li data-label="b">In front of the retina</li>
+                    <li data-label="c">Behind the retina</li>
+                    <li data-label="d">At the blind spot</li>
+                </ul>
+            </li>
+
+            <li>
+                <span>The magnetic field lines outside a bar magnet:</span>
+                <ul class="mcq-options">
+                    <li data-label="a">Originate from the South pole and end at its North Pole</li>
+                    <li data-label="b">Originate from the North pole and end at its East Pole</li>
+                    <li data-label="c">Originate from the North Pole and end at its South Pole</li>
+                    <li data-label="d">Originate from the South pole and end at its West Pole</li>
+                </ul>
+            </li>
+        </ol>
+
+        <!-- SECTION B -->
+        <div class="section-header">
+            <h2>Section B (Very Short Answer Questions) - 2 Marks Each</h2>
+        </div>
+        <ol class="question-list" start="21">
+            <li><span>Define the term "Power of a lens". What is its SI unit? Find the power of a concave lens of focal
+                    length 2 m.</span></li>
+            <li><span>Why does the sky appear dark instead of blue to an astronaut?</span></li>
+            <li><span>State two factors on which the resistance of a cylindrical conductor depends.</span></li>
+            <li><span>Draw a diagram to show the magnetic field lines around a bar magnet.</span></li>
+            <li><span>An electric bulb is rated 220V and 100W. When it is operated on 110V, what will be the power
+                    consumed?</span></li>
+        </ol>
+
+        <!-- SECTION C -->
+        <div class="section-header">
+            <h2>Section C (Short Answer Questions) - 3 Marks Each</h2>
+        </div>
+        <ol class="question-list" start="26">
+            <li><span>An object 5 cm in length is held 25 cm away from a converging lens of focal length 10 cm. Draw the
+                    ray diagram and find the position, size and the nature of the image formed.</span></li>
+            <li><span>State Joule's law of heating. Name two devices that work on the heating effect of electric
+                    current.</span></li>
+            <li><span>Explain the formation of a rainbow in the sky with the help of a labeled diagram.</span></li>
+            <li><span>Two lamps, one rated 100 W at 220 V, and the other 60 W at 220 V, are connected in parallel to
+                    electric mains supply. What current is drawn from the line if the supply voltage is 220 V?</span>
+            </li>
+            <li><span>List the properties of magnetic field lines. Why don't two magnetic field lines intersect each
+                    other?</span></li>
+            <li>
+                <span>A person cannot see objects distinctly when placed at a distance less than 50 cm.</span>
+                <ol class="sub-sub-questions">
+                    <li>Identify the defect of vision.</li>
+                    <li>Give two reasons for this defect.</li>
+                    <li>Calculate the power and nature of the lens required to correct the vision, assuming the near
+                        point of the normal eye is 25 cm.</li>
+                </ol>
+            </li>
+        </ol>
+
+        <!-- SECTION D -->
+        <div class="section-header">
+            <h2>Section D (Long Answer Questions) - 5 Marks Each</h2>
+        </div>
+        <ol class="question-list" start="32">
+            <li>
+                <span>
+                    <b>(a)</b> Derive the expression for the equivalent resistance of three resistors
+                    <i>R</i><sub>1</sub>, <i>R</i><sub>2</sub>, and <i>R</i><sub>3</sub> connected in parallel.<br>
+                    <b>(b)</b> In the circuit diagram given below, suppose the resistors <i>R</i><sub>1</sub>,
+                    <i>R</i><sub>2</sub> and <i>R</i><sub>3</sub> have the values 5 &Omega;, 10 &Omega;, 30 &Omega;
+                    respectively, which have been connected to a battery of 12 V. Calculate:
+                    <ol class="sub-sub-questions">
+                        <li>The current through each resistor.</li>
+                        <li>The total current in the circuit.</li>
+                        <li>The total circuit resistance.</li>
+                    </ol>
+                </span>
+
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1770376396/circuit_diagram_obbhbu.png"
+                    alt="Circuit Diagram" class="question-image" style="max-width: 500px;">
+            </li>
+
+            <li>
+                <span>
+                    <b>(a)</b> State the laws of refraction of light.<br>
+                    <b>(b)</b> The refractive index of diamond is 2.42. What is the meaning of this statement?<br>
+                    <b>(c)</b> Draw a ray diagram to show the formation of the image by a concave mirror when an object
+                    is placed between the pole and the focus of the mirror. State the characteristics of the image.
+                </span>
+            </li>
+
+            <li>
+                <span>
+                    <b>(a)</b> What is a solenoid? Draw the pattern of magnetic field lines of a current-carrying
+                    solenoid.<br>
+                    <b>(b)</b> State Fleming's Left-Hand Rule.<br>
+                    <b>(c)</b> An electron enters a magnetic field at right angles to it, as shown in the figure. The
+                    direction of the force acting on the electron will be? (Upwards/Downwards/Into page/Out of page)
+                </span>
+
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1770376396/magnetic_field_j1spqs.png"
+                    alt="Magnetic Field Diagram" class="question-image" style="max-width: 400px;">
+            </li>
+
+            <li>
+                <span>
+                    <b>(a)</b> What is meant by the 'power of accommodation' of the eye?<br>
+                    <b>(b)</b> A person with a myopic eye cannot see objects beyond 1.2 m distinctly. What should be the
+                    type of the corrective lens used to restore proper vision?<br>
+                    <b>(c)</b> Draw ray diagrams showing: (i) The myopic eye, (ii) Correction for myopia with a lens.
+                </span>
+            </li>
+        </ol>
+
+        <!-- SECTION E -->
+        <div class="section-header">
+            <h2>Section E (Case Study Based Questions) - 4 Marks Each</h2>
+        </div>
+        <ol class="question-list" start="37">
+            <li>
+                <span>
+                    <b>Case Study 1: Mirrors in Automobiles</b><br>
+                    A rearview mirror is a flat or convex mirror in automobiles and other vehicles, designed to allow
+                    the driver to see rearward through the vehicle's rear window. Convex mirrors are preferred because
+                    they give an erect, though diminished, image. Also, they have a wider field of view as they are
+                    curved outwards.
+                </span>
+                <ol class="sub-questions">
+                    <li>Why do we prefer a convex mirror as a rear-view mirror in vehicles? [1]</li>
+                    <li>If the radius of curvature of a rear-view mirror is 3.00 m, find its focal length. [1]</li>
+                    <li>A bus is located at 5.00 m from this mirror. Find the position, nature and size of the image.
+                        [2]</li>
+                </ol>
+            </li>
+
+            <li>
+                <span>
+                    <b>Case Study 2: Domestic Electric Circuits</b><br>
+                    In our homes, we receive the supply of electric power through a main supply, either supported
+                    through overhead electric poles or by underground cables. One of the wires in this supply, usually
+                    with red insulation cover, is called the live wire. Another wire, with black insulation, is called
+                    the neutral wire. In our country, the potential difference between the two is 220 V.
+                </span>
+                <ol class="sub-questions">
+                    <li>What is the function of the earth wire (green insulation)? [1]</li>
+                    <li>Why are domestic circuits connected in parallel? [1]</li>
+                    <li>An electric oven of 2 kW power rating is operated in a domestic circuit (220 V) that has a
+                        current rating of 5 A. Explain what result you expect. [2]</li>
+                </ol>
+            </li>
+
+            <li>
+                <span>
+                    <b>Case Study 3: Dispersion of Light</b><br>
+                    A prism is a transparent refracting medium bounded by two plane surfaces inclined to each other at a
+                    certain angle. When a beam of white light is passed through a glass prism, it splits into its
+                    component seven colours. This phenomenon is called dispersion.
+                </span>
+
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1770376396/prism_dispersion_ebwgzt.png"
+                    alt="Prism Dispersion" class="question-image" style="max-width: 500px;">
+
+                <ol class="sub-questions">
+                    <li>Which colour of light bends the least? [1]</li>
+                    <li>Which colour of light bends the most? [1]</li>
+                    <li>Isaac Newton was the first to use a glass prism to obtain the spectrum of sunlight. Explain
+                        briefly (or draw) how he recombined the spectrum of white light. [2]</li>
+                </ol>
+            </li>
+        </ol>
+
+        <footer>
+            Powered by Vardaan Comet
+        </footer>
+    </div>
+</body>
+
+</html>
