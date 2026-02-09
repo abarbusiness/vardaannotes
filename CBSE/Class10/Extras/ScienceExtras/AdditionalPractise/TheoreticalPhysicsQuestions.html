@@ -65,14 +65,6 @@
             z-index: 1;
         }
 
-        /* EQUATION WRAPPING FIXES */
-        mjx-container {
-            white-space: normal !important;
-            overflow-wrap: break-word;
-            max-width: 100%;
-            display: inline-block;
-        }
-
         .watermark-container {
             pointer-events: none;
             position: fixed;
@@ -93,8 +85,6 @@
             width: 500px;
         }
 
-        html.dark-mode .watermark-container {}
-
         html.dark-mode .watermark-img {
             opacity: 0.15;
         }
@@ -104,21 +94,18 @@
             border-bottom: 2px solid black;
             padding-bottom: 15px;
             margin-bottom: 30px;
-            position: relative;
         }
 
         h1 {
             font-size: 28px;
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: bold;
         }
 
         h2 {
             font-size: 18px;
             margin: 5px 0;
-            font-weight: normal;
             font-style: italic;
         }
 
@@ -147,7 +134,6 @@
 
         .question {
             margin-bottom: 20px;
-            padding-left: 0;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -168,64 +154,6 @@
             margin-left: 10px;
         }
 
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: #f0f0f0;
-            border: none;
-            cursor: pointer;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #333;
-            color: white;
-        }
-
-        .toggle-icon {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            transition: all 0.5s;
-        }
-
-        html:not(.dark-mode) .icon-moon {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        html:not(.dark-mode) .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
-        }
-
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            border-top: 1px solid black;
-            padding-top: 10px;
-        }
-
         .answer-key-btn {
             display: block;
             margin: 40px auto 20px;
@@ -237,6 +165,24 @@
             font-size: 14px;
             cursor: pointer;
             border-radius: 4px;
+        }
+
+        @media print {
+            .watermark-container {
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+            }
+
+            .answer-key-btn {
+                display: none;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
         }
 
         @media screen and (max-width: 768px) {
@@ -258,70 +204,27 @@
                 right: 10px;
             }
 
+            .question-image,
+            img,
+            svg {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+
             h1 {
                 font-size: 22px;
             }
 
-            mjx-container {
-                font-size: 0.9em !important;
-            }
-        }
-
-        @media print {
-            body {
-                background: white;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+            .question {
+                flex-direction: column;
             }
 
-            html.dark-mode {
-                filter: none !important;
-            }
-
-            .theme-toggle,
-            .answer-key-btn {
-                display: none !important;
-            }
-
-            .paper-sheet {
+            .question-content {
                 width: 100%;
-                margin: 0;
-                padding: 0;
-                box-shadow: none;
-                border: none;
-                background: transparent !important;
-            }
-
-            .section-title {
-                background-color: #eee !important;
-                -webkit-print-color-adjust: exact;
             }
 
             .watermark-container {
-                position: fixed !important;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                z-index: -1 !important;
-                opacity: 0.1 !important;
-                display: flex !important;
-                width: 100% !important;
-                height: 100% !important;
-                pointer-events: none;
-            }
-
-            .watermark-img {
-                width: 500px;
-                transform: rotate(-30deg);
-            }
-
-            @page {
-                size: A4;
-                margin: 15mm 20mm;
-            }
-
-            .question {
-                page-break-inside: avoid;
+                display: none;
             }
         }
     </style>
@@ -334,57 +237,212 @@
             alt="Vardaan Watermark" class="watermark-img">
     </div>
 
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
-        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-            </path>
-        </svg>
-        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-        </svg>
-    </button>
-
     <div class="paper-sheet">
-
         <header>
             <h1>Vardaan Learning Institute</h1>
             <h2>Additional Practise: Theoretical Physics</h2>
             <div class="sub-header">
                 <span>Class: 10 (CBSE)</span>
                 <span>Subject: Science</span>
-                <span>Topic: Physics Concepts</span>
+                <span>Topic: Laws, Principles & Reasoning</span>
             </div>
         </header>
 
-        <!-- SECTION A: QUESTIONS -->
-        <div class="section-title">SECTION A: CONCEPTUAL QUESTIONS</div>
+        <div class="section-title">SECTION A: LIGHT - REFLECTION & REFRACTION</div>
 
         <div class="question">
             <div class="question-content">
-                1. Why does a compass needle get deflected when brought near a current-carrying conductor? Explain the
-                rule used to find the direction of the magnetic field associated with a current-carrying straight
-                conductor.
+                1. State the two Laws of Reflection of light.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                2. Write the four characteristics of an image formed by a plane mirror.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                3. Define the principal focus of a concave mirror. Why is the focus of a convex mirror considered
+                virtual?
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                4. State Snell's Law of refraction. Express it mathematically. Under what condition does a ray of light
+                pass through a medium without bending?
             </div>
             <span class="marks">[3]</span>
         </div>
 
-        <footer>
-            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
-        </footer>
+        <div class="question">
+            <div class="question-content">
+                5. Explain why a convex mirror is preferred as a rear-view mirror in vehicles.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                6. Differentiate between real and virtual images.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                7. Define the power of a lens. What is its SI unit? One student uses a lens of focal length +50 cm and
+                another of -50 cm. What is the nature of the lens and its power in each case?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                8. Why do we prefer a convex mirror as a shop security mirror?
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="section-title">SECTION B: THE HUMAN EYE & COLOURFUL WORLD</div>
+
+        <div class="question">
+            <div class="question-content">
+                9. Explain the formation of a Rainbow with the help of a labeled diagram. Name the three phenomena
+                involved in its formation.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                10. Why do stars twinkle but planets do not? Explain in detail.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                11. Why does the sun appear visible to us about 2 minutes before the actual sunrise and 2 minutes after
+                the actual sunset?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                12. What is atmospheric refraction? List two phenomena observed due to atmospheric refraction.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                13. Why is the colour of the clear sky blue?
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                14. What is the Tyndall effect? Give one example observed in daily life.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                15. Explain why the planets do not twinkle.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                16. Why are danger signal lights red in colour?
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                17. What is dispersion of white light? Name the component of white light that deviates the least and the
+                most while passing through a glass prism.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="section-title">SECTION C: ELECTRICITY & MAGNETISM (THEORETICAL)</div>
+
+        <div class="question">
+            <div class="question-content">
+                18. State Ohm's Law. Draw a circuit diagram to verify this law.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                19. List the factors on which the resistance of a conductor depends. How does the resistance change if
+                (i) Length is doubled, (ii) Area of cross-section is doubled?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                20. Why are coils of electric toasters and electric irons made of an alloy rather than a pure metal?
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                21. State Joule's Law of Heating.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                22. Why is the series arrangement not used for domestic circuits? Give three reasons.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                23. What is the function of an earth wire? Why is it necessary to earth metallic appliances?
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                24. Draw the pattern of magnetic field lines around a current-carrying straight conductor. Apply the
+                Right-Hand Thumb Rule to find the direction of magnetic field.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                25. List the properties of magnetic field lines. Why do two magnetic field lines never intersect each
+                other?
+            </div>
+            <span class="marks">[3]</span>
+        </div>
 
         <button class="answer-key-btn no-print" onclick="window.location.href='TheoreticalPhysicsAnswers.html'">See
             Detailed Solutions</button>
 
     </div>
 
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-        }
-    </script>
 </body>
 
 </html>

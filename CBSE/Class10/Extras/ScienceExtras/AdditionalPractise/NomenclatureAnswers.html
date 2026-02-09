@@ -30,6 +30,7 @@
             --bg-color-light: #ffffff;
             --text-color-light: #000000;
             --main-font: 'CMU Serif', 'Times New Roman', serif;
+            --accent-color: #333;
         }
 
         html {
@@ -51,7 +52,6 @@
             min-height: 100vh;
             color: var(--text-color-light);
             position: relative;
-            overflow-x: hidden;
         }
 
         .paper-sheet {
@@ -65,39 +65,27 @@
             z-index: 1;
         }
 
-        mjx-container {
-            white-space: normal !important;
-            overflow-wrap: break-word;
-            max-width: 100%;
-            display: inline-block;
-        }
-
-        .watermark-overlay {
+        .watermark-container {
+            pointer-events: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 999;
-            pointer-events: none;
-            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
         }
 
-        .watermark-image {
-            width: 600px;
-            height: 600px;
-            background-image: url('https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0.12;
+        .watermark-img {
+            opacity: 0.08;
             transform: rotate(-30deg);
+            width: 500px;
         }
 
-        html.dark-mode .watermark-image {
+        html.dark-mode .watermark-img {
             opacity: 0.15;
             filter: invert(1);
         }
@@ -107,33 +95,19 @@
             border-bottom: 2px solid black;
             padding-bottom: 15px;
             margin-bottom: 30px;
-            position: relative;
         }
 
         h1 {
             font-size: 28px;
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: bold;
         }
 
         h2 {
             font-size: 18px;
             margin: 5px 0;
-            font-weight: normal;
             font-style: italic;
-        }
-
-        .sub-header {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 14px;
-            border-top: 1px solid black;
-            border-bottom: 1px solid black;
-            padding: 5px 0;
         }
 
         .section-title {
@@ -148,32 +122,35 @@
             background-color: #f9f9f9;
         }
 
-        .question-block {
-            margin-bottom: 25px;
-            border-bottom: 1px dashed #ccc;
-            padding-bottom: 15px;
-            page-break-inside: avoid;
-        }
-
-        .q-text {
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #222;
-        }
-
-        .solution-step {
-            margin-left: 20px;
-            font-size: 1em;
+        .solution-item {
+            margin-bottom: 20px;
             line-height: 1.6;
-            color: #444;
+            text-align: justify;
         }
 
-        .final-ans {
-            margin-top: 5px;
+        .q-num {
             font-weight: bold;
-            color: #000;
+            margin-right: 5px;
+            font-size: 1.05em;
         }
 
+        .ans-label {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .explanation {
+            margin-top: 5px;
+            margin-left: 20px;
+            font-size: 0.95em;
+        }
+
+        .chem-struct {
+            display: block;
+            margin: 10px 0;
+        }
+
+        /* Dark Mode Toggle */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -197,39 +174,16 @@
             color: white;
         }
 
-        .toggle-icon {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            transition: all 0.5s;
-        }
+        @media print {
+            .theme-toggle {
+                display: none;
+            }
 
-        html:not(.dark-mode) .icon-moon {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        html:not(.dark-mode) .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
-        }
-
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            border-top: 1px solid black;
-            padding-top: 10px;
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
         }
 
         @media screen and (max-width: 768px) {
@@ -244,7 +198,6 @@
                 padding: 15px !important;
                 margin: 0 auto;
                 box-shadow: none;
-                border: none;
             }
 
             .theme-toggle {
@@ -252,85 +205,20 @@
                 right: 10px;
             }
 
-            .watermark-image {
-                width: 80vw;
-                height: 80vw;
-            }
-
-            .sub-header {
-                flex-direction: column;
-                align-items: center;
-                gap: 5px;
+            .question-image,
+            img,
+            svg,
+            .chem-struct svg {
+                max-width: 100% !important;
+                height: auto !important;
             }
 
             h1 {
                 font-size: 22px;
             }
 
-            .solution-step {
-                margin-left: 10px;
-                font-size: 0.95em;
-            }
-
-            mjx-container {
-                font-size: 0.9em !important;
-            }
-        }
-
-        @media print {
-            body {
-                background: white;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            html.dark-mode {
-                filter: none !important;
-            }
-
-            .theme-toggle {
-                display: none !important;
-            }
-
-            .paper-sheet {
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                box-shadow: none;
-                border: none;
-                background: transparent !important;
-            }
-
-            .section-title {
-                background-color: #eee !important;
-                -webkit-print-color-adjust: exact;
-            }
-
-            .watermark-overlay {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                z-index: -1 !important;
-                opacity: 1 !important;
-                display: flex !important;
-                justify-content: center !important;
-                align-items: center !important;
-            }
-
-            .watermark-image {
-                width: 500px !important;
-                opacity: 0.15 !important;
-            }
-
-            @page {
-                size: A4;
-                margin: 15mm 20mm;
-            }
-
-            .question-block {
-                page-break-inside: avoid;
+            .watermark-container {
+                display: none;
             }
         }
     </style>
@@ -338,62 +226,245 @@
 
 <body>
 
-    <div class="watermark-overlay">
-        <div class="watermark-image"></div>
+    <div class="watermark-container">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-img">
     </div>
 
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
-        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-            </path>
-        </svg>
-        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-        </svg>
-    </button>
+    <!-- Toggle omitted -->
 
     <div class="paper-sheet">
-
         <header>
             <h1>Vardaan Learning Institute</h1>
-            <h2>Detailed Solution Sheet: Nomenclature</h2>
-            <div class="sub-header">
-                <span>Class: 10 (CBSE)</span>
-                <span>Subject: Science</span>
-                <span>Type: Answer Key & Solutions</span>
-            </div>
+            <h2>Detailed Solutions: Nomenclature</h2>
         </header>
 
-        <!-- SECTION A -->
-        <div class="section-title">SECTION A: IUPAC NAMING</div>
+        <div class="section-title">SECTION A: IUPAC NAMING (COMPLEX STRUCTURES)</div>
 
-        <div class="question-block">
-            <div class="q-text">Q1. IUPAC Names</div>
-            <div class="solution-step">
-                (a) $\text{CH}_3\text{COOH}$: This is a carboxylic acid with 2 carbons. Name: <strong>Ethanoic
-                    acid</strong> (Common name: Acetic acid). <br>
-                (b) $\text{CH}_3\text{CH}_2\text{OH}$: This is an alcohol with 2 carbons. Name: <strong>Ethanol</strong>
-                (Common name: Ethyl alcohol). <br>
-                (c) $\text{HCHO}$: This is an aldehyde with 1 carbon. Name: <strong>Methanal</strong> (Common name:
-                Formaldehyde).
+        <div class="solution-item">
+            <span class="q-num">1.</span> <span class="ans-label">2,4-Dimethylpentane</span><br>
+            <div class="explanation">
+                Longest chain: 5 carbons (Pentane).<br>
+                Substituents: Methyl group at position 2 and 4.
             </div>
-            <div class="final-ans">Answer: (a) Ethanoic acid, (b) Ethanol, (c) Methanal</div>
         </div>
 
-        <footer>
-            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
-        </footer>
+        <div class="solution-item">
+            <span class="q-num">2.</span> <span class="ans-label">2,4-Dimethylpent-2-ene</span><br>
+            <div class="explanation">
+                Longest chain containing the double bond: 5 carbons.<br>
+                Double bond starts at C2. Methyl groups at C2 and C4.
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">3.</span> <span class="ans-label">4-Methylpent-2-yne</span><br>
+            <div class="explanation">
+                Longest chain containing triple bond: 5 carbons (Pentyne).<br>
+                Numbering from left gives triple bond lowest number (2). Methyl substituent at C4.
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">4.</span> <span class="ans-label">2-Bromo-3-chlorobutane</span><br>
+            <div class="explanation">
+                Longest chain: 4 carbons (Butane). Substituents: Bromo and Chloro.<br>
+                Alphabetical order: Bromo comes before Chloro. Numbering starts from right to give lowest locants set
+                (2,3).
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">5.</span> <span class="ans-label">Pentan-2-one</span><br>
+            <div class="explanation">5 Carbon chain ketone. Carbonyl group at position 2.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">6.</span> <span class="ans-label">Methylcyclopentane</span><br>
+            <div class="explanation">Cyclic ring of 5 carbons (Cyclopentane) with one methyl substituent.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">7.</span> <span class="ans-label">Ethane-1,2-diol</span><br>
+            <div class="explanation">Two carbon chain. Two -OH groups at positions 1 and 2. Suffix is 'diol'.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">8.</span> <span class="ans-label">But-2-enal</span><br>
+            <div class="explanation">4 Carbon chain with aldehyde group (C1). Double bond at C2. (Crotonaldehyde).</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">9.</span> <span class="ans-label">Phenol (or Benzenol)</span><br>
+            <div class="explanation">-OH group attached directly to Benzene ring.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">10.</span> <span class="ans-label">Methanoic Acid</span><br>
+            <div class="explanation">Single carbon carboxylic acid. Common name: Formic Acid.</div>
+        </div>
+
+        <div class="section-title">SECTION B: DRAW THE STRUCTURES</div>
+
+        <div class="solution-item">
+            <span class="q-num">11.</span> <span class="ans-label">2,2-Dimethylpropane (Neopentane)</span><br>
+            <div class="explanation">Central carbon bonded to 4 methyl groups.</div>
+            <div class="chem-struct">
+                <svg width="250" height="160" viewBox="0 0 250 160">
+                    <!-- Center C -->
+                    <text x="115" y="90" font-family="Arial" font-size="22">C</text>
+
+                    <!-- Top CH3 -->
+                    <text x="108" y="40" font-family="Arial" font-size="20">CH</text><text x="138" y="45"
+                        font-family="Arial" font-size="12">3</text>
+                    <line x1="123" y1="70" x2="123" y2="45" stroke="black" stroke-width="2" />
+
+                    <!-- Bottom CH3 -->
+                    <text x="108" y="140" font-family="Arial" font-size="20">CH</text><text x="138" y="145"
+                        font-family="Arial" font-size="12">3</text>
+                    <line x1="123" y1="95" x2="123" y2="120" stroke="black" stroke-width="2" />
+
+                    <!-- Left H3C -->
+                    <text x="50" y="90" font-family="Arial" font-size="20">H</text><text x="65" y="95"
+                        font-family="Arial" font-size="12">3</text><text x="75" y="90" font-family="Arial"
+                        font-size="20">C</text>
+                    <line x1="110" y1="83" x2="92" y2="83" stroke="black" stroke-width="2" />
+
+                    <!-- Right CH3 -->
+                    <text x="155" y="90" font-family="Arial" font-size="20">CH</text><text x="185" y="95"
+                        font-family="Arial" font-size="12">3</text>
+                    <line x1="133" y1="83" x2="152" y2="83" stroke="black" stroke-width="2" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">12.</span> <span class="ans-label">2-Methylbutan-2-ol</span><br>
+            <div class="explanation">Tertiary alcohol. Branch and OH on C2.</div>
+            <div class="chem-struct">$\text{CH}_3-\text{C}(\text{OH})(\text{CH}_3)-\text{CH}_2-\text{CH}_3$</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">13.</span> <span class="ans-label">Cyclohexanol</span><br>
+            <div class="explanation">Hexagonal ring with an -OH group attached.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">14.</span> <span class="ans-label">Ethyne Electron Dot ($\text{H:C:::C:H}$)</span><br>
+            <div class="explanation">Triple bond (3 pairs shared) between Carbons.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">15.</span> <span class="ans-label">2,3-Dichlorobutane</span><br>
+            <div class="chem-struct">$\text{CH}_3-\text{CH}(\text{Cl})-\text{CH}(\text{Cl})-\text{CH}_3$</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">16.</span> <span class="ans-label">3-Methylpentan-2-one</span><br>
+            <div class="explanation">Ketone at C2, Methyl at C3.</div>
+            <div class="chem-struct">$\text{CH}_3-\text{CO}-\text{CH}(\text{CH}_3)-\text{CH}_2-\text{CH}_3$</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">17.</span> <span class="ans-label">Butanoic Acid</span><br>
+            <div class="chem-struct">$\text{CH}_3\text{CH}_2\text{CH}_2\text{COOH}$</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">18.</span> <span class="ans-label">1,3-Butadiene</span><br>
+            <div class="chem-struct">$\text{CH}_2=\text{CH}-\text{CH}=\text{CH}_2$</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">19.</span> <span class="ans-label">CO2 Electron Dot</span><br>
+            <div class="explanation">O=C=O structure (double bonds). Carbon shares 2 pairs with each Oxygen.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">20.</span> <span class="ans-label">Toluene</span><br>
+            <div class="explanation">Benzene ring with a methyl ($\text{-CH}_3$) group.</div>
+        </div>
+
+        <div class="section-title">SECTION C: REASONING & REACTIONS</div>
+
+        <div class="solution-item">
+            <span class="q-num">21.</span> <span class="ans-label">Isomers of C4H8</span><br>
+            <div class="explanation">
+                1. <strong>But-1-ene</strong> (Alkene): $\text{CH}_2=\text{CH}-\text{CH}_2-\text{CH}_3$<br>
+                2. <strong>Cyclobutane</strong> (Cycloalkane): Square structure.
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">22.</span> <span class="ans-label">Catenation</span><br>
+            <div class="explanation">The unique ability of carbon atoms to form bonds with other atoms of carbon giving
+                rise to large molecules (chains, branches, rings) is called catenation. Carbon shows maximum catenation
+                due to its small size and strong C-C bond energy.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">23.</span> <span class="ans-label">Micelle & Cleaning Action</span><br>
+            <div class="explanation">
+                <strong>Micelle:</strong> An aggregate of soap molecules where the hydrophobic tails cluster in the
+                center (trapping oil) and hydrophilic heads face outward towards water.<br>
+                <strong>Action:</strong> Soap molecules form micelles around dirt/oil particles. The hydrophobic tail
+                dissolves in oil, hydrophilic head in water. Agitation lifts the oil drop from the surface into water,
+                forming an emulsion that washes away.
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">24.</span> <span class="ans-label">Saturated vs Unsaturated</span><br>
+            <div class="explanation">
+                <strong>Saturated:</strong> Single bonds only (Alkanes). E.g., Ethane.<br>
+                <strong>Unsaturated:</strong> Double or triple bonds present (Alkenes/Alkynes). E.g., Ethene. Burns with
+                sooty flame.
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">25.</span> <span class="ans-label">Reaction of Ethanol with Sodium</span><br>
+            <div class="explanation">
+                $2\text{Na} + 2\text{CH}_3\text{CH}_2\text{OH} \rightarrow 2\text{CH}_3\text{CH}_2\text{O}^-\text{Na}^+
+                + \text{H}_2$<br>
+                Product: <strong>Sodium Ethoxide</strong> and Hydrogen gas.
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">26.</span> <span class="ans-label">S8 Structure</span><br>
+            <div class="explanation">Crown shaped ring structure. 8 Sulphur atoms linked in a ring.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">27.</span> <span class="ans-label">Dehydration of Ethanol</span><br>
+            <div class="explanation">
+                $\text{CH}_3\text{CH}_2\text{OH} \xrightarrow{\text{Conc. H}_2\text{SO}_4, 443 K}
+                \text{CH}_2=\text{CH}_2 + \text{H}_2\text{O}$<br>
+                Product: Ethene. Sulphuric acid acts as a dehydrating agent.
+            </div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">28.</span> <span class="ans-label">Scum Formation</span><br>
+            <div class="explanation">Hard water contains Calcium and Magnesium salts. Soap reacts with these ions to
+                form insoluble precipitates called Scum (Calcium/Magnesium stearate), which hinders cleaning.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">29.</span> <span class="ans-label">Detergents vs Soaps</span><br>
+            <div class="explanation">Detergents are ammonium or sulphonate salts of long chain carboxylic acids. Their
+                charged ends do not form insoluble precipitates with Calcium and Magnesium ions in hard water, unlike
+                soaps. Hence they remain effective.</div>
+        </div>
+
+        <div class="solution-item">
+            <span class="q-num">30.</span> <span class="ans-label">Chlorobenzene</span><br>
+            <div class="explanation">Benzene ring with a Chlorine atom attached.</div>
+        </div>
 
     </div>
 
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-        }
-    </script>
 </body>
 
 </html>

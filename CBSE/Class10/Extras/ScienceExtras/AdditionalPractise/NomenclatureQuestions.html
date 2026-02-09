@@ -65,18 +65,9 @@
             z-index: 1;
         }
 
-        /* EQUATION WRAPPING FIXES */
-        mjx-container {
-            white-space: normal !important;
-            overflow-wrap: break-word;
-            max-width: 100%;
-            display: inline-block;
-        }
-
         .watermark-container {
             pointer-events: none;
             position: fixed;
-            /* Fixed on screen ensures it stays centered */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -94,12 +85,9 @@
             width: 500px;
         }
 
-        html.dark-mode .watermark-container {
-            /* Adjustments for dark mode visibility if needed */
-        }
-
         html.dark-mode .watermark-img {
             opacity: 0.15;
+            filter: invert(1);
         }
 
         header {
@@ -107,21 +95,18 @@
             border-bottom: 2px solid black;
             padding-bottom: 15px;
             margin-bottom: 30px;
-            position: relative;
         }
 
         h1 {
             font-size: 28px;
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: bold;
         }
 
         h2 {
             font-size: 18px;
             margin: 5px 0;
-            font-weight: normal;
             font-style: italic;
         }
 
@@ -150,7 +135,6 @@
 
         .question {
             margin-bottom: 20px;
-            padding-left: 0;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -164,69 +148,16 @@
             text-align: justify;
         }
 
+        .chem-struct {
+            display: block;
+            margin: 10px 0;
+        }
+
         .marks {
             font-weight: bold;
             font-size: 13px;
             white-space: nowrap;
             margin-left: 10px;
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: #f0f0f0;
-            border: none;
-            cursor: pointer;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #333;
-            color: white;
-        }
-
-        .toggle-icon {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        html:not(.dark-mode) .icon-moon {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        html:not(.dark-mode) .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
-        }
-
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            border-top: 1px solid black;
-            padding-top: 10px;
         }
 
         .answer-key-btn {
@@ -242,7 +173,24 @@
             border-radius: 4px;
         }
 
-        /* MOBILE OPTIMIZATION */
+        @media print {
+            .watermark-container {
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+            }
+
+            .answer-key-btn {
+                display: none;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+        }
+
         @media screen and (max-width: 768px) {
             body {
                 background-color: #ffffff;
@@ -262,71 +210,28 @@
                 right: 10px;
             }
 
+            .question-image,
+            img,
+            svg,
+            .chem-struct svg {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+
             h1 {
                 font-size: 22px;
             }
 
-            mjx-container {
-                font-size: 0.9em !important;
-            }
-        }
-
-        /* PRINT SETTINGS */
-        @media print {
-            body {
-                background: white;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+            .question {
+                flex-direction: column;
             }
 
-            html.dark-mode {
-                filter: none !important;
-            }
-
-            .theme-toggle,
-            .answer-key-btn {
-                display: none !important;
-            }
-
-            .paper-sheet {
+            .question-content {
                 width: 100%;
-                margin: 0;
-                padding: 0;
-                box-shadow: none;
-                border: none;
-                background: transparent !important;
-            }
-
-            .section-title {
-                background-color: #eee !important;
-                -webkit-print-color-adjust: exact;
             }
 
             .watermark-container {
-                position: fixed !important;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                z-index: -1 !important;
-                opacity: 0.1 !important;
-                display: flex !important;
-                width: 100% !important;
-                height: 100% !important;
-                pointer-events: none;
-            }
-
-            .watermark-img {
-                width: 500px;
-                transform: rotate(-30deg);
-            }
-
-            @page {
-                size: A4;
-                margin: 15mm 20mm;
-            }
-
-            .question {
-                page-break-inside: avoid;
+                display: none;
             }
         }
     </style>
@@ -339,58 +244,309 @@
             alt="Vardaan Watermark" class="watermark-img">
     </div>
 
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
-        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-            </path>
-        </svg>
-        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-        </svg>
-    </button>
-
     <div class="paper-sheet">
-
         <header>
             <h1>Vardaan Learning Institute</h1>
-            <h2>Additional Practise: Nomenclature</h2>
+            <h2>Additional Practise: Nomenclature of Carbon Compounds</h2>
             <div class="sub-header">
                 <span>Class: 10 (CBSE)</span>
                 <span>Subject: Science</span>
-                <span>Topic: Carbon Compounds (Chemistry)</span>
+                <span>Topic: Carbon & its Compounds (Advanced)</span>
             </div>
         </header>
 
-        <!-- SECTION A: QUESTIONS -->
-        <div class="section-title">SECTION A: IUPAC NAMING</div>
+        <div class="section-title">SECTION A: IUPAC NAMING (COMPLEX STRUCTURES)</div>
 
         <div class="question">
             <div class="question-content">
-                1. Write the IUPAC names for the following compounds: <br>
-                (a) $\text{CH}_3\text{COOH}$ <br>
-                (b) $\text{CH}_3\text{CH}_2\text{OH}$ <br>
-                (c) $\text{HCHO}$
+                1. Write the IUPAC name of the following branched compound:
+                <div class="chem-struct">
+                    <svg width="320" height="110" viewBox="0 0 320 110">
+                        <!-- Main Chain C-C-C-C-C -->
+                        <text x="10" y="45" font-family="Arial" font-size="20">CH</text><text x="40" y="50"
+                            font-family="Arial" font-size="12">3</text>
+                        <line x1="55" y1="40" x2="85" y2="40" stroke="black" stroke-width="2" />
+
+                        <text x="90" y="45" font-family="Arial" font-size="20">CH</text>
+                        <!-- Branch down -->
+                        <line x1="105" y1="50" x2="105" y2="70" stroke="black" stroke-width="2" />
+                        <text x="95" y="85" font-family="Arial" font-size="20">CH</text><text x="125" y="90"
+                            font-family="Arial" font-size="12">3</text>
+
+                        <line x1="125" y1="40" x2="155" y2="40" stroke="black" stroke-width="2" />
+                        <text x="160" y="45" font-family="Arial" font-size="20">CH</text><text x="190" y="50"
+                            font-family="Arial" font-size="12">2</text>
+                        <line x1="205" y1="40" x2="235" y2="40" stroke="black" stroke-width="2" />
+                        <text x="240" y="45" font-family="Arial" font-size="20">CH</text><text x="270" y="50"
+                            font-family="Arial" font-size="12">3</text>
+                    </svg>
+                </div>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                2. Name the compound having a double bond and a substituent:
+                <div class="chem-struct">
+                    <svg width="300" height="100" viewBox="0 -20 300 100">
+                        <text x="10" y="45" font-family="Arial" font-size="20">CH</text><text x="40" y="50"
+                            font-family="Arial" font-size="12">2</text>
+                        <!-- Double Bond -->
+                        <line x1="55" y1="35" x2="85" y2="35" stroke="black" stroke-width="2" />
+                        <line x1="55" y1="45" x2="85" y2="45" stroke="black" stroke-width="2" />
+
+                        <text x="90" y="45" font-family="Arial" font-size="20">C</text>
+                        <!-- Branch Up -->
+                        <line x1="97" y1="28" x2="97" y2="10" stroke="black" stroke-width="2" />
+                        <text x="85" y="5" font-family="Arial" font-size="20">CH</text><text x="115" y="10"
+                            font-family="Arial" font-size="12">3</text>
+
+                        <line x1="110" y1="40" x2="140" y2="40" stroke="black" stroke-width="2" />
+                        <text x="145" y="45" font-family="Arial" font-size="20">CH</text><text x="175" y="50"
+                            font-family="Arial" font-size="12">3</text>
+                    </svg>
+                </div>
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                3. Identify the IUPAC name for this structure containing a triple bond:
+                <div class="chem-struct">
+                    <svg width="300" height="80" viewBox="0 0 300 80">
+                        <text x="10" y="35" font-family="Arial" font-size="20">CH</text><text x="40" y="40"
+                            font-family="Arial" font-size="12">3</text>
+                        <line x1="55" y1="30" x2="85" y2="30" stroke="black" stroke-width="2" />
+                        <text x="90" y="35" font-family="Arial" font-size="20">C</text>
+                        <!-- Triple Bond -->
+                        <line x1="105" y1="25" x2="135" y2="25" stroke="black" stroke-width="2" />
+                        <line x1="105" y1="30" x2="135" y2="30" stroke="black" stroke-width="2" />
+                        <line x1="105" y1="35" x2="135" y2="35" stroke="black" stroke-width="2" />
+                        <text x="140" y="35" font-family="Arial" font-size="20">C</text>
+                        <line x1="155" y1="30" x2="185" y2="30" stroke="black" stroke-width="2" />
+                        <text x="190" y="35" font-family="Arial" font-size="20">CH</text><text x="220" y="40"
+                            font-family="Arial" font-size="12">3</text>
+                    </svg>
+                </div>
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                4. Name the following Halo-alkane with branching:
+                <div class="chem-struct">
+                    $\text{CH}_3-\text{CH}(\text{Cl})-\text{CH}(\text{Br})-\text{CH}_3$
+                </div>
+                (Hint: Alphabetical order of substituents)
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                5. Name the compound: $\text{CH}_3-\text{CO}-\text{CH}_2-\text{CH}_2-\text{CH}_3$
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                6. What is the name of this cyclic compound?
+                <div class="chem-struct">
+                    <svg width="150" height="150" viewBox="0 -30 150 150">
+                        <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="black" stroke-width="2" />
+                        <line x1="50" y1="10" x2="50" y2="-10" stroke="black" stroke-width="2" />
+                        <text x="35" y="-15" font-family="Arial" font-size="16">CH</text><text x="60" y="-10"
+                            font-family="Arial" font-size="10">3</text>
+                    </svg>
+                </div>
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                7. Name the compound with two similar functional groups:
+                $\text{HO-CH}_2-\text{CH}_2-\text{OH}$ (Commonly known as Ethylene Glycol).
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                8. Name the compound: $\text{CH}_3-\text{CH}=\text{CH}-\text{CHO}$
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                9. Identify the name: $\text{C}_6\text{H}_5-\text{OH}$ (Benzene ring with an OH group).
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                10. Name the compound: $\text{H}-\text{COOH}$
+            </div>
+            <span class="marks">[1]</span>
+        </div>
+
+        <div class="section-title">SECTION B: DRAW THE COMPLEX STRUCTURES</div>
+
+        <div class="question">
+            <div class="question-content">
+                11. Draw the structure of <strong>2,2-Dimethylpropane</strong> (Neopentane).
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                12. Draw the structure of <strong>2-Methylbutan-2-ol</strong>.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                13. Draw the structure of <strong>Cyclohexanol</strong>.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                14. Draw the electron dot structure of <strong>Ethyne</strong> ($\text{C}_2\text{H}_2$).
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                15. Draw the structure of <strong>2,3-Dichlorobutane</strong>.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                16. Draw the structure of <strong>3-Methylpentan-2-one</strong>.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                17. Draw the structural formula of <strong>Butanoic Acid</strong>.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                18. Draw the structure of <strong>1,3-Butadiene</strong> (Two double bonds).
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                19. Draw the electron dot structure of <strong>Carbon Dioxide</strong> ($\text{CO}_2$).
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                20. Draw the structure of <strong>Toluene</strong> (Methylbenzene).
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="section-title">SECTION C: FUNCTIONAL GROUPS, ISOMERISM & REASONING</div>
+
+        <div class="question">
+            <div class="question-content">
+                21. Draw two possible structural isomers for the formula $\text{C}_4\text{H}_8$. (Hint: One can be an
+                alkene and another a cyclic alkane).
             </div>
             <span class="marks">[3]</span>
         </div>
 
-        <footer>
-            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
-        </footer>
+        <div class="question">
+            <div class="question-content">
+                22. Define <strong>Catenation</strong>. Why does Carbon show maximum catenation?
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                23. What is a <strong>Micelle</strong>? Explain the cleansing action of soap with a labeled diagram.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                24. Differentiate between Saturated and Unsaturated Carbon Compounds with examples.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                25. Write the chemical equation for the Reaction of Ethanol with Sodium. Key product formed is?
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                26. Draw the electron dot structure of <strong>Cyclooctasulfur</strong> ($\text{S}_8$).
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                27. What happens when Ethanol is heated with excess concentrated Sulphuric Acid at 443 K? Write the
+                reaction.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                28. Explain the formation of Scum when soap is used with hard water.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                29. Why are detergents better than soaps for laundry in hard water?
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                30. Draw the structure of <strong>Chlorobenzene</strong>.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
 
         <button class="answer-key-btn no-print" onclick="window.location.href='NomenclatureAnswers.html'">See Detailed
             Solutions</button>
 
     </div>
 
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-        }
-    </script>
 </body>
 
 </html>
