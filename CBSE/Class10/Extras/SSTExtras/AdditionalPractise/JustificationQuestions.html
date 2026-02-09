@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SST: VVI Justification Questions - Vardaan Learning Institute</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: var(--bg-color-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            padding: 20mm;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        .watermark-container {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .watermark-img {
+            opacity: 0.08;
+            transform: rotate(-30deg);
+            width: 500px;
+        }
+
+        html.dark-mode .watermark-img {
+            opacity: 0.15;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            page-break-inside: avoid;
+        }
+
+        .question-content {
+            width: 92%;
+            font-size: 1.05em;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .marks {
+            font-weight: bold;
+            font-size: 13px;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        .answer-key-btn {
+            display: block;
+            margin: 40px auto 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            font-family: var(--main-font);
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        @media print {
+            .watermark-container {
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+            }
+
+            .answer-key-btn,
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-shadow: none;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .question {
+                flex-direction: column;
+            }
+
+            .question-content {
+                width: 100%;
+            }
+
+            .watermark-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="watermark-container">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-img">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Additional Practise: Justification & Reasoning</h2>
+            <div class="sub-header">
+                <span>Class: 10 (CBSE)</span>
+                <span>Subject: Social Science</span>
+                <span>Format: VVI Reasoning</span>
+            </div>
+        </header>
+
+        <div class="section-title">HISTORY & POLITICAL SCIENCE</div>
+
+        <!-- HISTORY: Nationalism in Europe -->
+        <div class="question">
+            <div class="question-content">
+                1. "Culture, including language, music, and folk traditions, played an important role in creating the
+                idea of the nation in Europe." Justify the statement with examples.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                2. "The first half of the nineteenth century saw an enormous increase in population all over Europe."
+                Justify the economic hardships faced by Europe during the 1830s.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                3. "The Balkan area became an area of intense conflict." Justify this statement in the context of the
+                disintegration of the Ottoman Empire.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <!-- HISTORY: Nationalism in India -->
+        <div class="question">
+            <div class="question-content">
+                4. "The Non-Cooperation movement in the cities gradually slowed down." Justify with valid reasons.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                5. "Gandhiji decided to launch a nationwide Satyagraha against the proposed Rowlatt Act (1919)." Justify
+                his decision explaining the oppressive nature of the Act.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                6. "Business classes exerted pressure on the Colonial Government." Justify their involvement in the
+                Civil Disobedience Movement.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- HISTORY: Print Culture -->
+        <div class="question">
+            <div class="question-content">
+                7. "Print culture created the conditions within which French Revolution occurred." Justify the statement
+                with suitable arguments.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                8. "Print did not only stimulate the publication of conflicting opinions amongst communities, but it
+                also connected communities and people in different parts of India." Justify.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- HISTORY: Industrialization (If in syllabus) - Focusing on core chaps for now -->
+
+        <!-- POL SCIENCE: Power Sharing -->
+        <div class="question">
+            <div class="question-content">
+                9. "Power sharing is the very spirit of democracy." Justify this statement with moral reasons.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                10. "The prudent accommodation of diversity has helped Belgium to avoid civil strife." Justify.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- POL SCIENCE: Federalism -->
+        <div class="question">
+            <div class="question-content">
+                11. "Federalism has succeeded in India not merely because of the clearly laid out constitutional
+                provisions." Justify the role of political nature in its success.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                12. "A major step towards decentralization was taken in 1992." Justify the statement with the changes
+                brought by the Constitutional Amendment.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- POL SCIENCE: Gender, Religion & Caste -->
+        <div class="question">
+            <div class="question-content">
+                13. "Women in India still face discrimination and oppression in various ways." Justify with examples.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                14. "Caste has not disappeared from contemporary India." Justify the statement with prevailing
+                practices.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- POL SCIENCE: Political Parties -->
+        <div class="question">
+            <div class="question-content">
+                15. "Political parties are a necessary condition for a democracy." Justify.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                16. "Democracy is seen to be good in principle, but felt to be not so good in its practice." Justify the
+                statement in the context of political outcomes.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+
+        <div class="section-title">GEOGRAPHY & ECONOMICS</div>
+
+        <!-- GEOGRAPHY: Resources -->
+        <div class="question">
+            <div class="question-content">
+                17. "Indiscriminate use of resources has led to numerous global ecological crises." Justify the
+                statement.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                18. "Planning of resources is essential for the sustainable existence of all forms of life." Justify.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- GEOGRAPHY: Agriculture -->
+        <div class="question">
+            <div class="question-content">
+                19. "Agriculture and industry are not exclusive of each other." Justify this statement with suitable
+                arguments.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                20. "Pulses are grown in rotation with other crops." Justify the importance of pulses for soil
+                fertility.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <!-- GEOGRAPHY: Lifelines of National Economy -->
+        <div class="question">
+            <div class="question-content">
+                21. "Roadways have an edge over railways in India." Justify the statement with five reasons.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                22. "Tourism in India has grown substantially over the last three decades." Justify the economic
+                importance of tourism.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- ECONOMICS: Development -->
+        <div class="question">
+            <div class="question-content">
+                23. "The Earth has enough resources to meet the needs of all but not enough to satisfy the greed of even
+                one person." Justify the statement in the context of sustainable development.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                24. "Consequences of environmental degradation do not respect national or state boundaries." Justify.
+            </div>
+            <span class="marks">[2]</span>
+        </div>
+
+        <!-- ECONOMICS: Sectors -->
+        <div class="question">
+            <div class="question-content">
+                25. "The tertiary sector is becoming the most important sector in India." Justify the statement giving
+                four reasons.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                26. "Disguised unemployment is a common feature in the agricultural sector." Justify with an example.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- ECONOMICS: Money & Credit -->
+        <div class="question">
+            <div class="question-content">
+                27. "The Reserve Bank of India plays a crucial role in controlling the formal sector loans." Justify.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                28. "Self-Help Groups (SHGs) are the building blocks of the organization of the rural poor." Justify.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <!-- ECONOMICS: Globalization -->
+        <div class="question">
+            <div class="question-content">
+                29. "Globalization has been advantageous to consumers as well as producers." Justify the statement.
+            </div>
+            <span class="marks">[5]</span>
+        </div>
+
+        <div class="question">
+            <div class="question-content">
+                30. "Information and communication technology has played a major role in spreading out production of
+                services across countries." Justify.
+            </div>
+            <span class="marks">[3]</span>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+        <button class="answer-key-btn" title="View Answers"
+            onclick="window.location.href='JustificationQuestionsSolution.html'">See Detailed Solutions</button>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SST: VVI Justification Solutions - Vardaan Learning Institute</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --main-font: 'CMU Serif', 'Times New Roman', serif;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        body {
+            font-family: var(--main-font);
+            background-color: var(--bg-color-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            padding: 20mm;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        .watermark-container {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .watermark-img {
+            opacity: 0.08;
+            transform: rotate(-30deg);
+            width: 500px;
+        }
+
+        html.dark-mode .watermark-img {
+            opacity: 0.15;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .sol-block {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .q-ref {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .solution-content {
+            margin-left: 20px;
+            font-size: 1em;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #333;
+            color: white;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        html:not(.dark-mode) .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html:not(.dark-mode) .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        @media print {
+            .watermark-container {
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                background-color: #ffffff;
+                display: block;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 0 auto;
+                box-shadow: none;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .watermark-container {
+                display: none;
+            }
+
+            .solution-content {
+                margin-left: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="watermark-container">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-img">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+        <svg class="toggle-icon icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg class="toggle-icon icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <header>
+            <h1>Vardaan Learning Institute</h1>
+            <h2>Detailed Solution Key: Justification Questions</h2>
+            <div class="sub-header">
+                <span>Class: 10 (CBSE)</span>
+                <span>Subject: Social Science</span>
+                <span>Format: VVI Detailed Solutions</span>
+            </div>
+        </header>
+
+        <div class="section-title">HISTORY & POLITICAL SCIENCE</div>
+
+        <!-- 1. Culture  -->
+        <div class="sol-block">
+            <span class="q-ref">1. Role of Culture in European Nationalism</span>
+            <div class="solution-content">
+                Culture played a vital role in creating the idea of the nation in Europe in several ways:
+                <br><strong>(i) Romanticism:</strong> This was a cultural movement which sought to develop a particular
+                form of nationalist sentiment. Romantic artists and poets generally criticized the glorification of
+                reason and science and focused instead on emotions, intuition, and mystical feelings. Their effort was
+                to create a sense of a shared collective heritage, a common cultural past, as the basis of a nation.
+                <br><strong>(ii) Folk Culture (Das Volk):</strong> German philosopher Johann Gottfried Herder claimed
+                that true German culture was to be discovered among the common people &mdash; <em>das volk</em>. It was
+                through folk songs, folk poetry, and folk dances that the true spirit of the nation
+                (<em>volksgeist</em>) was popularized. So collecting and recording these forms of folk culture was
+                essential to the project of nation-building.
+                <br><strong>(iii) Language as a Weapon:</strong> Language played an important role in developing
+                nationalist sentiments. For example, in Poland, language was used as a weapon of national resistance
+                against Russian dominance. The use of Polish came to be seen as a symbol of the struggle against Russian
+                rule.
+            </div>
+        </div>
+
+        <!-- 2. Hardship 1830s -->
+        <div class="sol-block">
+            <span class="q-ref">2. Economic Hardships in Europe (1830s)</span>
+            <div class="solution-content">
+                The 1830s were years of great economic hardship in Europe. The justification lies in the following
+                factors:
+                <br><strong>(i) Population Explosion:</strong> The first half of the nineteenth century saw an enormous
+                increase in population all over Europe. In most countries, there were more seekers of jobs than
+                employment.
+                <br><strong>(ii) Rural to Urban Migration:</strong> Population from rural areas migrated to the cities
+                to live in overcrowded slums, leading to poor living conditions.
+                <br><strong>(iii) Stiff Competition:</strong> Small producers in towns were often faced with stiff
+                competition from imports of cheap machine-made goods from England, where industrialization was more
+                advanced.
+                <br><strong>(iv) Feudal Dues:</strong> In those regions of Europe where the aristocracy still enjoyed
+                power, peasants struggled under the burden of feudal dues and obligations.
+                <br><strong>(v) Rise in Food Prices:</strong> The rise of food prices or a year of bad harvest (like the
+                potato famine) led to widespread pauperism in town and country.
+            </div>
+        </div>
+
+        <!-- 3. Balkan Conflict -->
+        <div class="sol-block">
+            <span class="q-ref">3. Conflict in the Balkans</span>
+            <div class="solution-content">
+                The Balkans became an area of intense conflict because:
+                <br><strong>(i) Ethnic Diversity:</strong> A region of geographical and ethnic variation comprising
+                modern-day Romania, Bulgaria, Albania, Greece, Macedonia, Croatia, Bosnia-Herzegovina, Slovenia, Serbia,
+                and Montenegro whose inhabitants were broadly known as the Slavs.
+                <br><strong>(ii) Ottoman Disintegration:</strong> A large part of the Balkans was under the control of
+                the Ottoman Empire. The spread of the ideas of romantic nationalism in the Balkans together with the
+                disintegration of the Ottoman Empire made this region very explosive.
+                <br><strong>(iii) Struggles for Independence:</strong> One by one, its European subject nationalities
+                broke away from its control and declared independence. The Balkan peoples based their claims for
+                independence or political rights on nationality and used history to prove that they had once been
+                independent but had subsequently been subjugated by foreign powers.
+                <br><strong>(iv) Big Power Rivalry:</strong> The Balkans also became the scene of big power rivalry.
+                Matters were complicated because the Balkans also became the scene of big power rivalry. Russia,
+                Germany, England, Austro-Hungary—each power was keen on countering the hold of other powers over the
+                Balkans, and extending its own control over the area. This led to a series of wars in the region and
+                finally the First World War.
+            </div>
+        </div>
+
+        <!-- 4. NCM Slowdown -->
+        <div class="sol-block">
+            <span class="q-ref">4. Slowdown of Non-Cooperation Movement in Cities</span>
+            <div class="solution-content">
+                The movement in the cities gradually slowed down for a variety of reasons:
+                <br><strong>(i) Expensive Khadi:</strong> Khadi cloth was often more expensive than mass-produced mill
+                cloth and poor people could not afford to buy it. They could not boycott mill cloth for too long.
+                <br><strong>(ii) Lack of Alternative Institutions:</strong> Similarly, the boycott of British
+                institutions posed a problem. For the movement to be successful, alternative Indian institutions had to
+                be set up so that they could be used in place of the British ones. These were slow to come up.
+                <br><strong>(iii) Return to Status Quo:</strong> So students and teachers began trickling back to
+                government schools and lawyers joined back work in government courts. They had to return to their jobs
+                for livelihood.
+            </div>
+        </div>
+
+        <!-- 5. Rowlatt Satyagraha -->
+        <div class="sol-block">
+            <span class="q-ref">5. Launch of Rowlatt Satyagraha</span>
+            <div class="solution-content">
+                Gandhiji decided to launch a nationwide Satyagraha against the proposed Rowlatt Act (1919) because:
+                <br><strong>(i) Hurried Passing:</strong> This Act had been hurriedly passed through the Imperial
+                Legislative Council despite the united opposition of the Indian members.
+                <br><strong>(ii) Repressive Powers:</strong> It gave the government enormous powers to repress political
+                activities.
+                <br><strong>(iii) Detention without Trial:</strong> It allowed detention of political prisoners without
+                trial for two years. This was seen as a "Black Act" that denied civil liberties and fundamental rights.
+            </div>
+        </div>
+
+        <!-- 6. Business Class CDM -->
+        <div class="sol-block">
+            <span class="q-ref">6. Business Class in Civil Disobedience Movement</span>
+            <div class="solution-content">
+                <strong>(i) Reaction to Colonial Policies:</strong> During the First World War, Indian merchants and
+                industrialists had made huge profits and become powerful. They reacted against colonial policies that
+                restricted business activities.
+                <br><strong>(ii) Demand for Protection:</strong> They wanted protection against imports of foreign
+                goods, and a rupee-sterling foreign exchange ratio that would discourage imports.
+                <br><strong>(iii) Organization:</strong> To organize business interests, they formed the Indian
+                Industrial and Commercial Congress in 1920 and the Federation of the Indian Chamber of Commerce and
+                Industries (FICCI) in 1927.
+                <br><strong>(iv) Financial Support:</strong> Led by prominent industrialists like Purshottamdas
+                Thakurdas and G. D. Birla, the industrialists attacked colonial control over the Indian economy, and
+                supported the Civil Disobedience Movement when it was first launched. They gave financial assistance and
+                refused to buy or sell imported goods.
+            </div>
+        </div>
+
+        <!-- 7. Print and French Revolution -->
+        <div class="sol-block">
+            <span class="q-ref">7. Print Culture and the French Revolution</span>
+            <div class="solution-content">
+                Many historians argue that print culture created the conditions within which the French Revolution
+                occurred. Three types of arguments are usually advanced:
+                <br><strong>(i) Popularized Enlightenment Ideas:</strong> Print popularized the ideas of the
+                Enlightenment thinkers like Voltaire and Rousseau. Collectively, their writings provided a critical
+                commentary on tradition, superstition, and despotism. They argued for the rule of reason rather than
+                custom, and demanded that everything be judged through the application of reason and rationality.
+                <br><strong>(ii) Culture of Dialogue:</strong> Print created a new culture of dialogue and debate. All
+                values, norms, and institutions were re-evaluated and discussed by a public that had become aware of the
+                power of reason, and recognized the need to question existing ideas and beliefs.
+                <br><strong>(iii) Criticism of Monarchy:</strong> By the 1780s there was an outpouring of literature
+                that mocked the royalty and criticized their morality. In the process, it raised questions about the
+                existing social order. Cartoons and caricatures typically suggested that the monarchy remained absorbed
+                in sensual pleasures while the common people suffered immense hardships.
+            </div>
+        </div>
+
+        <!-- 8. Print Connecting Communities -->
+        <div class="sol-block">
+            <span class="q-ref">8. Print Connecting Communities in India</span>
+            <div class="solution-content">
+                <strong>(i) Debates:</strong> From the early nineteenth century, there were intense debates around
+                religious issues. Different groups confronted the changes happening within colonial society in different
+                ways, and offered a variety of new interpretations of the beliefs of different religions.
+                <br><strong>(ii) Public Participation:</strong> Some criticized existing practices and campaigned for
+                reform, while others countered the arguments of reformers. These debates were carried out in public and
+                in print. Printed tracts and newspapers not only spread the new ideas, but they shaped the nature of the
+                debate.
+                <br><strong>(iii) Pan-Indian Identity:</strong> A wider public could now participate in these public
+                discussions and express their views. New ideas emerged through these clashes of opinions. This allowed
+                people from different parts of India to connect with each other, realizing their shared grievances and
+                shared national identity.
+            </div>
+        </div>
+
+        <!-- 9. Spirit of Democracy -->
+        <div class="sol-block">
+            <span class="q-ref">9. Power Sharing is the Spirit of Democracy</span>
+            <div class="solution-content">
+                <strong>Moral Reason:</strong> Power sharing is the very spirit of democracy. A democratic rule involves
+                sharing power with those affected by its exercise, and who have to live with its effects. People have a
+                right to be consulted on how they are to be governed. A legitimate government is one where citizens,
+                through participation, acquire a stake in the system. Ignoring the views of minority groups can
+                undermine the integrity of the nation.
+            </div>
+        </div>
+
+        <!-- 10. Belgium Accommodation -->
+        <div class="sol-block">
+            <span class="q-ref">10. Belgian Model of Accommodation</span>
+            <div class="solution-content">
+                The Belgian leaders took a different path by recognizing the existence of regional differences and
+                cultural diversities:
+                <br><strong>(i) Constitution Amendment:</strong> Between 1970 and 1993, they amended their constitution
+                four times so as to work out an arrangement that would enable everyone to live together within the same
+                country.
+                <br><strong>(ii) Parity in Central Govt:</strong> Constitution prescribes that the number of Dutch and
+                French-speaking ministers shall be equal in the central government. Some special laws require the
+                support of majority of members from each linguistic group.
+                <br><strong>(iii) Community Government:</strong> Apart from the central and the state government, there
+                is a third kind of government &mdash; 'community government' elected by people belonging to one language
+                community – Dutch, French and German-speaking – no matter where they live. This government has the power
+                regarding cultural, educational and language-related issues.
+            </div>
+        </div>
+
+        <!-- 11. Federalism Success -->
+        <div class="sol-block">
+            <span class="q-ref">11. Success of Federalism in India</span>
+            <div class="solution-content">
+                The real success of federalism in India can be attributed to the nature of democratic politics in our
+                country.
+                <br><strong>(i) Linguistic States:</strong> The creation of linguistic states was the first and a major
+                test for democratic politics in our country. It ensured that people who spoke the same language lived in
+                the same state.
+                <br><strong>(ii) Language Policy:</strong> A second test for Indian federation is the language policy.
+                Our Constitution did not give the status of national language to any one language. Hindi was identified
+                as the official language. Besides Hindi, there are 21 other languages recognized as Scheduled Languages
+                by the Constitution.
+                <br><strong>(iii) Centre-State Relations:</strong> Restructuring the Centre-State relations is one more
+                way in which federalism has been strengthened in practice. The rise of regional political parties and
+                coalition governments has led to a new culture of power sharing.
+            </div>
+        </div>
+
+        <!-- 12. Decentralization 1992 -->
+        <div class="sol-block">
+            <span class="q-ref">12. Decentralization Amendment (1992)</span>
+            <div class="solution-content">
+                A major step towards decentralization was taken in 1992. The Constitution was amended to make the
+                third-tier of democracy more powerful and effective.
+                <br><strong>(i) Regular Elections:</strong> It is constitutionally mandatory to hold regular elections
+                to local government bodies.
+                <br><strong>(ii) Reservation:</strong> Seats are reserved in the elected bodies and the executive heads
+                of these institutions for the Scheduled Castes, Scheduled Tribes and Other Backward Classes. At least
+                one-third of all positions are reserved for women.
+                <br><strong>(iii) State Election Commission:</strong> An independent institution called the State
+                Election Commission has been created in each State to conduct panchayat and municipal elections.
+                <br><strong>(iv) Power Sharing:</strong> The State governments are required to share some powers and
+                revenue with local government bodies.
+            </div>
+        </div>
+
+        <!-- 13. Women Discrimination -->
+        <div class="sol-block">
+            <span class="q-ref">13. Discrimination Against Women</span>
+            <div class="solution-content">
+                Women in India face discrimination in various ways:
+                <br><strong>(i) Literacy Rate:</strong> The literacy rate among women is only 54 per cent compared with
+                76 per cent among men.
+                <br><strong>(ii) Unpaid Work:</strong> On an average an Indian woman works one hour more than an average
+                man every day. Yet much of her work is not paid and therefore often not valued.
+                <br><strong>(iii) Sex Ratio:</strong> In many parts of India parents prefer to have sons and find ways
+                to have the girl child aborted before she is born. This has led to a decline in child sex ratio.
+                <br><strong>(iv) Representation:</strong> The percentage of elected women members in Lok Sabha has
+                touched 14.36 per cent of its total strength for the first time in 2019. Their share in the state
+                assemblies is less than 5 per cent.
+            </div>
+        </div>
+
+        <!-- 14. Caste in India -->
+        <div class="sol-block">
+            <span class="q-ref">14. Persistence of Caste</span>
+            <div class="solution-content">
+                Caste has not disappeared from contemporary India:
+                <br><strong>(i) Marriage:</strong> Even now most people marry within their own caste or tribe.
+                <br><strong>(ii) Untouchability:</strong> Untouchability has not ended completely, despite
+                constitutional prohibition.
+                <br><strong>(iii) Economic Link:</strong> Effects of centuries of advantages and disadvantages continue
+                to be felt today. The caste groups that had access to education under the old system have done well in
+                acquiring modern education as well. Those groups that did not have access to education or were
+                prohibited from acquiring it have naturally lagged behind.
+            </div>
+        </div>
+
+        <!-- 15. Political Parties Necessity -->
+        <div class="sol-block">
+            <span class="q-ref">15. Necessity of Political Parties</span>
+            <div class="solution-content">
+                Political parties are necessary because:
+                <br><strong>(i) Representative Democracy:</strong> As societies become large and complex, they also need
+                some agency to gather different views on various issues and to present these to the government.
+                <br><strong>(ii) Policy Making:</strong> Parties bring various representatives together so that a
+                responsible government could be formed. They provide a mechanism to support or restrain the government,
+                make policies, justify or oppose them.
+                <br><strong>(iii) Accountability:</strong> Without parties, every candidate in the elections will be
+                independent. No one will be able to make any promises to the people about any major policy changes. The
+                government may be formed, but its utility will remain ever uncertain. Elected representatives will be
+                accountable to their constituency for what they do in the locality. But no one will be responsible for
+                how the country will be run.
+            </div>
+        </div>
+
+        <!-- 16. Democracy Outcomes -->
+        <div class="sol-block">
+            <span class="q-ref">16. Democracy: Principles vs Practice</span>
+            <div class="solution-content">
+                Democracy is seen to be good in principle but involves challenges in practice:
+                <br><strong>(i) Moral Good:</strong> It promotes equality among citizens, enhances the dignity of the
+                individual, improves the quality of decision-making, and provides a method to resolve conflicts.
+                <br><strong>(ii) Accountability vs Efficiency:</strong> Democratic governments are accountable,
+                responsive, and legitimate. However, they may be slow, less efficient, not always very responsive or
+                clean compared to dictatorships in terms of quick decision making (which ignores public opinion).
+                <br><strong>(iii) Economic Growth:</strong> Rates of economic growth in poor countries under
+                dictatorship have been slightly higher. However, democracy guarantees political and social rights which
+                dictatorships do not.
+                <br><strong>(iv) Conclusion:</strong> The difference in the rates of economic development between less
+                developed countries with dictatorships and democracies is negligible. Overall, we cannot say that
+                democracy overlaps with economic growth, but it is better than any other form of government because of
+                its non-economic benefits.
+            </div>
+        </div>
+
+        <div class="section-title">GEOGRAPHY & ECONOMICS</div>
+
+        <!-- 17. Resource Crisis -->
+        <div class="sol-block">
+            <span class="q-ref">17. Indiscriminate Use of Resources</span>
+            <div class="solution-content">
+                Indiscriminate use of resources has led to:
+                <br><strong>(i) Depletion:</strong> Depletion of resources for satisfying the greed of a few
+                individuals.
+                <br><strong>(ii) Accumulation of Wealth:</strong> Accumulation of resources in few hands, which, in
+                turn, divided the society into two segments i.e. haves and have nots or rich and poor.
+                <br><strong>(iii) Global Crisis:</strong> Indiscriminate exploitation of resources has led to global
+                ecological crises such as global warming, ozone layer depletion, environmental pollution and land
+                degradation.
+            </div>
+        </div>
+
+        <!-- 18. Resource Planning -->
+        <div class="sol-block">
+            <span class="q-ref">18. Need for Resource Planning</span>
+            <div class="solution-content">
+                Planning is important because:
+                <br><strong>(i) Finite Resources:</strong> Most resources are exhaustible.
+                <br><strong>(ii) Uneven Distribution:</strong> There are regions which are rich in certain types of
+                resources but are deficient in some other vital resources. For example, the states of Jharkhand,
+                Chhattisgarh and Madhya Pradesh are rich in minerals and coal deposits. Arunachal Pradesh has abundance
+                of water resources but lacks in infrastructural development.
+                <br><strong>(iii) Conservation:</strong> To ensure the availability of resources for future generations
+                (Sustainable Development).
+            </div>
+        </div>
+
+        <!-- 19. Agriculture and Industry -->
+        <div class="sol-block">
+            <span class="q-ref">19. Interdependence of Agriculture and Industry</span>
+            <div class="solution-content">
+                Agriculture and industry move hand in hand:
+                <br><strong>(i) Raw Materials:</strong> Agriculture provides raw materials to agro-based industries such
+                as cotton, jute, sugar, etc.
+                <br><strong>(ii) Industrial Products:</strong> The industries provide many agricultural inputs like
+                irrigation pumps, fertilizers, insecticides, pesticides, plastic and PVC pipes, machines and tools, etc.
+                to the farmers.
+                <br><strong>(iii) Productivity:</strong> Thus, development and competitiveness of manufacturing industry
+                has not only assisted agriculturists in increasing their production but also made the production
+                processes very efficient.
+            </div>
+        </div>
+
+        <!-- 20. Pulses -->
+        <div class="sol-block">
+            <span class="q-ref">20. Pulses and Soil Fertility</span>
+            <div class="solution-content">
+                <strong>(i) Leguminous Crops:</strong> Pulses are leguminous crops.
+                <br><strong>(ii) Nitrogen Fixation:</strong> All these crops (except arhar) help in restoring soil
+                fertility by fixing nitrogen from the air. Therefore, these are mostly grown in rotation with other
+                crops to maintain the nutrient level of the soil naturally.
+            </div>
+        </div>
+
+        <!-- 21. Roadways vs Railways -->
+        <div class="sol-block">
+            <span class="q-ref">21. Edge of Roadways over Railways</span>
+            <div class="solution-content">
+                Roadways have an edge because:
+                <br><strong>(i) Construction Cost:</strong> Construction cost of roads is much lower than that of
+                railway lines.
+                <br><strong>(ii) Terrain:</strong> Roads can traverse comparatively more dissected and undulating
+                topography. They can negotiate higher gradients of slopes and as such can traverse mountains such as the
+                Himalayas.
+                <br><strong>(iii) Economic for Short Distance:</strong> Road transport is economical in transportation
+                of few persons and relatively smaller amount of goods over short distances.
+                <br><strong>(iv) Door-to-Door Service:</strong> It provides door-to-door service, thus the cost of
+                loading and unloading is much lower.
+                <br><strong>(v) Feeder to other modes:</strong> Road transport is also used as a feeder to other modes
+                of transport such as they provide a link between railway stations, air and sea ports.
+            </div>
+        </div>
+
+        <!-- 22. Tourism -->
+        <div class="sol-block">
+            <span class="q-ref">22. Importance of Tourism</span>
+            <div class="solution-content">
+                <strong>(i) Employment:</strong> More than 15 million people are directly engaged in the tourism
+                industry.
+                <br><strong>(ii) National Integration:</strong> Tourism promotes national integration and provides
+                support to local handicrafts and cultural pursuits.
+                <br><strong>(iii) International Understanding:</strong> It also helps in the development of
+                international understanding about our culture and heritage.
+                <br><strong>(iv) Foreign Exchange:</strong> Foreign tourists visit India for heritage tourism, eco
+                tourism, adventure tourism, cultural tourism, medical tourism and business tourism, contributing to
+                foreign exchange earnings.
+            </div>
+        </div>
+
+        <!-- 23. Sustainable Development (Gandhi) -->
+        <div class="sol-block">
+            <span class="q-ref">23. Greed vs Need (Gandhi's View)</span>
+            <div class="solution-content">
+                This statement by Mahatma Gandhi brings out the essence of resource conservation.
+                <br><strong>(i) Irrational Consumption:</strong> He believed that irrational consumption and
+                over-utilization of resources lead to socio-economic and environmental problems.
+                <br><strong>(ii) Root Cause:</strong> He placed the greedy and selfish individuals and exploitative
+                nature of modern technology as the root cause for resource depletion at the global level.
+                <br><strong>(iii) Production by Masses:</strong> He was against mass production and wanted to replace it
+                with the production by the masses.
+            </div>
+        </div>
+
+        <!-- 24. Environmental Degradation Boundaries -->
+        <div class="sol-block">
+            <span class="q-ref">24. Environment respects no boundaries</span>
+            <div class="solution-content">
+                The consequences of environmental degradation do not respect national or state boundaries; this issue is
+                no longer a regional or national issue.
+                <br><strong>(i) Global Interconnectedness:</strong> Our future is linked together. Pollution in one
+                country causes climate change that affects the whole world (e.g., Global Warming).
+                <br><strong>(ii) Shared Resources:</strong> Water pollution in rivers affects all states downstream. Air
+                pollution travels with wind currents across borders.
+                <br><strong>(iii) Collective Responsibility:</strong> Sustainability of development is essential for all
+                mankind and it is a matter of discussion among different countries of the world.
+            </div>
+        </div>
+
+        <!-- 25. Tertiary Sector Rising -->
+        <div class="sol-block">
+            <span class="q-ref">25. Rising Importance of Tertiary Sector</span>
+            <div class="solution-content">
+                Reasons for the rising importance of the tertiary sector:
+                <br><strong>(i) Basic Services:</strong> In any country, several services such as hospitals, educational
+                institutions, post and telegraph services, police stations, courts, village administrative offices,
+                municipal corporations, defence, transport, banks, insurance companies, etc. are required. In a
+                developing country, the government has to take responsibility for the provision of these services.
+                <br><strong>(ii) Development of Primary/Secondary Sectors:</strong> The development of agriculture and
+                industry leads to the development of services such as transport, trade, storage etc.
+                <br><strong>(iii) Rise in Income:</strong> As income levels rise, certain sections of people start
+                demanding many more services like eating out, tourism, shopping, private hospitals, private schools,
+                professional training etc.
+                <br><strong>(iv) ICT Growth:</strong> Over the past decade or so, certain new services such as those
+                based on Information and Communication Technology have become important and essential.
+            </div>
+        </div>
+
+        <!-- 26. Disguised Unemployment -->
+        <div class="sol-block">
+            <span class="q-ref">26. Disguised Unemployment in Agriculture</span>
+            <div class="solution-content">
+                <strong>(i) Definition:</strong> A situation where more people are employed in an activity than are
+                needed. If you pull out some people, production will not drop. They seem employed but are actually
+                underemployed.
+                <br><strong>(ii) Example:</strong> Laxmi owns a plot of 2 hectares. All 5 members of her family work in
+                the plot throughout the year. They have nowhere else to go. Each one is doing some work but no one is
+                fully employed. If two members move out to work in a factory, the yield of the plot remains the same,
+                but the family income increases. This is disguised unemployment.
+            </div>
+        </div>
+
+        <!-- 27. RBI Role -->
+        <div class="sol-block">
+            <span class="q-ref">27. Role of RBI in Formal Sector Loans</span>
+            <div class="solution-content">
+                The Reserve Bank of India supervises the functioning of formal sources of loans:
+                <br><strong>(i) Cash Balance:</strong> The RBI monitors the banks in actually maintaining cash balance
+                (CRR).
+                <br><strong>(ii) Loan Distribution:</strong> The RBI sees that the banks give loans not just to
+                profit-making businesses and traders but also to small cultivators, small scale industries, to small
+                borrowers etc.
+                <br><strong>(iii) Reporting:</strong> Periodically, banks have to submit information to the RBI on how
+                much they are lending, to whom, at what interest rate, etc. This prevents unfair practices.
+            </div>
+        </div>
+
+        <!-- 28. SHGs -->
+        <div class="sol-block">
+            <span class="q-ref">28. SHGs as Building Blocks</span>
+            <div class="solution-content">
+                Self-Help Groups are building blocks of the organization of the rural poor because:
+                <br><strong>(i) Financial Independence:</strong> They help borrowers overcome the problem of lack of
+                collateral. They can get timely loans for a variety of purposes and at a reasonable interest rate.
+                <br><strong>(ii) Savings Habit:</strong> They encourage regular savings among members.
+                <br><strong>(iii) Empowerment:</strong> It helps women to become financially self-reliant.
+                <br><strong>(iv) Social Platform:</strong> The regular meetings of the group provide a platform to
+                discuss and act on a variety of social issues such as health, nutrition, domestic violence, etc.
+            </div>
+        </div>
+
+        <!-- 29. Advantages of Globalization -->
+        <div class="sol-block">
+            <span class="q-ref">29. Advantages of Globalization</span>
+            <div class="solution-content">
+                <strong>For Consumers:</strong>
+                <br>1. There is greater choice before these consumers who now enjoy improved quality and lower prices
+                for several products.
+                <br>2. People today enjoy much higher standards of living than was possible earlier.
+                <br><strong>For Producers:</strong>
+                <br>1. MNCs have increased their investments in India over the past 20 years, which means investing in
+                India has been beneficial for them.
+                <br>2. Top Indian companies have been able to benefit from the increased competition. They have invested
+                in newer technology and production methods and raised their production standards.
+                <br>3. Some have gained from successful collaborations with foreign companies.
+                <br>4. Globalization has enabled some large Indian companies to emerge as multinationals themselves
+                (e.g., Tata Motors, Infosys, Ranbaxy, Asian Paints).
+            </div>
+        </div>
+
+        <!-- 30. Role of ICT in Globalization -->
+        <div class="sol-block">
+            <span class="q-ref">30. Role of ICT in Globalization</span>
+            <div class="solution-content">
+                Information and Communication Technology (ICT) has played a major role:
+                <br><strong>(i) Instant Communication:</strong> Telecommunication facilities (telegraph, telephone
+                including mobile phones, fax) are used to contact one another around the world, to access information
+                instantly, and to communicate from remote areas.
+                <br><strong>(ii) Outsourcing:</strong> It has facilitated outsourcing of services. A news magazine
+                published for London readers can be designed and printed in Delhi. The text is sent through Internet to
+                the Delhi office. The designers in Delhi office get orders on how to design the magazine from the office
+                in London using telecommunication facilities. The designing is done on a computer. After printing, the
+                magazines are sent by air to London.
+                <br><strong>(iii) Payment:</strong> Even the payment of money for designing and printing from a bank in
+                London to a bank in Delhi is done instantly through the Internet (e-banking).
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Vardaan Learning Institute | Excellence in Education</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
