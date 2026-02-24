@@ -1,0 +1,430 @@
+const fs = require('fs');
+const path = require('path');
+
+const outputDir = "C:\\Users\\Ankit Raj Sharma\\Desktop\\VARDAAN NOTES\\vardaannotes\\ICSE\\Class 10\\Hindi\\image";
+
+if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+}
+
+// Ensure every prompt gets an explicit landscape suffix if it's not already there
+function forceLandscape(prompt) {
+    if (!prompt.includes("landscape")) {
+        return prompt + " IMPORTANT: Please generate the image in landscape format (16:9 aspect ratio).";
+    }
+    return prompt;
+}
+
+const books = {
+    "Sahitya Sagar (Stories)": {
+        type: "Stories",
+        chapters: {
+            "01 Baat Atthanni Ki": [
+                { title: "Main Illustration", prompt: forceLandscape("A highly detailed cinematic digital painting of an impoverished, desperate Indian servant standing with his head bowed in an opulent colonial-era room, facing a stern, wealthy master. He holds a tiny silver coin (an eight-anna piece) in his hand. Dramatic chiaroscuro lighting, emotional storytelling, ultra-realistic 8k, landscape format 16:9."), file: "baat-atthanni-ki-court.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A highly emotional cinematic painting of a poor Indian servant sitting helplessly next to his sick child lying on a thin mat in a dark, rural, poverty-stricken hut. Dim oil lamp lighting highlighting his worry and desperation. Ultra-realistic 8k, landscape format 16:9."), file: "baat-atthanni-sick-child.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A dark, dramatic painting of a corrupt, wealthy magistrate taking a bribe in the shadows of a grand colonial office. High contrast lighting emphasizing hypocrisy and injustice. Hyper-detailed, 8k, landscape format 16:9."), file: "baat-atthanni-corrupt-judge.jpg" }
+            ],
+            "02 Kaki": [
+                { title: "Main Illustration", prompt: forceLandscape("A heartwarming cinematic painting of a young, sorrowful Indian boy in traditional clothes secretly flying a large white paper kite into a beautiful, glowing twilight sky. An old, sympathetic servant watches him from the shadows of a rustic courtyard. Nostalgic lighting, emotional, highly detailed 8k, landscape format 16:9."), file: "kaki-kite-sky.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A cinematic painting of a grieving traditional Indian family sitting on the floor in a dimly lit courtyard, mourning the loss of a mother. Heart-wrenching emotion, soft traditional lighting, highly detailed 8k, landscape format 16:9."), file: "kaki-mourning-scene.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("An evocative cinematic scene of a young boy looking up hopefully at the night sky. He is holding a kite string, waiting for his mother to come down from heaven. Deep blue starry night, emotional lighting, 8k, landscape format 16:9."), file: "kaki-looking-at-sky.jpg" }
+            ],
+            "03 Mahayagya Ka Puraskar": [
+                { title: "Main Illustration", prompt: forceLandscape("A powerful, hyper-realistic scene of a noble, impoverished Indian merchant sitting on a dusty village road under the scorching desert sun, offering his very last piece of flatbread (roti) to a frail, starving dog. Divine, ethereal golden lighting, emotional sacrifice theme, 8k resolution, landscape format 16:9."), file: "mahayagya-ka-puraskar-dog.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A cinematic illustration of a grand divine assembly in Hindu mythology. A majestic, glowing deity observing the selfless actions of mortals from the heavens. Ethereal, golden, divine lighting, hyper-realistic 8k, landscape format 16:9."), file: "mahayagya-divine-assembly.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A warm, beautiful Indian rural kitchen scene where a loving wife is preparing simple roti on a clay stove (chulha). Rustic, ancient Indian setting, beautiful morning sunlight streaming in. Highly detailed, 8k, landscape format 16:9."), file: "mahayagya-wife-cooking.jpg" }
+            ],
+            "04 Netaji Ka Chasma": [
+                { title: "Main Illustration", prompt: forceLandscape("A nostalgic and patriotic cinematic painting of a frail, old Indian man selling spectacles out of a small bamboo box. He is gently placing a real pair of glasses onto the face of a majestic marble statue of Subhash Chandra Bose in a bustling, dusty town square. Ultra-detailed, warm lighting, 8k, landscape format 16:9."), file: "netaji-ka-chasma-statue.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A lively, bustling Indian town square featuring a small pan (betel leaf) shop. The shopkeeper, a robust man, is laughing while talking to a customer. Detailed Indian street view, vibrant colors, cinematic lighting, 8k, landscape format 16:9."), file: "netaji-pan-shop.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A poignant cinematic scene of children gathering around a marble statue of Subhash Chandra Bose, placing a fragile wire frame spectacle on it out of deep patriotism. Emotional, dawn lighting, highly detailed 8k, landscape format 16:9."), file: "netaji-children-respect.jpg" }
+            ],
+            "05 Apna Apna Bhagya": [
+                { title: "Main Illustration", prompt: forceLandscape("A hauntingly realistic scene in the freezing, fog-covered winter streets of Nainital. A ragged, shivering young boy crouches helplessly near a street lamp, while wealthy, well-dressed tourists in heavy coats walk past him, completely ignoring his plight. Moody cinematic lighting, cold blue tones, 8k, landscape format 16:9."), file: "apna-apna-bhagya-nainital.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A cinematic painting of a beautiful but freezing winter night in Nainital, India. Wealthy families in expensive thick coats are walking past brightly lit shops, indifferent to the cold. Beautiful streetlights, foggy atmosphere, 8k, landscape format 16:9."), file: "apna-bhagya-rich-tourists.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A heartbreaking, dramatic painting of a frozen, lifeless young boy lying entirely forgotten under a bench in the snow covered hills of Nainital as dawn breaks. Somber, cold blue morning light, ultra-realistic emotional 8k, landscape format 16:9."), file: "apna-bhagya-frozen-boy.jpg" }
+            ],
+            "06 Bade Ghar Ki Beti": [
+                { title: "Main Illustration", prompt: forceLandscape("A dignified cinematic portrait of a beautiful, strong-willed young Indian bride in rich traditional attire standing in the center of a modest rural courtyard. She is peacefully resolving a bitter argument between two brothers, bringing harmony to the family. Golden hour lighting, cultural authenticity, ultra-detailed 8k, landscape format 16:9."), file: "bade-ghar-ki-beti-family.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A dramatic, cinematic painting of a heated argument inside an ancient Indian rural household between an arrogant younger brother and his refined sister-in-law. Tense atmosphere, traditional rural architecture, hyper-detailed 8k, landscape format 16:9."), file: "bade-ghar-argument.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A beautiful, emotionally warm scene of family reconciliation. Two brothers hugging tightly while the wise, noble wife watches on with a gentle tearful smile in a traditional courtyard. Golden hour, highly detailed 8k, landscape format 16:9."), file: "bade-ghar-reconciliation.jpg" }
+            ],
+            "07 Sandeh": [
+                { title: "Main Illustration", prompt: forceLandscape("A pensive, emotional interior scene in a traditional 1930s Indian house. A pensive young man is packing his luggage, looking back with unspoken emotion at a graceful widow who is standing quietly near an intricately carved wooden doorway. Soft, melancholic window light, ultra-realistic details, 8k, landscape format 16:9."), file: "sandeh-farewell.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A cinematic illustration of a dark, brooding, antique-filled Indian study room where an anxious man sits at a heavy wooden desk, surrounded by letters, buried in deep suspicion and doubt. Low-key dramatic lighting, 8k, landscape format 16:9."), file: "sandeh-suspicion-desk.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("An emotionally charged scene of a beautiful Indian widow reading a heartfelt letter near an arched window, tears welling up in her eyes as the sunlight gently illuminates her face. Soft, poetic lighting, highly detailed 8k, landscape format 16:9."), file: "sandeh-reading-letter.jpg" }
+            ],
+            "08 Bheed Mein Khoya Aadmi": [
+                { title: "Main Illustration", prompt: forceLandscape("An incredibly crowded, chaotic Indian railway station. A sea of people is pushing and shoving on the platform. In the center, a well-dressed man looks completely overwhelmed, lost, and stressed amidst the massive crowd. Dynamic lighting, hyper-detailed environments, social theme, 8k, landscape format 16:9."), file: "bheed-mein-khoya-aadmi-station.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("An ultra-detailed cinematic shot of a wildly overcrowded, chaotic Indian government hospital waiting room. People are crammed everywhere, illustrating the massive population problem. Gritty, realistic lighting, 8k, landscape format 16:9."), file: "bheed-hospital-crowd.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A dramatic scene of an exhausted father standing in the middle of a bustling, overcrowded city street, surrounded by endless traffic and sea of faces, looking tired and overwhelmed by overpopulation. Cinematic depth of field, 8k, landscape format 16:9."), file: "bheed-overcrowded-city.jpg" }
+            ],
+            "09 Bhede Aur Bhediye": [
+                { title: "Main Illustration", prompt: forceLandscape("A dark, satirical, highly detailed fantasy illustration of a forest clearing. Innocent, fluffy white sheep are sitting attentively, surrounded by cunning, glowing-eyed wolves who are disguised as gentle saints and intellectuals wearing robes. Eerie, dramatic cinematic lighting, ultra-realistic 8k, landscape format 16:9."), file: "bhede-aur-bhediye-satire.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("An intelligent, sharp political satire cinematic painting. A sly old wolf wearing an elegant intellectual's suit is delivering a charismatic speech to a massive crowd of innocent, naive sheep. Dynamic spotlighting, ultra-realistic 8k, landscape format 16:9."), file: "bhede-politician-wolf.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A dark, moody cinematic illustration showing the aftermath of a deceptive election in the dense animal forest. The victorious, grinning wolves are taking off their sheep masks in the shadows. High contrast, dramatic lighting, 8k, landscape format 16:9."), file: "bhede-wolves-unmasked.jpg" }
+            ],
+            "10 Do Kalakar": [
+                { title: "Main Illustration", prompt: forceLandscape("A split-composition cinematic painting inside a vibrant room. On one side, an eccentric artist paints passionately on a messy canvas surrounded by colors. On the other side, a dedicated, compassionate young woman is caring for poor street children, holding a beggar baby. Warm, contrasting lighting, masterpiece 8k, landscape format 16:9."), file: "do-kalakar-contrast.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("An incredibly vibrant, messy artist's studio. A passionate modern painter is lost in her canvas, throwing bright colors, completely detached from the real world. Beautiful bohemian lighting, hyper-detailed textures, 8k, landscape format 16:9."), file: "do-kalakar-artist.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("An emotionally powerful cinematic portrait of a determined social worker traversing an impoverished slum, providing medical aid to the sick and needy. Warm, heroic sunset lighting, deep emotional storytelling, 8k, landscape format 16:9."), file: "do-kalakar-social-worker.jpg" }
+            ]
+        }
+    },
+    "Sahitya Sagar (Poems)": {
+        type: "Poems",
+        chapters: {
+            "01 Sakhi": [
+                { title: "Main Illustration", prompt: forceLandscape("A serene, highly spiritual cinematic painting of an ancient Indian ascetic deep in meditation beneath a massive banyan tree. A glowing, divine aura surrounds him as he represents ultimate enlightenment and surrender to the Guru. Ethereal, god-ray lighting, hyper-realistic details, 8k, landscape format 16:9."), file: "sakhi-kabir-meditation.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A beautiful, ethereal cinematic painting of a humble disciple bowing deeply at the feet of a majestic spiritual Guru in an ancient ashram surrounded by glowing diyas. Divine sunset light, highly detailed 8k, landscape format 16:9."), file: "sakhi-guru-shishya.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A highly metaphorical cinematic image of a vast, dark, turbulent ocean representing the ignorance of the world, pierced by a single, brilliant divine light ray shining from the clouds to guide a lost boat. Epic, 8k, landscape format 16:9."), file: "sakhi-divine-light.jpg" }
+            ],
+            "02 Giridhar Ki Kundaliyan": [
+                { title: "Main Illustration", prompt: forceLandscape("A beautiful rural Indian scene featuring a wise, wandering saint standing on a dirt path. He is holding a sturdy wooden stick (Lathi) and is wrapped in a simple black woolen blanket (Kamri). He looks thoughtfully at village life around him. Warm sunset lighting, authentic cultural details, 8k, landscape format 16:9."), file: "giridhar-kundaliyan-saint.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A highly detailed, cinematic painting of a wise rural Indian traveler walking through a dense, dark forest holding a sturdy wooden stick (lathi) which he uses to defend from a wild dog. Dramatic moonlight, 8k, landscape format 16:9."), file: "giridhar-lathi-defense.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A metaphorical cinematic illustration showing an old rural wise man sitting under a sturdy tree wrapped in his black blanket during a heavy rainstorm, completely protected and at peace. Monsoon lighting, highly detailed 8k, landscape format 16:9."), file: "giridhar-blanket-storm.jpg" }
+            ],
+            "03 Swarg Bana Sakte Hain": [
+                { title: "Main Illustration", prompt: forceLandscape("A magnificent, utopian cinematic landscape portraying a heavenly Earth. People of all backgrounds and classes are holding hands harmoniously in a lush, incredibly prosperous green valley under a brilliant, golden, glowing sky. Epic scale, highly detailed masterpiece, 8k, landscape format 16:9."), file: "swarg-bana-sakte-hain-utopia.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A grand, epic cinematic painting portraying Mother Earth offering bountiful fruits, grains, and water to all of humanity uniformly. Rich, vibrant colors, divine glowing lighting, hyper-detailed 8k, landscape format 16:9."), file: "swarg-bountiful-earth.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A dramatic, intense cinematic scene showing humanity casting away weapons and breaking chains of inequality, marching together towards a brilliant, radiant golden sunrise. Inspirational, highly detailed 8k, landscape format 16:9."), file: "swarg-breaking-chains.jpg" }
+            ],
+            "04 Vah Janmabhoomi Meri": [
+                { title: "Main Illustration", prompt: forceLandscape("A breathtaking, majestic, wide-angle landscape of India. The scene features the towering, snow-capped peaks of the Himalayas in the background, a flowing, sparkling river (Ganga) in the midground, and lush green agricultural fields bathed in golden morning light. Hyper-realistic, 8k, landscape format 16:9."), file: "janmabhoomi-meri-landscape.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A majestic, cinematic painting of the high Himalayan peaks covered in pristine snow, acting as a grand, unshakeable crown over the fertile, glowing green plains of ancient India. Epic, sweeping landscape, brilliant sky, 8k, landscape format 16:9."), file: "janmabhoomi-himalayas.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A beautiful, glorious cinematic portrait of a traditional Indian goddess representing Mother India, surrounded by the ocean, rivers, and mountains, radiating immense love and peace. Sacred, divine lighting, hyper-realistic 8k, landscape format 16:9."), file: "janmabhoomi-mother-india.jpg" }
+            ],
+            "05 Megh Aaye": [
+                { title: "Main Illustration", prompt: forceLandscape("A highly dramatic and beautiful rendering of an Indian village anticipating rain. Dark, heavy, majestic monsoon clouds roll over the sky like a visiting VIP. The trees sway joyfully in the wind, and villagers look up with bright, welcoming smiles. Dynamic cinematic lighting, detailed rain clouds, 8k, landscape format 16:9."), file: "megh-aaye-monsoon.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("An incredibly detailed cinematic painting of a traditional Indian village preparing for the monsoon. An intense, powerful wind is blowing dust and bending trees, and villagers are excitedly looking at the darkening sky. Dynamic motion, 8k, landscape format 16:9."), file: "megh-aaye-wind.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A deeply romantic, poetic cinematic scene of an Indian woman standing eagerly by the window of her rustic house, watching the massive dark rain clouds approaching with lightning, waiting for her beloved. Moody, dramatic lighting, 8k, landscape format 16:9."), file: "megh-aaye-waiting.jpg" }
+            ],
+            "06 Sur Ke Pad": [
+                { title: "Main Illustration", prompt: forceLandscape("A charming, hyper-realistic mythological painting of a cute, dark-complexioned child (Lord Krishna) wearing yellow silk and peacock feathers. His face is smeared with fresh white butter, and he is playfully arguing with his loving mother Yashoda in a rustic ancient Indian courtyard. Warm, magical lighting, 8k, landscape format 16:9."), file: "sur-ke-pad-krishna.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A mesmerizing, hyper-realistic cinematic painting of Lord Krishna as a beautiful dark-skinned child holding his divine flute, surrounded by enchanted, listening peacocks and cows in the forests of Vrindavan. Golden enchanting light, 8k, landscape format 16:9."), file: "sur-krishna-flute.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("An emotional, beautifully lit cinematic scene of mother Yashoda lovingly tying the hair of the mischievous child Krishna as he looks at her innocently. Ancient Indian village interior, warm soft lighting, masterpiece 8k, landscape format 16:9."), file: "sur-yashoda-krishna.jpg" }
+            ],
+            "07 Vinay Ke Pad": [
+                { title: "Main Illustration", prompt: forceLandscape("An intensely spiritual, cinematic portrait of a devout Indian saint (Tulsidas) sitting under a temple pillar, singing passionately with eyes closed. Behind him, a massive, ethereal, glowing apparition of Lord Rama holding a bow appears in the mist. Divine god-ray lighting, masterpiece 8k, landscape format 16:9."), file: "vinay-ke-pad-tulsidas.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("An intensely spiritual, detailed cinematic painting of the great poet Tulsidas writing his devotional poetry on leaves under the light of a single oil lamp in a dark, ancient stone room. Highly atmospheric, chiaroscuro lighting, 8k, landscape format 16:9."), file: "vinay-tulsidas-writing.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A grand, divine cinematic vision shining in the clouds of Lord Rama, Sita, and Lakshmana, radiating pure peace and protection over the devoted saint offering prayers below. Glorious celestial lighting, epic, 8k, landscape format 16:9."), file: "vinay-divine-vision.jpg" }
+            ],
+            "08 Bhikhshuk": [
+                { title: "Main Illustration", prompt: forceLandscape("A heart-wrenching, gritty cinematic painting depicting immense poverty. A frail, starving older beggar and his two hungry children are sitting on a dusty street corner, sadly licking food remnants from discarded leaf-plates. Emotional storytelling, high contrast, hyper-detailed textures, 8k, landscape format 16:9."), file: "bhikhshuk-struggle.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A gritty, cinematic black and white style painting emphasizing stark poverty, showing a beggar's torn, dirty clothes and a severely emaciated body, walking down an indifferent, wealthy city street. Heartbreaking realism, dramatic contrast, 8k, landscape format 16:9."), file: "bhikhshuk-despair.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A hyper-realistic cinematic tragedy. Feral street dogs aggressively barking and fighting with a desperate, starving beggar over a discarded piece of food near a garbage dump. Dark, sorrowful lighting, deeply emotional, 8k, landscape format 16:9."), file: "bhikhshuk-dogs.jpg" }
+            ],
+            "09 Chalna Hamara Kam Hai": [
+                { title: "Main Illustration", prompt: forceLandscape("An inspiring, epic cinematic painting of a determined, silhouetted traveler walking steadily on a long, winding, rugged mountain path. He is heading towards a brilliantly glowing, colorful sunrise on the distant horizon, overcoming obstacles. Inspirational mood, breathtaking scenery, 8k, landscape format 16:9."), file: "chalna-hamara-kaam.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A sweeping, epic cinematic painting of a resilient man continuing his journey through a massive, terrifying desert storm. Deep oranges and browns, showcasing extreme struggle and relentless determination. Hyper-detailed, 8k, landscape format 16:9."), file: "chalna-desert-storm.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A profound, peaceful cinematic landscape of the traveler finally reaching the serene, lush green peak of a grand mountain, looking back at the rugged path he conquered. Glorious sunset sky, sense of accomplishment, 8k, landscape format 16:9."), file: "chalna-reaching-peak.jpg" }
+            ],
+            "10 Matri Mandir Ki Or": [
+                { title: "Main Illustration", prompt: forceLandscape("A passionate, patriotic cinematic scene of a brave young Indian woman leading a massive crowd of followers. She holds the Indian flag high as they march resolutely through an ancient landscape towards a glowing, magnificent abstract temple representing the Motherland. Epic scale, heroic lighting, 8k, landscape format 16:9."), file: "matri-mandir-ki-or.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("An incredibly powerful cinematic painting of brave, passionate Indian youths carrying torches in the dark, marching united across a difficult terrain towards a common goal of freedom. Epic, heroic night lighting, highly detailed 8k, landscape format 16:9."), file: "matri-torch-march.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A beautifully patriotic, grand cinematic illustration of an abstract, divine temple shining radiantly on a hilltop, representing the soul of India, welcoming its devoted patriots. Divine golden light, masterpiece, 8k, landscape format 16:9."), file: "matri-shining-temple.jpg" }
+            ]
+        }
+    },
+    "Ekanki Sanchay": {
+        type: "Ekanki",
+        chapters: {
+            "01 Sanskar Aur Bhavna": [
+                { title: "Main Illustration", prompt: forceLandscape("An intense, dramatic confrontation inside a traditional Indian middle-class living room. An orthodox, elderly mother dressed in a white saree stands firmly against her passionate, modern son. The scene beautifully captures the clash between old traditions and modern feelings. Highly detailed, cinematic lighting, 8k, landscape format 16:9."), file: "sanskar-aur-bhavna.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A highly detailed, tense cinematic scene featuring a deeply conflicted young man standing between his strict traditional mother and his progressive, injured wife. The lighting sharply divides the room to reflect the ideological divide. 8k, landscape format 16:9."), file: "sanskar-ideological-clash.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A beautiful, emotional cinematic conclusion where the strict mother softly embraces her progressive daughter-in-law in a moment of newfound understanding and reformed family love. Soft, warm morning light, 8k, landscape format 16:9."), file: "sanskar-acceptance.jpg" }
+            ],
+            "02 Bahu Ki Vida": [
+                { title: "Main Illustration", prompt: forceLandscape("A highly emotional, tense cinematic moment inside a wealthy, intricately decorated Indian household. A beautiful young newlywed bride in heavy bridal wear is crying silently with her head bowed, while her stern, arrogant in-laws look down on her, refusing to let her go home due to dowry greed. Dramatic lighting, 8k, landscape format 16:9."), file: "bahu-ki-vida.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A dramatic, cinematic portrait of a wealthy, proud older man standing sternly at an ornate door, holding out his hand to forcefully demand a highly unreasonable dowry from a poor, desperate father. Tense lighting, realistic 8k, landscape format 16:9."), file: "vida-dowry-demand.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("An emotionally devastating cinematic painting of a young, heartbroken Indian bride watching her own brother walk away from her wealthy in-law's grand house, having been denied taking her home. Deeply emotional, melancholic, 8k, landscape format 16:9."), file: "vida-brother-leaving.jpg" }
+            ],
+            "03 Matri Bhoomi Ka Man": [
+                { title: "Main Illustration", prompt: forceLandscape("An epic, intense historical battle scene in medieval Rajasthan. A brave, proud Rajput warrior stands defiantly on the blood-stained walls of a small stone fort, raising his sword to defend his motherland against a massive, overwhelming invading army below. Cinematic, gritty, highly detailed, 8k, landscape format 16:9."), file: "matri-bhoomi-ka-man.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A grand, epic cinematic representation of a high-stakes war council meeting inside an opulent medieval Rajasthani palace with decorated Rajput generals discussing strategy under heavy grand chandeliers. Ultra-detailed 8k, landscape format 16:9."), file: "matri-bhoomi-war-council.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A breathtaking, dramatic cinematic shot of a single, proud, legendary warrior striking down enemy soldiers at the massive wooden gates of the sacred Bundi fort, defending the honor of his clan. Masterpiece lighting, dynamic action, 8k, landscape format 16:9."), file: "matri-bhoomi-gate-defense.jpg" }
+            ],
+            "04 Sukhi Dali": [
+                { title: "Main Illustration", prompt: forceLandscape("A heartwarming cinematic portrait of a large, united Indian joint family sitting together affectionately in a grand, sunlit traditional courtyard. In the center is an authoritative but loving elderly patriarch sitting on a charpai. A massive, flourishing banyan tree towers above them in the background. Ultra-detailed, 8k, landscape format 16:9."), file: "sukhi-dali-family.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A warm, deeply culturally rich cinematic painting of all the women of an extravagant Indian joint family sitting together on a woven rug making traditional snacks, laughing and bonding. Beautiful traditional interior lighting, 8k, landscape format 16:9."), file: "sukhi-dali-women.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A tense cinematic scene capturing an underlying conflict within the large joint family. A modern, educated young daughter-in-law stands defiantly while the older generation looks shocked. Dramatic lighting highlighting the generational gap, 8k, landscape format 16:9."), file: "sukhi-dali-conflict.jpg" }
+            ],
+            "05 Mahabharat Ki Ek Sanjh": [
+                { title: "Main Illustration", prompt: forceLandscape("A somber, hauntingly epic twilight scene on the bloody, deserted battlefield of Kurukshetra. A fallen, majestic king with a shattered mace lies heavily injured on the dusty ground. The long, dark shadows of sunset stretch across the field as he reflects on his pride and fall. Dramatic, melancholic lighting, masterpiece 8k, landscape format 16:9."), file: "mahabharat-ki-ek-sanjh.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A majestic, heavily armored yet exhausted Duryodhana hiding deeply inside the murky, dark waters of a mystical lake, avoiding the impending doom, holding a broken mace. Haunting, moody cinematic lighting, ultra-realistic 8k, landscape format 16:9."), file: "mahabharat-lake-hideout.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("An epic, brutal cinematic painting of the grand final one-on-one mace battle between Bhima and Duryodhana taking place on the muddy, skull-littered battlefield under a menacing red blood-moon. Dynamic action, masterpiece 8k, landscape format 16:9."), file: "mahabharat-final-duel.jpg" }
+            ],
+            "06 Deepdan": [
+                { title: "Main Illustration", prompt: forceLandscape("A fiercely intense, historical night scene inside an ancient stone Rajput palace. A fiercely loyal nursemaid sits in the dark, her face full of silent agony, having just placed her own sleeping child in the royal bed to sacrifice him and save the true prince from incoming assassins. Eerie torchlight, hyper-realistic, 8k, landscape format 16:9."), file: "deepdan-sacrifice.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A chilling, suspenseful cinematic painting of the treacherous, evil usurper Banbir marching silently down a dark, stony palace corridor holding a bloodied sword in the dead of the night. Eerie torchlight, highly detailed 8k, landscape format 16:9."), file: "deepdan-banbir-corridor.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A breathtaking, emotionally overwhelming cinematic climax showing the fiercely loyal Panna Dai smuggling the true young prince out of the palace hidden deep inside a large basket of leaves on a servant's back. High tension, shadowy lighting, 8k, landscape format 16:9."), file: "deepdan-smuggling-prince.jpg" }
+            ]
+        }
+    },
+    "Naya Rasta": {
+        type: "Novel",
+        chapters: {
+            "Naya Rasta (Complete Novel)": [
+                { title: "Main Illustration", prompt: forceLandscape("An inspiring, modern cinematic portrait of a confident, educated young Indian woman standing independently on the campus of a bustling city college or institute. She is smiling brightly, looking towards a hopeful future, having broken the chains of societal pressure and marriage expectations. Golden morning light, vibrant, 8k, landscape format 16:9."), file: "naya-rasta-novel.jpg" },
+                { title: "Plot Deepening", prompt: forceLandscape("A deeply emotional, cinematic painting showcasing an Indian girl locking herself in her room with her study books to escape the taunts of the society about her dark complexion. Moody, profound, highlighting her struggle and focus. 8k, landscape format 16:9."), file: "naya-rasta-study.jpg" },
+                { title: "Climax / Conclusion", prompt: forceLandscape("A highly inspiring, triumphant cinematic scene showing the young woman receiving an award or graduation degree confidently on a grand stage, proving all her doubters wrong. Bright, glowing, victorious lighting, ultra-detailed 8k, landscape format 16:9."), file: "naya-rasta-victory.jpg" }
+            ]
+        }
+    }
+};
+
+let htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICSE Class 10 Hindi - All Image Prompts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #0a0514;
+            --surface: #120924;
+            --border: #aa33ff;
+            --text: #e0e0e0;
+            --primary: #00ffff;
+            --accent: #9933ff;
+            --secondary: #4caf50;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: #fff;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(170, 51, 255, 0.6);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-family: 'Montserrat', sans-serif;
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .important-note {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid rgba(255, 152, 0, 0.4);
+            color: #ffb74d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .book-section {
+            background: rgba(20, 10, 30, 0.6);
+            border: 1px solid rgba(170, 51, 255, 0.3);
+            border-radius: 12px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .book-title {
+            background: linear-gradient(90deg, rgba(170,51,255,0.2), transparent);
+            border-bottom: 1px solid rgba(170, 51, 255, 0.3);
+            padding: 20px 30px;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            font-size: 1.8rem;
+        }
+
+        .chapter-container {
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .chapter-container:last-child {
+            border-bottom: none;
+        }
+
+        .chapter-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .prompt-card {
+            background: rgba(0,0,0,0.3);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .prompt-card.secondary {
+            border-left-color: var(--secondary);
+        }
+
+        .image-tag {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #bbb;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-text {
+            font-style: italic;
+            color: #ddd;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.02);
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .meta-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filename {
+            font-family: monospace;
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .copy-btn {
+            background: rgba(170, 51, 255, 0.2);
+            color: #fff;
+            border: 1px solid var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent);
+            box-shadow: 0 0 15px rgba(170, 51, 255, 0.4);
+        }
+
+        .copy-btn.copied {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ICSE Class 10 Hindi Image Prompts</h1>
+            <div class="subtitle">Complete AI Prompts Collection for all 4 Books (27 Chapters, 81 Prompts)</div>
+            <div class="important-note"><i data-lucide="alert-circle" style="display:inline-block; vertical-align:middle; width: 18px; margin-right: 5px;"></i> All text prompts explicitly request a 16:9 Landscape format image.</div>
+        </div>
+`;
+
+let promptCount = 1;
+
+for (const [bookName, bookData] of Object.entries(books)) {
+    htmlContent += `        <div class="book-section">\n`;
+    htmlContent += `            <h2 class="book-title"><i data-lucide="book-marked" style="display:inline-block; vertical-align:middle; margin-right:10px;"></i> ${bookName}</h2>\n`;
+
+    for (const [chapterName, chapterPrompts] of Object.entries(bookData.chapters)) {
+        htmlContent += `            <div class="chapter-container">\n`;
+        htmlContent += `                <h3 class="chapter-title"><i data-lucide="file-text"></i> ${chapterName}</h3>\n`;
+
+        chapterPrompts.forEach((promptInfo, index) => {
+            const isMain = index === 0;
+            const cardClass = isMain ? 'prompt-card' : 'prompt-card secondary';
+            const iconColor = isMain ? 'var(--accent)' : 'var(--secondary)';
+            const id = `prompt-${promptCount++}`;
+
+            htmlContent += `
+                <div class="${cardClass}">
+                    <div class="image-tag"><i data-lucide="image" style="color: ${iconColor}; width: 18px;"></i> ${promptInfo.title}</div>
+                    <div class="prompt-text" id="${id}">"${promptInfo.prompt}"</div>
+                    <div class="meta-container">
+                        <div><span style="color:#888; font-size: 0.85rem;">Save as: </span><span class="filename">${promptInfo.file}</span></div>
+                        <button class="copy-btn" onclick="copyPrompt('${id}', this)"><i data-lucide="copy"></i> Copy Prompt</button>
+                    </div>
+                </div>\n`;
+        });
+
+        htmlContent += `            </div>\n`; // End chapter
+    }
+
+    htmlContent += `        </div>\n`; // End book
+}
+
+htmlContent += `
+    </div>
+    <script>
+        lucide.createIcons();
+
+        function copyPrompt(elementId, btn) {
+            const text = document.getElementById(elementId).innerText;
+            // Remove the quotes around the prompt for copying
+            const cleanText = text.replace(/^"|"$/g, '');
+            navigator.clipboard.writeText(cleanText).then(() => {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="check"></i> Copied!';
+                btn.classList.add('copied');
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('copied');
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>`;
+
+const outputFile = path.join(outputDir, "image.html");
+fs.writeFileSync(outputFile, htmlContent, 'utf-8');
+console.log(`Generated HTML to ${outputFile}`);
