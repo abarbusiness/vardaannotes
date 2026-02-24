@@ -1,0 +1,619 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 16: Garbage In, Garbage Out – Class 6 Science Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #1a1a2e;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --orange-bg: #fff3e0;
+            --orange-border: #fb8c00;
+            --red-border: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.7;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+        }
+
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 210mm;
+            max-width: 100%;
+            margin: 30px auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+            border-radius: 4px;
+        }
+
+        @media screen and (max-width:800px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 20px;
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .icon-moon {
+            opacity: 1;
+        }
+
+        .icon-sun {
+            opacity: 0;
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 3px solid #1a1a2e;
+        }
+
+        .chapter-tag {
+            display: inline-block;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding: 0.6rem 1rem;
+            background: #1a1a2e;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+            color: #1a1a2e;
+            border-left: 4px solid #43a047;
+            padding-left: 10px;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        strong {
+            color: #1a1a2e;
+        }
+
+        .highlight-box {
+            padding: 1rem 1.2rem;
+            margin: 1.2rem 0;
+            border-radius: 8px;
+            border-left: 5px solid;
+        }
+
+        .box-blue {
+            background: var(--blue-bg);
+            border-color: var(--blue-border);
+        }
+
+        .box-green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+        }
+
+        .box-yellow {
+            background: var(--yellow-bg);
+            border-color: var(--yellow-border);
+        }
+
+        .box-pink {
+            background: var(--pink-bg);
+            border-color: var(--pink-border);
+        }
+
+        .box-orange {
+            background: var(--orange-bg);
+            border-color: var(--orange-border);
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .tip-header {
+            font-weight: 700;
+            color: var(--red-border);
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .img-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem auto;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .img-placeholder .prompt-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #868e96;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .img-placeholder .prompt-text {
+            font-size: 0.9rem;
+            color: #495057;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .img-caption {
+            display: block;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+
+        .key-word {
+            background: #fff9c4;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 2px dashed #dee2e6;
+            margin: 2rem 0;
+        }
+
+        .three-r-card {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #43a047;
+        }
+
+        .three-r-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            min-width: 40px;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 15mm;
+                box-shadow: none !important;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <div class="chapter-header">
+            <div class="chapter-tag">Class 6 Science • Chapter 16</div>
+            <h1>Garbage In, Garbage Out</h1>
+            <p class="subtitle">Vardaan Learning Institute • Detailed Chapter Notes</p>
+        </div>
+
+        <h2>🗑️ 1. What is Garbage?</h2>
+        <p>Garbage (also called waste or refuse) is any unwanted material that is thrown away. Every day, our homes,
+            schools, markets, factories, and hospitals generate huge amounts of garbage. <strong>Proper disposal of
+                garbage is essential to keep our environment healthy.</strong></p>
+
+        <div class="highlight-box box-blue">
+            <strong>Two broad types of garbage:</strong>
+            <ul>
+                <li><strong>Biodegradable (Bio) waste:</strong> Waste that can be broken down by microorganisms
+                    (bacteria, fungi) in nature. Examples: vegetable peelings, fruit scraps, tea leaves, paper, cotton
+                    cloth, wood, food leftovers, dead leaves</li>
+                <li><strong>Non-biodegradable (Non-bio) waste:</strong> Waste that CANNOT be broken down by
+                    microorganisms and remains in the environment for decades or centuries. Examples: plastic bags,
+                    polythene, glass bottles, styrofoam, synthetic cloth, metal cans, e-waste</li>
+            </ul>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">🧠 Easy Memory Trick</span>
+            <strong>Bio</strong>degradable = <strong>Bio</strong>logy (living things) can break it down<br>
+            <strong>Non</strong>-biodegradable = <strong>Non</strong>e of the living things can break it down
+        </div>
+
+        <h2>♻️ 2. The 3 R's — Reduce, Reuse, Recycle</h2>
+        <p>The best and most sustainable approach to managing waste is following the <span class="key-word">3 R's
+                principle</span>:</p>
+
+        <div class="three-r-card">
+            <div class="three-r-icon">📉</div>
+            <div>
+                <strong>REDUCE</strong> — Use LESS in the first place!<br>
+                <em>Examples:</em> Use both sides of paper, buy only what you need, use a reusable bag instead of
+                plastic bags, reduce packaging, take shorter showers.
+            </div>
+        </div>
+        <div class="three-r-card">
+            <div class="three-r-icon">🔄</div>
+            <div>
+                <strong>REUSE</strong> — Use items AGAIN instead of throwing them out!<br>
+                <em>Examples:</em> Use old jars as storage containers, repair torn clothes instead of discarding, refill
+                water bottles, give old clothes/books to others.
+            </div>
+        </div>
+        <div class="three-r-card">
+            <div class="three-r-icon">♻️</div>
+            <div>
+                <strong>RECYCLE</strong> — Convert waste into NEW useful products!<br>
+                <em>Examples:</em> Paper recycled into new paper, glass melted into new bottles, metal recycled into new
+                metal, plastic recycled into bags or furniture.<br>
+                <em>Note: Recycling requires energy and processing, so Reduce and Reuse are even better!</em>
+            </div>
+        </div>
+
+        <div class="img-placeholder">
+            <div class="prompt-label">📸 Image Prompt</div>
+            <div class="prompt-text">An eye-catching infographic of the 3 R's in a circular arrangement: Three segments
+                in a circle: (1) "REDUCE" in red/orange with a downward arrow icon and examples (use less paper, avoid
+                plastic bags), (2) "REUSE" in blue with a circular reuse arrow icon and examples (repair clothes, reuse
+                jars), (3) "RECYCLE" in green with the standard recycling symbol and examples (paper → new paper,
+                plastic → new items). At the center of the circle: "3 R's for a Greener Earth!" in bold. Clean, modern
+                infographic style with bright colors, white background, simple icons accompanying each R.</div>
+        </div>
+        <span class="img-caption">Fig. 16.1 — The 3 R's principle for waste management</span>
+
+        <h2>🌱 3. Composting — Turning Waste into Gold!</h2>
+        <p><span class="key-word">Composting</span> is the process of converting biodegradable kitchen and garden waste
+            into a rich, dark, crumbly manure called <span class="key-word">compost</span>, which is an excellent
+            natural fertilizer for plants.</p>
+
+        <h3>How to make a Compost Pit:</h3>
+        <div class="highlight-box box-green">
+            <ol>
+                <li>Dig a pit in a corner of the garden (about 3×3 feet)</li>
+                <li>Add a layer of soil at the bottom</li>
+                <li>Add biodegradable kitchen waste — vegetable/fruit peels, tea leaves, eggshells, rice water, wilted
+                    flowers, grass clippings, paper</li>
+                <li>Do NOT add: meat, fish, cooked oily food, or plastic</li>
+                <li>Sprinkle water to keep it moist</li>
+                <li>Cover with soil and dry leaves</li>
+                <li>After 2–3 months: microorganisms decompose the waste → it becomes dark, crumbly
+                    <strong>compost</strong></li>
+                <li>Mix compost into garden soil → plants grow better, healthier!</li>
+            </ol>
+        </div>
+        <div class="highlight-box box-yellow">
+            <strong>Vermicomposting</strong> = using <strong>earthworms (redworms)</strong> to speed up composting.
+            Earthworms eat biodegradable waste and their excreta (castings) is a very rich fertilizer. A small
+            vermicomposting box can be kept even in a balcony!
+        </div>
+
+        <h2>🔵🟢 4. Segregation of Waste — Separate at Source!</h2>
+        <p>Before garbage can be properly managed, it must be <strong>separated</strong> (segregated) into types. This
+            is done using coloured bins:</p>
+        <table>
+            <tr>
+                <th>Bin Color</th>
+                <th>Type of Waste</th>
+                <th>Examples</th>
+            </tr>
+            <tr>
+                <td><strong>Green Bin</strong></td>
+                <td>Wet/Biodegradable waste (compostable)</td>
+                <td>Fruit/vegetable peels, food scraps, tea leaves, egg shells, garden waste</td>
+            </tr>
+            <tr>
+                <td><strong>Blue/Grey Bin</strong></td>
+                <td>Dry/Non-biodegradable waste (recyclable)</td>
+                <td>Plastic, glass, metal cans, paper cartons, cardboard</td>
+            </tr>
+            <tr>
+                <td><strong>Red Bin</strong></td>
+                <td>Hazardous/Toxic waste</td>
+                <td>Batteries, medicines, e-waste (old phones, bulbs), chemicals, medical waste</td>
+            </tr>
+        </table>
+
+        <div class="highlight-box box-orange">
+            <strong>Why segregate?</strong><br>
+            If all waste is mixed together, the biodegradable and non-biodegradable waste contaminate each other →
+            harder to compost organic waste, harder to recycle dry waste. Segregated waste is much easier to process
+            properly!
+        </div>
+
+        <h2>⚠️ 5. Problems Caused by Garbage</h2>
+        <div class="highlight-box box-pink">
+            <ul>
+                <li><strong>Land pollution:</strong> Open garbage dumps are ugly and contaminate soil. Non-biodegradable
+                    waste (plastic) stays in soil for 500+ years</li>
+                <li><strong>Water pollution:</strong> Garbage dumped near water bodies or on roadsides gets washed into
+                    rivers, lakes, and oceans, harming aquatic life</li>
+                <li><strong>Air pollution:</strong> Burning garbage releases toxic gases and dioxins. Rotting garbage
+                    releases methane (a greenhouse gas)</li>
+                <li><strong>Disease spread:</strong> Rotting garbage is a breeding ground for mosquitoes (dengue,
+                    malaria), flies, rats — they spread diseases</li>
+                <li><strong>Plastic danger:</strong> Animals accidentally eat plastic bags → die. Plastic in oceans
+                    breaks into microplastics → enters the food chain → affects human health</li>
+            </ul>
+        </div>
+
+        <h2>🐄 6. Paper and Plastic — A Comparison</h2>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>Paper Bags</th>
+                <th>Plastic Bags</th>
+            </tr>
+            <tr>
+                <td>Biodegradable?</td>
+                <td>Yes — decomposes in weeks</td>
+                <td>No — lasts 500+ years in soil</td>
+            </tr>
+            <tr>
+                <td>Recyclable?</td>
+                <td>Yes</td>
+                <td>Some types, but not all</td>
+            </tr>
+            <tr>
+                <td>Harmful to animals?</td>
+                <td>No</td>
+                <td>Yes — animals eat it and die</td>
+            </tr>
+            <tr>
+                <td>Made from</td>
+                <td>Trees (renewable, but cuts forests)</td>
+                <td>Petroleum (non-renewable fossil fuel)</td>
+            </tr>
+            <tr>
+                <td>Better choice</td>
+                <td>✅ Reusable cloth bags are best!</td>
+                <td>❌ Avoid single-use plastic</td>
+            </tr>
+        </table>
+
+        <div class="master-tip">
+            <span class="tip-header">🛍️ The Best Bag!</span>
+            Neither paper nor plastic bags are ideal. The <strong>best option</strong> is a <strong>reusable cloth/jute
+                bag</strong> — durable, biodegradable, and carries more. Carry your own bag!
+        </div>
+
+        <hr class="section-divider">
+        <h2>📝 7. Quick Revision</h2>
+        <div class="highlight-box box-green">
+            <ol>
+                <li><strong>Biodegradable:</strong> broken down by microbes (vegetable peel, paper, food).
+                    <strong>Non-biodegradable:</strong> NOT broken down (plastic, glass, metal)</li>
+                <li><strong>3 R's:</strong> Reduce (use less) → Reuse (use again) → Recycle (convert to new product)
+                </li>
+                <li><strong>Composting:</strong> biodegradable kitchen/garden waste → dark crumbly compost (manure)
+                    after 2–3 months</li>
+                <li><strong>Vermicomposting:</strong> using earthworms to compost waste faster; their castings =
+                    excellent fertilizer</li>
+                <li><strong>Segregation:</strong> Green bin (wet/organic), Blue bin (recyclable dry waste), Red bin
+                    (hazardous)</li>
+                <li>Open garbage dumps cause: disease spread (mosquitoes, flies, rats), land/water/air pollution</li>
+                <li>Plastic stays in soil 500+ years; animals eat it → die; enters ocean food chain</li>
+                <li>Best substitute for plastic bags = <strong>reusable cloth/jute bags</strong></li>
+                <li>Burning garbage = toxic air pollution; rotting garbage = methane (greenhouse gas)</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() { const html = document.documentElement; html.classList.toggle('dark-mode'); localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light'); }
+        if (localStorage.getItem('theme') === 'dark') { document.documentElement.classList.add('dark-mode'); }
+    </script>
+</body>
+
+</html>

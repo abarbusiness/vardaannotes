@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 03: Data Handling – Class 7 Maths Notes</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --paper: #ffffff;
+            --ink: #1a1a2e;
+            --accent: #1565c0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.7;
+        }
+
+        html {
+            transition: filter .3s;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            transition: all .5s cubic-bezier(.68, -.55, .265, 1.55);
+        }
+
+        .icon-moon {
+            opacity: 1;
+        }
+
+        .icon-sun {
+            opacity: 0;
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+        }
+
+        .sheet {
+            background: var(--paper);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
+            width: 210mm;
+            max-width: 100%;
+            margin: 30px auto;
+            padding: 20mm;
+            border-radius: 4px;
+        }
+
+        @media(max-width:800px) {
+            .sheet {
+                width: 100%;
+                padding: 20px;
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 3px solid var(--ink);
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--ink);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: .5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding: .6rem 1rem;
+            background: var(--ink);
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: .5rem;
+            color: var(--ink);
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: .4rem;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        strong {
+            color: var(--ink);
+        }
+
+        .box {
+            padding: 1rem 1.2rem;
+            margin: 1.2rem 0;
+            border-radius: 8px;
+            border-left: 5px solid;
+        }
+
+        .box-blue {
+            background: #e3f2fd;
+            border-color: #1e88e5;
+        }
+
+        .box-green {
+            background: #e8f5e9;
+            border-color: #43a047;
+        }
+
+        .box-yellow {
+            background: #fffde7;
+            border-color: #fdd835;
+        }
+
+        .box-orange {
+            background: #fff3e0;
+            border-color: #fb8c00;
+        }
+
+        .tip {
+            border: 2px dashed #c62828;
+            background: #fffaf0;
+            padding: 1rem 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .tip-h {
+            font-weight: 700;
+            color: #c62828;
+            display: block;
+            margin-bottom: .4rem;
+            font-size: .9rem;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: .95rem;
+        }
+
+        th {
+            background: var(--ink);
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            border: 1px solid #dee2e6;
+            padding: 9px;
+            color: #333;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+
+        .formula {
+            background: var(--ink);
+            color: #fff;
+            padding: .8rem 1.2rem;
+            border-radius: 8px;
+            margin: .8rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .kw {
+            background: #fff9c4;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .chart-wrap {
+            max-width: 480px;
+            margin: 1.5rem auto;
+            background: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+        }
+
+        .chart-title {
+            text-align: center;
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 1rem;
+            margin-bottom: .8rem;
+        }
+
+        .chart-two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        @media(max-width:600px) {
+            .chart-two {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .practice-section {
+            margin-top: 2rem;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .practice-header {
+            background: var(--accent);
+            color: #fff;
+            padding: .8rem 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .practice-body {
+            padding: 1rem 1.2rem;
+        }
+
+        .q-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .5rem .8rem;
+        }
+
+        @media(max-width:600px) {
+            .q-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .q {
+            font-size: .95rem;
+            color: #333;
+            padding: .35rem 0;
+        }
+
+        .q-num {
+            font-weight: 700;
+            color: var(--accent);
+            margin-right: 4px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .easy {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .medium {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .hard {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        hr.div {
+            border: none;
+            border-top: 2px dashed #dee2e6;
+            margin: 2rem 0;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .sheet {
+                width: 100%;
+                margin: 0;
+                padding: 15mm;
+                box-shadow: none !important;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: .05 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan" class="watermark-image"></div>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+    </button>
+
+    <div class="sheet">
+        <div class="chapter-header">
+            <div class="tag">Class 7 Maths • Chapter 03</div>
+            <h1>Data Handling</h1>
+            <p class="subtitle">Vardaan Learning Institute • Detailed Notes with Practice Questions</p>
+        </div>
+
+        <h2>📊 1. Key Terms</h2>
+        <table>
+            <tr>
+                <th>Term</th>
+                <th>Definition</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td><strong>Data</strong></td>
+                <td>A collection of numbers/information gathered for a specific purpose</td>
+                <td>Marks of 10 students</td>
+            </tr>
+            <tr>
+                <td><strong>Raw Data</strong></td>
+                <td>Data collected in original form, not organised</td>
+                <td>52, 43, 76, 90, 43, 52, 76</td>
+            </tr>
+            <tr>
+                <td><strong>Range</strong></td>
+                <td>Difference between highest and lowest values</td>
+                <td>Range = Max − Min = 90 − 43 = 47</td>
+            </tr>
+            <tr>
+                <td><strong>Frequency</strong></td>
+                <td>Number of times a value appears in data</td>
+                <td>52 appears twice → frequency = 2</td>
+            </tr>
+            <tr>
+                <td><strong>Tally Marks</strong></td>
+                <td>Used to organise and count data quickly. Every 5th mark crosses the previous 4 (||||)</td>
+                <td>|||| | = 6</td>
+            </tr>
+            <tr>
+                <td><strong>Frequency Distribution Table</strong></td>
+                <td>A table showing values and their frequencies</td>
+                <td>See example below</td>
+            </tr>
+            <tr>
+                <td><strong>Class Interval</strong></td>
+                <td>Groups of values with equal width: e.g. 0-10, 10-20</td>
+                <td>Class width = 10</td>
+            </tr>
+        </table>
+
+        <div class="box box-yellow">
+            <strong>Example — Grouped Frequency Table:</strong><br>
+            Scores of 20 students: 55 60 65 70 45 80 75 50 65 70 72 55 65 80 48 72 60 75 50 70<br><br>
+            <table style="margin:0;font-size:.9rem;">
+                <tr>
+                    <th>Class Interval</th>
+                    <th>Tally</th>
+                    <th>Frequency</th>
+                </tr>
+                <tr>
+                    <td>40 – 50</td>
+                    <td>|||</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>50 – 60</td>
+                    <td>||||</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>60 – 70</td>
+                    <td>|||| |</td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>70 – 80</td>
+                    <td>|||| ||</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td></td>
+                    <td><strong>20</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>📈 2. Mean, Median, Mode</h2>
+        <div class="formula">Mean = Sum of all values ÷ Total number of values &nbsp;&nbsp;&nbsp; ( x̄ = Σx/n )</div>
+        <div class="formula">Median = Middle value when data is arranged in ASCENDING order</div>
+        <div class="formula">Mode = Value that appears MOST frequently in the data</div>
+
+        <div class="box box-blue">
+            <strong>Example:</strong> Data = 4, 7, 3, 4, 8, 4, 7, 3<br>
+            Arranged: 3, 3, 4, 4, <strong>4</strong>, 7, 7, 8 (n=8)<br>
+            <strong>Mean</strong> = (3+3+4+4+4+7+7+8) ÷ 8 = 40 ÷ 8 = <strong>5</strong><br>
+            <strong>Median</strong> = average of 4th and 5th value = (4+4)/2 = <strong>4</strong><br>
+            <strong>Mode</strong> = <strong>4</strong> (appears 3 times — most frequent)
+        </div>
+
+        <div class="tip"><span class="tip-h">🧠 When to use Mean, Median, Mode?</span>
+            • <strong>Mean:</strong> Best when data has no extreme values (no outliers). Use for exam averages.<br>
+            • <strong>Median:</strong> Best when there are extreme values (e.g., salary data with very rich people).
+            Middle value is fair.<br>
+            • <strong>Mode:</strong> Best for finding the most popular item. E.g., most common shoe size, most popular
+            subject.
+        </div>
+
+        <h2>📊 3. Bar Graph</h2>
+        <p>A <span class="kw">bar graph</span> uses rectangular bars of equal width to represent data. The height of
+            each bar = the frequency/value.</p>
+
+        <!-- Bar Chart using Chart.js -->
+        <div class="chart-wrap">
+            <div class="chart-title">📊 Favourite Sports of 50 Students (Bar Graph)</div>
+            <canvas id="barChart" height="220"></canvas>
+        </div>
+
+        <h2>🥧 4. Pie Chart (Circle Graph)</h2>
+        <p>A <span class="kw">pie chart</span> shows data as parts of a whole circle. Each slice shows a category's
+            share as a fraction/percentage of the total.</p>
+        <div class="formula">Angle for each category = (Value / Total) × 360°</div>
+
+        <!-- Pie Chart using Chart.js -->
+        <div class="chart-two">
+            <div class="chart-wrap">
+                <div class="chart-title">🥧 Time Spent by Students Daily</div>
+                <canvas id="pieChart" height="250"></canvas>
+            </div>
+            <div class="chart-wrap">
+                <div class="chart-title">📈 Double Bar — Sports by Gender</div>
+                <canvas id="doubleBar" height="250"></canvas>
+            </div>
+        </div>
+
+        <h2>📉 5. Probability — Introduction</h2>
+        <div class="formula">Probability of Event E = (Number of Favourable Outcomes) / (Total Possible Outcomes)</div>
+        <div class="box box-orange">
+            <strong>Key Points:</strong>
+            <ul>
+                <li>Probability ranges from <strong>0</strong> (impossible) to <strong>1</strong> (certain)</li>
+                <li><strong>Random experiment:</strong> outcome cannot be predicted (e.g., tossing a coin, rolling a
+                    die)</li>
+                <li><strong>Outcome:</strong> result of one trial</li>
+                <li><strong>Event:</strong> a set of one or more outcomes</li>
+                <li>Probability of getting H on tossing a coin = 1/2 (1 favourable outcome out of 2 total)</li>
+                <li>Probability of getting 4 on rolling a die = 1/6 (1 favourable out of 6 total)</li>
+                <li>Probability of getting even number on die = 3/6 = 1/2 (2, 4, 6 are even)</li>
+            </ul>
+        </div>
+
+        <hr class="div">
+        <div class="practice-section">
+            <div class="practice-header">✏️ Practice Questions — Data Handling (28 Questions)</div>
+            <div class="practice-body">
+                <h3 style="margin-top:.5rem;border-left:4px solid #2e7d32;">Section A — Definitions & Calculation <span
+                        class="level-badge easy">Easy</span></h3>
+                <div class="q-grid">
+                    <div class="q"><span class="q-num">Q1.</span> Find Mean: 5, 8, 12, 3, 7</div>
+                    <div class="q"><span class="q-num">Q2.</span> Find Median: 14, 9, 6, 21, 3</div>
+                    <div class="q"><span class="q-num">Q3.</span> Find Mode: 2, 3, 5, 3, 2, 3, 7, 2, 3</div>
+                    <div class="q"><span class="q-num">Q4.</span> Find Range: 18, 4, 30, 9, 21, 7</div>
+                    <div class="q"><span class="q-num">Q5.</span> P(getting a tail when tossing a coin) = ?</div>
+                    <div class="q"><span class="q-num">Q6.</span> P(getting 5 on rolling a die) = ?</div>
+                    <div class="q"><span class="q-num">Q7.</span> Which average is most affected by extreme values?
+                    </div>
+                    <div class="q"><span class="q-num">Q8.</span> Angle for category of 15 out of 60 in pie chart = ?
+                    </div>
+                </div>
+
+                <h3 style="border-left:4px solid #e65100;">Section B — Data Interpretation <span
+                        class="level-badge medium">Medium</span></h3>
+                <div class="q-grid">
+                    <div class="q"><span class="q-num">Q9.</span> Scores: 72, 68, 85, 90, 72, 85, 72, 60. Find Mean,
+                        Median, Mode.</div>
+                    <div class="q"><span class="q-num">Q10.</span> If mean of 5 numbers is 12 and four of them are 8,
+                        15, 10, 14, find the fifth number.</div>
+                    <div class="q"><span class="q-num">Q11.</span> A bag has 4 red, 3 blue, 3 green balls. P(drawing a
+                        blue ball) = ?</div>
+                    <div class="q"><span class="q-num">Q12.</span> Prepare a grouped frequency table for: 22, 34, 12,
+                        55, 42, 34, 22, 55, 34, 12, 22, 42 (class width = 15, starting from 10)</div>
+                </div>
+
+                <h3 style="border-left:4px solid #e65100;">Section C — Word Problems <span
+                        class="level-badge medium">Medium</span></h3>
+                <ol style="padding-left:20px;">
+                    <li class="q"><span class="q-num">Q13.</span> Runs scored by Rohit in 6 matches: 45, 72, 60, 88, 55,
+                        30. What is his average score?</li>
+                    <li class="q"><span class="q-num">Q14.</span> Mean of 8 observations is 25. One observation 15 is
+                        removed. Find the new mean of 7 observations.</li>
+                    <li class="q"><span class="q-num">Q15.</span> A die is rolled once. Find P(a) getting a number
+                        greater than 4, (b) getting an odd number, (c) getting a multiple of 3.</li>
+                    <li class="q"><span class="q-num">Q16.</span> A class of 40 students was asked their favourite
+                        colour. Red: 12, Blue: 10, Green: 8, Yellow: 10. Draw a pie chart (find angles for each).</li>
+                    <li class="q"><span class="q-num">Q17.</span> Monthly rainfall (cm) for 6 months: Jan 4, Feb 2, Mar
+                        0, Apr 6, May 18, Jun 30. Find mean and range.</li>
+                </ol>
+
+                <h3 style="border-left:4px solid #6a1b9a;">Section D — Challenge Problems <span
+                        class="level-badge hard">Hard</span></h3>
+                <ol style="padding-left:20px;">
+                    <li class="q"><span class="q-num">Q18.</span> In a survey: liking for Mathematics — 45 students,
+                        Science — 30, Arts — 15, Sports — 30 (total 120). If this is a pie chart, find which subject
+                        gets exactly 90° angle.</li>
+                    <li class="q"><span class="q-num">Q19.</span> Mean of 10 numbers is 15. Mean of first 5 numbers is
+                        12. What is the mean of the other 5?</li>
+                    <li class="q"><span class="q-num">Q20.</span> A bag has 5 red, x blue, and 3 green balls.
+                        Probability of red ball = 5/14. Find x.</li>
+                    <li class="q"><span class="q-num">Q21.</span> Median of 7 numbers in ascending order is the 4th
+                        number. If four numbers are 3, 7, 9, 15 and three others are all equal to 'k', and k is the
+                        mode, and the median is 9, find k.</li>
+                    <li class="q"><span class="q-num">Q22.</span> Two dice are rolled simultaneously. Find P(sum = 7).
+                    </li>
+                    <li class="q"><span class="q-num">Q23.</span> A class's marks are given. After the teacher adds 5 to
+                        every student's mark, how does mean/median/mode change?</li>
+                    <li class="q"><span class="q-num">Q24.</span> What is the probability that a randomly chosen 2-digit
+                        number is a perfect square? List all 2-digit perfect squares first.</li>
+                    <li class="q"><span class="q-num">Q25.</span> In 30 spins of the wheel, red came 12 times, blue 8
+                        times, green 10 times. Compare the experimental probability vs theoretical (equal chances) for
+                        each colour.</li>
+                </ol>
+
+                <div class="box box-green" style="margin-top:1.2rem;font-size:.9rem;">
+                    <strong>✅ Key Answers:</strong> Q1: 7 | Q2: 9 | Q3: 3 | Q4: 26 | Q5: 1/2 | Q6: 1/6 | Q8: 90° | Q13:
+                    58.33 | Q24: 6/90 = 1/15 (16,25,36,49,64,81 are 2-digit perfect squares) | Q22: 6/36 = 1/6
+                </div>
+            </div>
+        </div>
+
+        <hr class="div">
+        <h2>📝 Quick Revision</h2>
+        <div class="box box-green">
+            <ol>
+                <li><strong>Mean</strong> = Sum ÷ Count. Best for balanced datasets without extreme values</li>
+                <li><strong>Median</strong> = Middle value (sorted). If even count, average the two middle values</li>
+                <li><strong>Mode</strong> = Most frequent value. A dataset can have no mode, one mode, or multiple modes
+                </li>
+                <li>Range = Maximum − Minimum</li>
+                <li>Pie chart angle = (Value/Total) × 360°</li>
+                <li>Probability = Favourable Outcomes / Total Outcomes. Always between 0 and 1</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() { const h = document.documentElement; h.classList.toggle('dark-mode'); localStorage.setItem('theme', h.classList.contains('dark-mode') ? 'dark' : 'light'); }
+        if (localStorage.getItem('theme') === 'dark') { document.documentElement.classList.add('dark-mode'); }
+
+        // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Cricket', 'Football', 'Badminton', 'Chess', 'Swimming'],
+                datasets: [{
+                    label: 'No. of Students',
+                    data: [20, 12, 8, 5, 5],
+                    backgroundColor: ['#1565c0', '#2e7d32', '#e65100', '#6a1b9a', '#c62828'],
+                    borderRadius: 6, borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false }, tooltip: { mode: 'index' } },
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Number of Students' }, grid: { color: '#e0e0e0' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Sleep (8h)', 'Study (6h)', 'Play (3h)', 'Misc (7h)'],
+                datasets: [{
+                    data: [8, 6, 3, 7],
+                    backgroundColor: ['#1565c0', '#2e7d32', '#e65100', '#6a1b9a'],
+                    borderWidth: 2, borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                    tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + 'h (' + Math.round(ctx.parsed / 24 * 100) + '%)' } }
+                }
+            }
+        });
+
+        // Double Bar Chart
+        const dblCtx = document.getElementById('doubleBar').getContext('2d');
+        new Chart(dblCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Cricket', 'Football', 'Badminton', 'Swimming'],
+                datasets: [
+                    { label: 'Boys', data: [15, 10, 5, 3], backgroundColor: '#1565c0', borderRadius: 4 },
+                    { label: 'Girls', data: [5, 2, 8, 7], backgroundColor: '#d81b60', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true, grid: { color: '#e0e0e0' } }, x: { grid: { display: false } } }
+            }
+        });
+    </script>
+</body>
+
+</html>
