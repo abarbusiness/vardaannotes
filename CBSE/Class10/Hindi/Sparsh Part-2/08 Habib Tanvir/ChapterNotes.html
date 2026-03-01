@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कारतूस (Kartoos) - Vardaan Master Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-color: #ffffff;
+            --ink-color: #2c3e50;
+            --highlight-yellow: #fff9c4;
+            --highlight-green: #e8f5e9;
+            --highlight-pink: #fce4ec;
+            --highlight-blue: #e3f2fd;
+            --accent-red: #c62828;
+            --accent-blue: #1565c0;
+            --accent-purple: #7b1fa2;
+            --accent-orange: #e65100;
+            --box-border: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background-color: #fff;
+            color: var(--ink-color);
+            font-family: 'Kalam', cursive;
+            line-height: 1.8;
+            font-size: 1.15rem;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        html {
+            transition: filter .3s
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg)
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.11;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            min-height: 297mm;
+            background-color: var(--paper-color);
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .header-institute {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .header-title {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #d84315;
+            text-shadow: 2px 2px 0px rgba(216, 67, 21, 0.2);
+        }
+
+        .header-subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 500;
+            padding: 5px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #2e7d32;
+            border-bottom: 4px solid #333;
+            padding-bottom: 10px;
+            margin: 30px 0;
+        }
+
+        h2 {
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 5px;
+            margin-top: 40px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        h3 {
+            color: var(--accent-red);
+            margin-top: 30px;
+            font-size: 1.6rem;
+            border-left: 5px solid var(--accent-red);
+            padding-left: 10px;
+            font-weight: 700;
+        }
+
+        strong,
+        b {
+            color: #c62828;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li::marker {
+            color: #1565c0;
+            font-weight: bold;
+        }
+
+        .rule-box {
+            border: 2px solid #fbc02d;
+            background-color: var(--highlight-yellow);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+            font-size: 1.2rem;
+        }
+
+        .author-box {
+            border: 2px solid #4a148c;
+            background-color: #f3e5f5;
+            padding: 25px 25px 25px 80px;
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .author-box::before {
+            content: "✍️";
+            font-size: 3rem;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        .character-box {
+            background-color: var(--highlight-blue);
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-box {
+            border-left: 6px solid #e65100;
+            background-color: #fff3e0;
+            padding: 20px 30px;
+            margin: 25px 0;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #d84315;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '"';
+            font-size: 4.5rem;
+            position: absolute;
+            left: 5px;
+            top: -15px;
+            color: rgba(230, 81, 0, 0.2);
+            font-family: serif;
+        }
+
+        @media print {
+            .theme-toggle {
+                display: none !important;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 0;
+            }
+
+            body {
+                background-color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                display: block;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .header-title {
+                font-size: 2.2rem;
+            }
+
+            .author-box {
+                padding-left: 20px;
+            }
+
+            .author-box::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image">
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1 class="header-institute">VARDAAN LEARNING INSTITUTE <span style="margin: 0 10px; color: #ccc;">|</span>
+            POWERED BY VARDAAN COMET</h1>
+        <h2 class="header-title">कारतूस (एकांकी)</h2>
+        <p class="header-subtitle">CBSE Class 10 Hindi (Course B) • Sparsh Part-2 • Prose (Gadya)</p>
+
+        <div class="rule-box">
+            <p><strong>पाठ का सारांश (Summary/Context):</strong></p>
+            <p>'कारतूस' (Kartoos) हबीब तनवीर द्वारा लिखा गया एक बहुत ही रोमांचक <strong>एकांकी (One-act Play)</strong>
+                है। यह नाट्य-कथा सन् 1799 (भारत में अंग्रेजों के शुरुआती शासन काल) की है। इस पाठ में अवध के
+                नवाब—<strong>वज़ीर अली</strong> (Wazir Ali) की देशभक्ति, बहादुरी (Bravery), और अंग्रेज़ों के प्रति उसके
+                हृदय में धधकने वाली नफरत (Hatred) का बहुत ही शानदार चित्रण किया गया है। वज़ीर अली एक जाँबाज़ सिपाही था,
+                जिसका एकमात्र लक्ष्य (Goal) अंग्रेज़ों को भारत से बाहर खदेड़ना था। इस एकांकी में दिखाया गया है कि कैसे
+                वज़ीर अली <strong>अकेले ही</strong> अंग्रेज़ी सेना के 'खेमे' (Camp) में घुसकर बड़ी चतुराई और बहादुरी से
+                अंग्रेज़ कर्नल से 'कारतूस' (Cartridges) लेकर चला जाता है और कर्नल हक्का-बक्का रह जाता है।</p>
+        </div>
+
+        <h2>1. लेखक का परिचय (Author Introduction)</h2>
+        <div class="author-box">
+            <p><strong>लेखक: हबीब तनवीर (Habib Tanvir)</strong></p>
+            <p>हबीब तनवीर (1923-2009) भारत के बहुत बड़े नाटककार (Playwright), निर्देशक और अभिनेता थे। उनका जन्म छत्तीसगढ़
+                के रायपुर में हुआ था। उन्होंने कई मशहूर नाटकों की रचना की, जिनमें 'आगरा बाज़ार' और 'चरणदास चोर' प्रमुख
+                हैं। वे ग्रामीण और लोक-कलाओं (Folk arts) को अपने नाटकों में जोड़ते थे। उनके नाटकों में हास्य (Comedy) के
+                साथ-साथ समाज की सच्चाई और ऐतिहासिक नायकों (Historical Heroes) की बहादुरी का वर्णन होता है।</p>
+        </div>
+
+        <h2>2. प्रमुख पात्र एवं ऐतिहासिक पृष्ठभूमि (Characters & History)</h2>
+        <div class="character-box">
+            <ul>
+                <li><strong>वज़ीर अली (Wazir Ali):</strong> <br>वह आसिफुद्दौला का बेटा और अवध का असली नवाब था। वह एक
+                    सच्चा देशभक्त और शेर की तरह निडर (Fearless) सिपाही था। उसके जीवन का <strong>एकमात्र लक्ष्य
+                        'अंग्रेज़ों को इस देश से बाहर निकालना'</strong> था।</li>
+                <li><strong>सआदत अली (Saadat Ali):</strong> <br>यह वज़ीर अली का चाचा (आसिफुद्दौला का भाई) था। वह बहुत ही
+                    डरपोक, 'ऐश-पसंद' (Luxury loving), और <strong>अंग्रेज़ों का चमचा (Puppet)</strong> था। अंग्रेज़ों ने
+                    वज़ीर अली को गद्दी से हटाकर सआदत अली को अवध का नवाब बना दिया था क्योंकि उसने आधा अवध और बहुत सारी
+                    दौलत अंग्रेज़ों को दे दी थी।</li>
+                <li><strong>कर्नल (Colonel) और लेफ़्टिनेंट (Lieutenant):</strong> <br>ये अंग्रेज़ अधिकारी हैं, जो गोरखपुर
+                    के जंगलों (Gorakhpur forests) में कई महीनों से अपनी पूरी सेना तानकर (Camp लगाकर) बैठे हैं। इनका मिशन
+                    'वज़ीर अली की गिरफ़्तारी' (Arrest) है, पर वे उसे पकड़ नहीं पा रहे हैं।</li>
+            </ul>
+        </div>
+
+        <h2>3. कहानी / एकांकी के प्रमुख घटनाक्रम (Main Plot)</h2>
+        <ul>
+            <li><strong>जंगल में अंग्रेज़ों का खेमा:</strong> <br>रात का समय है। गोरखपुर के जंगलों में कर्नल का खेमा
+                (Camp) लगा है। कर्नल और लेफ़्टिनेंट आपस में बात कर रहे हैं कि वज़ीर अली ने उनकी नींद हराम कर दी है। कर्नल
+                उसे <strong>'रॉबिनहुड' (Robinhood)</strong> कहता है, क्योंकि उसके कारनामे सुनकर रॉबिनहुड की याद आ जाती
+                है। कर्नल बताता है कि वज़ीर अली बहुत बड़ा 'खतरा' है क्योंकि उसने अफ़गानिस्तान के बादशाह 'शाहज़माँ' को भी
+                भारत पर हमला करने की दावत (Invitation) दे दी है।</li>
+            <li><strong>वज़ीर अली का गुस्सा (Murder in Benaras):</strong> <br>कर्नल बताता है कि जब अंग्रेज़ों ने वज़ीर अली
+                को गद्दी से हटाकर बनारस (Varanasi) भेज दिया था, और बाद में कलकत्ता (Kolkata) बुलाने की कोशिश की, तो वज़ीर
+                अली को बहुत गुस्सा आया। उसने कंपनी के वकील की भी <strong>'हत्या' (Murder)</strong> कर दी थी (खंजर घोंप
+                कर), क्योंकि वकील ने उसकी शिकायत नहीं सुनी और उसे बुरा-भला कहा था। तभी से वह जंगलों में छिपकर विद्रोह
+                (Rebellion/Mutiny) कर रहा है और अपनी फ़ौज इकट्ठी कर रहा है।</li>
+            <li><strong>धूल का उड़ना (The Climax & Entry):</strong> <br>तभी एक सिपाही आकर भागता हुआ खबर देता है कि बाहर
+                से बहुत सी धूल (Dust) उड़ती आ रही है। थोड़ी देर में, एक घड़सवार (Horse-rider) तेज़ी से आता है। वह अकेले ही
+                आया था। उसने कहा कि उसे <strong>'कर्नल से मिलना है।'</strong></li>
+            <li><strong>वज़ीर अली की चतुराई और बहादुरी:</strong> <br>घड़सवार अंदर आता है और लेफ़्टिनेंट को बाहर भेज देता है
+                ताकि वह कर्नल से अकेले बात कर सके। वह बहुत ही निडरता से कर्नल को बताता है कि <strong>"उसका भी एक ही मकसद
+                    है—वज़ीर अली की गिरफ़्तारी!"</strong> वह कर्नल से कहता है कि उसे वज़ीर अली को पकड़ने के लिए कुछ
+                <strong>'कारतूस' (Cartridges / Bullets)</strong> चाहिए।</li>
+            <li><strong>कारतूस लेना और भाग जाना:</strong> <br>कर्नल सोचता है कि यह घुड़सवार उनकी मदद करेगा, इसलिए वह उसे
+                'दस कारतूस' (10 Cartridges) दे देता है।
+                <br>कारतूस लेते ही घुड़सवार मुस्कुराता है और बाहर जाने लगता है। कर्नल हैरान होकर उससे उसका
+                <strong>'नाम'</strong> पूछता है।
+                <br>घुड़सवार बाहर जाते हुए शान से कहता है—<strong>"मेरा नाम वज़ीर अली है! तुमने मुझे कारतूस दिए हैं, इसलिए
+                    तुम्हारी जान बख्श (Spare) दी।"</strong>
+                <br>इतना कहकर वह घोड़े पर बैठकर धूल उड़ाता हुआ भाग जाता है। और कर्नल डर व हैरानी के मारे 'हक्का-बक्का' खड़ा
+                रह जाता है।
+            </li>
+        </ul>
+
+        <h2>4. महत्वपूर्ण कथन एवं उनके अर्थ (Important Quotes)</h2>
+        <div class="quote-box">
+            "कर्नल, कारनामों को सुनकर रॉबिनहुड की याद आती है।"
+        </div>
+        <p>= <strong>अर्थ:</strong> यह बात कर्नल लेफ़्टिनेंट से कहता है। रॉबिनहुड जंगलों में रहने वाला एक मशहूर लुटेरा था
+            जो 'अमीरों को लूटकर' ग़रीबों की मदद करता था और बहुत ही बहादुर था। वज़ीर अली भी जंगलों में छिपकर अंग्रेज़ों
+            (कलेक्टर/वकील) को मार रहा था और उसकी बहादुरी के किस्से इतने मशहूर थे कि उसे पकड़ने में अंग्रेज़ी सेना के पसीने
+            छूट गए थे। इसलिए अंग्रेज़ भी उसकी दिलेरी (Bravery) का लोहा मानते हुए उसकी तुलना रॉबिनहुड से करते हैं।</p>
+
+        <div class="quote-box">
+            "सआदत अली हमारा दोस्त है, और ऐश-पसंद है..."
+        </div>
+        <p>= <strong>अर्थ:</strong> अंग्रेज़ों ने वज़ीर अली को हटाकर उसके चाचा 'सआदत अली' को अवध का नवाब इसलिए बनाया,
+            क्योंकि सआदत अली एक कमज़ोर और ऐश-पसंद (Luxury loving) आदमी था। वह देश की आज़ादी के बजाय सिर्फ 'अपनी जान' और
+            'शराब' से प्यार करता था। अंग्रेज़ों ने उसे गद्दी पर बिठाया और बदले में आधी रियासत (Property) और भारी दौलत हड़प
+            ली, जिसके कारण अंग्रेज़ों का रास्ता साफ़ (Clear) हो गया। (यह पाठ 'मीरज़ाफ़र' जैसे गद्दारों के चरित्र पर भी
+            प्रहार करता है)।</p>
+
+        <div class="practice-box">
+            <span class="practice-header">BOARD EXAM QUESTIONS</span>
+
+            <p class="q-text">प्रश्न 1: 'वज़ीर अली' कौन था? अंग्रेज़ उसे भारत के लिए 'खेतरा' (Danger) क्यों मानते थे?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> वज़ीर अली अवध (Awadh) का असली नवाब और एक बहुत ही निडर व शूरवीर
+                सिपाही था। उसके अंदर देशप्रेम कूट-कूट कर भरा था। अंग्रेज़ उसे सबसे बड़ा खतरा इसलिए मानते थे क्योंकि:
+                <br>1. उसका मुख्य उद्देश्य अंग्रेज़ों को भारत से बाहर खदेड़ना था। उसने कंपनी के वकील की भी हत्या कर दी थी।
+                <br>2. उसने अंग्रेज़ों के खिलाफ विद्रोह करने के लिए अफ़गानिस्तान के बादशाह 'शाहज़माँ' को भी भारत पर हमला
+                करने के लिए बुलावा (Invitation) भेजा था।
+                <br>वह अकेला ही पूरी अंग्रेज़ी फ़ौज पर भारी पड़ रहा था और उनकी नींद हराम कर चुका था।
+            </p>
+
+            <hr style="border-top: 1px dashed #2e7d32; margin: 20px 0;">
+
+            <p class="q-text">प्रश्न 2: वज़ीर अली ने अकेले अंग्रेज़ों के खेमे (Camp) में जाकर क्या किया? इससे उसके चरित्र
+                की कौन-सी विशेषता प्रकट होती है?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> 'कारतूस' एकांकी के अंत में वज़ीर अली अकेले ही घुड़सवार
+                (Horse-Rider) के भेष में कर्नल के खेमे में पहुँचता है। वह कर्नल से अकेले में बात करता है और बहुत चतुराई
+                से कहता है कि उसे भी 'वज़ीर अली' (खुद को) पकड़ने के लिए कुछ <strong>कारतूस (Cartridges)</strong> चाहिए।
+                <br>कर्नल बेवकूफ़ बनकर उसे 10 कारतूस दे देता है। जाते-जाते वह कर्नल को अपना असली नाम <strong>'वज़ीर
+                    अली'</strong> बताता है और अपनी शान से घोड़े पर बैठकर भाग जाता है।
+                <br>इससे वज़ीर अली के <strong>'अत्यंत साहसी' (Courageous), 'निडर' (Fearless) और 'अत्यधिक चतुर'
+                    (Clever/Witty)</strong> होने की विशेषता प्रकट होती है। वह मौत के मुँह (दुश्मन के कैंप) में जाकर भी
+                हँसता हुआ वापस आ जाता है।
+            </p>
+
+            <hr style="border-top: 1px dashed #2e7d32; margin: 20px 0;">
+
+            <p class="q-text">प्रश्न 3: 'सआदत अली' अंग्रेजों के लिए मददगार और वज़ीर अली के लिए दुश्मन क्यों था?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> सआदत अली एक कमज़ोर (Weak), भोग-विलासी और डरपोक इंसान था। अंग्रेज़
+                एक ऐसे ही बेवकूफ 'कठपुतली' (Puppet) इंसान को अवध का नवाब बनाना चाहते थे जिससे वे आसानी से खूब पैसा लूट
+                सकें। इसलिए अंग्रेज़ों ने वज़ीर अली (जो अंग्रेज़ों का विरोधी था) को हटाकर 'सआदत अली' को अवध की गद्दी पर
+                बैठा दिया।
+                <br>बदले में सआदत अली ने अपनी 'आधी संपत्ति' (Properties) अवध का हिस्सा और बहुत सारी दौलत अंग्रेज़ों को
+                सौंप दी। चूंकि वज़ीर अली असली हक़दार और सच्चा देशभक्त था, इसलिए वह सआदत अली से नफरत करता था और सआदत अली
+                अपने लालच (स्वार्थ) के कारण वज़ीर अली का दुश्मन बन गया था।
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

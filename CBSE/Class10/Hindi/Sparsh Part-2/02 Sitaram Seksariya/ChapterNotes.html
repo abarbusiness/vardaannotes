@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>डायरी का एक पन्ना (Diary Ka Ek Panna) - Vardaan Master Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-color: #ffffff;
+            --ink-color: #2c3e50;
+            --highlight-yellow: #fff9c4;
+            --highlight-green: #e8f5e9;
+            --highlight-pink: #fce4ec;
+            --highlight-blue: #e3f2fd;
+            --accent-red: #c62828;
+            --accent-blue: #1565c0;
+            --accent-purple: #7b1fa2;
+            --accent-orange: #e65100;
+            --box-border: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background-color: #fff;
+            color: var(--ink-color);
+            font-family: 'Kalam', cursive;
+            line-height: 1.8;
+            font-size: 1.15rem;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        html {
+            transition: filter .3s
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg)
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.11;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            min-height: 297mm;
+            background-color: var(--paper-color);
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .header-institute {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .header-title {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #d84315;
+            text-shadow: 2px 2px 0px rgba(216, 67, 21, 0.2);
+        }
+
+        .header-subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 500;
+            padding: 5px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #2e7d32;
+            border-bottom: 4px solid #333;
+            padding-bottom: 10px;
+            margin: 30px 0;
+        }
+
+        h2 {
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 5px;
+            margin-top: 40px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        h3 {
+            color: var(--accent-red);
+            margin-top: 30px;
+            font-size: 1.6rem;
+            border-left: 5px solid var(--accent-red);
+            padding-left: 10px;
+            font-weight: 700;
+        }
+
+        strong,
+        b {
+            color: #c62828;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li::marker {
+            color: #1565c0;
+            font-weight: bold;
+        }
+
+        .rule-box {
+            border: 2px solid #fbc02d;
+            background-color: var(--highlight-yellow);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+            font-size: 1.2rem;
+        }
+
+        .author-box {
+            border: 2px solid #4a148c;
+            background-color: #f3e5f5;
+            padding: 25px 25px 25px 80px;
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .author-box::before {
+            content: "✍️";
+            font-size: 3rem;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        .character-box {
+            background-color: var(--highlight-blue);
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-box {
+            border-left: 6px solid #e65100;
+            background-color: #fff3e0;
+            padding: 20px 30px;
+            margin: 25px 0;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #d84315;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '"';
+            font-size: 4.5rem;
+            position: absolute;
+            left: 5px;
+            top: -15px;
+            color: rgba(230, 81, 0, 0.2);
+            font-family: serif;
+        }
+
+        @media print {
+            .theme-toggle {
+                display: none !important;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 0;
+            }
+
+            body {
+                background-color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                display: block;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .header-title {
+                font-size: 2.2rem;
+            }
+
+            .author-box {
+                padding-left: 20px;
+            }
+
+            .author-box::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image">
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1 class="header-institute">VARDAAN LEARNING INSTITUTE <span style="margin: 0 10px; color: #ccc;">|</span>
+            POWERED BY VARDAAN COMET</h1>
+        <h2 class="header-title">डायरी का एक पन्ना</h2>
+        <p class="header-subtitle">CBSE Class 10 Hindi (Course B) • Sparsh Part-2 • Prose (Gadya)</p>
+
+        <div class="rule-box">
+            <p><strong>पाठ का सारांश (Summary/Context):</strong></p>
+            <p>'डायरी का एक पन्ना' (A Page from the Diary) सीताराम सेकसरिया की निजी डायरी का एक ऐतिहासिक और महत्त्वपूर्ण
+                पन्ना है। यह पन्ना <strong>26 जनवरी 1931</strong> की घटना का आँखों-देखा (First-hand) सजीव वर्णन करता है।
+                26 जनवरी 1930 को पूरे भारत में पहली बार 'स्वतंत्रता दिवस' (Independence Day) मनाया गया था। उसके ठीक एक
+                साल बाद 1931 में, कोलकाता (कलकत्ता) के लोगों ने इस दिन को एक 'खुली बगावत' (Open Rebellion) और एक महान
+                पर्व (त्योहार) के रूप में मनाने का फैसला किया। पुलिस के सख्त पहरे, लाठीचार्ज और गिरफ़्तारी की धमकियों के
+                बावजूद, कलकत्ता के निवासियों (विशेषकर महिलाओं) ने अपार साहस का परिचय देते हुए 'मोन्यूमेंट' (स्मारक) के
+                नीचे तिरंगा झंडा फहराया। इस पाठ में तत्कालीन कलकत्ता वासियों की देशभक्ति और उनके अप्रतिम शौर्य (Bravery)
+                का उल्लेख किया गया है, जिसने कलकत्ता के माथे पर लगा 'कलंक' (धब्बा) मिटा दिया।</p>
+        </div>
+
+        <h2>1. लेखक का परिचय (Author Introduction)</h2>
+        <div class="author-box">
+            <p><strong>लेखक: सीताराम सेकसरिया (Sitaram Seksariya)</strong></p>
+            <p>सीताराम सेकसरिया एक प्रसिद्ध स्वतंत्रता सेनानी (Freedom Fighter), समाज सुधारक और साहित्यकार थे। उनका जन्म
+                1892 ई. में राजस्थान के नवलगढ़ में हुआ था। बाद में वे व्यवसाय (Business) के लिए कोलकाता आ गए। उन्होंने
+                महात्मा गाँधी के आह्वान पर स्वतंत्रता संग्राम (Freedom struggle) में कई बार भाग लिया और जेल भी गए। वे
+                'स्वाध्याय' (Self-study) से ही पढ़े-लिखे थे और दिनभर जो भी महत्त्वपूर्ण घटनाएँ घटती थीं, उसे अपनी डायरी
+                में लिख लिया करते थे। इसी डायरी का एक हिस्सा इस पाठ में संकलित है। उन्होंने शिक्षा के प्रसार (विशेषकर
+                महिला शिक्षा) और समाज-सुधार (अस्पृश्यता-निवारण) के क्षेत्र में भी बहुत काम किया।</p>
+        </div>
+
+        <h2>2. प्रमुख पात्र और स्वतंत्रता सेनानी (Main Freedom Fighters mentioned)</h2>
+        <div class="character-box">
+            <ul>
+                <li><strong>सुभाष चंद्र बोस (Subhas Chandra Bose):</strong> उन्हें इस जुलूस (Procession) का नेतृत्व करना
+                    था। लाल बाज़ार चौराहे के पास उन पर लाठियाँ बरसीं, पुलिस ने उन्हें गिरफ़्तार करके 'लॉक-अप' (हवालात) में
+                    डाल दिया। लाठियाँ खाते हुए भी वे 'वंदे मातरम' बोल रहे थे।</li>
+                <li><strong>तारादास (Taradas):</strong> मोन्यूमेंट (स्मारक) के पास सबसे पहले जाकर झंडा फहराने और
+                    घोषणा-पत्र (Declaration) पढ़ने की ज़िम्मेदारी इन्हीं की थी, पर पुलिस ने उन्हें पहले ही गिरफ़्तार कर
+                    लिया।</li>
+                <li><strong>विमल प्रतिभा, जानकी देवी और मदालसा:</strong> ये वे बहादुर महिलाएँ थीं जिन्होंने अपने प्राणों
+                    की परवाह किए बिना जुलूस निकाले और मोन्यूमेंट की सीढ़ियों पर चढ़कर राष्ट्रीय झंडा फहराया। महिलाओं ने
+                    भारी संख्या (सैकड़ों) में इस आंदोलन में हिस्सा लिया, जो उस समय के समाज के लिए बहुत बड़ी बात थी।</li>
+                <li><strong>पुलिस कमिश्नर (Police Commissioner):</strong> उसने नोटिस निकाला था कि अगर कोई भी व्यक्ति
+                    (धारा 144 तोड़ने वाले) किसी भी जुलूस, सभा या झंडारोहण में शामिल होगा, तो उसे अपराधी (Criminal) मानकर
+                    सज़ा दी जाएगी।</li>
+            </ul>
+        </div>
+
+        <h2>3. 26 जनवरी 1931 के प्रमुख घटनाक्रम (Events of 26th Jan 1931)</h2>
+        <ul>
+            <li><strong>तैयारी और उत्साह (Preparation & Enthusiasm):</strong> 26 जनवरी 1931 का दिन कलकत्ता के इतिहास में
+                बहुत खास था क्योंकि पिछले साल (1930) वहाँ के लोगों पर यह आरोप लगा था कि वे देश के स्वतंत्रता संग्राम में
+                पूरी तरह 'रवि' (Active) नहीं हैं; यह उनके माथे पर एक कलंक (धब्बा/Stigma) था। इस साल कलकत्ता के लोगों ने
+                (विशेषकर 'विद्यार्थी संघ') पूरी हिम्मत से झंडा फहराने और घोषणा-पत्र पढ़ने की तैयारी की थी। इसके प्रचार
+                में 2000 रुपये (उस समय बहुत बड़ी रकम) खर्च किए गए। पूरा शहर झंडों से सजाया गया था।</li>
+            <li><strong>पुलिस का सख्त पहरा और लाठीचार्ज (Police Brutality):</strong> भोर (सुबह) से ही पुलिस ने
+                मोन्यूमेंट (Monument) और मैदान (पार्क) को चारों ओर से घेर लिया। जो भी सभा करने की कोशिश कर रहा था, पुलिस
+                उस पर बेरहमी से लाठियाँ (Lathi-charge) बरसा रही थी। कई लोगों के सिर फट गए और वे खून-से लथपथ हो गए।</li>
+            <li><strong>महिलाओं का साहस (Courage of Women):</strong> जब सुभाष बाबू को गिरफ़्तार करके ले जाया गया, तो
+                'स्त्री-समाज' (Women) ने कमान सँभाली। जानकी देवी, विमल प्रतिभा और अन्य महिलाओं ने मोन्यूमेंट की सीढ़ियों
+                पर चढ़कर भारी पुलिस-बल के सामने राष्ट्रीय ध्वज (Tiranga) फहरा दिया। पुलिस ने औरतों पर भी खूब लाठियाँ
+                चलाईं और उन्हें गिरफ़्तार कर लिया।</li>
+            <li><strong>सफलता (Success & Arrests):</strong> पुलिस की अमानवीय क्रूरता (Brutality) के बावजूद जुलूस निकाला
+                गया। शाम तक कुल 105 महिलाओं को गिरफ़्तार कर लिया गया था और 200 से अधिक लोग लाठियों की चोट से घायल हुए
+                जिन्हें अलग-अलग अस्पतालों में भेजा गया। इस भयंकर खून-खराबे और 'खुली बगावत' (Open rebellion) को देखकर
+                लेखक कहता है कि "कलकत्ता के नाम पर लगा कलंक (Stigma) आज धुल गया।"</li>
+        </ul>
+
+        <h2>4. महत्वपूर्ण कथन एवं उनके अर्थ (Important Quotes)</h2>
+        <div class="quote-box">
+            "आज जो बात थी, वह निराली थी..."
+        </div>
+        <p>= <strong>अर्थ:</strong> कलकत्ता में इससे पहले भी कई सभाएँ (Meetings) और जुलूस निकाले गए थे, परंतु 26 जनवरी
+            1931 का जो उत्साह, जोश और बगावत थी, वह पहले कभी नहीं देखी गई थी। अंग्रेज़ सरकार के सख्त आदेश, धारा 144 और
+            पुलिस की संगीनों (गनों) के खौफ के बावजूद, हज़ारों की संख्या में लोग (खासकर महिलाएँ) अपनी जान पर खेलकर सड़कों
+            पर उतर आए थे। यह अदम्य साहस और देशभक्ति का 'निराला' (Unique) दृश्य था।</p>
+
+        <div class="quote-box">
+            "कलकत्ता के नाम पर कलंक था कि यहाँ काम नहीं हो रहा है, वह आज बहुत अंश में धुल गया।"
+        </div>
+        <p>= <strong>अर्थ:</strong> भारत के अन्य राज्यों (जैसे महाराष्ट्र, पंजाब, उत्तर प्रदेश) के लोगों को लगता था कि
+            बंगाल (कलकत्ता) के लोग स्वतंत्रता के आंदोलन में उतना बढ़-चढ़कर हिस्सा नहीं ले रहे हैं; मानो वे डरपोक या
+            निष्क्रिय (Passive) हों। यह कलकत्ता वासियों के लिए एक 'कलंक' (बदनामी का टीका / Stigma) था। परंतु 26 जनवरी
+            1931 को सुबह मोन्यूमेंट के पास लोगों ने पुलिस की निर्मम लाठियों के प्रहार को जिस प्रकार हँसते-हँसते सहा और
+            'वंदे मातरम' गाते हुए अपने प्राणों की बाज़ी लगा दी, उसने सिद्ध कर दिया कि बंगाल भी देशभक्ति में पीछे नहीं है।
+            इस तरह यह कलंक हमेशा के लिए धुल (बर्बाद हो) गया।</p>
+
+        <div class="practice-box">
+            <span class="practice-header">BOARD EXAM QUESTIONS</span>
+
+            <p class="q-text">प्रश्न 1: 'डायरी का एक पन्ना' पाठ में 26 जनवरी 1931 के दिन को अमर बनाने के लिए क्या-क्या
+                तैयारियाँ की गई थीं?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> 26 जनवरी 1931 के ऐतिहासिक 'पूर्ण स्वराज्य दिवस' (स्वतंत्रता
+                दिवस) को मनाने और अमर बनाने के लिए कलकत्ता वासियों ने ज़बरदस्त तैयारियाँ की थीं:
+                <br>1. पूरे शहर के मकानों और चौराहों को तिरंगे झंडों (National Flags) से सजाया गया था।
+                <br>2. आंदोलन के प्रचार-प्रसार में उस ज़माने में ₹2000 (जो एक बड़ी रकम थी) खर्च किए गए थे और पर्चे
+                (Pamphlets) बाँटे गए थे।
+                <br>3. 'विद्यार्थी संघ' और अन्य कार्यकर्ताओं ने समूह (Toliyaan) बनाकर शहर में रैलियाँ निकालीं और
+                मोन्यूमेंट (Monument) के पास ठीक 4:24 बजे झंडा फहराने और घोषणा-पत्र पढ़ने की योजना बनाई। महिलाओं ने भी
+                इसमें भारी संख्या में भाग लेने की तैयारी की थी।
+            </p>
+
+            <hr style="border-top: 1px dashed #2e7d32; margin: 20px 0;">
+
+            <p class="q-text">प्रश्न 2: पुलिस कमिश्नर का नोटिस (आदेश) और कामगारों (विद्यार्थी संघ/कांग्रेस) का नोटिस में
+                क्या अंतर था?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> दोनों नोटिसों में भयंकर टकराव (Conflict) था:
+                <br>1. <strong>पुलिस कमिश्नर का नोटिस:</strong> यह अंग्रेज़ सरकार का एक 'धमकी भरा' नोटिस था जिसमें धारा
+                144 लगाते हुए कहा गया था कि कोई भी व्यक्ति किसी सभा (Meeting) में भाग न ले। आदेश तोड़ने वालों और झंडा
+                फहराने वालों को गिरफ्तार किया जाएगा और सज़ा दी जाएगी।
+                <br>2. <strong>कामगारों/काउंसिल का नोटिस:</strong> इस नोटिस में पुलिस के नोटिस की 'खुली बगावत' (Open
+                challenge) की गई थी। इसमें जनता से कहा गया था कि वे डर छोड़ें और ঠিক 4 बजकर 24 मिनट पर मोन्यूमेंट के नीचे
+                भारी संख्या में पहुँचें, जहाँ राष्ट्रीय झंडा फहराया जाएगा और स्वतंत्रता-घोषणा पत्र पढ़ा जाएगा।
+            </p>
+
+            <hr style="border-top: 1px dashed #2e7d32; margin: 20px 0;">
+
+            <p class="q-text">प्रश्न 3: सुभाष चंद्र बोस के जुलूस में महिलाओं की क्या भूमिका (Role) थी?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> 26 जनवरी 1931 के इस आंदोलन में 'बंगाली महिलाओं' ने अपने अदम्य
+                साहस और वीरता का परिचय दिया। जब पुलिस सुभाष चंद्र बोस को लाठियों से पीटते हुए गिरफ़्तार करके ले गई, तो
+                महिलाओं ने जुलूस की 'कमान' स्वयं सँभाल ली:
+                <br>1. जानकी देवी, विमल प्रतिभा, मदालसा आदि महिलाओं ने सैकड़ों की भीड़ के साथ पुलिस की लाठियों और
+                घोड़े-सवार पुलिसवालों का सामना किया।
+                <br>2. औरतें निडर होकर मोन्यूमेंट की सीढ़ियों पर चढ़ गईं और भारी पुलिस बल के सामने 'तिरंगा झंडा फहराया' और
+                पर्चा पढ़ा।
+                <br>3. उन्होंने पुलिस की लाठियाँ खाईं और उस दिन 100 से अधिक महिलाओं को (हँसते हुए) गिरफ़्तार (Arrest) कर
+                लिया गया, जो उस ज़माने के समाज के लिए एक बहुत बड़ा और आश्चर्यजनक 'क्रांतिकारी कदम' था।
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

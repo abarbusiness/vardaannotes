@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>गिरगिट (Girgit) - Vardaan Master Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-color: #ffffff;
+            --ink-color: #2c3e50;
+            --highlight-yellow: #fff9c4;
+            --highlight-green: #e8f5e9;
+            --highlight-pink: #fce4ec;
+            --highlight-blue: #e3f2fd;
+            --accent-red: #c62828;
+            --accent-blue: #1565c0;
+            --accent-purple: #7b1fa2;
+            --accent-orange: #e65100;
+            --box-border: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background-color: #fff;
+            color: var(--ink-color);
+            font-family: 'Kalam', cursive;
+            line-height: 1.8;
+            font-size: 1.15rem;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        html {
+            transition: filter .3s
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg)
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.11;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            min-height: 297mm;
+            background-color: var(--paper-color);
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .header-institute {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .header-title {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #d84315;
+            text-shadow: 2px 2px 0px rgba(216, 67, 21, 0.2);
+        }
+
+        .header-subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 500;
+            padding: 5px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #2e7d32;
+            border-bottom: 4px solid #333;
+            padding-bottom: 10px;
+            margin: 30px 0;
+        }
+
+        h2 {
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 5px;
+            margin-top: 40px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        h3 {
+            color: var(--accent-red);
+            margin-top: 30px;
+            font-size: 1.6rem;
+            border-left: 5px solid var(--accent-red);
+            padding-left: 10px;
+            font-weight: 700;
+        }
+
+        strong,
+        b {
+            color: #c62828;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li::marker {
+            color: #1565c0;
+            font-weight: bold;
+        }
+
+        .rule-box {
+            border: 2px solid #fbc02d;
+            background-color: var(--highlight-yellow);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+            font-size: 1.2rem;
+        }
+
+        .author-box {
+            border: 2px solid #4a148c;
+            background-color: #f3e5f5;
+            padding: 25px 25px 25px 80px;
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .author-box::before {
+            content: "✍️";
+            font-size: 3rem;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        .character-box {
+            background-color: var(--highlight-blue);
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-box {
+            border-left: 6px solid #e65100;
+            background-color: #fff3e0;
+            padding: 20px 30px;
+            margin: 25px 0;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #d84315;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '"';
+            font-size: 4.5rem;
+            position: absolute;
+            left: 5px;
+            top: -15px;
+            color: rgba(230, 81, 0, 0.2);
+            font-family: serif;
+        }
+
+        @media print {
+            .theme-toggle {
+                display: none !important;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 0;
+            }
+
+            body {
+                background-color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                display: block;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .header-title {
+                font-size: 2.2rem;
+            }
+
+            .author-box {
+                padding-left: 20px;
+            }
+
+            .author-box::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image">
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1 class="header-institute">VARDAAN LEARNING INSTITUTE <span style="margin: 0 10px; color: #ccc;">|</span>
+            POWERED BY VARDAAN COMET</h1>
+        <h2 class="header-title">गिरगिट</h2>
+        <p class="header-subtitle">CBSE Class 10 Hindi (Course B) • Sparsh Part-2 • Prose (Gadya)</p>
+
+        <div class="rule-box">
+            <p><strong>पाठ का सारांश (Summary/Context):</strong></p>
+            <p>'गिरगिट' (The Chameleon) महान रूसी (Russian) कथाकार एंतन चेखव द्वारा लिखी गई एक बहुत ही प्रसिद्ध
+                व्यंग्यात्मक कहानी (Satirical Story) है। यह कहानी सत्ता (Power), चापलूसी (Sycophancy), और सरकारी अफसरों
+                (Officers) के 'स्वार्थ और दोहरे चरित्र' (Hypocrisy) पर करारी चोट करती है। कहानी का मुख्य पात्र
+                'इंस्पेक्टर ओचुमेलोव' है, जो न्याय करने के बजाय अपना रंग 'गिरगिट' की तरह बार-बार बदलता है। जब उसे लगता
+                है कि अपराध करने वाला 'कुत्ता' किसी आम आदमी का है, तो वह सख्त 'न्यायप्रिय' (Strict) बन जाता है; और जब
+                उसे लगता है कि कुत्ता किसी ताकतवर 'जनरल साहब' का है, तो वह 'डरपोक और चापलूस' बन जाता है। पाठ में रूस के
+                तत्कालीन 'भ्रष्ट और अवसरवादी' (Opportunist) पुलिस तंत्र का मज़ाक उड़ाया गया है।</p>
+        </div>
+
+        <h2>1. लेखक का परिचय (Author Introduction)</h2>
+        <div class="author-box">
+            <p><strong>लेखक: एंतन चेखव (Anton Chekhov)</strong></p>
+            <p>एंतन चेखव (1860-1904) एक महान विश्व-प्रसिद्ध रूसी लेखक (Russian Writer), नाटककार और पेशे से 'डॉक्टर' थे।
+                उन्हें दुनिया की 'लघु कथाओं' (Short Stories) का सबसे महान मास्टर (Master) माना जाता है। उनकी कहानियों
+                में आम इंसान के दुख, सरकारी बाबुओं (Clerks & Officers) के भ्रष्टाचार, और समाज के खोखलेपन (Emptiness) का
+                बहुत ही सूक्ष्म और गहरा चित्रण मिलता है। उनकी कहानियाँ ऊपरी तौर पर तो हँसने वाली (Comical) लगती हैं,
+                लेकिन उनके भीतर एक बहुत ही गहरा सामाजिक सच छिपा होता है।</p>
+        </div>
+
+        <h2>2. प्रमुख पात्र (Main Characters)</h2>
+        <div class="character-box">
+            <ul>
+                <li><strong>ओचुमेलोव (Ochumelov):</strong> यह एक पुलिस 'इंस्पेक्टर' (Police Inspector) है। वह भ्रष्ट,
+                    अवसरवादी और चापलूस (Flatterer) है। उसके पास शक्ति (Power) तो है पर वह उसका इस्तेमाल न्याय (Justice)
+                    करने में नहीं, बल्कि 'ताकतवर लोगों' (जनरल) को खुश करने और अपना फायदा निकालने में करता है। उसका
+                    व्यवहार परिस्थितियों (कुत्ते के मालिक) के अनुसार सेकंडों में <strong>'गिरगिट' के रंग</strong> की तरह
+                    बदलता है।</li>
+                <li><strong>ख्यूक्रिन (Khryukin):</strong> यह एक सुनार (Goldsmith) है। इसे एक कुत्ते ने उँगली पर काट
+                    लिया था। वह अपनी कटी हुई और खून से भरी उँगली को हवा में उठाकर भीड़ और पुलिस को दिखा रहा है ताकि उसे
+                    इंसाफ़ मिल सके। परंतु उसका चरित्र भी लालची (Greedy) है, क्योंकि वह कुत्ते के मालिक से 'हर्जाना'
+                    (Compensation/Money) वसूलना चाहता है।</li>
+                <li><strong>येल्दिरिन (Yeldyrin):</strong> यह पुलिस का एक 'सिपाही' (Constable) है जो इंस्पेक्टर ओचुमेलोव
+                    के पीछे-पीछे <strong>'ज़ब्त की गई झरबेरियों' (Confiscated Gooseberries)</strong> की एक टोकनी लेकर चल
+                    रहा है। यह पुलिस की 'लूट-खसोट' का प्रतीक है।</li>
+                <li><strong>जनरल झिगालोव (General Zhigalov) और प्रोखोर:</strong> जनरल साहब शहर के एक बहुत बड़े और ताकतवर
+                    व्यक्ति हैं (जिनसे इंस्पेक्टर ओचुमेलोव बहुत डरता है)। प्रोखोर जनरल साहब के यहाँ काम करने वाला
+                    बावर्ची (Cook) है जो अंत में कुत्ते को ले जाता है।</li>
+            </ul>
+        </div>
+
+        <h2>3. कहानी का मुख्य घटनाक्रम (Main Events of the Story)</h2>
+        <ul>
+            <li><strong>घटना की शुरुआत:</strong> भरी गर्मी की दोपहर में, बाज़ार के एक चौराहे पर सुनार 'ख्यूक्रिन' एक छोटे
+                से कुत्ते (बरज़ोई पिल्ला/Puppy) के पीछे भाग रहा था और चिल्ला रहा था। कुत्ते ने उसकी उँगली काट ली थी।
+                ख्यूक्रिन अपनी खून से सनी उँगली हवा में छाते (Umbrella) की तरह उठाए हुए था और 'मुआवज़े' की माँग कर रहा
+                था। भीड़ इकट्ठा हो गई।</li>
+            <li><strong>इंस्पेक्टर ओचुमेलोव का पहला रूप (Strict Justice Mode):</strong> इंस्पेक्टर ओचुमेलोव अपनी नई
+                पुलिस वर्दी और 'ओवरकोट' (Overcoat) पहने शान से आते हैं। जब ख्यूक्रिन उन्हें शिकायत करता है, तो
+                इंस्पेक्टर कड़क (Strict) आवाज़ में कहता है कि <em>"मैं इस कुत्ते के मालिक पर जुर्माना ठोकूँगा और इस आवारा
+                    कुत्ते को मरवा दूँगा।"</em></li>
+            <li><strong>गिरगिट के रंग बदलना (Changing Colors like a Chameleon):</strong> यहीं से इंस्पेक्टर का 'रंग'
+                बदलना शुरू होता है:
+                <br><strong>रंग 1:</strong> भीड़ में से किसी ने कहा—<em>"यह शायद जनरल झिगालोव का कुत्ता है।"</em> यह
+                सुनते ही इंस्पेक्टर ओचुमेलोव पसीने से भीग कर 'डर' जाता है। वह कहता है—<em>"येल्दिरिन, मेरा ओवरकोट उतारो
+                    (हवा न लगे)।"</em> फिर वह ख्यूक्रिन को डाँटता है कि <em>"तेरी उँगली में तो खरोंच भी नहीं है, तूने
+                    खुद ही कील गड़ा ली होगी।"</em>
+                <br><strong>रंग 2:</strong> सिपाही येल्दिरिन ने कहा—<em>"नहीं हुज़ूर, जनरल साहब के पास तो ऐसे कुत्ते हैं
+                    ही नहीं।"</em> इंस्पेक्टर ने झट से फिर रंग बदला और बोला—<em>"हौसला मत हार ख्यूक्रिन! मैं इसके मालिक
+                    को सीधा कर दूँगा।"</em>
+                <br><strong>रंग 3:</strong> भीड़ से आवाज़ आई—<em>"हाँ, यह जनरल साहब का ही है।"</em> इंस्पेक्टर फिर घबरा
+                गया और बोला—<em>"मेरा ओवरकोट पहना दो, मुझे ठंड लग रही है।"</em>
+            </li>
+            <li><strong>प्रोखोर (बावर्ची) की एंट्री और अंतिम फैसला:</strong> तभी वहाँ से जनरल साहब का बावर्ची (Cook)
+                'प्रोखोर' गुज़रता है। इंस्पेक्टर ने उससे पूछा—<em>"क्या यह जनरल साहब का कुत्ता है?"</em>
+                <br>प्रोखोर—<em>"नहीं, यह जनरल साहब के भाई (ब्लादिमीर इवानिच) का है।"</em>
+                <br>यह सुनते ही इंस्पेक्टर ओचुमेलोव के चेहरे पर एक 'बड़ी और मीठी मुस्कान' आ गई (चापलूसी के लिए)। उसने उस
+                कुत्ते को प्यार से 'प्यारा सा नन्हा पिल्ला' कहा। प्रोखोर कुत्ते को अपने साथ ले गया।
+            </li>
+            <li><strong>अंत:</strong> इंस्पेक्टर ओचुमेलोव ने ख्यूक्रिन को हर्जाना दिलाने के बजाय उसे धमकी दी—<em>"मैं
+                    तुझसे बाद में निबटूँगा"</em> और अकड़ता हुआ और ओवरकोट को समेटता हुआ बाज़ार से चला गया। भीड़ ख्यूक्रिन की
+                बेबसी पर हँसने लगी।</li>
+        </ul>
+
+        <h2>4. महत्वपूर्ण बिंदु और शीर्षक की सार्थकता (Title & Core Satire)</h2>
+        <div class="rule-box" style="background-color: var(--highlight-blue); border-color: #1565c0;">
+            <p><strong>'गिरगिट' शीर्षक का अर्थ और व्यंग्य:</strong></p>
+            <p>1. <strong>गिरगिट (Chameleon):</strong> एक ऐसा जानवर है जो ख़तरा (Danger) देखने पर या शिकार करने के लिए
+                अपने आस-पास के माहौल (Environment) के अनुसार तुरंत अपना 'रंग' बदल लेता है, जिससे वह सुरक्षित रहे।</p>
+            <p>2. <strong>ओचुमेलोव की तुलना:</strong> लेखक ने इंस्पेक्टर <strong>ओचुमेलोव</strong> की तुलना गिरगिट से की
+                है। इंस्पेक्टर का अपना कोई 'सिद्धांत' (Principle) या न्याय नहीं है। वह न्याय और कानून के आधार पर फैसला
+                नहीं करता, बल्कि 'अपराधी की ताकत और रुतबे' (Power/Status) के हिसाब से फैसला करता है।
+                <br>जब कुत्ते का मालिक 'आम आदमी' होता है, तो वह शेर (सख्त पुलिस अफसर) बन जाता है। लेकिन जैसे ही उसे पता
+                चलता है कि कुत्ता 'ताकतवर जनरल साहब' (General/Politician) का है, वह डर के मारे 'भीगी बिल्ली' (Coward) बन
+                जाता है। उसका बार-बार 'ओवरकोट (Coat) पहनना और उतारना' उसकी इसी 'घबराहट और रंग-बदलने वाली फितरत'
+                (Opportunism) का प्रतीक है। यही इस कहानी का मुख्य-संदेश और व्यंग्य है कि समाज में कानून और पुलिस का डर
+                आम आदमी के लिए होता है, लेकिन 'अमीर और ताकतवर' के लिए ये पुलिसवाले उनके 'कुत्तों' की तरह होते हैं।
+            </p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">BOARD EXAM QUESTIONS</span>
+
+            <p class="q-text">प्रश्न 1: पाठ में 'ओचुमेलोव' के चरित्र की भयंकर कमज़ोरी क्या है? उसके बार-बार 'ओवरकोट'
+                (Overcoat) पहनने और उतारने का क्या रहस्य है?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> इंस्पेक्टर ओचुमेलोव का चरित्र एक 'दीमक लगे खोखले पुलिस अफसर' का
+                है। वह न्याय और सच्चाई के बजाय, ताकत और रुतबे (Power/Money) की पूजा करता है। यही उसकी सबसे भयंकर कमज़ोरी
+                है, कि वह ताकतवर लोगों (जैसे जनरल साहब) के सामने भीगी बिल्ली (Coward) बन जाता है।
+                <br><em>ओवरकोट का रहस्य:</em> पाठ में ओचुमेलोव का बार-बार 'ओवरकोट उतारना' (गर्मी लगना) और 'ओवरकोट पहनना'
+                (ठंड लगना) कोई मौसम (Weather) का असर नहीं था; बल्कि यह उसकी <strong>मानसिक घबराहट और डर
+                    (Nervousness)</strong> को दर्शाता है। जब वह सुनता था कि कुत्ता 'जनरल साहब' का है, तो डर के मारे उसे
+                पसीना आने लगता था। और जब सुनता था कि 'कुत्ता उनका नहीं है', तो उसे ठंड (राहत) महसूस होती थी।
+            </p>
+
+            <hr style="border-top: 1px dashed #2e7d32; margin: 20px 0;">
+
+            <p class="q-text">प्रश्न 2: सुनार 'ख्यूक्रिन' अपनी उँगली पर काटे जाने को किस प्रकार इस्तेमाल कर रहा था? क्या
+                उसका चरित्र भी पूरी तरह सच्चा था?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> सुनार ख्यूक्रिन को 'बरज़ोई पिल्ले' (कुत्ते) ने उँगली पर काटा था,
+                इसमें कोई शक नहीं है। किंतु, वह कोई बहुत लाचार व्यक्ति नहीं था, बल्कि एक लालची इंसान था। वह अपनी 'खून से
+                सनी कटी उँगली' को भीड़ के बीच में एक <strong>'हथियार' (Weapon) या 'झंडे'</strong> की तरह हवा में उठाकर
+                दिखा रहा था ताकि वह कुछ लोगों की सहानुभूति (Sympathy) प्राप्त कर सके और कुत्ते के मालिक से एक
+                <strong>बड़ा 'हर्जाना' (Compensation Amount - पैसा) वसूल कर सके।</strong> अतः वह बेकसूर होने से ज्यादा
+                'चालाक और लालची' था।</p>
+
+            <hr style="border-top: 1px dashed #2e7d32; margin: 20px 0;">
+
+            <p class="q-text">प्रश्न 3: पुलिस के सिपाही 'येल्दिरिन' के हाथ में 'ज़ब्त की गई झरबेरियों (Gooseberries) की
+                टोकनी' होना तत्कालीन पुलिस तंत्र के बारे में क्या संकेत (Signal) देता है?</p>
+            <p class="ans-text"><strong>उत्तर:</strong> 'झरबेरियाँ (Gooseberries)' छोटे और बहुत ही साधारण खट्टे-मीठे फल
+                (Berries) होते हैं, जिन्हें गरीब रेहड़ी वाले या फुटपाथ पर बेचने वाले किसान बेचते हैं। पुलिस के सिपाही
+                येल्दिरिन का इस <strong>'गरीब किसान के फलों की टोकरी को ज़ब्त करके'</strong> (लूटकर/Confiscate) अपने हाथ
+                में शान से लेकर चलना, तत्कालीन रूसी पुलिस की <strong>'भ्रष्ट, लुटेरी और अत्याचारी'</strong> (Tyrannical
+                and Corrupt) प्रकृति की ओर इशारा करता है। यह दर्शाता है कि पुलिस 'रक्षक' नहीं है, बल्कि वह गरीब और लाचार
+                जनता (आवाम) का ही खून चूसती है और उन्हें बिना वजह परेशान करती है।</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
