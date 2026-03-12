@@ -1,0 +1,969 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14: Waves - Vardaan Master Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            /* Palette adapted from Master Notes (Oscillations) */
+            --paper-color: #ffffff;
+            --ink-color: #2c3e50;
+            --highlight-yellow: #fff9c4;
+            --highlight-green: #e8f5e9;
+            --highlight-pink: #fce4ec;
+            --highlight-blue: #e3f2fd;
+            --accent-red: #c62828;
+            --accent-blue: #1565c0;
+            --accent-purple: #7b1fa2;
+            --box-border: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #fff;
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        html {
+            transition: filter .3s;
+            scroll-behavior: smooth;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.11;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Paper Sheet */
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            min-height: 297mm;
+            background-color: var(--paper-color);
+            padding: 20mm;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Headers */
+        .header-institute {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .header-title {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            color: #000;
+            font-size: 2.2rem;
+            font-weight: 800;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .header-subtitle {
+            text-align: center;
+            font-size: 1em;
+            color: #555;
+            font-weight: 500;
+            padding: 5px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #2e7d32;
+            text-transform: uppercase;
+            border-bottom: 4px solid #333;
+            padding-bottom: 15px;
+            margin: 30px 0;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 5px;
+            margin-top: 50px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        h2:first-of-type {
+            page-break-before: auto;
+        }
+
+        h3 {
+            color: var(--accent-red);
+            margin-top: 35px;
+            font-size: 1.4rem;
+            border-left: 5px solid var(--accent-red);
+            padding-left: 10px;
+            display: block;
+            font-weight: 600;
+        }
+
+        /* Content Boxes */
+
+        /* Chapter Overview */
+        .rule-box {
+            border: 2px solid #fbc02d;
+            background-color: var(--highlight-yellow);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Definitions */
+        .definition-box {
+            border: 2px solid #4a148c;
+            background-color: #f3e5f5;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Derivations */
+        .derivation-box {
+            border: 3px solid #333;
+            border-radius: 10px;
+            background-color: #fff;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 4px 4px 0px #eee;
+        }
+
+        .derivation-box::after {
+            content: "DERIVATION";
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            padding: 4px 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* Formulas */
+        .formula-box {
+            border: 2px solid #e65100;
+            background-color: #fff3e0;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .formula-box::before {
+            content: "📝 FORMULA";
+            font-weight: bold;
+            display: block;
+            margin-bottom: 12px;
+            color: #e65100;
+            text-align: center;
+            border-bottom: 1px dashed #e65100;
+            padding-bottom: 5px;
+        }
+
+        .highlight-formula {
+            background-color: #fff;
+            border: 2px solid #7b1fa2;
+            border-radius: 6px;
+            padding: 12px 18px;
+            margin: 15px 0;
+            display: inline-block;
+            font-weight: bold;
+            color: #4a148c;
+            box-shadow: 2px 2px 0px rgba(123, 31, 162, 0.2);
+        }
+
+        /* Practice */
+        .practice-box {
+            border: 2px dashed #2e7d32;
+            background-color: #e8f5e9;
+            padding: 40px 20px 20px 20px;
+            margin: 35px 0;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .practice-header {
+            background-color: #2e7d32;
+            color: #fff !important;
+            padding: 5px 15px;
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: inline-block;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Analysis/Concepts */
+        .analysis-box {
+            background-color: var(--highlight-blue);
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            margin: 25px 0;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        td {
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            padding: 12px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        /* Diagrams */
+        .diagram-container {
+            text-align: center;
+            background: #fff;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .img-caption {
+            font-size: 0.95rem;
+            margin-top: 12px;
+            font-style: italic;
+            color: #444;
+            font-weight: 500;
+            display: block;
+        }
+
+        strong,
+        b {
+            color: #c62828;
+        }
+
+        p,
+        li {
+            margin-bottom: 12px;
+        }
+
+        @media print {
+            .theme-toggle {
+                display: none !important;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 0;
+            }
+
+            body {
+                background-color: white !important;
+            }
+
+            h2 {
+                page-break-before: auto;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .header-title {
+                font-size: 1.8rem;
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image"></div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <!-- Header -->
+        <h1 class="header-institute">VARDAAN LEARNING INSTITUTE <span style="margin: 0 10px; color: #ccc;">|</span>
+            POWERED BY VARDAAN COMET</h1>
+        <h2 class="header-title">Waves</h2>
+        <p class="header-subtitle">CBSE Class 11 Physics • Chapter 14 • Detailed Notes</p>
+
+        <div class="rule-box">
+            <p><strong>Chapter Overview</strong></p>
+            <p>This chapter covers the detailed physics of <strong>Wave Motion</strong>, including mechanical waves,
+                equation of progressive waves, reflection, superposition, standing waves, beats, and the Doppler effect.
+            </p>
+        </div>
+
+        <!-- 14.1 Introduction -->
+        <h2>14.1 Introduction to Waves</h2>
+        <div class="definition-box">
+            <p><strong>Wave Motion:</strong> It is a mode of energy transfer from one point to another without the
+                permanent transport of matter. Patterns of disturbance move through the medium.</p>
+            <p><strong>Mechanism:</strong> Particles of the medium oscillate about their mean positions. The disturbance
+                is handed over from one particle to the next due to <strong>Elasticity</strong> and
+                <strong>Inertia</strong> of the medium.
+            </p>
+            <ul>
+                <li><strong>Elasticity:</strong> Brings the particle back to mean position.</li>
+                <li><strong>Inertia:</strong> Allows the particle to overshoot the mean position and continue
+                    oscillation.</li>
+            </ul>
+        </div>
+
+        <div class="analysis-box">
+            <p><strong>Types of Waves based on Medium:</strong></p>
+            <ul>
+                <li><strong>Mechanical Waves:</strong> Require material medium (Solid, Liquid, Gas). Examples: Sound
+                    waves, Water waves, Seismic waves, Strings. governed by Newton's Laws.</li>
+                <li><strong>Electromagnetic Waves:</strong> Do not require medium. Can travel in vacuum. Examples:
+                    Light, Radio, X-rays. Speed $c = 3 \times 10^8$ m/s.</li>
+                <li><strong>Matter Waves:</strong> Associated with moving particles (Quantum nature). Example: Electron
+                    microscope.</li>
+            </ul>
+        </div>
+
+
+
+        <!-- 14.2 Transverse vs Longitudinal -->
+        <h2>14.2 Transverse and Longitudinal Waves</h2>
+        <p>Comparison based on particle vibration direction relative to wave propagation.</p>
+
+        <div class="diagram-container" style="background:#fff; padding:15px; text-align: center;">
+            <video autoplay loop muted playsinline
+                style="width: 100%; max-width: 600px; border-radius: 8px; border: 1px solid #ccc;">
+                <source src="images/transverse wave vs longitudinal wave animation.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <span class="img-caption">Animation: Transverse vs Longitudinal Waves</span>
+        </div>
+
+
+        <table>
+            <tr>
+                <th>Property</th>
+                <th>Transverse Wave</th>
+                <th>Longitudinal Wave</th>
+            </tr>
+            <tr>
+                <td><strong>Particle Vibrations</strong></td>
+                <td>Perpendicular ($\perp$) to wave propagation.</td>
+                <td>Parallel ($\parallel$) to wave propagation.</td>
+            </tr>
+            <tr>
+                <td><strong>Formation</strong></td>
+                <td>Travels in the form of <strong>Crests</strong> (Pos. Max) and <strong>Troughs</strong> (Neg. Max).
+                </td>
+                <td>Travels in the form of <strong>Compressions</strong> (High Density) and
+                    <strong>Rarefactions</strong> (Low Density).
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Medium Required</strong></td>
+                <td>Requires Rigidity (Shear modulus). Solids and Surface of Liquids.</td>
+                <td>Requires Elasticity of Volume (Bulk modulus). Solids, Liquids, and Gases.</td>
+            </tr>
+            <tr>
+                <td><strong>Pressure Variation</strong></td>
+                <td>No pressure variation in the medium.</td>
+                <td>Pressure and density vary at every point.</td>
+            </tr>
+            <tr>
+                <td><strong>Polarization</strong></td>
+                <td>Can be polarized.</td>
+                <td>Cannot be polarized.</td>
+            </tr>
+        </table>
+
+        <!-- 14.3 Progressive Wave -->
+        <h2>14.3 Progressive Wave (Travelling Wave)</h2>
+        <div class="derivation-box">
+            <p><strong>Derivation of the Equation of a Plane Progressive Harmonic Wave:</strong></p>
+            <p><strong>Goal:</strong> To mathematically describe a wave where every particle performs Simple Harmonic
+                Motion (SHM).</p>
+
+            <p><strong>Step 1: Motion at the Source ($x=0$)</strong></p>
+            <p>Assume the particle at the origin ($x=0$) oscillates in SHM starting from mean position:</p>
+            <p>$$ y(0, t) = A \sin(\omega t) $$</p>
+
+            <p><strong>Step 2: Propagation & Time Lag</strong></p>
+            <p>The disturbance travels with wave velocity $v$. To reach a particle at position $x$, the wave takes time
+                $t_{lag} = \frac{x}{v}$.</p>
+
+            <p><strong>Step 3: Motion at Position $x$</strong></p>
+            <p>The particle at $x$ does <em>exactly</em> what the source particle did earlier at time $(t - t_{lag})$.
+            </p>
+            <p>$$ y(x, t) = y(0, t - t_{lag}) $$</p>
+            <p>Substituting the SHM equation:</p>
+            <p>$$ y(x, t) = A \sin[\omega (t - \frac{x}{v})] $$</p>
+            <p>$$ y(x, t) = A \sin(\omega t - \frac{\omega}{v}x) $$</p>
+
+            <p><strong>Step 4: Defining Wave Constants</strong></p>
+            <p>We define <strong>Propagation Constant</strong> (or Angular Wave Number) as $k = \frac{\omega}{v} =
+                \frac{2\pi \nu}{\nu \lambda} = \frac{2\pi}{\lambda}$.</p>
+            <p>Substituting $k$:</p>
+            <p>$$ y(x, t) = A \sin(\omega t - kx) $$</p>
+            <p>Note: Since $\sin(-\theta) = -\sin(\theta)$, and usually we start with $kx$, we often write it as:</p>
+            <div class="highlight-formula">$$ y(x, t) = A \sin(kx - \omega t + \phi) $$</div>
+            <p>This represents a wave traveling in the <strong>Positive X direction</strong>.</p>
+
+            <p><strong>Why $(kx - \omega t)$?</strong></p>
+            <ul>
+                <li>As $t$ increases, the term $\omega t$ increases.</li>
+                <li>To keep the phase $(kx - \omega t)$ constant (tracking a specific crest), $x$ must also INCREASE.
+                </li>
+                <li>Hence, wave moves in $+x$ direction.</li>
+                <li>For $(kx + \omega t)$, $x$ must DECREASE to keep phase constant $\rightarrow$ Wave moves in $-x$
+                    direction.</li>
+            </ul>
+        </div>
+
+        <div class="formula-box">
+            <p><strong>General Sinusoidal Wave Equation:</strong></p>
+            $$ y(x, t) = A \sin(kx - \omega t + \phi) $$
+        </div>
+
+        <div class="analysis-box">
+            <p><strong>Detailed Analysis of Terms:</strong></p>
+            <ul>
+                <li><strong>$y(x,t)$</strong>: Instantaneous displacement of particle at $x$ at time $t$.</li>
+                <li><strong>$A$ (Amplitude)</strong>: Maximum displacement from mean positions.</li>
+                <li><strong>$\omega$ (Angular Frequency)</strong>: Rate of change of phase with time. $\omega =
+                    \frac{2\pi}{T}$.</li>
+                <li><strong>$k$ (Angular Wave Number)</strong>: Spatial Frequency (Phase change per unit length). $k =
+                    \frac{2\pi}{\lambda}$.</li>
+                <li><strong>$(kx - \omega t + \phi)$</strong>: Total Phase. It determines the state of vibration of the
+                    particle.</li>
+                <li><strong>Phase Difference ($\Delta \phi$):</strong> $\Delta \phi = k(x_2 - x_1) =
+                    \frac{2\pi}{\lambda}\Delta x$.</li>
+            </ul>
+        </div>
+
+        <div class="analysis-box">
+            <p><strong>Relation between Phase Diff ($\Delta \phi$), Path Diff ($\Delta x$), and Time Diff ($\Delta
+                    t$):</strong></p>
+
+            <p style="margin-top: 15px;">1. Phase difference for two particles separated by distance $\Delta x$:</p>
+            <div style="margin-left: 20px; margin-top: 5px;">
+                <p>We know: &nbsp; $\lambda \longleftrightarrow 2\pi$</p>
+                <p>This means phase per unit length is: &nbsp; $\frac{2\pi}{\lambda}$</p>
+                <p>So if distance is $\Delta x$, phase difference will be: &nbsp; $\Delta \phi = \frac{2\pi}{\lambda}
+                    \times \Delta x$</p>
+                <p>This gives:</p>
+                <div style="text-align: center;">
+                    <div class="highlight-formula">$$ \Delta \phi = \frac{2\pi}{\lambda} \Delta x $$</div>
+                </div>
+            </div>
+
+            <p style="margin-top: 20px;">2. Phase difference for the SAME particle after time interval $\Delta t$:</p>
+            <div style="margin-left: 20px; margin-top: 5px;">
+                <p>We know: &nbsp; $T \longleftrightarrow 2\pi$</p>
+                <p>This means phase per unit time is: &nbsp; $\frac{2\pi}{T}$</p>
+                <p>So if time interval is $\Delta t$, phase difference will be: &nbsp; $\Delta \phi = \frac{2\pi}{T}
+                    \times \Delta t$</p>
+                <p>This gives:</p>
+                <div style="text-align: center;">
+                    <div class="highlight-formula">$$ \Delta \phi = \frac{2\pi}{T} \Delta t $$</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- NCERT 14.3 Key Definitions -->
+        <h3>Key Definitions: Wavelength, Period & Frequency</h3>
+        <div class="definition-box">
+            <ul>
+                <li><strong>Wavelength ($\lambda$):</strong> The minimum distance between two particles of the medium
+                    that are in the <strong>same phase</strong> of oscillation (e.g., crest to crest, trough to trough).
+                    SI unit: metre (m).
+                    $$ \lambda = \frac{2\pi}{k} $$
+                </li>
+                <li><strong>Period ($T$):</strong> The time taken by a particle to complete <strong>one full
+                        oscillation</strong>. Equivalently, the time for the wave to advance by one wavelength.
+                    $$ T = \frac{2\pi}{\omega} $$
+                </li>
+                <li><strong>Frequency ($\nu$):</strong> The number of oscillations per second.
+                    $$ \nu = \frac{1}{T} = \frac{\omega}{2\pi} $$
+                </li>
+                <li><strong>Angular Frequency ($\omega$):</strong> $\omega = 2\pi\nu = \frac{2\pi}{T}$</li>
+            </ul>
+            <!-- Image Placeholder: NCERT Fig 14.3 — Snapshot of wave at t=0 and t=Δt showing wavelength and speed -->
+            <div class="diagram-container">
+                <img src="images/wavelength period frequency.jpg"
+                    alt="Snapshot of wave at t=0 and t=Δt showing wavelength and speed"
+                    style="max-width: 100%; border-radius: 8px;">
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Practice Problem 1</span>
+            <p><strong>Q:</strong> A wave equation is $y = 0.05 \sin(80x - 3t)$. Find velocity and wavelength. (SI
+                units)</p>
+            <p><strong>Solution:</strong> Compare with standard $y = A \sin(kx - \omega t)$.</p>
+            <ul>
+                <li>$k = 80$ rad/m $\Rightarrow \frac{2\pi}{\lambda} = 80 \Rightarrow \lambda = \frac{2\pi}{80} =
+                    \frac{\pi}{40}$ m.</li>
+                <li>$\omega = 3$ rad/s.</li>
+                <li>Wave Velocity $v = \frac{\omega}{k} = \frac{3}{80} = 0.0375$ m/s.</li>
+            </ul>
+        </div>
+
+        <!-- 14.4 Wave Speed -->
+        <h2>14.4 Speed of a Travelling Wave</h2>
+
+        <div class="formula-box">
+            $$ v = \frac{\omega}{k} = \frac{2\pi\nu}{2\pi/\lambda} = \nu \lambda $$
+            <p>Wave velocity depends ONLY on the properties of the medium (Elasticity $E$ and Inertia $\rho$).</p>
+            $$ v = \sqrt{\frac{E}{\rho}} $$
+        </div>
+
+        <h3>Case 1: Transverse Wave on Stretched String (Pulse Method)</h3>
+        <div class="derivation-box">
+            <p><strong>Goal:</strong> To derive $v = \sqrt{T/\mu}$ using the concept of Centripetal Force.</p>
+            <p><strong>Logic:</strong> Imagine moving with the pulse at speed $v$. In this frame, the pulse appears
+                stationary, and the string moves backward with speed $v$.</p>
+
+            <div class="diagram-container">
+                <img src="images/ransverse Wave Stretched String Pulse.jpg" alt="Transverse Wave Stretched String Pulse"
+                    style="max-width: 100%; border-radius: 8px;">
+            </div>
+
+            <p><strong>Step 1: Dynamics of Element</strong></p>
+            <p>Consider a small element of length $dl = R(2\theta)$ (where $\theta$ is small half-angle). Mass $dm = \mu
+                (2R\theta)$.</p>
+            <p>The element moves on a curved path of radius $R$ with speed $v$. Required Centripetal Force:</p>
+            <p>$$ F_c = \frac{(dm)v^2}{R} = \frac{(2\mu R \theta)v^2}{R} = 2\mu v^2 \theta $$</p>
+
+            <p><strong>Step 2: Restoring Force</strong></p>
+            <p>The tension $T$ at both ends provides the downward radial force. Vertical component is $2T \sin\theta$.
+            </p>
+            <p>For small $\theta$, $\sin\theta \approx \theta$. So, $F_{res} \approx 2T\theta$.</p>
+
+            <p><strong>Step 3: Equating Forces</strong></p>
+            <p>$$ 2T\theta = 2\mu v^2 \theta $$</p>
+            <p>$$ T = \mu v^2 \Rightarrow v = \sqrt{\frac{T}{\mu}} $$</p>
+        </div>
+
+        <h3>Case 2: Longitudinal Wave (Sound) in Fluids</h3>
+        <div class="derivation-box">
+            <p><strong>General Formula:</strong> $v = \sqrt{\frac{B}{\rho}}$ where $B$ is Bulk Modulus.</p>
+            <p>Definition of Bulk Modulus: $B = -V \frac{dP}{dV}$.</p>
+
+            <hr style="border-top:1px dashed #ccc; margin:15px 0;">
+
+            <p><strong>1. Newton's Formula (Isothermal):</strong></p>
+            <p>Assumption: Sound travels slowly, temperature remains constant ($PV = \text{constant}$).</p>
+            <p>Differentiating: $P dV + V dP = 0 \Rightarrow P dV = -V dP \Rightarrow P = -V \frac{dP}{dV}$.</p>
+            <p>This implies $B_{iso} = P$. So, $v = \sqrt{\frac{P}{\rho}}$.</p>
+            <p>(Result: ~280 m/s for air. Incorrect.)</p>
+
+            <hr style="border-top:1px dashed #ccc; margin:15px 0;">
+
+            <p><strong>2. Laplace's Correction (Adiabatic):</strong></p>
+            <p>Assumption: Compressions are rapid, heat cannot escape ($PV^\gamma = \text{constant}$).</p>
+            <p>Differentiating: $\gamma P V^{\gamma-1} dV + V^\gamma dP = 0$.</p>
+            <p>Divide by $V^{\gamma-1}$: $\gamma P dV + V dP = 0 \Rightarrow \gamma P = -V \frac{dP}{dV}$.</p>
+            <p>This implies $B_{adia} = \gamma P$. So, $v = \sqrt{\frac{\gamma P}{\rho}}$.</p>
+            <p>(Result: ~331 m/s. Correct!)</p>
+        </div>
+
+        <!-- Factors Affecting Speed -->
+        <div class="rule-box">
+            <p><strong>Factors Affecting Speed of Sound in Gas:</strong></p>
+            <ol>
+                <li><strong>Temperature:</strong> $v \propto \sqrt{T}$. Speed increases by 0.61 m/s for every $1^\circ$C
+                    rise.</li>
+                <li><strong>Molecular Weight:</strong> $v \propto \frac{1}{\sqrt{M}}$. (Hydrogen transmits sound faster
+                    than Oxygen).</li>
+                <li><strong>Humidity:</strong> Moist air is lighter ($\rho$ decreases) than dry air. Hence speed
+                    <strong>increases</strong> with humidity.
+                </li>
+                <li><strong>Pressure:</strong> NO EFFECT (at constant temperature), because $P/\rho$ remains constant.
+                </li>
+            </ol>
+        </div>
+
+        <!-- 14.5 Superposition -->
+        <h2>14.5 Principle of Superposition of Waves</h2>
+        <div class="definition-box">
+            <p><strong>Principle of Superposition (NCERT):</strong> When two or more waves traverse the same medium, the net displacement of any element of the medium at a given time is the algebraic sum of the displacements due to each individual wave.</p>
+            <p><strong>In simple words:</strong> Imagine throwing two stones into a pond. The ripples from both will eventually cross each other. What happens to the water there? If Wave A tries to push a water particle UP, and Wave B tries to push it UP, the water particle will go up by the simple addition of both pushes.</p>
+            $$ y(x,t) = y_1(x,t) + y_2(x,t) + \dots + y_n(x,t) $$
+        </div>
+
+        <div class="derivation-box">
+            <p><strong>Mathematical Proof of Interference (from NCERT):</strong></p>
+            <p>Let's take two identical waves traveling in the same direction, but one is slightly ahead of the other by a phase angle $\phi$:</p>
+            <p>Wave 1: $$ y_1(x,t) = a \sin(kx - \omega t) $$</p>
+            <p>Wave 2: $$ y_2(x,t) = a \sin(kx - \omega t + \phi) $$</p>
+            <p>By superposition, the new combined wave is $y = y_1 + y_2$. Using the math identity $\sin A + \sin B = 2\sin(\frac{A+B}{2})\cos(\frac{A-B}{2})$, we get:</p>
+            <div class="highlight-formula">$$ y(x,t) = \left[ 2a \cos \left(\frac{\phi}{2}\right) \right] \sin \left(kx - \omega t + \frac{\phi}{2}\right) $$</div>
+            <p>Notice that the new wave has the same frequency, but a new <strong>Amplitude $A_{res} = 2a \cos(\phi/2)$</strong>. The intensity (loudness or brightness) of a wave is proportional to its Amplitude squared, so the resulting intensity is <strong>$I = 4I_0 \cos^2(\phi/2)$</strong> (where $I_0$ is the intensity of a single wave).</p>
+        </div>
+
+        <div class="analysis-box">
+            <p><strong>Two Special Cases (Constructive & Destructive Interference):</strong></p>
+            <p><strong>1. Constructive Interference (Helping each other):</strong></p>
+            <ul>
+                <li>When the waves are exactly "in step" (in phase), meaning the phase difference is $\phi = 0, \pm 2\pi, \pm 4\pi \dots$</li>
+                <li>This happens when the path difference $\Delta x = n\lambda$ (where n = 0, 1, 2...). One wave traveled exactly a full wavelength further, so they still match perfectly.</li>
+                <li>The amplitude becomes maximum: $A_{max} = 2a$. The intensity reaches its peak: $I_{max} = 4I_0$.</li>
+            </ul>
+
+            <hr style="border-top:1px dashed #ccc; margin:15px 0;">
+
+            <p><strong>2. Destructive Interference (Canceling out):</strong></p>
+            <ul>
+                <li>When the waves are completely "out of step" (out of phase), meaning the phase difference is $\phi = \pm\pi, \pm 3\pi, \pm 5\pi \dots$</li>
+                <li>This happens when the path difference $\Delta x = (n + \frac{1}{2})\lambda$ (where n = 0, 1, 2...). One wave traveled an extra half-wavelength, meaning a crest meets a trough.</li>
+                <li>The amplitude becomes zero: $A_{min} = 0$. The intensity drops to $I_{min} = 0$. They perfectly cancel each other out!</li>
+            </ul>
+        </div>
+
+        <div class="diagram-container"
+            style="background:#fff; padding:15px; display: flex; gap: 20px; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px; text-align: center;">
+                <video autoplay loop muted playsinline
+                    style="width: 100%; max-width: 450px; border-radius: 8px; border: 1px solid #ccc;">
+                    <source src="images/Superposition of Transverse wave propagation.mp4" type="video/mp4">
+                </video>
+                <p style="margin-top: 10px; font-weight: bold; color: #555;">Transverse Wave Superposition</p>
+            </div>
+        </div>
+
+        <!-- 14.6 Reflection & Standing Waves -->
+        <h2>14.6 Reflection of Waves</h2>
+        <div class="definition-box">
+            <p>When a wave hits a boundary, it bounces back. According to NCERT, the type of reflection depends completely on what it hits:</p>
+            <ul>
+                <li><strong>Rigid/Fixed Boundary:</strong> The wave cannot move the tied end. It pushes the wall, and by Newton's Third Law, the wall pushes back equally hard. The wave <strong>flips upside down</strong> (a crest returns as a trough).<br>
+                <strong>Mathematical representation:</strong> If incident wave is $y_i = a \sin(kx - \omega t)$, the reflected wave is inverted, so $y_r = a \sin(kx + \omega t + \pi) = <strong>-a \sin(kx + \omega t)</strong>$. (This is a <strong>phase shift of $\pi$ radians</strong>).</li>
+                
+                <li><strong>Open/Free Boundary:</strong> The end is free to slide up and down. The wave whips it up and snaps back in the exact same shape. A crest returns as a crest. <br>
+                <strong>Mathematical representation:</strong> The reflected wave is unchanged in orientation, so $y_r = <strong>a \sin(kx + \omega t)</strong>$. (This is a <strong>phase shift of 0</strong>).</li>
+            </ul>
+        </div>
+
+        <div class="diagram-container" style="background:#fff; padding:15px; display: flex; gap: 20px; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px; text-align: center;">
+                <video autoplay loop muted playsinline style="width: 100%; max-width: 450px; border-radius: 8px; border: 1px solid #ccc;">
+                    <source src="images/Reflectoin of Wave Fixex end.mp4" type="video/mp4">
+                </video>
+                <p>Reflection at Fixed End (Wave Flips upside down, $\pi$ shift)</p>
+            </div>
+            <div style="flex: 1; min-width: 300px; text-align: center;">
+                <video autoplay loop muted playsinline style="width: 100%; max-width: 450px; border-radius: 8px; border: 1px solid #ccc;">
+                    <source src="images/Reflectoin of Wave Free end.mp4" type="video/mp4">
+                </video>
+                <p>Reflection at Free End (Wave Stays the Same, 0 shift)</p>
+            </div>
+        </div>
+
+        <h3>Standing Waves (Stationary Waves)</h3>
+        <div class="derivation-box">
+            <p><strong>How are they formed?</strong> When two identical waves travel in <strong>opposite directions</strong> through the same medium (like a continually reflecting string wave), they superimpose to form a beautiful pattern that just bounces up and down in place instead of traveling forward.</p>
+            <p>Wave 1 (Moving Right): $y_1 = a \sin(kx - \omega t)$</p>
+            <p>Wave 2 (Moving Left): $y_2 = a \sin(kx + \omega t)$</p>
+            <p>Superposition: $y = y_1 + y_2 = a [\sin(kx - \omega t) + \sin(kx + \omega t)]$. Using math identities:</p>
+            <div class="highlight-formula">$$ y(x,t) = [2a \sin(kx)] \cos(\omega t) $$</div>
+            <p><strong>Crucial NCERT Insights on the Math:</strong></p>
+            <ul>
+                <li>This is <strong>NOT</strong> a traveling wave $(kx \pm \omega t)$. The position $x$ and time $t$ are in separate sine/cosine terms!</li>
+                <li>The amplitude is not constant everywhere! The term <strong>$[2a \sin(kx)]$</strong> acts as the Amplitude at any given position $x$.</li>
+                <li><strong>Nodes (The "dead spots"):</strong> Points where the medium never moves. This means $\sin(kx) = 0$. <br>
+                This happens when $kx = n\pi \implies \frac{2\pi}{\lambda}x = n\pi \implies <strong>x = n\frac{\lambda}{2}</strong>$. (n = 0, 1, 2...)</li>
+                <li><strong>Antinodes (The "max spots"):</strong> Points that bounce up and down with maximum possible amplitude $2a$. This means $\sin(kx) = \pm 1$. <br>
+                This happens when $kx = (n + \frac{1}{2})\pi \implies \frac{2\pi}{\lambda}x = (n + \frac{1}{2})\pi \implies <strong>x = (n + \frac{1}{2})\frac{\lambda}{2}</strong>$.</li>
+            </ul>
+        </div>
+
+        <h3>Normal Modes (Harmonics in Strings and Air Columns)</h3>
+        <p>Musical instruments (like guitars and flutes) rely on bound systems. Because the boundaries force Nodes or Antinodes to always form at specific places, a string or pipe can only hold standing waves of certain "allowed" perfect lengths and frequencies. These are called <strong>Normal Modes</strong> or <strong>Harmonics</strong>.</p>
+        
+        <table style="margin-bottom: 20px;">
+            <tr>
+                <th>System Type</th>
+                <th>NCERT Boundary Conditions</th>
+                <th>What frequencies can it play?</th>
+            </tr>
+            <tr>
+                <td><strong>Stretched String</strong><br>(fixed at both ends)</td>
+                <td>
+                    <p>Both walls are fixed, so we must have <strong>Nodes</strong> at both ends of length $L$.</p>
+                    <p>Allowed lengths: $L = n \frac{\lambda}{2}$</p>
+                    <p>Base (Fundamental) Frequency: $\nu_1 = \frac{v}{2L} = \frac{1}{2L}\sqrt{\frac{T}{\mu}}$</p>
+                </td>
+                <td><strong>ALL Harmonics Present!</strong><br>$\nu_n = n \nu_1$<br>Ratio: 1 : 2 : 3 : 4...<br><small>Produces a very rich, full sound.</small></td>
+            </tr>
+            <tr>
+                <td><strong>Open Organ Pipe</strong><br>(open at both ends)</td>
+                <td>
+                    <p>Both ends are free to the air, so we must have <strong>Antinodes</strong> at both ends.</p>
+                    <p>Allowed lengths: $L = n \frac{\lambda}{2}$</p>
+                    <p>Base (Fundamental) Frequency: $\nu_1 = \frac{v}{2L}$</p>
+                </td>
+                <td><strong>ALL Harmonics Present!</strong><br>$\nu_n = n \nu_1$<br>Ratio: 1 : 2 : 3 : 4...<br><small>It works symmetrically like the string.</small></td>
+            </tr>
+            <tr>
+                <td><strong>Closed Organ Pipe</strong><br>(one end closed)</td>
+                <td>
+                    <p>The closed wall forces a <strong>Node</strong>, the open end forces an <strong>Antinode</strong>.</p>
+                    <p>Allowed lengths: $L = (n + \frac{1}{2}) \frac{\lambda}{2} = (2n+1)\frac{\lambda}{4}$</p>
+                    <p>Base (Fundamental) Frequency: $\nu_1 = \frac{v}{4L}$</p>
+                </td>
+                <td><strong>ONLY ODD Harmonics Present!</strong><br>$\nu_n = (2n+1) \nu_1$<br>Ratio: 1 : 3 : 5 : 7...<br><small>Missing evens gives a "hollow" sound.</small></td>
+            </tr>
+        </table>
+        
+        <div class="rule-box">
+            <p><strong>NCERT Terminology: Harmonics vs Overtones</strong></p>
+            <ul>
+                <li><strong>Harmonic:</strong> Any integer multiple of the fundamental frequency base ($2\nu_1$ is the 2nd harmonic, $3\nu_1$ is the 3rd).</li>
+                <li><strong>Overtone:</strong> Simply the physical pitches that appear <em>over</em> the base tone. In a Closed Pipe, the first tone higher than $\nu_1$ is $3\nu_1$. Therefore, its First Overtone is the 3rd Harmonic!</li>
+            </ul>
+        </div>
+
+        <!-- 14.7 Beats -->
+        <h2>14.7 Beats</h2>
+        <div class="definition-box">
+            <p><strong>What are Beats?</strong> If you listen to two sound waves with <em>nearly equal frequencies</em> together, the intensity of the sound repeatedly rises and falls (waxing and waning). This acoustic phenomenon is called beats.</p>
+        </div>
+        <div class="derivation-box">
+            <p><strong>NCERT Mathematical Proof:</strong></p>
+            <p>Let two frequencies be $\omega_1 = 2\pi\nu_1$ and $\omega_2 = 2\pi\nu_2$ (very close to each other).</p>
+            <p>$y_1 = a \cos(\omega_1 t)$ and $y_2 = a \cos(\omega_2 t)$</p>
+            <p>By superposition: $y = y_1 + y_2 = a [\cos(\omega_1 t) + \cos(\omega_2 t)]$</p>
+            <p>Using the trigonometric identity $\cos A + \cos B = 2\cos(\frac{A-B}{2})\cos(\frac{A+B}{2})$:</p>
+            <div class="highlight-formula">$$ y(t) = \left[ 2a \cos \left( 2\pi\left(\frac{\nu_1 - \nu_2}{2}\right) t \right) \right] \cos \left( 2\pi\left(\frac{\nu_1 + \nu_2}{2}\right) t \right) $$</div>
+            <p><strong>Simple Meaning behind the Math:</strong></p>
+            <ul>
+                <li>The first bracket is a <strong>slowly drifting Amplitude Envelope</strong>. It goes from max magnitude to zero repeatedly.</li>
+                <li>A loud sound (maximum intensity) occurs whenever the amplitude envelope is maximized ($\pm 1$). Because cosine peaks twice per complete cycle (at $0$ and $\pi$), the frequency of these loudness peaks is <em>twice</em> the envelope's frequency.</li>
+                <li>Therefore, the number of beats you hear per second (Beat Frequency) is absolutely simple: <strong>$\nu_{beat} = |\nu_1 - \nu_2|$</strong>.</li>
+            </ul>
+        </div>
+
+        <!-- 14.8 Doppler Effect -->
+        <h2>14.8 Doppler Effect</h2>
+        <div class="definition-box">
+            <p><strong>What is the Doppler Effect?</strong> Have you ever noticed how an ambulance siren sounds high-pitched as it races towards you, and suddenly drops to a noticeably deeper pitch the moment it passes you by? This apparent change in the frequency (pitch) of sound due to relative motion is the Doppler Effect.</p>
+            <ul>
+                <li><strong>Source moves TOWARDS Observer:</strong> The wave crests are squeezed closer together. Wavelength decreases $\implies$ Pitch goes UP.</li>
+                <li><strong>Source moves AWAY from Observer:</strong> The wave crests are stretched widely apart. Wavelength increases $\implies$ Pitch goes DOWN.</li>
+            </ul>
+        </div>
+
+        <div class="formula-box">
+            <p><strong>The General Formula from NCERT:</strong></p>
+            $$ \nu = \nu_0 \left( \frac{v + v_0}{v + v_s} \right) $$
+            <p><strong>How to use it realistically without getting confused by coordinate signs:</strong></p>
+            <p>Instead of strict vector signs, use this foolproof logic formula:</p>
+            $$ \nu_{apparent} = \nu_{actual} \left( \frac{v \pm v_{observer}}{v \mp v_{source}} \right) $$
+            <p><strong>The "Common Sense" Sign Rule:</strong></p>
+            <ul>
+                <li>If the motion tries to bring the Source and Observer <strong>Closer together</strong> $\implies$ Pitch must INCREASE. Choose the math signs that make the final fraction <strong>Bigger</strong> (Numerator $+$, Denominator $-$).</li>
+                <li>If the motion tries to pull them <strong>Further apart</strong> $\implies$ Pitch must DECREASE. Choose the math signs that make the final fraction <strong>Smaller</strong> (Numerator $-$, Denominator $+$).</li>
+            </ul>
+        </div>
+
+        <!-- Quick Formula Reference -->
+        <h2>📋 Quick Formula Reference</h2>
+        <table>
+            <tr>
+                <th>NCERT Topic</th>
+                <th>Mathematical Formula</th>
+            </tr>
+            <tr>
+                <td>Superposition Eq.</td>
+                <td>$y(x,t) = a\sin(kx - \omega t + \phi)$</td>
+            </tr>
+            <tr>
+                <td>Wave Speed</td>
+                <td>$v = \nu\lambda = \frac{\omega}{k}$</td>
+            </tr>
+            <tr>
+                <td>Speed on Stretched String</td>
+                <td>$v = \sqrt{\frac{T}{\mu}}$</td>
+            </tr>
+            <tr>
+                <td>Standing Wave Equation</td>
+                <td>$y(x,t) = [2a \sin(kx)] \cos(\omega t)$</td>
+            </tr>
+            <tr>
+                <td>Fund. Freq (String / Open Pipe)</td>
+                <td>$\nu_1 = \frac{v}{2L}$</td>
+            </tr>
+            <tr>
+                <td>Fund. Freq (Closed Pipe)</td>
+                <td>$\nu_1 = \frac{v}{4L}$</td>
+            </tr>
+            <tr>
+                <td>Beat Frequency</td>
+                <td>$\nu_{beat} = |\nu_1 - \nu_2|$</td>
+            </tr>
+            <tr>
+                <td>Doppler Effect</td>
+                <td>$\nu' = \nu_0\left(\frac{v \pm v_o}{v \mp v_s}\right)$</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
