@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 03: Machines - Vardaan Class Revision Notes</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: {
+                mtextInheritFont: true,
+                scale: 1.05
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES & THEME --- */
+        :root {
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+            --accent-color: #000000;
+            --yellow-bg: #fffde7;
+            --yellow-border: #fdd835;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #f0f7ff;
+            --blue-border: #2563eb;
+            --pink-bg: #fdf2f8;
+            --pink-border: #db2777;
+            --red-border: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Watermark */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 500px;
+            max-width: 80%;
+            height: auto;
+            opacity: 0.05;
+        }
+
+        /* Layout */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 15mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        /* Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+            letter-spacing: -1.5px;
+            text-align: center;
+            color: #000;
+        }
+
+        .header-branding {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-sub {
+            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            background: #000;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            display: block;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            border-left: 5px solid #000;
+            padding-left: 10px;
+        }
+
+        p,
+        li {
+            color: #1a1a1a;
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 20px;
+        }
+
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #f1f5f9;
+            font-weight: 800;
+            color: #334155;
+        }
+
+        /* Formula Cards */
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 1.5rem 0;
+        }
+
+        .formula-card {
+            border: 2px solid #000;
+            padding: 12px;
+            background: #fff;
+            text-align: center;
+            position: relative;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .formula-card-label {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #000;
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Blocks */
+        .highlight-blue {
+            background-color: var(--blue-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--blue-border);
+            margin-bottom: 1rem;
+        }
+
+        .highlight-green {
+            background-color: var(--green-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--green-border);
+            margin-bottom: 1rem;
+        }
+
+        .master-tip {
+            border: 2px dashed var(--red-border);
+            background-color: #fffaf0;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .tip-header {
+            font-weight: 800;
+            color: var(--red-border);
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        /* Practice Question Box (High Density) */
+        .practice-box {
+            border: 1px solid #d97706;
+            border-left: 6px solid #d97706;
+            padding: 15px;
+            margin: 1rem 0;
+            background: #fffbeb;
+            font-size: 0.9rem;
+        }
+
+        .practice-header {
+            font-weight: 800;
+            color: #92400e;
+            font-size: 0.75rem;
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .q-type {
+            font-weight: 700;
+            color: #000;
+            margin-right: 5px;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-direction: column;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 5px;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <div class="header-branding">
+            <span class="header-sub">Board Revision High-Density Series</span>
+            <h1>Machines</h1>
+            <span class="header-team">Technically Exhaustive • Class Revision Hub</span>
+        </div>
+
+        <h2>I. PRINCIPLES & FORMULAS</h2>
+        <div class="formula-grid">
+            <div class="formula-card"><span class="formula-card-label">M.A.</span>$M.A. = \frac{Load (L)}{Effort (E)}$</div>
+            <div class="formula-card"><span class="formula-card-label">V.R.</span>$V.R. = \frac{d_E}{d_L}$</div>
+            <div class="formula-card"><span class="formula-card-label">Efficiency</span>$\eta \% = \frac{M.A.}{V.R.} \times 100$</div>
+            <div class="formula-card"><span class="formula-card-label">Relationship</span>$M.A. = V.R. \times \eta$</div>
+        </div>
+
+        <div class="highlight-blue">
+            <p><strong>Note 1:</strong> M.A. decreases due to friction/weight. V.R. is constant (geometric property).</p>
+            <p><strong>Note 2:</strong> Ratio of similar quantities $\to$ <strong>No Units</strong> for M.A., V.R., or $\eta$.</p>
+        </div>
+
+        <h2>II. LEVERS (LAW: $L \times L_{arm} = E \times E_{arm}$)</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Logic (Middle)</th>
+                    <th>M.A. Constraint</th>
+                    <th>Typical Examples</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Class I</strong></td>
+                    <td>Fulcrum (F)</td>
+                    <td>$>1, =1, <1$</td>
+                    <td>Crowbar ($>1$), Seesaw ($=1$), Scissor ($<1$)</td>
+                </tr>
+                <tr>
+                    <td><strong>Class II</strong></td>
+                    <td>Load (L)</td>
+                    <td><strong>Always > 1</strong></td>
+                    <td>Nutcracker, Wheelbarrow, Paper Cutter</td>
+                </tr>
+                <tr>
+                    <td><strong>Class III</strong></td>
+                    <td>Effort (E)</td>
+                    <td><strong>Always < 1</strong></td>
+                    <td>Fire Tongs, Bread Knife, Human Forearm</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="img-placeholder">
+            <span>[IMAGE: Lever Classes Summary Diagram]</span>
+            <p class="img-prompt">Clean comparison of F-L-E positions with directional arrows for All Classes.</p>
+        </div>
+
+        <h3>Human Body Levers:</h3>
+        <ul>
+            <li><strong>Class I:</strong> Nodding head (Fulcrum: spinal joint, Load: head weight, Effort: neck muscle).</li>
+            <li><strong>Class II:</strong> Raising on toes (Fulcrum: toes, Load: body weight, Effort: ankle muscle).</li>
+            <li><strong>Class III:</strong> Foreground lift (Fulcrum: elbow, Effort: biceps attachment, Load: weight in hand).</li>
+        </ul>
+
+        <h2>III. PULLEY MASTER TABLE</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>System Type</th>
+                    <th>Ideal M.A.</th>
+                    <th>V.R.</th>
+                    <th>Practical Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Single Fixed</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>MA < 1 (Friction)</td>
+                </tr>
+                <tr>
+                    <td>Single Movable</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>MA < 2 (Weight/Friction)</td>
+                </tr>
+                <tr>
+                    <td>Block & Tackle</td>
+                    <td>$n$</td>
+                    <td>$n$</td>
+                    <td>$\eta = 1 - \frac{w}{nE}$</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="master-tip">
+            <span class="tip-header">Master Strategy: The $2^n$ System</span>
+            For **one fixed pulley** and **$n$ movable pulleys**, the $V.R. = 2^n$. 
+            <br><em>Ex:</em> 3 movable pulleys $\to V.R. = 2^3 = 8$.
+        </div>
+
+        <h2>IV. TOP REVISION NUMERICALS</h2>
+        
+        <div class="practice-box">
+            <span class="practice-header">#1 Lever calculation</span>
+            <span class="q-type">Q:</span> Crowbar of $1.5\text{ m}$. Fulcrum at $0.5\text{ m}$ from load. Find M.A.
+            <br><strong>Ans:</strong> $L_{arm} = 0.5, E_{arm} = 1.5 - 0.5 = 1.0$. $M.A. = 1/0.5 = \mathbf{2}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">#2 Nutcracker Force</span>
+            <span class="q-type">Q:</span> Handle $20\text{ cm}$, Nut at $2\text{ cm}$ from hinge. Load needed $= 40\text{ kgf}$. Find Effort.
+            <br><strong>Ans:</strong> $E \times 20 = 40 \times 2 \implies \mathbf{E = 4\text{ kgf}}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">#3 Block & Tackle (n=5)</span>
+            <span class="q-type">Q:</span> Load $= 4500\text{ N}$, Effort $= 1000\text{ N}$, Pulleys $= 5$. Find $\eta$.
+            <br><strong>Ans:</strong> $V.R. = 5, M.A. = 4500/1000 = 4.5. \eta = 4.5/5 = \mathbf{90\%}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">#4 Power Input</span>
+            <span class="q-type">Q:</span> Fixed pulley lifts $750\text{ N}$ using $1000\text{ N}$ mass falling $8\text{ m}$ in $4\text{ s}$. Find Power Input.
+            <br><strong>Ans:</strong> Work In $= 1000 \times 8 = 8000\text{ J}$. Power $= 8000/4 = \mathbf{2000\text{ W}}$.
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">Quick Check: M.A. Trends</span>
+            - If $\eta < 100\%$, then **M.A. < V.R.**
+            - If weight of movable block increases, **M.A. decreases**.
+            - To increase Efficiency, **decrease weight of movable block**.
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; border-top: 1px solid #e2e8f0; padding-top: 2rem; opacity: 0.7;">
+            <p>Technically Verified Research Notes • Vardaan Comet High-Density Hub</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

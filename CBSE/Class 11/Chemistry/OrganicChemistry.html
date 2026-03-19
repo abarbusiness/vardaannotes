@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organic Chemistry — Vardaan Master Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0e1a;
+            --surface: #111827;
+            --card: #161e2e;
+            --border: rgba(100,180,255,0.12);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent1: #38bdf8;   /* sky blue */
+            --accent2: #a78bfa;   /* purple */
+            --accent3: #34d399;   /* emerald */
+            --accent4: #fb923c;   /* orange */
+            --accent5: #f472b6;   /* pink */
+            --gold: #fbbf24;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ── ANIMATED MOLECULAR CANVAS ── */
+        #mol-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── HEXAGON GRID BACKGROUND ── */
+        .hex-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2338bdf8' stroke-width='1'%3E%3Cpolygon points='30,5 53,17.5 53,42.5 30,55 7,42.5 7,17.5'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* ── FLOATING FORMULA PARTICLES ── */
+        .formula-particle {
+            position: fixed;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(56,189,248,0.25);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp linear infinite;
+            user-select: none;
+        }
+
+        @keyframes floatUp {
+            0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ── GLOWING GRADIENT ORBS ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.18;
+            z-index: 0;
+            animation: orbPulse ease-in-out infinite alternate;
+        }
+        .orb1 { width: 500px; height: 500px; background: #6d28d9; top: -100px; left: -100px; animation-duration: 8s; }
+        .orb2 { width: 400px; height: 400px; background: #0369a1; bottom: -80px; right: -80px; animation-duration: 10s; }
+        .orb3 { width: 300px; height: 300px; background: #065f46; top: 40%; left: 60%; animation-duration: 12s; }
+        @keyframes orbPulse { from { transform: scale(1); } to { transform: scale(1.2); } }
+
+        /* ── MAIN CONTAINER ── */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+
+        /* ── HERO HEADER ── */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+        }
+
+        .institute-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56,189,248,0.1);
+            border: 1px solid rgba(56,189,248,0.25);
+            border-radius: 999px;
+            padding: 6px 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent1);
+            margin-bottom: 30px;
+            animation: fadeDown 0.7s ease;
+        }
+
+        .hero-emoji {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #38bdf8 0%, #a78bfa 40%, #f472b6 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            animation: fadeDown 0.8s ease;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 50px;
+            animation: fadeDown 0.9s ease;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            animation: fadeDown 1s ease;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── SECTION HEADERS ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 60px 0 30px;
+        }
+
+        .section-pill {
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .pill-11 { background: rgba(56,189,248,0.15); color: var(--accent1); border: 1px solid rgba(56,189,248,0.25); }
+        .pill-12 { background: rgba(167,139,250,0.15); color: var(--accent2); border: 1px solid rgba(167,139,250,0.25); }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── MODULE GRID ── */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* ── MODULE CARD ── */
+        .module-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-decoration: none;
+            color: var(--text);
+            display: block;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            animation: cardIn 0.6s ease backwards;
+        }
+
+        .module-card:hover {
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--card-accent);
+            border-color: var(--card-accent);
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: var(--card-gradient);
+        }
+
+        .module-card::after {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: var(--card-glow);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .module-card:hover::after { opacity: 1; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .module-number {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            background: var(--card-icon-bg);
+            flex-shrink: 0;
+        }
+
+        .module-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .module-desc {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.55;
+            margin-bottom: 16px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .topic-tag {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.68rem;
+            color: var(--muted);
+        }
+
+        .card-arrow {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--card-arrow-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .module-card:hover .card-arrow { transform: translateX(4px); }
+
+        /* Color themes per module group */
+        .c-sky   { --card-accent:#38bdf8; --card-gradient:linear-gradient(90deg,#0ea5e9,#38bdf8); --card-glow:rgba(56,189,248,0.15); --card-icon-bg:rgba(56,189,248,0.12); --card-arrow-bg:rgba(56,189,248,0.15); }
+        .c-indigo{ --card-accent:#818cf8; --card-gradient:linear-gradient(90deg,#6366f1,#818cf8); --card-glow:rgba(129,140,248,0.15); --card-icon-bg:rgba(129,140,248,0.12); --card-arrow-bg:rgba(129,140,248,0.15); }
+        .c-purple{ --card-accent:#a78bfa; --card-gradient:linear-gradient(90deg,#7c3aed,#a78bfa); --card-glow:rgba(167,139,250,0.15); --card-icon-bg:rgba(167,139,250,0.12); --card-arrow-bg:rgba(167,139,250,0.15); }
+        .c-teal  { --card-accent:#2dd4bf; --card-gradient:linear-gradient(90deg,#0d9488,#2dd4bf); --card-glow:rgba(45,212,191,0.15); --card-icon-bg:rgba(45,212,191,0.12); --card-arrow-bg:rgba(45,212,191,0.15); }
+        .c-green { --card-accent:#34d399; --card-gradient:linear-gradient(90deg,#059669,#34d399); --card-glow:rgba(52,211,153,0.15); --card-icon-bg:rgba(52,211,153,0.12); --card-arrow-bg:rgba(52,211,153,0.15); }
+        .c-amber { --card-accent:#fbbf24; --card-gradient:linear-gradient(90deg,#d97706,#fbbf24); --card-glow:rgba(251,191,36,0.15); --card-icon-bg:rgba(251,191,36,0.12); --card-arrow-bg:rgba(251,191,36,0.15); }
+        .c-orange{ --card-accent:#fb923c; --card-gradient:linear-gradient(90deg,#ea580c,#fb923c); --card-glow:rgba(251,146,60,0.15); --card-icon-bg:rgba(251,146,60,0.12); --card-arrow-bg:rgba(251,146,60,0.15); }
+        .c-red   { --card-accent:#f87171; --card-gradient:linear-gradient(90deg,#dc2626,#f87171); --card-glow:rgba(248,113,113,0.15); --card-icon-bg:rgba(248,113,113,0.12); --card-arrow-bg:rgba(248,113,113,0.15); }
+        .c-pink  { --card-accent:#f472b6; --card-gradient:linear-gradient(90deg,#db2777,#f472b6); --card-glow:rgba(244,114,182,0.15); --card-icon-bg:rgba(244,114,182,0.12); --card-arrow-bg:rgba(244,114,182,0.15); }
+        .c-lime  { --card-accent:#a3e635; --card-gradient:linear-gradient(90deg,#65a30d,#a3e635); --card-glow:rgba(163,230,53,0.15); --card-icon-bg:rgba(163,230,53,0.12); --card-arrow-bg:rgba(163,230,53,0.15); }
+        .c-rose  { --card-accent:#fb7185; --card-gradient:linear-gradient(90deg,#e11d48,#fb7185); --card-glow:rgba(251,113,133,0.15); --card-icon-bg:rgba(251,113,133,0.12); --card-arrow-bg:rgba(251,113,133,0.15); }
+
+        /* ── BENZENE RING DECORATION ── */
+        .benzene-deco {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            opacity: 0.06;
+            transition: opacity 0.3s;
+        }
+        .module-card:hover .benzene-deco { opacity: 0.12; }
+
+        /* ── BOTTOM STRIP ── */
+        .bottom-bar {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        .bottom-bar span {
+            color: var(--accent1);
+            font-weight: 600;
+        }
+
+        /* ── SEARCH BAR ── */
+        .search-wrap {
+            max-width: 480px;
+            margin: 0 auto 50px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 50px 14px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-input::placeholder { color: var(--muted); }
+
+        .search-input:focus {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .modules-grid { grid-template-columns: 1fr; }
+            .hero { padding: 60px 10px 40px; }
+            .hero-stats { gap: 24px; }
+        }
+
+        /* ── CARD STAGGER ANIMATION ── */
+        .module-card:nth-child(1)  { animation-delay: 0.05s }
+        .module-card:nth-child(2)  { animation-delay: 0.10s }
+        .module-card:nth-child(3)  { animation-delay: 0.15s }
+        .module-card:nth-child(4)  { animation-delay: 0.20s }
+        .module-card:nth-child(5)  { animation-delay: 0.25s }
+        .module-card:nth-child(6)  { animation-delay: 0.30s }
+        .module-card:nth-child(7)  { animation-delay: 0.35s }
+        .module-card:nth-child(8)  { animation-delay: 0.40s }
+        .module-card:nth-child(9)  { animation-delay: 0.10s }
+        .module-card:nth-child(10) { animation-delay: 0.15s }
+        .module-card:nth-child(11) { animation-delay: 0.20s }
+        .module-card:nth-child(12) { animation-delay: 0.25s }
+    </style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="hex-grid"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<canvas id="mol-canvas"></canvas>
+
+<!-- Floating chemistry formulas -->
+<div class="formula-particle" style="left:5%;animation-duration:18s;animation-delay:0s;font-size:1rem">CH₄</div>
+<div class="formula-particle" style="left:12%;animation-duration:22s;animation-delay:3s">C₆H₆</div>
+<div class="formula-particle" style="left:20%;animation-duration:16s;animation-delay:6s">CH₃COOH</div>
+<div class="formula-particle" style="left:33%;animation-duration:25s;animation-delay:1.5s;font-size:1.1rem">C=C</div>
+<div class="formula-particle" style="left:45%;animation-duration:19s;animation-delay:8s">NH₂</div>
+<div class="formula-particle" style="left:55%;animation-duration:21s;animation-delay:4s;font-size:0.95rem">C≡C</div>
+<div class="formula-particle" style="left:65%;animation-duration:17s;animation-delay:2s">OH</div>
+<div class="formula-particle" style="left:75%;animation-duration:24s;animation-delay:7s">NO₂</div>
+<div class="formula-particle" style="left:85%;animation-duration:20s;animation-delay:5s">CHO</div>
+<div class="formula-particle" style="left:92%;animation-duration:23s;animation-delay:9s">COOH</div>
+<div class="formula-particle" style="left:28%;animation-duration:26s;animation-delay:11s;color:rgba(167,139,250,0.3)">sp³</div>
+<div class="formula-particle" style="left:50%;animation-duration:28s;animation-delay:13s;color:rgba(52,211,153,0.3)">π bond</div>
+<div class="formula-particle" style="left:70%;animation-duration:22s;animation-delay:15s;color:rgba(251,191,36,0.3)">4n+2</div>
+
+<div class="container">
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="institute-badge">
+            ⚗️ Vardaan Learning Institute &nbsp;·&nbsp; Master Notes Series
+        </div>
+        <span class="hero-emoji">🧪</span>
+        <h1 class="hero-title">Organic Chemistry</h1>
+        <p class="hero-sub">A complete 20-module journey through CBSE Class 11 &amp; 12 Organic Chemistry — from foundational GOC to biomolecules. Concept-first, mechanism-driven, exam-ready.</p>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Modules</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">250+</div>
+                <div class="stat-label">Practice Questions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">80+</div>
+                <div class="stat-label">Named Reactions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2yr</div>
+                <div class="stat-label">Syllabus Coverage</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-wrap">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search a module or topic…" oninput="filterCards()">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+
+    <!-- ── CLASS 11 MODULES ── -->
+    <div class="section-header">
+        <span class="section-pill pill-11">Class 11</span>
+        <span class="section-title">Foundational Organic Chemistry</span>
+        <div class="section-line"></div>
+    </div>
+
+    <div class="modules-grid" id="grid11">
+
+        <!-- M01 GOC -->
+        <a href="OrganicChemistry/Module01_GOC/ChapterNotes.html" class="module-card c-sky" data-search="GOC general organic chemistry bond fission carbocation carbanion free radical inductive resonance hyperconjugation aromaticity">
+            <svg class="benzene-deco" width="120" height="120" viewBox="0 0 120 120"><polygon points="60,10 103,35 103,85 60,110 17,85 17,35" fill="none" stroke="white" stroke-width="2"/><circle cx="60" cy="60" r="25" fill="none" stroke="white" stroke-width="1.5"/></svg>
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 01</div>
+                    <div class="module-title">General Organic Chemistry (GOC)</div>
+                </div>
+                <div class="card-icon">⚗️</div>
+            </div>
+            <p class="module-desc">Bond fission, reactive intermediates, inductive effect, resonance, hyperconjugation, aromaticity, and acid-base principles — the foundation of everything.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Carbocations</span>
+                    <span class="topic-tag">Resonance</span>
+                    <span class="topic-tag">Hückel Rule</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M02 IUPAC -->
+        <a href="OrganicChemistry/Module02_IUPACNomenclature/ChapterNotes.html" class="module-card c-indigo" data-search="IUPAC nomenclature naming organic compounds functional groups prefix suffix parent chain">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 02</div>
+                    <div class="module-title">IUPAC Nomenclature</div>
+                </div>
+                <div class="card-icon">🏷️</div>
+            </div>
+            <p class="module-desc">Name any organic compound systematically. Functional group priority, parent chain selection, substituent alphabetization — the language of chemistry.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Naming Rules</span>
+                    <span class="topic-tag">FG Priority</span>
+                    <span class="topic-tag">Cyclic Cpds</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M03 Isomerism -->
+        <a href="OrganicChemistry/Module03_Isomerism/ChapterNotes.html" class="module-card c-purple" data-search="isomerism structural chain position functional group tautomerism stereoisomerism geometric cis trans optical chiral enantiomers diastereomers meso R S configuration">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 03</div>
+                    <div class="module-title">Isomerism</div>
+                </div>
+                <div class="card-icon">🪞</div>
+            </div>
+            <p class="module-desc">Structural isomerism, geometric (cis-trans), optical isomerism, chirality, R/S configuration, enantiomers, diastereomers, and meso compounds.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Chirality</span>
+                    <span class="topic-tag">R/S Config</span>
+                    <span class="topic-tag">Tautomers</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M04 Purification -->
+        <a href="OrganicChemistry/Module04_PurificationAnalysis/ChapterNotes.html" class="module-card c-teal" data-search="purification analysis crystallisation distillation chromatography sublimation lassaigne test nitrogen sulphur halogen Kjeldahl Dumas Liebig Carius quantitative">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 04</div>
+                    <div class="module-title">Purification &amp; Analysis</div>
+                </div>
+                <div class="card-icon">🔬</div>
+            </div>
+            <p class="module-desc">Purification methods (TLC, distillation, crystallisation) and systematic elemental analysis — qualitative Lassaigne's test, quantitative formulae.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Lassaigne</span>
+                    <span class="topic-tag">Kjeldahl</span>
+                    <span class="topic-tag">Chromatography</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M05 Alkanes -->
+        <a href="OrganicChemistry/Module05_Alkanes/ChapterNotes.html" class="module-card c-green" data-search="alkanes methane ethane propane butane halogenation free radical SR mechanism Wurtz Kolbe combustion cracking Newman conformation staggered eclipsed">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 05</div>
+                    <div class="module-title">Alkanes (Paraffins)</div>
+                </div>
+                <div class="card-icon">🔗</div>
+            </div>
+            <p class="module-desc">CₙH₂ₙ₊₂ — Preparation (Wurtz, Kolbe), free radical halogenation mechanism, selectivity, conformational analysis, combustion, and cracking.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Free Radical SR</span>
+                    <span class="topic-tag">Conformations</span>
+                    <span class="topic-tag">Wurtz Rxn</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M06 Alkenes -->
+        <a href="OrganicChemistry/Module06_Alkenes/ChapterNotes.html" class="module-card c-amber" data-search="alkenes ethylene propylene electrophilic addition Markovnikov anti-Markovnikov ozonolysis Baeyer test Zaitsev dehydration hydroboration oxidation peroxide kharasch">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 06</div>
+                    <div class="module-title">Alkenes (Olefins)</div>
+                </div>
+                <div class="card-icon">⚡</div>
+            </div>
+            <p class="module-desc">CₙH₂ₙ — Electrophilic addition, Markovnikov's rule, peroxide effect, ozonolysis, Baeyer's test, hydroboration-oxidation, and Zaitsev's rule.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Markovnikov</span>
+                    <span class="topic-tag">Ozonolysis</span>
+                    <span class="topic-tag">Baeyer Test</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M07 Alkynes -->
+        <a href="OrganicChemistry/Module07_Alkynes/ChapterNotes.html" class="module-card c-orange" data-search="alkynes acetylene ethyne terminal acidic Lindlar Birch hydration ketone keto enol silver acetylide copper NaNH2 cyclotrimerization">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 07</div>
+                    <div class="module-title">Alkynes</div>
+                </div>
+                <div class="card-icon">⚛️</div>
+            </div>
+            <p class="module-desc">CₙH₂ₙ₋₂ — Triple bond chemistry, acid character of terminal alkynes, hydration, Lindlar vs Birch reduction, silver acetylide test, cyclotrimerisation.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Acidic C–H</span>
+                    <span class="topic-tag">Lindlar Cat.</span>
+                    <span class="topic-tag">Keto-Enol</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M08 Aromatics -->
+        <a href="OrganicChemistry/Module08_AromaticHydrocarbons/ChapterNotes.html" class="module-card c-red" data-search="benzene aromatic EAS electrophilic substitution Friedel Crafts nitration sulphonation halogenation toluene director ortho para meta activating deactivating">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 08</div>
+                    <div class="module-title">Aromatic Hydrocarbons &amp; Benzene</div>
+                </div>
+                <div class="card-icon">🌀</div>
+            </div>
+            <p class="module-desc">Benzene structure, aromaticity, EAS mechanism, Friedel-Crafts reaction, nitration, sulphonation, directing effects — ortho/para vs meta theory.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">EAS</span>
+                    <span class="topic-tag">Friedel-Crafts</span>
+                    <span class="topic-tag">Directing Effects</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- ── CLASS 12 MODULES ── -->
+    <div class="section-header">
+        <span class="section-pill pill-12">Class 12</span>
+        <span class="section-title">Advanced Organic Chemistry</span>
+        <div class="section-line"></div>
+    </div>
+
+    <div class="modules-grid" id="grid12">
+
+        <!-- M09 Haloalkanes -->
+        <a href="OrganicChemistry/Module09_Haloalkanes/ChapterNotes.html" class="module-card c-sky" data-search="haloalkanes alkyl halides SN1 SN2 E1 E2 Walden inversion Saytzeff nucleophilic substitution elimination">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 09</div>
+                    <div class="module-title">Haloalkanes</div>
+                </div>
+                <div class="card-icon">🧲</div>
+            </div>
+            <p class="module-desc">Alkyl halides — SN1 vs SN2 mechanism, stereochemistry (Walden inversion), E1 vs E2 elimination, Saytzeff's rule, comparison of leaving groups.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">SN1 / SN2</span>
+                    <span class="topic-tag">Walden Inv.</span>
+                    <span class="topic-tag">E1 / E2</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M10 Haloarenes -->
+        <a href="OrganicChemistry/Module10_Haloarenes/ChapterNotes.html" class="module-card c-indigo" data-search="haloarenes aryl halides nucleophilic aromatic substitution Meisenheimer complex chlorobenzene reactivity">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 10</div>
+                    <div class="module-title">Haloarenes</div>
+                </div>
+                <div class="card-icon">🔄</div>
+            </div>
+            <p class="module-desc">Aryl halides — why less reactive than alkyl halides, nucleophilic aromatic substitution, Meisenheimer complex, and uses of haloarenes.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">NAS Mechanism</span>
+                    <span class="topic-tag">Meisenheimer</span>
+                    <span class="topic-tag">Reactivity</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M11 Alcohols -->
+        <a href="OrganicChemistry/Module11_Alcohols/ChapterNotes.html" class="module-card c-purple" data-search="alcohols ethanol propanol primary secondary tertiary Lucas test oxidation esterification dehydration">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 11</div>
+                    <div class="module-title">Alcohols</div>
+                </div>
+                <div class="card-icon">🍶</div>
+            </div>
+            <p class="module-desc">Alcohols — preparation, physical properties (H-bonding), Lucas test, oxidation, esterification, dehydration, and distinction from phenols.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Lucas Test</span>
+                    <span class="topic-tag">Oxidation</span>
+                    <span class="topic-tag">Esterification</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M12 Phenols -->
+        <a href="OrganicChemistry/Module12_Phenols/ChapterNotes.html" class="module-card c-teal" data-search="phenols carbolic acid acidity Kolbe Reimer Tiemann Schotten Baumann FeCl3 test EAS on phenol">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 12</div>
+                    <div class="module-title">Phenols</div>
+                </div>
+                <div class="card-icon">🌿</div>
+            </div>
+            <p class="module-desc">Phenol's unique acidity, FeCl₃ test, Kolbe-Schmidt reaction, Reimer-Tiemann reaction, Schotten-Baumann, and EAS of phenol ring.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Acidity</span>
+                    <span class="topic-tag">Kolbe Rxn</span>
+                    <span class="topic-tag">Reimer-Tiemann</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M13 Ethers -->
+        <a href="OrganicChemistry/Module13_Ethers/ChapterNotes.html" class="module-card c-green" data-search="ethers Williamson synthesis diethyl ether cleavage HI HBr reactions">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 13</div>
+                    <div class="module-title">Ethers</div>
+                </div>
+                <div class="card-icon">🔮</div>
+            </div>
+            <p class="module-desc">Ethers — Williamson synthesis (SN2), cleavage with HI, physical properties, uses as solvents and anaesthetics, and comparison with alcohols.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Williamson</span>
+                    <span class="topic-tag">HI Cleavage</span>
+                    <span class="topic-tag">Uses</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M14 Aldehydes & Ketones -->
+        <a href="OrganicChemistry/Module14_AldehydesKetones/ChapterNotes.html" class="module-card c-amber" data-search="aldehydes ketones carbonyl nucleophilic addition aldol condensation Tollens Fehling Cannizzaro Clemmensen Wolf Kishner named reactions">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 14</div>
+                    <div class="module-title">Aldehydes &amp; Ketones</div>
+                </div>
+                <div class="card-icon">⚗️</div>
+            </div>
+            <p class="module-desc">Carbonyl group chemistry — nucleophilic addition, Tollens' test, Fehling's test, aldol condensation, Cannizzaro, Clemmensen, Wolf-Kishner reactions.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Aldol Rxn</span>
+                    <span class="topic-tag">Tollens Test</span>
+                    <span class="topic-tag">AN Mechanism</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M15 Carboxylic Acids -->
+        <a href="OrganicChemistry/Module15_CarboxylicAcids/ChapterNotes.html" class="module-card c-orange" data-search="carboxylic acids acidity esterification acid chloride anhydride amide Hell Volhard Zelinsky Decarboxylation Rosenmund">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 15</div>
+                    <div class="module-title">Carboxylic Acids &amp; Derivatives</div>
+                </div>
+                <div class="card-icon">🧫</div>
+            </div>
+            <p class="module-desc">Carboxylic acids and their derivatives — acidity comparison, nucleophilic acyl substitution, Hell-Volhard-Zelinsky, ester hydrolysis, and acid anhydrides.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Acidity</span>
+                    <span class="topic-tag">HVZ Rxn</span>
+                    <span class="topic-tag">Derivatives</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M16 Amines -->
+        <a href="OrganicChemistry/Module16_Amines/ChapterNotes.html" class="module-card c-red" data-search="amines primary secondary tertiary basicity Gabriel Hoffmann Hinsberg test coupling diazotization">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 16</div>
+                    <div class="module-title">Amines</div>
+                </div>
+                <div class="card-icon">💠</div>
+            </div>
+            <p class="module-desc">Amines as bases — basicity order, Gabriel synthesis, Hoffmann bromamide reaction, Hinsberg test for 1°/2°/3°, and coupling reactions.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Basicity</span>
+                    <span class="topic-tag">Gabriel Synth.</span>
+                    <span class="topic-tag">Hinsberg Test</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M17 Diazonium Salts -->
+        <a href="OrganicChemistry/Module17_DiazoniumSalts/ChapterNotes.html" class="module-card c-pink" data-search="diazonium salts Sandmeyer Balz Schiemann azo coupling reactions aniline diazotization">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 17</div>
+                    <div class="module-title">Diazonium Salts</div>
+                </div>
+                <div class="card-icon">💛</div>
+            </div>
+            <p class="module-desc">Diazonium chemistry — Sandmeyer reaction, Balz-Schiemann, azo coupling to make dyes, and converting −N₂⁺ to various functional groups.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Sandmeyer</span>
+                    <span class="topic-tag">Azo Dyes</span>
+                    <span class="topic-tag">Coupling</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M18 Biomolecules -->
+        <a href="OrganicChemistry/Module18_Biomolecules/ChapterNotes.html" class="module-card c-lime" data-search="biomolecules carbohydrates glucose fructose sucrose starch cellulose amino acids proteins enzymes nucleic acids DNA RNA vitamins">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 18</div>
+                    <div class="module-title">Biomolecules</div>
+                </div>
+                <div class="card-icon">🧬</div>
+            </div>
+            <p class="module-desc">Carbohydrates, proteins, vitamins, nucleic acids — structure, function, and organic chemistry behind the molecules of life.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Glucose</span>
+                    <span class="topic-tag">Amino Acids</span>
+                    <span class="topic-tag">DNA/RNA</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M19 Polymers -->
+        <a href="OrganicChemistry/Module19_Polymers/ChapterNotes.html" class="module-card c-rose" data-search="polymers addition condensation nylon Bakelite rubber PVC Teflon neoprene natural synthetic biodegradable">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 19</div>
+                    <div class="module-title">Polymers &amp; Chemistry in Everyday Life</div>
+                </div>
+                <div class="card-icon">🔩</div>
+            </div>
+            <p class="module-desc">Addition and condensation polymers, natural vs synthetic, rubber, nylon, Bakelite, PTFE, PVC, and chemistry of medicines, detergents, food.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">Addition Polymers</span>
+                    <span class="topic-tag">Condensation</span>
+                    <span class="topic-tag">Nylon / Bakelite</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+        <!-- M20 Practical -->
+        <a href="OrganicChemistry/Module20_PracticalChemistry/ChapterNotes.html" class="module-card c-sky" data-search="practical chemistry identification tests chemical tests colour reactions organic reagents qualitative analysis distinction laboratory">
+            <div class="card-header">
+                <div>
+                    <div class="module-number">Module 20</div>
+                    <div class="module-title">Practical Chemistry</div>
+                </div>
+                <div class="card-icon">🧪</div>
+            </div>
+            <p class="module-desc">Identification of functional groups by chemical tests, colour reactions, reagents (Tollens', Fehling's, Baeyer's, FeCl₃, Lucas), and lab safety.</p>
+            <div class="card-footer">
+                <div class="topic-tags">
+                    <span class="topic-tag">ID Tests</span>
+                    <span class="topic-tag">Colour Rxns</span>
+                    <span class="topic-tag">Practical Tips</span>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </a>
+
+    </div>
+
+    <div class="bottom-bar">
+        <p>🧪 <span>Vardaan Learning Institute</span> &nbsp;·&nbsp; Organic Chemistry Master Notes &nbsp;·&nbsp; CBSE Class 11 &amp; 12 &nbsp;·&nbsp; All rights reserved.</p>
+        <p style="margin-top:8px;opacity:.6">Powered by Vardaan Comet AI — structured with 3-layer concept learning: intuition → mechanism → application.</p>
+    </div>
+
+</div>
+
+<script>
+/* ── ANIMATED MOLECULAR BOND CANVAS ── */
+const canvas = document.getElementById('mol-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const NODES = [];
+const NODE_COUNT = 40;
+const MAX_DIST = 160;
+
+for (let i = 0; i < NODE_COUNT; i++) {
+    NODES.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        r: 2 + Math.random() * 2.5,
+        hue: Math.random() < 0.5 ? 200 : 270 // sky vs purple
+    });
+}
+
+function drawMolecule() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw bonds (lines between close nodes)
+    for (let i = 0; i < NODES.length; i++) {
+        for (let j = i + 1; j < NODES.length; j++) {
+            const dx = NODES[j].x - NODES[i].x;
+            const dy = NODES[j].y - NODES[i].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) {
+                const alpha = (1 - dist / MAX_DIST) * 0.25;
+                ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(NODES[i].x, NODES[i].y);
+                ctx.lineTo(NODES[j].x, NODES[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+
+    // Draw atoms (nodes)
+    NODES.forEach(n => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.hue === 200 ? 'rgba(56,189,248,0.5)' : 'rgba(167,139,250,0.5)';
+        ctx.fill();
+
+        // Move
+        n.x += n.vx;
+        n.y += n.vy;
+
+        // Bounce off walls
+        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+    });
+
+    requestAnimationFrame(drawMolecule);
+}
+drawMolecule();
+
+/* ── SEARCH FILTER ── */
+function filterCards() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    document.querySelectorAll('.module-card').forEach(card => {
+        const searchData = (card.dataset.search || '') + card.innerText;
+        card.style.display = (q === '' || searchData.toLowerCase().includes(q)) ? 'block' : 'none';
+    });
+}
+
+/* ── INTERSECTION OBSERVER FOR SCROLL FADE-IN ── */
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateY(0)';
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.module-card').forEach(card => {
+    observer.observe(card);
+});
+</script>
+</body>
+</html>
