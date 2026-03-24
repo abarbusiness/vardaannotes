@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 6: Calculus — Integration | Physics Math | Vardaan</title>
+
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.05);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pink-box {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        .pink-box .box-label {
+            color: var(--pink-border);
+            border-color: var(--pink-border);
+        }
+
+        /* --- CUSTOM NOTE ELEMENTS --- */
+        .nav-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pill {
+            border: 1px solid var(--blue-border);
+            color: var(--blue-border);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            background: transparent;
+            text-decoration: none;
+        }
+
+        .pill.active {
+            background-color: var(--blue-border);
+            color: var(--paper-bg);
+            font-weight: bold;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .rule-card {
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 15px;
+            background: var(--example-bg);
+        }
+
+        .rule-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .rule-card-top-green {
+            border-top: 4px solid var(--green-border);
+        }
+
+        .rule-card-top-pink {
+            border-top: 4px solid var(--pink-border);
+        }
+
+        .solved-example {
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+
+        /* Basic Card Style */
+        .card { padding:18px; border:1px solid var(--toggle-border); border-radius:8px; background:var(--example-bg); line-height:1.7; }
+
+        .drill-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0;
+        }
+
+        .drill-list li {
+            margin-bottom: 18px;
+            padding-left: 25px;
+            text-indent: -25px;
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            background: var(--example-bg);
+        }
+
+        .answer-table th,
+        .answer-table td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .answer-table th {
+            color: var(--blue-border);
+            font-weight: bold;
+        }
+        
+        .table-wide { width:100%; border-collapse:collapse; margin:14px 0; background: var(--example-bg); }
+        .table-wide th, .table-wide td { border:1px solid var(--toggle-border); padding:8px 12px; text-align:center; font-size:.97rem; }
+        .table-wide th { background:var(--pink-bg); color:var(--pink-border); font-weight:700; }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--example-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--toggle-border);
+        }
+
+        .physics-insight { border-left:4px solid #ff8f00; background:#fff8e1; padding:12px 18px; border-radius:0 8px 8px 0; margin:20px 0; font-size:.97rem; }
+        html.dark-mode .physics-insight { background:#2a1f00; border-left-color:#ffca28; }
+        .physics-insight strong { color:#e65100; }
+        html.dark-mode .physics-insight strong { color:#ffcc02; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.9 !important;
+                mix-blend-mode: normal !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                pointer-events: none !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+            }
+
+            /* Keep rules from page breaking */
+            .rule-card,
+            .blue-box,
+            .green-box,
+            .yellow-box,
+            .pink-box,
+            .solved-example,
+            .chart-container,
+            .card,
+            .physics-insight,
+            .table-wide {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left {
+                    content: none;
+                }
+
+                @bottom-right {
+                    content: none;
+                }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="created-by" style="color: var(--meta-text); font-size: 0.8rem; margin-bottom: 5px;">Created by Team Vardaan with ❤️</div>
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">CLASS 11 PHYSICS • BASIC MATHEMATICS — PART 6 OF 7</div>
+            <div class="powered-by" style="margin-top: 5px;">Powered by Vardaan Comet</div>
+
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <nav class="nav-pills">
+            <a href="basicMathematics1.html" class="pill">1: Algebra</a>
+            <a href="basicMathematics2.html" class="pill">2: Logarithms</a>
+            <a href="basicMathematics3.html" class="pill">3: Trigonometry</a>
+            <a href="basicMathematics4.html" class="pill">4: Coord. Geometry</a>
+            <a href="basicMathematics5.html" class="pill">5: Differentiation</a>
+            <a href="basicMathematics6.html" class="pill active">6: Integration</a>
+            <a href="basicMathematics7.html" class="pill">7: Vectors</a>
+        </nav>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>CALCULUS — INTEGRATION</h1>
+
+        <div class="blue-box">
+            <span class="box-label">WHY THIS MATTERS</span>
+            <p>If differentiation is about breaking things apart (finding the rate of change), integration is about <strong>putting small pieces together</strong> to find the total. In physics: Work done by a variable force is $\int F\, dx$. Finding electric field lines, potential energy, center of mass — all these require integration. It is the other half of the calculus engine.</p>
+        </div>
+
+        <h2>§1. Integration as Reverse Differentiation</h2>
+        <p>Integration is the inverse operation of differentiation. If $\frac{d}{dx}[F(x)] = f(x)$, then:</p>
+        <div class="blue-box">
+            <span class="box-label">INDEFINITE INTEGRAL</span>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$\int f(x)\, dx = F(x) + C$$
+            </div>
+            <p>where $C$ is the <strong>constant of integration</strong>.</p>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">WHY +C?</span>
+            <p>Since $\frac{d}{dx}(x^2) = 2x$ AND $\frac{d}{dx}(x^2 + 5) = 2x$... we write $\int 2x\, dx = x^2 + C$ to represent any possible constant.</p>
+        </div>
+
+        <h2>§2. Integration as Area Under a Curve</h2>
+        <p>Geometrically, the definite integral $\int_a^b f(x)\, dx$ gives the <strong>area enclosed</strong> between the curve $y = f(x)$, the x-axis, and the vertical lines $x = a$ and $x = b$.</p>
+
+        <div class="chart-container">
+            <canvas id="areaChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Area under $y = x^2$ from $x = 0$ to $x = 3$ (shaded region)</p>
+        </div>
+
+        <div class="physics-insight">
+            <strong>⚛️ Physics Interpretation:</strong><br>
+            • In a force-displacement ($F$ vs $x$) graph: <strong>area</strong> = Work done.<br>
+            • In a velocity-time ($v$ vs $t$) graph: <strong>area</strong> = Displacement.
+        </div>
+
+        <h2>§3. Standard Integration Formulas</h2>
+        <div class="green-box">
+            <span class="box-label">⭐ MEMORIZE THESE!</span>
+            <table class="table-wide" style="margin-top:10px">
+                <thead>
+                    <tr><th>Function $f(x)$</th><th>Integral $\int f(x)\, dx$</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>$x^n$ ($n \neq -1$)</td><td>$\frac{x^{n+1}}{n+1} + C$</td></tr>
+                    <tr><td>$1/x$</td><td>$\ln|x| + C$</td></tr>
+                    <tr><td>$e^x$</td><td>$e^x + C$</td></tr>
+                    <tr><td>$\sin x$</td><td>$-\cos x + C$</td></tr>
+                    <tr><td>$\cos x$</td><td>$\sin x + C$</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>§4. Rules of Integration</h2>
+        <div class="card-grid">
+            <div class="card" style="border-top:4px solid var(--blue-border)"><strong>Sum Rule:</strong> $\int(f \pm g)dx = \int f dx \pm \int g dx$</div>
+            <div class="card" style="border-top:4px solid var(--green-border)"><strong>Constant Rule:</strong> $\int k \cdot f(x) dx = k \int f(x) dx$</div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example:</strong> Integrate $\int (4x^3 - 2x + 5)\, dx$</p>
+            <p>$= 4 \cdot \frac{x^4}{4} - 2 \cdot \frac{x^2}{2} + 5x = \mathbf{x^4 - x^2 + 5x + C}$</p>
+        </div>
+
+        <h2>§5. Integration by Substitution</h2>
+        <p>If the integral has a composite function, use $u$-substitution.</p>
+        <div class="solved-example">
+            <p><strong>Example:</strong> Integrate $\int 2x(x^2 + 1)^5\, dx$</p>
+            <p>Let $u = x^2 + 1 \implies du = 2x\, dx$. Integral becomes $\int u^5 du = \mathbf{\frac{(x^2+1)^6}{6} + C}$.</p>
+        </div>
+
+        <h2>§6. Definite Integration</h2>
+        <div class="blue-box">
+            <span class="box-label">FORMULA</span>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$\int_a^b f(x)\, dx = F(b) - F(a)$$
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example (Work Done):</strong> $F = 2x + 3$. Find work from $x=0$ to $x=4$.</p>
+            <p>$W = \int_0^4 (2x+3) dx = [x^2 + 3x]_0^4 = 16 + 12 = \mathbf{28\text{ J}}$</p>
+        </div>
+
+        <h2>Practice Questions</h2>
+        <div class="green-box">
+            <span class="box-label">DRILL 1 — BASIC INTEGRALS</span>
+            <ul class="drill-list">
+                <li>1. Integrate $\int (5x^4 - 3x^2 + 7)\, dx$</li>
+                <li>2. Integrate $\int (\sqrt{x} + 1/x^2) dx$</li>
+                <li>3. Integrate $\int (3\sin x - 2\cos x)\, dx$</li>
+            </ul>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">DRILL 2 — DEFINITE INTEGRALS</span>
+            <ul class="drill-list">
+                <li value="4">4. Evaluate $\int_1^4 (3x^2 - 2x + 1)\, dx$</li>
+                <li>5. Evaluate $\int_0^{\pi/2} \cos x\, dx$</li>
+                <li>6. Evaluate $\int_0^3 x^2\, dx$</li>
+            </ul>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">DRILL 3 — PHYSICS APPLICATIONS</span>
+            <ul class="drill-list">
+                <li value="7">7. Force $F = 4x - 1$. Find work from $x=1$ to $x=3$ m.</li>
+                <li>8. Find displacement from velocity $v = 3t^2 + 2t$ from $t=0$ to $t=3$ s.</li>
+                <li>9. The charge is $q(t) = \int i\, dt$. If $i = 2t+3$, find charge in first 4s.</li>
+            </ul>
+        </div>
+
+        <h2>Answer Key</h2>
+        <table class="answer-table">
+            <thead>
+                <tr>
+                    <th>Q</th>
+                    <th style="color: var(--blue-border);">Answer & Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>$x^5 - x^3 + 7x + C$</td></tr>
+                <tr><td>2</td><td>$\frac{2}{3}x^{3/2} - 1/x + C$</td></tr>
+                <tr><td>3</td><td>$-3\cos x - 2\sin x + C$</td></tr>
+                <tr><td>4</td><td>$[x^3-x^2+x]_1^4 = 52-1 = \mathbf{51}$</td></tr>
+                <tr><td>5</td><td>$[\sin x]_0^{\pi/2} = \mathbf{1}$</td></tr>
+                <tr><td>6</td><td>$[x^3/3]_0^3 = \mathbf{9}$</td></tr>
+                <tr><td>7</td><td>$[2x^2-x]_1^3 = 15-1 = \mathbf{14\text{ J}}$</td></tr>
+                <tr><td>8</td><td>$[t^3+t^2]_0^3 = 27+9 = \mathbf{36\text{ m}}$</td></tr>
+                <tr><td>9</td><td>$[t^2+3t]_0^4 = 16+12 = \mathbf{28\text{ C}}$</td></tr>
+            </tbody>
+        </table>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Theme Toggle Logic
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            rebuildAll();
+        }
+
+        let charts = [];
+        function tc() { return document.documentElement.classList.contains('dark-mode') ? '#aaa' : '#666'; }
+        function gc() { return document.documentElement.classList.contains('dark-mode') ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'; }
+
+        function destroyAll() {
+            charts.forEach(c => c.destroy());
+            charts = [];
+        }
+
+        function buildAll() {
+            const tColor = tc(), gColor = gc();
+
+            // Area Chart
+            const ctx1 = document.getElementById('areaChart').getContext('2d');
+            const xl1 = [], y1 = [], yFill = [];
+            for (let x = 0; x <= 4; x += 0.1) {
+                xl1.push(x.toFixed(1));
+                y1.push(x * x);
+                yFill.push(x <= 3 ? x * x : null);
+            }
+            charts.push(new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: xl1,
+                    datasets: [
+                        { label: 'y = x²', data: y1, borderColor: '#1e88e5', borderWidth: 2, pointRadius: 0 },
+                        { label: 'Area from 0 to 3', data: yFill, backgroundColor: 'rgba(30, 136, 229, 0.2)', fill: true, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: tColor } } },
+                    scales: { x: { ticks: { color: tColor }, grid: { color: gColor } }, y: { ticks: { color: tColor }, grid: { color: gColor } } }
+                }
+            }));
+        }
+
+        function rebuildAll() {
+            destroyAll();
+            buildAll();
+        }
+
+        window.addEventListener('load', buildAll);
+    </script>
+</body>
+
+</html>

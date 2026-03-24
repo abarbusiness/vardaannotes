@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IC-4: Area Under Curves | Vardaan JEE</title>
+    <script>MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --y: #fff9c4;
+            --yb: #fbc02d;
+            --g: #e8f5e9;
+            --gb: #43a047;
+            --b: #e3f2fd;
+            --bb: #1e88e5;
+            --p: #fce4ec;
+            --pb: #d81b60;
+            --txt: #000;
+            --bg: #fff;
+            --pur: #7e57c2;
+            --meta: #666;
+            --eg: rgba(255, 255, 255, 0.6);
+            --tbg: #eee;
+            --tb: #ccc;
+            --ic: #000
+        }
+
+        html.dark {
+            --y: #3f3a00;
+            --yb: #fdd835;
+            --g: #0f2e13;
+            --gb: #81c784;
+            --b: #0d1b2a;
+            --bb: #64b5f6;
+            --p: #300815;
+            --pb: #f06292;
+            --txt: #e0e0e0;
+            --bg: #121212;
+            --pur: #d1c4e9;
+            --meta: #aaa;
+            --eg: rgba(255, 255, 255, .1);
+            --tbg: #333;
+            --tb: #555;
+            --ic: #fff
+        }
+
+        body {
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: var(--txt);
+            transition: background .3s, color .3s
+        }
+
+        .wm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: multiply
+        }
+
+        .wm img {
+            opacity: .08;
+            max-width: 80%
+        }
+
+        html.dark .wm {
+            mix-blend-mode: screen
+        }
+
+        html.dark .wm img {
+            filter: invert(1);
+            opacity: .12
+        }
+
+        .sheet {
+            background: var(--bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box
+        }
+
+        .hdr {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--bb);
+            padding-bottom: 14px
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--bb);
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--bb);
+            padding-bottom: 8px;
+            margin-top: 6px
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pb);
+            margin-top: 36px;
+            border-left: 5px solid var(--pb);
+            padding-left: 14px;
+            font-weight: 700
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--pur);
+            margin-top: 22px;
+            margin-bottom: 8px;
+            text-decoration: underline;
+            text-decoration-color: var(--pur);
+            text-underline-offset: 4px
+        }
+
+        p,
+        li {
+            font-size: 1.04rem;
+            line-height: 1.7;
+            margin-bottom: 8px
+        }
+
+        ul,
+        ol {
+            padding-left: 22px
+        }
+
+        ol li {
+            margin-bottom: 16px
+        }
+
+        strong {
+            color: var(--pb)
+        }
+
+        .bb {
+            background: var(--b);
+            border: 2px solid var(--bb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .gb {
+            background: var(--g);
+            border: 2px solid var(--gb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .yb {
+            background: var(--y);
+            border: 2px solid var(--yb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .lbl {
+            position: absolute;
+            top: -11px;
+            right: 18px;
+            background: var(--bg);
+            padding: 2px 9px;
+            font-weight: 700;
+            font-size: .78rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px
+        }
+
+        .bb .lbl {
+            color: var(--bb);
+            border-color: var(--bb)
+        }
+
+        .gb .lbl {
+            color: var(--gb);
+            border-color: var(--gb)
+        }
+
+        .yb .lbl {
+            color: #f9a825;
+            border-color: var(--yb)
+        }
+
+        .tt {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: .98rem
+        }
+
+        .tt th,
+        .tt td {
+            border: 1px solid var(--tb);
+            padding: 8px 12px;
+            text-align: left
+        }
+
+        .tt th {
+            background: var(--b);
+            color: var(--bb);
+            font-weight: 700
+        }
+
+        .tt tr:nth-child(even) {
+            background: rgba(0, 0, 0, .02)
+        }
+
+        html.dark .tt tr:nth-child(even) {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .sp {
+            background: var(--eg);
+            border-left: 4px solid var(--pur);
+            padding: 13px 16px;
+            margin: 16px 0;
+            border-radius: 0 6px 6px 0
+        }
+
+        .sp .ql {
+            font-weight: 800;
+            color: var(--pb);
+            font-size: 1.04rem
+        }
+
+        .sp .al {
+            font-weight: 700;
+            color: var(--gb);
+            margin-top: 7px;
+            display: block
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 13px;
+            margin: 16px 0
+        }
+
+        .cd {
+            padding: 13px;
+            border: 1px solid var(--tb);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, .02)
+        }
+
+        html.dark .cd {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .tog {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--tbg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .sun,
+        .moon {
+            position: absolute;
+            transition: all .5s;
+            stroke: var(--ic)
+        }
+
+        .sun {
+            opacity: 0;
+            transform: scale(.5) rotate(-90deg)
+        }
+
+        html.dark .moon {
+            opacity: 0;
+            transform: scale(.5) rotate(90deg)
+        }
+
+        html.dark .sun {
+            opacity: 1;
+            transform: scale(1) rotate(0)
+        }
+
+        .ftr {
+            text-align: center;
+            margin-top: 44px;
+            padding-top: 16px;
+            border-top: 1px solid var(--tb);
+            color: var(--meta);
+            font-size: .92rem
+        }
+
+        .ftr b {
+            color: var(--pb)
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+
+            .sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important
+            }
+
+            .tog {
+                display: none !important
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wm"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark"></div>
+    <button class="tog" onclick="document.documentElement.classList.toggle('dark')" aria-label="Toggle Theme">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+    </button>
+
+    <div class="sheet">
+        <div class="hdr">
+            <div
+                style="font-size:2rem;font-weight:800;color:var(--bb);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">
+                Vardaan Learning Institute</div>
+            <div style="font-size:1rem;color:var(--meta);letter-spacing:3px;text-transform:uppercase">Integral Calculus
+                · Module 4 of 5 · JEE Main &amp; Advanced</div>
+        </div>
+        <h1>Area Under Curves (AOI)</h1>
+
+        <div class="bb"><span class="lbl">Module 4 Objective</span>
+            <p style="margin:0">Area of bounded regions (AOI — Application of Integrals) is a guaranteed 4–8 marks in
+                JEE Main every year. This module gives you <strong>every standard type</strong>, from simple curve-axis
+                areas to intersecting curve regions, from absolute value problems to conic sections.</p>
+        </div>
+
+        <h2>Chapter 1: Core Concept</h2>
+        <p>Integration measures <strong>net signed area</strong>. For geometry (physical area), we need <strong>unsigned
+                area</strong>:</p>
+
+        <div class="g2">
+            <div class="cd">
+                <strong>Area between curve and x-axis:</strong><br><br>
+                \[A = \int_a^b |f(x)|\,dx\]
+                Split at zeroes of \(f(x)\) within \([a,b]\) where the curve crosses the axis.
+            </div>
+            <div class="cd">
+                <strong>Area between curve and y-axis:</strong><br><br>
+                \[A = \int_c^d |g(y)|\,dy\]
+                where \(x = g(y)\). Used when the bounding is horizontal.
+            </div>
+        </div>
+        <div class="g2">
+            <div class="cd">
+                <strong>Area between two curves:</strong><br><br>
+                \[A = \int_a^b [f_{\text{upper}}(x) - f_{\text{lower}}(x)]\,dx\]
+                First find limits: set \(f(x)=g(x)\) to get intersection x-values.
+            </div>
+            <div class="cd">
+                <strong>Area using y as variable:</strong><br><br>
+                \[A = \int_c^d [g_{\text{right}}(y) - g_{\text{left}}(y)]\,dy\]
+                Best for parabolas opening left/right likes \(x=y^2\).
+            </div>
+        </div>
+
+        <div class="yb"><span class="lbl">Critical Warning</span>
+            <strong>Area is ALWAYS positive.</strong> The definite integral \(\displaystyle\int_a^b f(x)\,dx\) is
+            negative when \(f(x)<0\) in the interval — but the <em>area</em> is its absolute value. Always sketch the
+                curve mentally and split the integral at the x-intercepts.
+        </div>
+
+        <h2>Chapter 2: Standard Procedure (Step-by-Step)</h2>
+        <div class="bb"><span class="lbl">The 4-Step Method</span>
+            <ol style="margin:8px 0 0">
+                <li><strong>Sketch / Identify:</strong> Find what curves bound the region. Determine whether they're
+                    bounded above-below (use x-integration) or left-right (use y-integration).</li>
+                <li><strong>Find Intersection Points:</strong> Set the two curves equal. These become your integration
+                    limits.</li>
+                <li><strong>Determine Upper/Lower (or Right/Left):</strong> Verify which curve is on top by substituting
+                    a test point.</li>
+                <li><strong>Integrate and Compute.</strong></li>
+            </ol>
+        </div>
+
+        <h3>Type 1 — Curve vs x-axis</h3>
+        <div class="sp">
+            <span class="ql">Q1. Area between \(y=x^2-4\) and the x-axis from \(x=-2\) to \(x=3\)</span>
+            <span class="al">Solution:</span>
+            \(y=x^2-4=0 \Rightarrow x=\pm2\). On \([-2,2]\): \(y\leq0\). On \([2,3]\): \(y\geq0\).<br>
+            \(A = \left|\displaystyle\int_{-2}^2(x^2-4)\,dx\right| + \int_2^3(x^2-4)\,dx\)<br>
+            \(\displaystyle\int_{-2}^2(x^2-4)\,dx = \left[\frac{x^3}{3}-4x\right]_{-2}^2 =
+            \left(\frac{8}{3}-8\right)-\left(-\frac{8}{3}+8\right) = -\frac{32}{3}\). So \(\left|-\frac{32}{3}\right| =
+            \frac{32}{3}\).<br>
+            \(\displaystyle\int_2^3(x^2-4)\,dx = \left[\frac{x^3}{3}-4x\right]_2^3 = (9-12)-(\frac{8}{3}-8) =
+            -3+\frac{16}{3} = \frac{7}{3}\)<br>
+            Total \(A = \dfrac{32}{3}+\dfrac{7}{3} = \boxed{\dfrac{39}{3} = 13}\) sq. units.
+        </div>
+
+        <h3>Type 2 — Between Two Curves (Polynomial)</h3>
+        <div class="sp">
+            <span class="ql">Q2. Area enclosed between \(y=x^2\) and \(y=x+2\)</span>
+            <span class="al">Solution:</span>
+            Intersections: \(x^2=x+2 \Rightarrow x^2-x-2=0 \Rightarrow (x-2)(x+1)=0 \Rightarrow x=-1, 2\).<br>
+            On \([-1,2]\): line \(y=x+2\) is above parabola \(y=x^2\).<br>
+            \(A = \displaystyle\int_{-1}^2[(x+2)-x^2]\,dx = \left[\frac{x^2}{2}+2x-\frac{x^3}{3}\right]_{-1}^2 =
+            \left(2+4-\frac{8}{3}\right)-\left(\frac{1}{2}-2+\frac{1}{3}\right)\)<br>
+            \(= \frac{10}{3}-\left(-\frac{7}{6}\right) = \frac{10}{3}+\frac{7}{6} = \frac{20+7}{6} = \boxed{\frac{27}{6}
+            = \frac{9}{2}}\) sq. units.
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q3. Area bounded by parabolas \(y^2=4x\) and \(x^2=4y\)</span>
+            <span class="al">Solution:</span>
+            Intersection: sub \(y=\dfrac{x^2}{4}\) into \(y^2=4x\): \(\dfrac{x^4}{16}=4x \Rightarrow x^4=64x \Rightarrow
+            x=0, 4\).<br>
+            On \([0,4]\): \(y=2\sqrt{x}\) (from \(y^2=4x\)) is above \(y=\dfrac{x^2}{4}\) (from \(x^2=4y\)).<br>
+            \(A = \displaystyle\int_0^4\left[2\sqrt{x}-\frac{x^2}{4}\right]dx =
+            \left[\frac{4x^{3/2}}{3}-\frac{x^3}{12}\right]_0^4 = \frac{32}{3}-\frac{16}{3} = \boxed{\frac{16}{3}}\) sq.
+            units.
+        </div>
+
+        <h3>Type 3 — Curve vs y-axis (Horizontal Integration)</h3>
+        <div class="sp">
+            <span class="ql">Q4. Area between \(y^2=4x\) and \(x=3\) (left of the line)</span>
+            <span class="al">Solution — integrate w.r.t. y:</span>
+            \(y^2=4x \Rightarrow x=\dfrac{y^2}{4}\). Line is \(x=3\). Intersection: \(\dfrac{y^2}{4}=3 \Rightarrow
+            y=\pm2\sqrt3\).<br>
+            On \([-2\sqrt3,2\sqrt3]\): line \(x=3\) is to the right of parabola \(x=\dfrac{y^2}{4}\).<br>
+            \(A = \displaystyle\int_{-2\sqrt3}^{2\sqrt3}\left[3-\frac{y^2}{4}\right]dy =
+            2\int_0^{2\sqrt3}\left(3-\frac{y^2}{4}\right)dy\) (by even symmetry)<br>
+            \(= 2\left[3y-\dfrac{y^3}{12}\right]_0^{2\sqrt3} = 2\left[6\sqrt3-\dfrac{8\cdot3\sqrt3}{12}\right] =
+            2\left[6\sqrt3-2\sqrt3\right] = \boxed{8\sqrt3}\) sq. units.
+        </div>
+
+        <div style="page-break-after:always;"></div>
+
+        <h3>Type 4 — Absolute Value / Modulus Functions</h3>
+        <div class="sp">
+            <span class="ql">Q5. Area bounded by \(y=|x-1|+|x+1|\) and \(y=4\)</span>
+            <span class="al">Solution — Define piecewise:</span>
+            \(y = |x-1|+|x+1|\):<br>
+            • \(x \leq -1\): \(y = (1-x)+(-1-x) = -2x\)<br>
+            • \(-1 < x < 1\): \(y=(1-x)+(1+x)=2\)<br>
+                • \(x \geq 1\): \(y = (x-1)+(x+1) = 2x\)<br>
+                Intersection with \(y=4\): For \(x\leq-1\): \(-2x=4 \Rightarrow x=-2\). For \(x\geq1\): \(2x=4
+                \Rightarrow x=2\).<br>
+                Region is between \(y=|x-1|+|x+1|\) (below) and \(y=4\) (above), from \(x=-2\) to \(x=2\).<br>
+                \(A = \displaystyle\int_{-2}^{-1}[4-(-2x)]\,dx + \int_{-1}^1[4-2]\,dx + \int_1^2[4-2x]\,dx\)<br>
+                \(= \displaystyle[4x+x^2]_{-2}^{-1} + [2x]_{-1}^1 + [4x-x^2]_1^2\)<br>
+                \(= ((-4+1)-(-8+4)) + (2+2) + ((8-4)-(4-1)) = (-3+4)+4+(4-3) = 1+4+1 = \boxed{6}\) sq. units.
+        </div>
+
+        <h3>Type 5 — Conic Sections (JEE Advanced)</h3>
+        <div class="sp">
+            <span class="ql">Q6. Area of ellipse \(\dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}=1\)</span>
+            <span class="al">Solution — Use symmetry (4 × first quadrant area):</span>
+            \(y = \dfrac{b}{a}\sqrt{a^2-x^2}\)<br>
+            \(A = 4\displaystyle\int_0^a \frac{b}{a}\sqrt{a^2-x^2}\,dx = \frac{4b}{a}\cdot\frac{\pi a^2}{4} = \boxed{\pi
+            ab}\) sq. units.<br>
+            (The standard result \(\displaystyle\int_0^a\sqrt{a^2-x^2}\,dx = \frac{\pi a^2}{4}\) was used.)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q7. Area of smaller region bounded by circle \(x^2+y^2=4\) and line \(x+y=2\)</span>
+            <span class="al">Solution:</span>
+            Circle radius 2. Line intersects it at \((2,0)\) and \((0,2)\).<br>
+            \(A_{\text{segment}} = A_{\text{quarter circle}} - A_{\text{triangle}}\)<br>
+            \(A_{\text{quarter circle}} = \dfrac{1}{4}\pi(4) = \pi\)<br>
+            \(A_{\triangle} = \dfrac{1}{2}\cdot 2 \cdot 2 = 2\)<br>
+            \(\boxed{A = \pi - 2}\) sq. units.
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q8. Area between parabola \(y=4x-x^2\) and the chord joining \((0,0)\) and \((3,3)\)</span>
+            <span class="al">Solution:</span>
+            The chord is the line through \((0,0)\) and \((3,3)\): \(y=x\).<br>
+            Intersections of \(y=4x-x^2\) and \(y=x\): \(4x-x^2=x \Rightarrow x(3-x)=0 \Rightarrow x=0,3\).<br>
+            Check: at \(x=1\), \(y_{\text{parabola}}=3\), \(y_{\text{line}}=1\) → parabola is on top.<br>
+            \(A = \displaystyle\int_0^3[(4x-x^2)-x]\,dx = \int_0^3(3x-x^2)\,dx =
+            \left[\frac{3x^2}{2}-\frac{x^3}{3}\right]_0^3 = \frac{27}{2}-9 = \boxed{\frac{9}{2}}\) sq. units.
+        </div>
+
+        <h2>Chapter 3: Standard Area Results — Quick Reference</h2>
+        <table class="tt">
+            <tr>
+                <th>Curve / Region</th>
+                <th>Area Formula</th>
+                <th>Derivation Trick</th>
+            </tr>
+            <tr>
+                <td>Circle \(x^2+y^2=a^2\)</td>
+                <td>\(\pi a^2\)</td>
+                <td>4 × first-quadrant integral of \(\sqrt{a^2-x^2}\)</td>
+            </tr>
+            <tr>
+                <td>Ellipse \(\frac{x^2}{a^2}+\frac{y^2}{b^2}=1\)</td>
+                <td>\(\pi ab\)</td>
+                <td>Scale circle formula</td>
+            </tr>
+            <tr>
+                <td>Parabola \(y^2=4ax\), from 0 to \(x=h\)</td>
+                <td>\(\frac{2}{3}\times h\times 2\sqrt{ah} = \frac{4}{3}\cdot h^{3/2}\sqrt{a}\)</td>
+                <td>2/3 of bounding rectangle</td>
+            </tr>
+            <tr>
+                <td>\(y=\sin x\) one arch, \([0,\pi]\)</td>
+                <td>2 sq. units</td>
+                <td>\(\int_0^\pi\sin x\,dx = 2\)</td>
+            </tr>
+            <tr>
+                <td>\(y=|\sin x|\) on \([0,n\pi]\)</td>
+                <td>\(2n\) sq. units</td>
+                <td>Periodicity</td>
+            </tr>
+            <tr>
+                <td>\(|x|+|y|=1\) (rhombus)</td>
+                <td>2 sq. units</td>
+                <td>4 triangles of area 1/2 each</td>
+            </tr>
+            <tr>
+                <td>\(\frac{x^2}{a^2}+\frac{y^2}{b^2}=1\) and \(\frac{x^2}{c^2}+\frac{y^2}{d^2}=1\) (between ellipses)
+                </td>
+                <td>\(\pi(ab-cd)\)</td>
+                <td>Subtract inner from outer</td>
+            </tr>
+        </table>
+
+        <h2>Chapter 4: Advanced Problems</h2>
+
+        <div class="sp">
+            <span class="ql">Q9. Area of region \(\{(x,y): x^2\leq y\leq |x|\}\)</span>
+            <span class="al">Solution:</span>
+            \(y=x^2\) is below \(y=|x|\) when \(-1\leq x\leq 1\) (verify: at \(x=0.5\), \(x^2=0.25 < |x|=0.5\)).<br>
+                Intersection: \(x^2=|x| \Rightarrow x=0,\pm1\).<br>
+                By symmetry: \(A = 2\displaystyle\int_0^1(x-x^2)\,dx = 2\left[\frac{x^2}{2}-\frac{x^3}{3}\right]_0^1 =
+                2\times\frac{1}{6} = \boxed{\frac{1}{3}}\) sq. units.
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q10. Area between \(y=\sin x\) and \(y=\cos x\) from \(x=\pi/4\) to \(x=5\pi/4\)</span>
+            <span class="al">Solution:</span>
+            In \(\left[\frac{\pi}{4}, \frac{5\pi}{4}\right]\): \(\sin x \geq \cos x\) (verify at \(x=\pi/2\): \(1 > 0\)
+            ✓).<br>
+            \(A = \displaystyle\int_{\pi/4}^{5\pi/4}(\sin x-\cos x)\,dx = \Big[-\cos x-\sin
+            x\Big]_{\pi/4}^{5\pi/4}\)<br>
+            At \(5\pi/4\): \(-\cos\frac{5\pi}{4}-\sin\frac{5\pi}{4} = \frac{1}{\sqrt2}+\frac{1}{\sqrt2} = \sqrt2\).<br>
+            At \(\pi/4\): \(-\cos\frac{\pi}{4}-\sin\frac{\pi}{4} = -\frac{1}{\sqrt2}-\frac{1}{\sqrt2} = -\sqrt2\).<br>
+            \(A = \sqrt2-(-\sqrt2) = \boxed{2\sqrt2}\) sq. units.
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q11. Area between \(y=x^2-2x\) and \(y = x+4\) (includes sign analysis)</span>
+            <span class="al">Solution:</span>
+            \(x^2-2x = x+4 \Rightarrow x^2-3x-4=0 \Rightarrow (x-4)(x+1)=0 \Rightarrow x=-1, 4\).<br>
+            On \([-1,4]\): at \(x=0\), \(y_{\text{line}}=4 > y_{\text{parabola}}=-0\). Line is on top.<br>
+            \(A = \displaystyle\int_{-1}^4[(x+4)-(x^2-2x)]\,dx = \int_{-1}^4(-x^2+3x+4)\,dx\)<br>
+            \(= \left[-\frac{x^3}{3}+\frac{3x^2}{2}+4x\right]_{-1}^4 =
+            \left(-\frac{64}{3}+24+16\right)-\left(\frac{1}{3}+\frac{3}{2}-4\right)\)<br>
+            \(= \frac{56}{3}-\left(-\frac{13}{6}\right) = \frac{112+13}{6} = \boxed{\frac{125}{6}}\) sq. units.
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q12. Find the area between \(y = e^x\), \(y = e^{-x}\), and \(x=1\)</span>
+            <span class="al">Solution:</span>
+            \(e^x=e^{-x} \Rightarrow e^{2x}=1 \Rightarrow x=0\). On \([0,1]\): \(e^x > e^{-x}\).<br>
+            \(A = \displaystyle\int_0^1(e^x-e^{-x})\,dx = \Big[e^x+e^{-x}\Big]_0^1 = (e+e^{-1})-(1+1) =
+            e+\frac{1}{e}-2\) sq. units.
+        </div>
+
+        <h2>Chapter 5: Error Traps for AOI</h2>
+        <div class="yb"><span class="lbl">Error Trap 1</span>
+            <strong>Forgetting to split at x-intercepts.</strong> If \(y=f(x)\) changes sign in \([a,b]\), you MUST
+            split the integral. Otherwise positive and negative areas cancel, giving wrong (smaller) answers.
+        </div>
+        <div class="yb"><span class="lbl">Error Trap 2</span>
+            <strong>Wrong upper/lower identification.</strong> Always test a point inside the interval. Do not assume;
+            verify which curve is on top.
+        </div>
+        <div class="yb"><span class="lbl">Error Trap 3</span>
+            <strong>Missing factor of 2 for symmetric regions.</strong> When a region is symmetric about the x-axis or
+            y-axis, you can integrate half and double — just don't forget to actually double.
+        </div>
+        <div class="yb"><span class="lbl">Error Trap 4</span>
+            <strong>For curves like \(x=f(y)\), use y-integration.</strong> Integrating w.r.t. \(x\) for sideways
+            parabolas forces you to split into two pieces, which is error-prone. Switch to y.
+        </div>
+
+        <div class="ftr"><b>Vardaan Learning Institute</b> · IC Module 4/5 · JEE Masterclass 2026–27</div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 3: Trigonometry | Physics Math | Vardaan</title>
+
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.05);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pink-box {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        .pink-box .box-label {
+            color: var(--pink-border);
+            border-color: var(--pink-border);
+        }
+
+        /* --- CUSTOM NOTE ELEMENTS --- */
+        .nav-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pill {
+            border: 1px solid var(--blue-border);
+            color: var(--blue-border);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            background: transparent;
+            text-decoration: none;
+        }
+
+        .pill.active {
+            background-color: var(--blue-border);
+            color: var(--paper-bg);
+            font-weight: bold;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .rule-card {
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 15px;
+            background: var(--example-bg);
+        }
+
+        .rule-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .rule-card-top-green {
+            border-top: 4px solid var(--green-border);
+        }
+
+        .rule-card-top-pink {
+            border-top: 4px solid var(--pink-border);
+        }
+
+        .solved-example {
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+
+        /* Basic Card Style */
+        .card { padding:18px; border:1px solid var(--toggle-border); border-radius:8px; background:var(--example-bg); line-height:1.7; text-align:center; }
+
+        .drill-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0;
+        }
+
+        .drill-list li {
+            margin-bottom: 18px;
+            padding-left: 25px;
+            text-indent: -25px;
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            background: var(--example-bg);
+        }
+
+        .answer-table th,
+        .answer-table td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .answer-table th {
+            color: var(--blue-border);
+            font-weight: bold;
+            width: 10%;
+        }
+
+        .std-table { width: 100%; border-collapse: collapse; text-align: center; margin: 16px 0; background: var(--example-bg); }
+        .std-table th, .std-table td { border: 1px solid var(--toggle-border); padding: 8px 10px; font-size: .97rem; }
+        .std-table th { background: var(--blue-bg); color: var(--blue-border); }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--example-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--toggle-border);
+        }
+
+        .trig-svg { display: block; margin: 20px auto; }
+
+        .physics-insight { border-left:4px solid #ff8f00; background:#fff8e1; padding:12px 18px; border-radius:0 8px 8px 0; margin:20px 0; font-size:.97rem; }
+        html.dark-mode .physics-insight { background:#2a1f00; border-left-color:#ffca28; }
+        .physics-insight strong { color:#e65100; }
+        html.dark-mode .physics-insight strong { color:#ffcc02; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.9 !important;
+                mix-blend-mode: normal !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                pointer-events: none !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+            }
+
+            /* Keep rules from page breaking */
+            .rule-card,
+            .blue-box,
+            .green-box,
+            .yellow-box,
+            .pink-box,
+            .solved-example,
+            .chart-container,
+            .card,
+            .physics-insight,
+            .std-table {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left {
+                    content: none;
+                }
+
+                @bottom-right {
+                    content: none;
+                }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="created-by" style="color: var(--meta-text); font-size: 0.8rem; margin-bottom: 5px;">Created by Team Vardaan with ❤️</div>
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">CLASS 11 PHYSICS • BASIC MATHEMATICS — PART 3 OF 7</div>
+            <div class="powered-by" style="margin-top: 5px;">Powered by Vardaan Comet</div>
+
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <nav class="nav-pills">
+            <a href="basicMathematics1.html" class="pill">1: Algebra</a>
+            <a href="basicMathematics2.html" class="pill">2: Logarithms</a>
+            <a href="basicMathematics3.html" class="pill active">3: Trigonometry</a>
+            <a href="basicMathematics4.html" class="pill">4: Coord. Geometry</a>
+            <a href="basicMathematics5.html" class="pill">5: Differentiation</a>
+            <a href="basicMathematics6.html" class="pill">6: Integration</a>
+            <a href="basicMathematics7.html" class="pill">7: Vectors</a>
+        </nav>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>TRIGONOMETRY</h1>
+
+        <div class="blue-box">
+            <span class="box-label">WHY THIS MATTERS</span>
+            <p>Trigonometry is the <strong>language of angles and directions</strong>. Resolving forces into components, calculating work done by a force, expressing Simple Harmonic Motion, finding the path of projectiles — all require trigonometry. It is literally impossible to solve Class 11 mechanics without it.</p>
+        </div>
+
+        <h2>§1. Angle Measurement: Degrees & Radians</h2>
+        <p>Angles can be measured in two systems. Physics equations involving calculus and oscillations use <strong>Radians</strong>.</p>
+        <div class="blue-box">
+            <span class="box-label">CONVERSION FORMULA</span>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$\pi \text{ radians} = 180°$$
+            </div>
+            <p style="text-align:center;">$1 \text{ rad} = \frac{180°}{\pi} \approx 57.3°$ &nbsp;&nbsp;&nbsp; $1° = \frac{\pi}{180} \text{ rad}$</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">$30° = \frac{\pi}{6}$ rad</div>
+            <div class="card">$45° = \frac{\pi}{4}$ rad</div>
+            <div class="card">$60° = \frac{\pi}{3}$ rad</div>
+            <div class="card">$90° = \frac{\pi}{2}$ rad</div>
+            <div class="card">$180° = \pi$ rad</div>
+            <div class="card">$360° = 2\pi$ rad</div>
+        </div>
+
+        <h2>§2. Trigonometric Ratios (Right-Angle Triangle)</h2>
+        <svg class="trig-svg" width="300" height="200" viewBox="0 0 300 200">
+            <polygon points="20,180 280,180 280,30" fill="none" stroke="#1e88e5" stroke-width="2"/>
+            <rect x="268" y="168" width="12" height="12" fill="none" stroke="#1e88e5" stroke-width="1.5"/>
+            <text x="130" y="198" font-size="14" text-anchor="middle" fill="#43a047" font-weight="bold">Base (Adjacent) = b</text>
+            <text x="292" y="110" font-size="13" text-anchor="start" fill="#d81b60" font-weight="bold">Perp = p</text>
+            <text x="125" y="95" font-size="13" text-anchor="middle" fill="#7e57c2" font-weight="bold">Hypotenuse = h</text>
+            <text x="40" y="175" font-size="13" fill="#ff8f00">θ</text>
+            <path d="M 45 180 A 25 25 0 0 0 39 165" fill="none" stroke="#ff8f00" stroke-width="1.5"/>
+        </svg>
+
+        <div class="card-grid">
+            <div class="card">$\sin\theta = \frac{p}{h}$ &nbsp; (Perp/Hyp)</div>
+            <div class="card">$\cos\theta = \frac{b}{h}$ &nbsp; (Base/Hyp)</div>
+            <div class="card">$\tan\theta = \frac{p}{b} = \frac{\sin\theta}{\cos\theta}$</div>
+            <div class="card">$\csc\theta = \frac{h}{p} = \frac{1}{\sin\theta}$</div>
+            <div class="card">$\sec\theta = \frac{h}{b} = \frac{1}{\cos\theta}$</div>
+            <div class="card">$\cot\theta = \frac{b}{p} = \frac{1}{\tan\theta}$</div>
+        </div>
+        <div class="yellow-box">
+            <span class="box-label">Mnemonic</span>
+            <p><strong>"SOH-CAH-TOA"</strong>: <strong>S</strong>ine = <strong>O</strong>pposite/<strong>H</strong>ypotenuse &nbsp;|&nbsp; <strong>C</strong>osine = <strong>A</strong>djacent/<strong>H</strong>ypotenuse &nbsp;|&nbsp; <strong>T</strong>angent = <strong>O</strong>pposite/<strong>A</strong>djacent</p>
+        </div>
+
+        <h2>§3. Standard Trigonometric Values</h2>
+        <table class="std-table">
+            <thead>
+                <tr>
+                    <th>Angle (θ)</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>120°</th><th>180°</th><th>270°</th><th>360°</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>sin θ</strong></td><td>0</td><td>1/2</td><td>1/√2</td><td>√3/2</td><td>1</td><td>√3/2</td><td>0</td><td>-1</td><td>0</td></tr>
+                <tr><td><strong>cos θ</strong></td><td>1</td><td>√3/2</td><td>1/√2</td><td>1/2</td><td>0</td><td>-1/2</td><td>-1</td><td>0</td><td>1</td></tr>
+                <tr><td><strong>tan θ</strong></td><td>0</td><td>1/√3</td><td>1</td><td>√3</td><td>∞</td><td>-√3</td><td>0</td><td>∞</td><td>0</td></tr>
+            </tbody>
+        </table>
+        <div class="yellow-box">
+            <span class="box-label">Memory Trick</span>
+            <p>For sin: 0°, 30°, 45°, 60°, 90° → $\sqrt{0/4}, \sqrt{1/4}, \sqrt{2/4}, \sqrt{3/4}, \sqrt{4/4}$ = 0, ½, 1/√2, √3/2, 1. For cos, read the sin table backwards!</p>
+        </div>
+
+        <h3>The 37°-53° Special Physics Triangle (3-4-5)</h3>
+        <div class="green-box">
+            <span class="box-label">⭐ USED EVERYWHERE IN PHYSICS</span>
+            <div class="card-grid" style="margin-top:10px">
+                <div class="card">$\sin 37° = \cos 53° = \frac{3}{5} = 0.6$</div>
+                <div class="card">$\cos 37° = \sin 53° = \frac{4}{5} = 0.8$</div>
+                <div class="card">$\tan 37° = \frac{3}{4} = 0.75$</div>
+                <div class="card">$\tan 53° = \frac{4}{3} \approx 1.33$</div>
+            </div>
+            <p style="text-align:center">The sides of the right triangle are in ratio <strong>3 : 4 : 5</strong>.</p>
+        </div>
+
+        <h2>§4. ASTC Rule — Signs in Quadrants</h2>
+        <svg width="260" height="260" viewBox="0 0 260 260" class="trig-svg">
+            <line x1="130" y1="10" x2="130" y2="250" stroke="#aaa" stroke-width="1.5"/>
+            <line x1="10" y1="130" x2="250" y2="130" stroke="#aaa" stroke-width="1.5"/>
+            <text x="5" y="15" font-size="13" fill="#43a047" font-weight="bold">II</text>
+            <text x="240" y="15" font-size="13" fill="#1e88e5" font-weight="bold">I</text>
+            <text x="5" y="252" font-size="13" fill="#d81b60" font-weight="bold">III</text>
+            <text x="238" y="252" font-size="13" fill="#ff8f00" font-weight="bold">IV</text>
+            <text x="55" y="70" font-size="13" fill="#43a047" text-anchor="middle" font-weight="bold">sin +</text>
+            <text x="55" y="90" font-size="12" fill="#43a047" text-anchor="middle">(S)</text>
+            <text x="200" y="70" font-size="13" fill="#1e88e5" text-anchor="middle" font-weight="bold">All +</text>
+            <text x="200" y="90" font-size="12" fill="#1e88e5" text-anchor="middle">(A)</text>
+            <text x="55" y="200" font-size="13" fill="#d81b60" text-anchor="middle" font-weight="bold">tan +</text>
+            <text x="55" y="220" font-size="12" fill="#d81b60" text-anchor="middle">(T)</text>
+            <text x="200" y="200" font-size="13" fill="#ff8f00" text-anchor="middle" font-weight="bold">cos +</text>
+            <text x="200" y="220" font-size="12" fill="#ff8f00" text-anchor="middle">(C)</text>
+            <text x="130" y="134" font-size="11" fill="#888">0</text>
+            <text x="135" y="20" font-size="11" fill="#888">90°/270°</text>
+            <text x="225" y="128" font-size="11" fill="#888">0°</text>
+            <text x="5" y="128" font-size="11" fill="#888">180°</text>
+        </svg>
+        <p>Mnemonic: <strong>A–S–T–C</strong> going from Quadrant I → II → III → IV = <strong>"All Students Take Calculus"</strong></p>
+
+        <h3>Allied Angle Reductions</h3>
+        <div class="card-grid">
+            <div class="card">$\sin(180° - \theta) = \sin\theta$</div>
+            <div class="card">$\cos(180° - \theta) = -\cos\theta$</div>
+            <div class="card">$\sin(90° + \theta) = \cos\theta$</div>
+            <div class="card">$\cos(90° + \theta) = -\sin\theta$</div>
+            <div class="card">$\sin(-\theta) = -\sin\theta$</div>
+            <div class="card">$\cos(-\theta) = \cos\theta$</div>
+            <div class="card">$\sin(270° - \theta) = -\cos\theta$</div>
+            <div class="card">$\cos(270° - \theta) = -\sin\theta$</div>
+        </div>
+
+        <h2>§5. Fundamental Identities</h2>
+        <div class="green-box">
+            <span class="box-label">THREE PYTHAGOREAN IDENTITIES</span>
+            <div class="card-grid" style="margin-top:10px">
+                <div class="card">$\sin^2\theta + \cos^2\theta = 1$</div>
+                <div class="card">$1 + \tan^2\theta = \sec^2\theta$</div>
+                <div class="card">$1 + \cot^2\theta = \csc^2\theta$</div>
+            </div>
+        </div>
+
+        <h2>§6. Addition & Double Angle Formulas</h2>
+        <div class="blue-box">
+            <span class="box-label">COMPOUND ANGLES</span>
+            <div class="card-grid" style="margin-top:8px">
+                <div class="card">$\sin(A \pm B) = \sin A\cos B \pm \cos A\sin B$</div>
+                <div class="card">$\cos(A \pm B) = \cos A\cos B \mp \sin A\sin B$</div>
+                <div class="card">$\tan(A \pm B) = \frac{\tan A \pm \tan B}{1 \mp \tan A\tan B}$</div>
+            </div>
+        </div>
+        <div class="blue-box">
+            <span class="box-label">DOUBLE ANGLE FORMULAS</span>
+            <div class="card-grid" style="margin-top:8px">
+                <div class="card">$\sin(2\theta) = 2\sin\theta\cos\theta$</div>
+                <div class="card">$\cos(2\theta) = \cos^2\theta - \sin^2\theta = 1 - 2\sin^2\theta = 2\cos^2\theta - 1$</div>
+                <div class="card">$\tan(2\theta) = \frac{2\tan\theta}{1-\tan^2\theta}$</div>
+            </div>
+        </div>
+        <div class="physics-insight">
+            <strong>⚛️ Physics Use — Projectile Motion:</strong> Range $R = \frac{u^2\sin 2\theta}{g}$. Maximum range at $\theta = 45°$ because $\sin 90° = 1$. This formula comes directly from the double angle identity!
+        </div>
+
+        <h2>§7. Small Angle Approximations</h2>
+        <div class="green-box">
+            <span class="box-label">⭐ CRITICAL PHYSICS TOOL</span>
+            <p>When $\theta$ is very small (measured in radians):</p>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$\sin\theta \approx \theta \qquad \tan\theta \approx \theta \qquad \cos\theta \approx 1$$
+            </div>
+            <p>Used in: Pendulum SHM, Optics (small angles), Elasticity.</p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Simple Pendulum Derivation:</strong></p>
+            <p>Restoring force $F = -mg\sin\theta$. For small angles $\sin\theta \approx \theta = \frac{x}{L}$.<br>
+                $\therefore F \approx -mg\frac{x}{L} = -\left(\frac{mg}{L}\right)x$. This is SHM!</p>
+        </div>
+
+        <h2>§8. Graphs of Trig Functions</h2>
+        <div class="chart-container">
+            <canvas id="trigChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Graphs of sin x and cos x over [0, 2π]</p>
+        </div>
+
+        <h2>Practice Questions</h2>
+        <div class="green-box">
+            <span class="box-label">DRILL 1 — VALUES & CONVERSION</span>
+            <ul class="drill-list">
+                <li>1. Convert 240° to radians.</li>
+                <li>2. Find the value of $\sin 150° + \cos 120°$.</li>
+                <li>3. Find $\tan 315°$.</li>
+                <li>4. If $\sin\theta = 3/5$ and $\theta$ is in Quadrant II, find $\cos\theta$ and $\tan\theta$.</li>
+                <li>5. Find the value of $\cos(-60°)$.</li>
+            </ul>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">DRILL 2 — IDENTITIES & FORMULAS</span>
+            <ul class="drill-list">
+                <li value="6">6. Prove: $\sin^4\theta - \cos^4\theta = \sin^2\theta - \cos^2\theta$</li>
+                <li>7. Simplify: $\frac{1 - \cos^2\theta}{\sin\theta}$</li>
+                <li>8. Find $\sin 75°$ using addition formula.</li>
+                <li>9. Find $\cos 2\theta$ if $\sin\theta = 0.6$.</li>
+                <li>10. Prove: $\frac{\sin 2\theta}{1 + \cos 2\theta} = \tan\theta$</li>
+            </ul>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">DRILL 3 — PHYSICS APPLICATIONS</span>
+            <ul class="drill-list">
+                <li value="11">11. A force of 50 N acts at 37° to the horizontal. Find its horizontal and vertical components.</li>
+                <li>12. A projectile is launched at 60° with speed 20 m/s. Find the horizontal range ($g = 10 \text{ m/s}^2$).</li>
+                <li>13. Using small angle approx, find $\sin(0.1 \text{ rad})$ approximately.</li>
+                <li>14. The angle of a pendulum is $\theta = 0.1\sin(2t)$ radians. Find the approximate restoring force if $mg = 5$ N and $L = 0.5$ m.</li>
+                <li>15. A ramp makes 53° with horizontal. A box of mass 10 kg slides on it. Find the component of gravity along and perpendicular to the ramp.</li>
+            </ul>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">DRILL 4 — ADVANCED PROBLEMS</span>
+            <ul class="drill-list">
+                <li value="16">16. If $\tan A = 1/2$ and $\tan B = 1/3$, show that $A + B = 45°$.</li>
+                <li>17. Find all angles in $[0°, 360°]$ satisfying $2\sin^2\theta - \sin\theta - 1 = 0$.</li>
+                <li>18. Prove: $\sin 3\theta = 3\sin\theta - 4\sin^3\theta$</li>
+                <li>19. In a triangle, $A = 60°$, $B = 75°$. Find $\sin C$ and then $\cos C$.</li>
+                <li>20. The intensity of light through a polarizer is $I = I_0\cos^2\theta$. At what angle is $I = I_0/4$?</li>
+            </ul>
+        </div>
+
+        <h2>Answer Key</h2>
+        <table class="answer-table">
+            <thead>
+                <tr>
+                    <th>Q</th>
+                    <th style="color: var(--blue-border);">Answer & Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>$240° = \frac{4\pi}{3}$ rad</td></tr>
+                <tr><td>2</td><td>$\sin 150° + \cos 120° = 1/2 + (-1/2) = \mathbf{0}$</td></tr>
+                <tr><td>3</td><td>$\tan 315° = \tan(360°-45°) = -\tan 45° = \mathbf{-1}$</td></tr>
+                <tr><td>4</td><td>Q II: $\cos\theta = -4/5$, $\tan\theta = -3/4$</td></tr>
+                <tr><td>5</td><td>$\cos(-60°) = \cos 60° = \mathbf{1/2}$</td></tr>
+                <tr><td>7</td><td>$\frac{\sin^2\theta}{\sin\theta} = \mathbf{\sin\theta}$</td></tr>
+                <tr><td>8</td><td>$\sin 75° = \sin(45°+30°) = \frac{\sqrt{6}+\sqrt{2}}{4} \approx \mathbf{0.966}$</td></tr>
+                <tr><td>9</td><td>$\cos 2\theta = 1 - 2\sin^2\theta = 1 - 2(0.36) = \mathbf{0.28}$</td></tr>
+                <tr><td>11</td><td>$F_x = 50\cos 37° = 50(0.8) = \mathbf{40\text{ N}}$, $F_y = 50\sin 37° = 50(0.6) = \mathbf{30\text{ N}}$</td></tr>
+                <tr><td>12</td><td>$R = \frac{400 \sin 120°}{10} = 40 \times \frac{\sqrt{3}}{2} \approx \mathbf{34.6\text{ m}}$</td></tr>
+                <tr><td>13</td><td>$\sin(0.1) \approx \mathbf{0.1}$ rad</td></tr>
+                <tr><td>15</td><td>Along ramp: $mg\sin 53° = 10(10)(0.8) = \mathbf{80\text{ N}}$, Perpendicular: $mg\cos 53° = 10(10)(0.6) = \mathbf{60\text{ N}}$</td></tr>
+                <tr><td>16</td><td>$\tan(A+B) = \frac{1/2+1/3}{1-1/6} = \frac{5/6}{5/6} = 1 \implies A+B = 45°$</td></tr>
+                <tr><td>17</td><td>$(2\sin\theta+1)(\sin\theta-1)=0 \implies \theta = \mathbf{90°, 210°, 330°}$</td></tr>
+                <tr><td>19</td><td>$C = 180°-60°-75°=45°$. $\sin C = 1/\sqrt{2}$, $\cos C = 1/\sqrt{2}$</td></tr>
+                <tr><td>20</td><td>$\cos^2\theta = 1/4 \implies \cos\theta = 1/2 \implies \theta = \mathbf{60°}$</td></tr>
+            </tbody>
+        </table>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Theme Toggle Logic
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            rebuildChart();
+        }
+
+        let ch = null;
+
+        function buildTrigChart() {
+            const chartElement = document.getElementById('trigChart');
+            if (!chartElement) return;
+            const ctx = chartElement.getContext('2d');
+
+            const labels = [], sinV = [], cosV = [];
+            for (let i = 0; i <= 100; i++) {
+                const x = i / 100 * 2 * Math.PI;
+                labels.push((x / Math.PI).toFixed(2) + 'π');
+                sinV.push(Math.sin(x));
+                cosV.push(Math.cos(x));
+            }
+
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const tc = isDark ? '#aaa' : '#666';
+
+            if (ch) {
+                ch.destroy();
+            }
+
+            ch = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'sin x', data: sinV, borderColor: '#1e88e5', borderWidth: 2.5, pointRadius: 0, fill: false },
+                        { label: 'cos x', data: cosV, borderColor: '#d81b60', borderWidth: 2.5, pointRadius: 0, fill: false }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { labels: { color: tc } },
+                        title: { display: true, text: 'sin x and cos x (0 to 2π)', color: tc }
+                    },
+                    scales: {
+                        x: { ticks: { maxTicksLimit: 9, color: tc } },
+                        y: { min: -1.2, max: 1.2, ticks: { color: tc } }
+                    }
+                }
+            });
+        }
+
+        function rebuildChart() {
+            if (ch) rebuildChart(); // Recursive error? No, buildTrigChart handles it.
+            buildTrigChart();
+        }
+
+        // Initialize chart when DOM is fully loaded
+        window.addEventListener('load', buildTrigChart);
+    </script>
+</body>
+
+</html>

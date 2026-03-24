@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 2: Logarithms & Exponentials | Physics Math | Vardaan</title>
+
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.05);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pink-box {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        .pink-box .box-label {
+            color: var(--pink-border);
+            border-color: var(--pink-border);
+        }
+
+        /* --- CUSTOM NOTE ELEMENTS --- */
+        .nav-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pill {
+            border: 1px solid var(--blue-border);
+            color: var(--blue-border);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            background: transparent;
+            text-decoration: none;
+        }
+
+        .pill.active {
+            background-color: var(--blue-border);
+            color: var(--paper-bg);
+            font-weight: bold;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .rule-card {
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 15px;
+            background: var(--example-bg);
+        }
+
+        .rule-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .rule-card-top-green {
+            border-top: 4px solid var(--green-border);
+        }
+
+        .rule-card-top-pink {
+            border-top: 4px solid var(--pink-border);
+        }
+
+        .solved-example {
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+
+        /* AP/GP Specific Cards */
+        .card { padding:18px; border:1px solid var(--toggle-border); border-radius:8px; background:var(--example-bg); line-height:1.7; }
+
+        .drill-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0;
+        }
+
+        .drill-list li {
+            margin-bottom: 18px;
+            padding-left: 25px;
+            text-indent: -25px;
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            background: var(--example-bg);
+        }
+
+        .answer-table th,
+        .answer-table td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .answer-table th {
+            color: var(--blue-border);
+            font-weight: bold;
+            width: 10%;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--example-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--toggle-border);
+        }
+
+        .physics-insight { border-left:4px solid #ff8f00; background:#fff8e1; padding:12px 18px; border-radius:0 8px 8px 0; margin:20px 0; font-size:.97rem; }
+        html.dark-mode .physics-insight { background:#2a1f00; border-left-color:#ffca28; }
+        .physics-insight strong { color:#e65100; }
+        html.dark-mode .physics-insight strong { color:#ffcc02; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.9 !important;
+                mix-blend-mode: normal !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                pointer-events: none !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+            }
+
+            /* Keep rules from page breaking */
+            .rule-card,
+            .blue-box,
+            .green-box,
+            .yellow-box,
+            .pink-box,
+            .solved-example,
+            .chart-container,
+            .card,
+            .physics-insight {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left {
+                    content: none;
+                }
+
+                @bottom-right {
+                    content: none;
+                }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="created-by" style="color: var(--meta-text); font-size: 0.8rem; margin-bottom: 5px;">Created by Team Vardaan with ❤️</div>
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">CLASS 11 PHYSICS • BASIC MATHEMATICS — PART 2 OF 7</div>
+            <div class="powered-by" style="margin-top: 5px;">Powered by Vardaan Comet</div>
+
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <nav class="nav-pills">
+            <a href="basicMathematics1.html" class="pill">1: Algebra</a>
+            <a href="basicMathematics2.html" class="pill active">2: Logarithms</a>
+            <a href="basicMathematics3.html" class="pill">3: Trigonometry</a>
+            <a href="basicMathematics4.html" class="pill">4: Coord. Geometry</a>
+            <a href="basicMathematics5.html" class="pill">5: Differentiation</a>
+            <a href="basicMathematics6.html" class="pill">6: Integration</a>
+            <a href="basicMathematics7.html" class="pill">7: Vectors</a>
+        </nav>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>LOGARITHMS & EXPONENTIALS</h1>
+
+        <div class="blue-box">
+            <span class="box-label">WHY THIS MATTERS</span>
+            <p>Nature loves to grow and decay <strong>exponentially</strong>. Radioactive nuclei decay, capacitors charge and discharge, population grows — all following $e^x$ or $e^{-x}$ curves. Logarithms are the mathematical tool to <em>undo</em> exponentials, turning multiplicative problems into additive ones. This part is essential for Thermodynamics, Nuclear Physics, and Electric Circuits.</p>
+        </div>
+
+        <h2>§1. Definition of Logarithm</h2>
+        <p>Logarithm is the inverse of exponentiation. Formally:</p>
+
+        <div class="blue-box">
+            <span class="box-label">CORE DEFINITION</span>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$\log_b(x) = y \quad \iff \quad b^y = x$$
+            </div>
+            <p><strong>Read as:</strong> "The logarithm of $x$ to the base $b$ equals $y$" means $b$ raised to the power $y$ gives $x$.</p>
+            <p><strong>Key constraint:</strong> $b > 0$, $b \neq 1$, and $x > 0$ (you cannot take the log of a negative number or zero!)</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="rule-card">
+                <h4>Example 1</h4>
+                <p>$\log_2(8) = 3$ because $2^3 = 8$</p>
+            </div>
+            <div class="rule-card">
+                <h4>Example 2</h4>
+                <p>$\log_{10}(1000) = 3$ because $10^3 = 1000$</p>
+            </div>
+            <div class="rule-card">
+                <h4>Example 3</h4>
+                <p>$\log_5(1) = 0$ because $5^0 = 1$</p>
+            </div>
+        </div>
+
+        <h2>§2. Types of Logarithms</h2>
+        <div class="card-grid">
+            <div class="card" style="border-top:4px solid var(--blue-border)">
+                <strong>Common Logarithm ($\log_{10}$)</strong><br><br>
+                Written as $\log x$ (without base, base 10 is implied)<br><br>
+                Used in: decibel scale (Sound), pH scale, Richter scale
+            </div>
+            <div class="card" style="border-top:4px solid var(--green-border)">
+                <strong>Natural Logarithm ($\ln$)</strong><br><br>
+                Written as $\ln x = \log_e x$ where $e \approx 2.71828\dots$<br><br>
+                Used in: Radioactive decay, RC/RL circuits, Thermodynamics
+            </div>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">⭐ CONVERSION FORMULA</span>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$\ln x = 2.303 \times \log_{10} x$$
+            </div>
+            <p>This is used constantly when switching between natural log (physics theory) and common log (log tables).</p>
+        </div>
+
+        <h2>§3. Laws / Properties of Logarithms</h2>
+        <p>These 4 laws are the entire toolkit of logarithmic manipulation. <strong>Memorize all 4.</strong></p>
+
+        <div class="card-grid">
+            <div class="card" style="border-top:4px solid var(--blue-border)">
+                <strong>Law 1 — Product Rule</strong><br><br>
+                $\log_b(mn) = \log_b m + \log_b n$<br><br>
+                <em>Multiplication becomes Addition</em>
+            </div>
+            <div class="card" style="border-top:4px solid var(--green-border)">
+                <strong>Law 2 — Quotient Rule</strong><br><br>
+                $\log_b\left(\frac{m}{n}\right) = \log_b m - \log_b n$<br><br>
+                <em>Division becomes Subtraction</em>
+            </div>
+            <div class="card" style="border-top:4px solid var(--pink-border)">
+                <strong>Law 3 — Power Rule</strong><br><br>
+                $\log_b(m^n) = n \cdot \log_b m$<br><br>
+                <em>Exponent comes down as multiplier</em>
+            </div>
+            <div class="card" style="border-top:4px solid var(--accent-purple)">
+                <strong>Law 4 — Change of Base</strong><br><br>
+                $\log_b m = \frac{\log_c m}{\log_c b}$<br><br>
+                <em>Convert any base using this</em>
+            </div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Special Values — Must Know!</span>
+            <div class="card-grid" style="margin-top:10px">
+                <div style="text-align:center">$\log_b 1 = 0$ (always)</div>
+                <div style="text-align:center">$\log_b b = 1$ (always)</div>
+                <div style="text-align:center">$b^{\log_b x} = x$ (inverse)</div>
+                <div style="text-align:center">$\log_b(b^x) = x$ (inverse)</div>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Solved Example 1:</strong> Expand $\log\left(\frac{x^3 \sqrt{y}}{z^2}\right)$</p>
+            <p>$= \log(x^3) + \log(\sqrt{y}) - \log(z^2)$<br>
+                $= 3\log x + \frac{1}{2}\log y - 2\log z$</p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Solved Example 2:</strong> Solve $\log_2(x) + \log_2(x-2) = 3$</p>
+            <p>Using product rule: $\log_2[x(x-2)] = 3$<br>
+                $x(x-2) = 2^3 = 8 \implies x^2 - 2x - 8 = 0$<br>
+                $(x-4)(x+2) = 0 \implies x = 4 \text{ or } x = -2$<br>
+                Since $\log$ is undefined for negative values, $\mathbf{x = 4}$.</p>
+        </div>
+
+        <h2>§4. The Number $e$ & Exponential Functions</h2>
+        <p>Euler's number $e \approx 2.71828\dots$ is irrational and transcendental. It can be defined as:</p>
+        <div style="text-align: center; margin: 15px 0;">
+            $$e = \lim_{n \to \infty}\left(1 + \frac{1}{n}\right)^n = 1 + 1 + \frac{1}{2!} + \frac{1}{3!} + \dots$$
+        </div>
+
+        <h3>The Exponential Function $y = e^x$</h3>
+        <div class="green-box">
+            <span class="box-label">KEY PROPERTIES OF $e^x$</span>
+            <ul>
+                <li>Domain: all real numbers. Range: $(0, \infty)$ — always positive!</li>
+                <li>$e^0 = 1$, $e^1 = e \approx 2.718$</li>
+                <li>Its derivative is itself: $\frac{d}{dx}(e^x) = e^x$ — unique in all of mathematics!</li>
+                <li>$e^x \cdot e^y = e^{x+y}$ (law of indices)</li>
+                <li>$e^x$ never equals 0, even as $x \to -\infty$ it approaches 0 asymptotically.</li>
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="expLogChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Graph: Exponential growth $e^x$, Decay $e^{-x}$, and Natural Log $\ln x$</p>
+        </div>
+
+        <div class="physics-insight">
+            <strong>⚛️ Physics Use — Radioactive Decay:</strong><br>
+            $N(t) = N_0 \cdot e^{-\lambda t}$<br>
+            where $N_0$ is initial nuclei count and $\lambda$ is the decay constant. Taking $\ln$ on both sides:<br>
+            $\ln N = \ln N_0 - \lambda t$<br>
+            This is a straight-line equation with slope $-\lambda$. A <strong>log-linear graph</strong> of decay is always a straight line!
+        </div>
+
+        <h3>Decay vs Growth Curves</h3>
+        <div class="card-grid">
+            <div class="card" style="border-top:4px solid var(--green-border)">
+                <strong>Growth: $y = e^x$ or $y = e^{+kt}$</strong><br><br>
+                Starts from near zero, rises steeply.<br>
+                Examples: Bacterial growth, capacitor charging current (initially).
+            </div>
+            <div class="card" style="border-top:4px solid var(--pink-border)">
+                <strong>Decay: $y = e^{-x}$ or $y = e^{-kt}$</strong><br><br>
+                Starts high, falls toward zero (never reaching it).<br>
+                Examples: Radioactive decay, capacitor discharge, damped oscillations.
+            </div>
+        </div>
+
+        <h2>§5. Antilogarithm (Antilog)</h2>
+        <p>The antilogarithm is simply the inverse of the logarithm operation. If $\log_{10}(x) = y$, then $x = \text{antilog}(y) = 10^y$.</p>
+
+        <div class="solved-example">
+            <p><strong>Example:</strong> Find antilog of 2.3010</p>
+            <p>$x = 10^{2.3010} = 10^2 \times 10^{0.3010} = 100 \times 2 = \mathbf{200}$<br>
+                (Since $\log_{10}(2) = 0.3010$)</p>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Common Log Values to Memorize</span>
+            <table class="answer-table" style="margin-top:10px">
+                <tr><th>$x$</th><th>$\log_{10} x$</th><th>$x$</th><th>$\log_{10} x$</th></tr>
+                <tr><td>1</td><td>0</td><td>6</td><td>0.778</td></tr>
+                <tr><td>2</td><td>0.301</td><td>7</td><td>0.845</td></tr>
+                <tr><td>3</td><td>0.477</td><td>8</td><td>0.903</td></tr>
+                <tr><td>4</td><td>0.602</td><td>9</td><td>0.954</td></tr>
+                <tr><td>5</td><td>0.699</td><td>10</td><td>1.000</td></tr>
+            </table>
+        </div>
+
+        <h2>Practice Questions</h2>
+        <div class="green-box">
+            <span class="box-label">DRILL 1 — BASIC EVALUATION</span>
+            <ul class="drill-list">
+                <li>1. Evaluate $\log_4 64$</li>
+                <li>2. Evaluate $\log_{10} 0.001$</li>
+                <li>3. Evaluate $\log_3 \frac{1}{27}$</li>
+                <li>4. Find $x$ if $\log_x 8 = 3$</li>
+                <li>5. Find $x$ if $\log_2 x = -4$</li>
+            </ul>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">DRILL 2 — LAWS OF LOGARITHMS</span>
+            <ul class="drill-list">
+                <li value="6">6. Expand: $\log\left(\frac{a^2 b^3}{c}\right)$</li>
+                <li>7. Simplify: $2\ln 3 + \ln 5 - \ln 45$</li>
+                <li>8. Express as single log: $3\log x - \log y + 2\log z$</li>
+                <li>9. Solve: $\log(3x-1) = 2$</li>
+                <li>10. Solve: $\log(x+3) + \log(x-3) = \log 7$</li>
+            </ul>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">DRILL 3 — EXPONENTIALS & PHYSICS</span>
+            <ul class="drill-list">
+                <li value="11">11. Simplify: $e^{3\ln 2}$</li>
+                <li>12. Solve: $e^{2x} = 7$ (leave answer in log form)</li>
+                <li>13. The half-life of Carbon-14 is 5730 years. Using $N = N_0 e^{-\lambda t}$, find $\lambda$.</li>
+                <li>14. A capacitor charges as $q = C\varepsilon(1 - e^{-t/RC})$. At what time $t$ does $q = \frac{1}{2}C\varepsilon$?</li>
+                <li>15. If $\log 2 = 0.301$ and $\log 3 = 0.477$, find $\log 12$ without a calculator.</li>
+            </ul>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">DRILL 4 — ADVANCED</span>
+            <ul class="drill-list">
+                <li value="16">16. Prove: $\log_a b \times \log_b a = 1$</li>
+                <li>17. The sound intensity level in decibels is $\beta = 10\log\left(\frac{I}{I_0}\right)$. If $I = 100 I_0$, find $\beta$.</li>
+                <li>18. Solve: $2^x = 3^{x-1}$ (use logs)</li>
+                <li>19. In radioactive decay $N = N_0 e^{-\lambda t}$, if after 10 years 75% has decayed, find $\lambda$.</li>
+                <li>20. Convert $\ln 50$ to $\log_{10}$ form and find a numerical value (given $\log 2 = 0.301$).</li>
+            </ul>
+        </div>
+
+        <h2>Answer Key</h2>
+        <table class="answer-table">
+            <thead>
+                <tr>
+                    <th>Q</th>
+                    <th style="color: var(--blue-border);">Answer & Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>$\log_4 64 = 3$ since $4^3 = 64$</td></tr>
+                <tr><td>2</td><td>$\log_{10} 0.001 = \log_{10} 10^{-3} = \mathbf{-3}$</td></tr>
+                <tr><td>3</td><td>$\log_3 3^{-3} = \mathbf{-3}$</td></tr>
+                <tr><td>4</td><td>$\log_x 8 = 3 \implies x^3=8 \implies x = \mathbf{2}$</td></tr>
+                <tr><td>5</td><td>$x = 2^{-4} = \mathbf{1/16}$</td></tr>
+                <tr><td>6</td><td>$2\log a + 3\log b - \log c$</td></tr>
+                <tr><td>7</td><td>$\ln(9 \times 5) - \ln 45 = \ln 45 - \ln 45 = \mathbf{0}$</td></tr>
+                <tr><td>8</td><td>$\log\left(\frac{x^3 z^2}{y}\right)$</td></tr>
+                <tr><td>9</td><td>$3x - 1 = 100 \implies x = \mathbf{101/3 \approx 33.67}$</td></tr>
+                <tr><td>10</td><td>$\log(x^2-9) = \log 7 \implies x^2 = 16 \implies x = \mathbf{4}$ (rejecting $-4$)</td></tr>
+                <tr><td>11</td><td>$e^{3\ln 2} = e^{\ln 8} = \mathbf{8}$</td></tr>
+                <tr><td>12</td><td>$2x = \ln 7 \implies x = \frac{\ln 7}{2} \approx \mathbf{0.973}$</td></tr>
+                <tr><td>13</td><td>At $t_{1/2}$: $N_0/2 = N_0 e^{-\lambda \cdot 5730} \implies \lambda = \frac{\ln 2}{5730} \approx \mathbf{1.21 \times 10^{-4}\text{ yr}^{-1}}$</td></tr>
+                <tr><td>14</td><td>$\frac{1}{2} = 1 - e^{-t/RC} \implies e^{-t/RC} = 0.5 \implies t = \mathbf{RC\ln 2}$</td></tr>
+                <tr><td>15</td><td>$\log 12 = \log(4 \times 3) = 2(0.301) + 0.477 = \mathbf{1.079}$</td></tr>
+                <tr><td>16</td><td>$\frac{\log b}{\log a} \times \frac{\log a}{\log b} = \mathbf{1}$. $\checkmark$</td></tr>
+                <tr><td>17</td><td>$\beta = 10\log(100) = 10 \times 2 = \mathbf{20\text{ dB}}$</td></tr>
+                <tr><td>18</td><td>$x\log 2 = (x-1)\log 3 \implies x = \frac{\log 3}{\log 3 - \log 2} = \frac{0.477}{0.176} \approx \mathbf{2.71}$</td></tr>
+                <tr><td>19</td><td>25% remains: $0.25 = e^{-10\lambda} \implies \lambda = \frac{\ln 4}{10} \approx \mathbf{0.1386\text{ yr}^{-1}}$</td></tr>
+                <tr><td>20</td><td>$\ln 50 = 2.303 \times \log_{10} 50 = 2.303 \times (1 + \log 5) = 2.303 \times 1.699 \approx \mathbf{3.912}$</td></tr>
+            </tbody>
+        </table>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Theme Toggle Logic
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            updateChartTheme();
+        }
+
+        // Chart.js Graph Rendering
+        let myChart = null;
+
+        function renderChart() {
+            const chartElement = document.getElementById('expLogChart');
+            if (!chartElement) return;
+            const ctx = chartElement.getContext('2d');
+
+            const pts = [], ex = [], em = [], ln = [];
+            for (let i = 0; i <= 100; i++) {
+                const x = -5 + i * 0.1;
+                pts.push(x.toFixed(1));
+                ex.push(parseFloat(Math.min(Math.exp(x), 150).toFixed(3)));
+                em.push(parseFloat(Math.exp(-x).toFixed(3)));
+                ln.push(x > 0.05 ? parseFloat(Math.log(x).toFixed(3)) : null);
+            }
+
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+            const tickColor = isDark ? '#aaa' : '#888';
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: pts,
+                    datasets: [
+                        { label: 'eˣ (Growth)', data: ex, borderColor: '#43a047', borderWidth: 2.5, pointRadius: 0, fill: false },
+                        { label: 'e⁻ˣ (Decay)', data: em, borderColor: '#e53935', borderWidth: 2.5, pointRadius: 0, fill: false },
+                        { label: 'ln(x) — Natural Log', data: ln, borderColor: '#1e88e5', borderWidth: 2.5, pointRadius: 0, fill: false, borderDash: [5, 3] }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { labels: { color: tickColor } },
+                        title: { display: true, text: 'Exponential Growth eˣ, Decay e⁻ˣ, and Natural Log ln(x)', color: tickColor }
+                    },
+                    scales: {
+                        x: { ticks: { maxTicksLimit: 11, color: tickColor }, grid: { color: gridColor } },
+                        y: { min: -3, max: 15, ticks: { color: tickColor }, grid: { color: gridColor } }
+                    }
+                }
+            });
+        }
+
+        function updateChartTheme() {
+            if (document.getElementById('expLogChart')) {
+                renderChart();
+            }
+        }
+
+        // Initialize chart when DOM is fully loaded
+        window.addEventListener('load', renderChart);
+    </script>
+</body>
+
+</html>

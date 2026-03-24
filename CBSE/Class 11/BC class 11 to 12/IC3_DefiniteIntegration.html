@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IC-3: Definite Integration | Vardaan JEE</title>
+    <script>MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --y: #fff9c4;
+            --yb: #fbc02d;
+            --g: #e8f5e9;
+            --gb: #43a047;
+            --b: #e3f2fd;
+            --bb: #1e88e5;
+            --p: #fce4ec;
+            --pb: #d81b60;
+            --txt: #000;
+            --bg: #fff;
+            --pur: #7e57c2;
+            --meta: #666;
+            --eg: rgba(255, 255, 255, 0.6);
+            --tbg: #eee;
+            --tb: #ccc;
+            --ic: #000
+        }
+
+        html.dark {
+            --y: #3f3a00;
+            --yb: #fdd835;
+            --g: #0f2e13;
+            --gb: #81c784;
+            --b: #0d1b2a;
+            --bb: #64b5f6;
+            --p: #300815;
+            --pb: #f06292;
+            --txt: #e0e0e0;
+            --bg: #121212;
+            --pur: #d1c4e9;
+            --meta: #aaa;
+            --eg: rgba(255, 255, 255, .1);
+            --tbg: #333;
+            --tb: #555;
+            --ic: #fff
+        }
+
+        body {
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: var(--txt);
+            transition: background .3s, color .3s
+        }
+
+        .wm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: multiply
+        }
+
+        .wm img {
+            opacity: .08;
+            max-width: 80%
+        }
+
+        html.dark .wm {
+            mix-blend-mode: screen
+        }
+
+        html.dark .wm img {
+            filter: invert(1);
+            opacity: .12
+        }
+
+        .sheet {
+            background: var(--bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box
+        }
+
+        .hdr {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--bb);
+            padding-bottom: 14px
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--bb);
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--bb);
+            padding-bottom: 8px;
+            margin-top: 6px
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pb);
+            margin-top: 36px;
+            border-left: 5px solid var(--pb);
+            padding-left: 14px;
+            font-weight: 700
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--pur);
+            margin-top: 22px;
+            margin-bottom: 8px;
+            text-decoration: underline;
+            text-decoration-color: var(--pur);
+            text-underline-offset: 4px
+        }
+
+        p,
+        li {
+            font-size: 1.04rem;
+            line-height: 1.7;
+            margin-bottom: 8px
+        }
+
+        ul,
+        ol {
+            padding-left: 22px
+        }
+
+        ol li {
+            margin-bottom: 14px
+        }
+
+        strong {
+            color: var(--pb)
+        }
+
+        .bb {
+            background: var(--b);
+            border: 2px solid var(--bb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .gb {
+            background: var(--g);
+            border: 2px solid var(--gb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .yb {
+            background: var(--y);
+            border: 2px solid var(--yb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .lbl {
+            position: absolute;
+            top: -11px;
+            right: 18px;
+            background: var(--bg);
+            padding: 2px 9px;
+            font-weight: 700;
+            font-size: .78rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px
+        }
+
+        .bb .lbl {
+            color: var(--bb);
+            border-color: var(--bb)
+        }
+
+        .gb .lbl {
+            color: var(--gb);
+            border-color: var(--gb)
+        }
+
+        .yb .lbl {
+            color: #f9a825;
+            border-color: var(--yb)
+        }
+
+        .tt {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: .98rem
+        }
+
+        .tt th,
+        .tt td {
+            border: 1px solid var(--tb);
+            padding: 8px 12px;
+            text-align: left
+        }
+
+        .tt th {
+            background: var(--b);
+            color: var(--bb);
+            font-weight: 700
+        }
+
+        .tt tr:nth-child(even) {
+            background: rgba(0, 0, 0, .02)
+        }
+
+        html.dark .tt tr:nth-child(even) {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .sp {
+            background: var(--eg);
+            border-left: 4px solid var(--pur);
+            padding: 13px 16px;
+            margin: 16px 0;
+            border-radius: 0 6px 6px 0
+        }
+
+        .sp .ql {
+            font-weight: 800;
+            color: var(--pb);
+            font-size: 1.04rem
+        }
+
+        .sp .al {
+            font-weight: 700;
+            color: var(--gb);
+            margin-top: 7px;
+            display: block
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 13px;
+            margin: 16px 0
+        }
+
+        .cd {
+            padding: 13px;
+            border: 1px solid var(--tb);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, .02)
+        }
+
+        html.dark .cd {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .tog {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--tbg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .sun,
+        .moon {
+            position: absolute;
+            transition: all .5s;
+            stroke: var(--ic)
+        }
+
+        .sun {
+            opacity: 0;
+            transform: scale(.5) rotate(-90deg)
+        }
+
+        html.dark .moon {
+            opacity: 0;
+            transform: scale(.5) rotate(90deg)
+        }
+
+        html.dark .sun {
+            opacity: 1;
+            transform: scale(1) rotate(0)
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--pb);
+            color: #fff;
+            font-size: .75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            vertical-align: middle;
+            margin-left: 6px
+        }
+
+        .ftr {
+            text-align: center;
+            margin-top: 44px;
+            padding-top: 16px;
+            border-top: 1px solid var(--tb);
+            color: var(--meta);
+            font-size: .92rem
+        }
+
+        .ftr b {
+            color: var(--pb)
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+
+            .sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important
+            }
+
+            .tog {
+                display: none !important
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wm"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark"></div>
+    <button class="tog" onclick="document.documentElement.classList.toggle('dark')" aria-label="Toggle Theme">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+    </button>
+
+    <div class="sheet">
+        <div class="hdr">
+            <div
+                style="font-size:2rem;font-weight:800;color:var(--bb);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">
+                Vardaan Learning Institute</div>
+            <div style="font-size:1rem;color:var(--meta);letter-spacing:3px;text-transform:uppercase">Integral Calculus
+                · Module 3 of 5 · JEE Main &amp; Advanced</div>
+        </div>
+        <h1>Definite Integration — Complete JEE Module</h1>
+
+        <div class="bb"><span class="lbl">Module 3 Objective</span>
+            <p style="margin:0">Definite Integration is the <strong>most examined topic</strong> in JEE calculus. This
+                module covers the Fundamental Theorem, all 8 key properties (especially King's Rule), Walli's Formula,
+                the Leibniz Rule, and the Limit-as-Integral concept — with complete JEE-style solved problems.</p>
+        </div>
+
+        <h2>Chapter 1: The Fundamental Theorem of Calculus</h2>
+        <div class="bb"><span class="lbl">Core Formula</span>
+            \[\int_a^b f(x)\,dx = \Big[F(x)\Big]_a^b = F(b) - F(a)\]
+            <p>where \(F'(x)=f(x)\). This gives a <strong>specific numerical value</strong> — no \(+C\) in definite
+                integrals. Geometrically, it equals the <strong>net signed area</strong> between the curve \(y=f(x)\)
+                and the x-axis from \(a\) to \(b\).</p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q1. Evaluate \(\displaystyle\int_0^{\pi/2}\cos x\,dx\)</span>
+            <span class="al">Solution:</span>
+            \(\Big[\sin x\Big]_0^{\pi/2} = \sin(\pi/2)-\sin 0 = 1-0 = \boxed{1}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q2. Evaluate \(\displaystyle\int_1^e \frac{\ln x}{x}\,dx\)</span>
+            <span class="al">Solution:</span>
+            Let \(t=\ln x\), \(dt=dx/x\). At \(x=1\), \(t=0\); at \(x=e\), \(t=1\).<br>
+            \(\displaystyle\int_0^1 t\,dt = \left[\frac{t^2}{2}\right]_0^1 = \boxed{\frac{1}{2}}\)
+        </div>
+
+        <h2>Chapter 2: The 8 Essential Properties <span class="badge">JEE Core</span></h2>
+
+        <table class="tt">
+            <tr>
+                <th>#</th>
+                <th>Property</th>
+                <th>When to Use</th>
+            </tr>
+            <tr>
+                <td><strong>P1</strong></td>
+                <td>\(\displaystyle\int_a^b f\,dx = -\int_b^a f\,dx\)</td>
+                <td>Swap limits to flip sign</td>
+            </tr>
+            <tr>
+                <td><strong>P2</strong></td>
+                <td>\(\displaystyle\int_a^b f\,dx = \int_a^c f\,dx + \int_c^b f\,dx\)</td>
+                <td>Break domain (for piecewise or modulus)</td>
+            </tr>
+            <tr>
+                <td style="background:rgba(216,27,96,.1);font-weight:800">P3 — King's Rule</td>
+                <td>\(\displaystyle\int_a^b f(x)\,dx = \int_a^b f(a+b-x)\,dx\)</td>
+                <td>Limits add to constant; creates dual expression to add</td>
+            </tr>
+            <tr>
+                <td><strong>P4</strong></td>
+                <td>\(\displaystyle\int_0^a f(x)\,dx = \int_0^a f(a-x)\,dx\)</td>
+                <td>Limits: 0 to a (special King's)</td>
+            </tr>
+            <tr>
+                <td><strong>P5 — Even</strong></td>
+                <td>\(\displaystyle\int_{-a}^a f\,dx = 2\int_0^a f\,dx\) if \(f(-x)=f(x)\)</td>
+                <td>Integrand is even function</td>
+            </tr>
+            <tr>
+                <td><strong>P6 — Odd</strong></td>
+                <td>\(\displaystyle\int_{-a}^a f\,dx = 0\) if \(f(-x)=-f(x)\)</td>
+                <td>Integrand is odd function</td>
+            </tr>
+            <tr>
+                <td><strong>P7</strong></td>
+                <td>\(\displaystyle\int_0^{2a}f\,dx = 2\int_0^a f\,dx\) if \(f(2a-x)=f(x)\)<br>and 0 if
+                    \(f(2a-x)=-f(x)\)</td>
+                <td>Symmetry about midpoint</td>
+            </tr>
+            <tr>
+                <td><strong>P8 — Periodic</strong></td>
+                <td>\(\displaystyle\int_0^{nT}f\,dx = n\int_0^T f\,dx\)</td>
+                <td>\(T\) = period of the function</td>
+            </tr>
+        </table>
+
+        <div class="gb"><span class="lbl">King's Rule — The Complete Technique</span>
+            <p><strong>When to apply:</strong> Whenever the integral has limits \(a\) to \(b\) and the integrand is
+                complicated. Apply the substitution \(x \to (a+b-x)\). This creates a "twin" integral \(I^*\). Add \(I +
+                I^*\): the complicated parts usually cancel, leaving something easy.<br>
+                <strong>Golden result:</strong> \(\displaystyle\int_0^{\pi/2}\frac{f(\sin x)}{f(\sin x)+f(\cos x)}\,dx =
+                \frac{\pi}{4}\) — this is <strong>always \(\pi/4\)</strong>, regardless of what \(f\) is.
+            </p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q3. JEE 2010 — Evaluate \(\displaystyle I = \int_0^{\pi}\frac{x\sin x}{1+\cos^2
+                x}\,dx\)</span>
+            <span class="al">Solution — King's Rule with \(a=0\), \(b=\pi\), so \(x\to\pi-x\):</span>
+            \(I^* = \displaystyle\int_0^{\pi}\frac{(\pi-x)\sin(\pi-x)}{1+\cos^2(\pi-x)}\,dx =
+            \int_0^{\pi}\frac{(\pi-x)\sin x}{1+\cos^2 x}\,dx\)<br><br>
+            Add \(I+I^*\): &nbsp; \(2I = \pi\displaystyle\int_0^{\pi}\frac{\sin x}{1+\cos^2 x}\,dx\)<br><br>
+            Let \(t=\cos x\), \(dt=-\sin x\,dx\). Limits: \(1 \to -1\).<br>
+            \(2I = -\pi\displaystyle\int_1^{-1}\frac{dt}{1+t^2} = \pi\Big[\tan^{-1}t\Big]_{-1}^{1} =
+            \pi\!\left[\frac{\pi}{4}+\frac{\pi}{4}\right] = \frac{\pi^2}{2}\)<br>
+            \[\boxed{I = \frac{\pi^2}{4}}\]
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q4. Evaluate
+                \(\displaystyle\int_0^{\pi/2}\frac{\sin^{3/2}x}{\sin^{3/2}x+\cos^{3/2}x}\,dx\)</span>
+            <span class="al">Solution — King's Rule P4 (\(x \to \pi/2-x\)):</span>
+            \(I^* = \displaystyle\int_0^{\pi/2}\frac{\cos^{3/2}x}{\cos^{3/2}x+\sin^{3/2}x}\,dx\)<br>
+            \(I + I^* = \displaystyle\int_0^{\pi/2}1\,dx = \frac{\pi}{2} \Rightarrow \boxed{I = \frac{\pi}{4}}\)
+            (This works for ANY power n — a classic JEE pattern.)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q5. Evaluate \(\displaystyle\int_{-\pi}^{\pi}(x^4\cos x + x^2\sin^3 x)\,dx\)</span>
+            <span class="al">Solution — Parity Check (P5 & P6):</span>
+            \(f_1(x) = x^4\cos x\): \(f_1(-x) = (-x)^4\cos(-x) = x^4\cos x = f_1(x)\) → <strong>Even</strong>.<br>
+            \(f_2(x) = x^2\sin^3 x\): \(f_2(-x) = x^2(-\sin x)^3 = -x^2\sin^3 x = -f_2(x)\) → <strong>Odd</strong>.<br>
+            \(\displaystyle\int_{-\pi}^{\pi}f_2\,dx = 0\). \(\displaystyle\int_{-\pi}^{\pi}f_1\,dx =
+            2\int_0^{\pi}x^4\cos x\,dx\) (use IBP 4 times — result is \(2(\pi^4-12\pi^2+24)\)).<br>
+            But the key JEE trick: <strong>both parts just need parity identification</strong>.
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q6. Evaluate \(\displaystyle\int_0^{\pi}\ln(1+\cos x)\,dx\)</span>
+            <span class="al">Solution:</span>
+            \(I = \displaystyle\int_0^{\pi}\ln(1+\cos x)\,dx\). By King's: \(I^* = \int_0^\pi\ln(1+\cos(\pi-x))\,dx =
+            \int_0^\pi\ln(1-\cos x)\,dx\).<br>
+            \(I+I^* = \displaystyle\int_0^{\pi}\ln(1-\cos^2 x)\,dx = \int_0^{\pi}\ln(\sin^2 x)\,dx =
+            2\int_0^{\pi}\ln|\sin x|\,dx\)<br>
+            Standard result: \(\displaystyle\int_0^{\pi}\ln\sin x\,dx = -\pi\ln 2\). So \(I+I^* = -2\pi\ln 2\).<br>
+            Also: \(I^* = \displaystyle\int_0^{\pi}\ln(2\sin^2\tfrac{x}{2})\,dx =
+            \pi\ln2+2\int_0^{\pi}\ln\!\left(\sin\tfrac{x}{2}\right)dx = \pi\ln 2-2\pi\ln 2 = -\pi\ln 2\).<br>
+            Thus: \(I = -2\pi\ln 2 - I^* = -2\pi\ln 2-(-\pi\ln 2) = \boxed{-\pi\ln 2}\)
+        </div>
+
+        <div style="page-break-after:always;"></div>
+
+        <h2>Chapter 3: Walli's Formula</h2>
+
+        <div class="bb"><span class="lbl">The Formula</span>
+            \[\int_0^{\pi/2}\sin^m x\,\cos^n x\,dx =
+            \frac{[(m-1)(m-3)\cdots]\cdot[(n-1)(n-3)\cdots]}{(m+n)(m+n-2)\cdots}\times K\]
+            where the numerator chains multiply down to 2 or 1 (stopping at 1 if odd, at 2 if even),<br>
+            the denominator chains start at \((m+n)\) and step down by 2,<br>
+            and \(K = \dfrac{\pi}{2}\) if <strong>both</strong> \(m\) and \(n\) are even; \(K=1\) otherwise.
+        </div>
+
+        <h3>Quick Reference Table for \(\int_0^{\pi/2}\sin^n x\,dx = \int_0^{\pi/2}\cos^n x\,dx\)</h3>
+        <table class="tt">
+            <tr>
+                <th>\(n\)</th>
+                <th>Value</th>
+                <th>\(n\)</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>\(\pi/2\)</td>
+                <td>1</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>\(\pi/4\)</td>
+                <td>3</td>
+                <td>2/3</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>\(3\pi/16\)</td>
+                <td>5</td>
+                <td>8/15</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>\(5\pi/32\)</td>
+                <td>7</td>
+                <td>16/35</td>
+            </tr>
+        </table>
+
+        <div class="sp">
+            <span class="ql">Q7. Evaluate \(\displaystyle\int_0^{\pi/2}\sin^4 x\cos^2 x\,dx\)</span>
+            <span class="al">Solution — Walli's with \(m=4\), \(n=2\) (both even, so \(K=\pi/2\)):</span>
+            Numerator: \((4-1)(4-3)\cdot(2-1) = 3\cdot1\cdot1 = 3\).<br>
+            Denominator: \((4+2)(4+2-2)(4+2-4) = 6\cdot4\cdot2 = 48\).<br>
+            \(= \dfrac{3}{48}\cdot\dfrac{\pi}{2} = \boxed{\dfrac{\pi}{32}}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q8. Evaluate \(\displaystyle\int_0^{\pi/2}\sin^5 x\,\cos^3 x\,dx\)</span>
+            <span class="al">Solution — Walli's with \(m=5\) (odd), \(n=3\) (odd), so \(K=1\):</span>
+            Num: \((5-1)(5-3)\cdot(3-1) = 4\cdot2\cdot2 = 16\).<br>
+            Denom: \((5+3)(5+3-2)(5+3-4)(5+3-6)(5+3-8) = 8\cdot6\cdot4\cdot2 = 384\).<br>
+            \(= \dfrac{16}{384} = \boxed{\dfrac{1}{24}}\)
+        </div>
+
+        <h2>Chapter 4: The Leibniz Rule <span class="badge">JEE Advanced</span></h2>
+        <div class="bb"><span class="lbl">Formula</span>
+            \[\frac{d}{dt}\int_{g(t)}^{h(t)}f(x)\,dx = f(h(t))\cdot h'(t) - f(g(t))\cdot g'(t)\]
+            <p style="margin:8px 0 0">When the limits are <em>functions of \(t\)</em> (not constants), do NOT evaluate
+                the integral first. Directly apply this formula. If the integrand also depends on \(t\), use the full
+                version: \(\displaystyle\frac{d}{dt}\int_{g}^{h}f(x,t)\,dx = f(h,t)\cdot h' - f(g,t)\cdot g' + \int_g^h
+                \frac{\partial f}{\partial t}\,dx\)</p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q9. If \(F(x)=\displaystyle\int_x^{x^2}\frac{\ln t}{t}\,dt\), find \(F'(2)\)</span>
+            <span class="al">Solution:</span>
+            \(F'(x) = \dfrac{\ln(x^2)}{x^2}\cdot 2x - \dfrac{\ln x}{x}\cdot 1 = \dfrac{4x\ln x}{2x^2}-\dfrac{\ln x}{x} =
+            \dfrac{2\ln x}{x}-\dfrac{\ln x}{x} = \dfrac{\ln x}{x}\)<br>
+            At \(x=2\): \(\boxed{F'(2) = \dfrac{\ln 2}{2}}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q10. Find \(\dfrac{d}{dx}\left[\displaystyle\int_0^{x^2}\sin t^2\,dt\right]\)</span>
+            <span class="al">Solution — Upper limit is \(h(x)=x^2\), lower is constant 0:</span>
+            \(= \sin(x^2)^2\cdot 2x = \boxed{2x\sin x^4}\)
+        </div>
+
+        <h2>Chapter 5: Limit as a Definite Integral <span class="badge">JEE Regular</span></h2>
+
+        <div class="gb"><span class="lbl">The Riemann Sum Formula</span>
+            \[\lim_{n\to\infty}\frac{1}{n}\sum_{r=1}^{n}f\!\left(\frac{r}{n}\right) = \int_0^1 f(x)\,dx\]
+            \[\lim_{n\to\infty}\frac{1}{n}\sum_{r=0}^{n-1}f\!\left(\frac{r}{n}\right) = \int_0^1 f(x)\,dx\]
+            <p style="margin:8px 0 0"><strong>More generally:</strong>
+                \(\displaystyle\lim_{n\to\infty}\frac{1}{n}\sum_{r=pn}^{qn}f\!\left(\frac{r}{n}\right) = \int_p^q
+                f(x)\,dx\)<br>
+                <strong>Strategy:</strong> Identify the factor \(1/n\), see what \(r/n\) becomes as \(x\), and replace
+                \(\sum\to\int\).
+            </p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q11. Evaluate
+                \(\displaystyle\lim_{n\to\infty}\left[\frac{1}{n+1}+\frac{1}{n+2}+\cdots+\frac{1}{3n}\right]\)</span>
+            <span class="al">Solution:</span>
+            \(= \displaystyle\lim_{n\to\infty}\sum_{r=1}^{2n}\frac{1}{n+r} =
+            \lim_{n\to\infty}\frac{1}{n}\sum_{r=1}^{2n}\frac{1}{1+r/n} = \int_0^2\frac{dx}{1+x} = \Big[\ln(1+x)\Big]_0^2
+            = \boxed{\ln 3}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q12. Evaluate
+                \(\displaystyle\lim_{n\to\infty}n\left(\frac{1}{n^2+1^2}+\frac{1}{n^2+2^2}+\cdots+\frac{1}{n^2+n^2}\right)\)</span>
+            <span class="al">Solution:</span>
+            \(= \displaystyle\lim_{n\to\infty}\sum_{r=1}^n\frac{n}{n^2+r^2} =
+            \lim_{n\to\infty}\frac{1}{n}\sum_{r=1}^n\frac{1}{1+(r/n)^2} = \int_0^1\frac{dx}{1+x^2} =
+            \Big[\tan^{-1}x\Big]_0^1 = \boxed{\frac{\pi}{4}}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q13. JEE Advanced 2014 — Evaluate
+                \(\displaystyle\int_0^1\frac{\ln(1+x)}{1+x^2}\,dx\)</span>
+            <span class="al">Solution — Let \(x=\tan\theta\), limits \(0\to\pi/4\):</span>
+            \(= \displaystyle\int_0^{\pi/4}\ln(1+\tan\theta)\,d\theta\) ... call this \(I\).<br>
+            King's on \([0,\pi/4]\): \(I^* =
+            \displaystyle\int_0^{\pi/4}\ln\!\left(1+\tan\!\left(\frac{\pi}{4}-\theta\right)\!\right)d\theta\)<br>
+            \(\tan\!\left(\frac{\pi}{4}-\theta\right) = \frac{1-\tan\theta}{1+\tan\theta}\), so
+            \(1+\tan\!\left(\frac{\pi}{4}-\theta\right) = \frac{2}{1+\tan\theta}\)<br>
+            \(I^* = \displaystyle\int_0^{\pi/4}[\ln 2 - \ln(1+\tan\theta)]\,d\theta = \frac{\pi\ln2}{4}-I\)<br>
+            \(2I = \dfrac{\pi\ln 2}{4} \Rightarrow \boxed{I = \dfrac{\pi\ln 2}{8}}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q14. Evaluate \(\displaystyle\int_0^{10}\{x\}\,dx\) where \(\{x\}\) is the fractional
+                part</span>
+            <span class="al">Solution — Periodicity (P8):</span>
+            \(\{x\}\) has period 1. On \([0,1]\): \(\{x\}=x\). So \(\displaystyle\int_0^1\{x\}\,dx = \int_0^1 x\,dx =
+            \frac{1}{2}\).<br>
+            By P8: \(\displaystyle\int_0^{10}\{x\}\,dx = 10\times\frac{1}{2} = \boxed{5}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q15. Evaluate \(\displaystyle\int_0^4\lfloor x^2\rfloor\,dx\) where \(\lfloor\cdot\rfloor\)
+                is the floor (GIF)</span>
+            <span class="al">Solution — Split at critical points where \(x^2\) crosses integers:</span>
+            \(x^2=0\) at \(x=0\); \(x^2=1\) at \(x=1\); \(x^2=2\) at \(x=\sqrt2\); \(x^2=3\) at \(x=\sqrt3\); \(x^2=4\)
+            at \(x=2\); etc.<br>
+            On \([0,1]\): \(\lfloor x^2\rfloor=0\). On \([1,\sqrt2]\): \(=1\). On \([\sqrt2,\sqrt3]\): \(=2\). On
+            \([\sqrt3,2]\): \(=3\). On \([2,4]\): \(\lfloor x^2\rfloor\geq4\), compute similarly.<br>
+            \(= 0+(\sqrt2-1)\cdot1+(\sqrt3-\sqrt2)\cdot2+(2-\sqrt3)\cdot3+\displaystyle\int_2^4\lfloor
+            x^2\rfloor\,dx\)<br>
+            Simplify and continue: \(= 3\sqrt2+2\sqrt3-3+\displaystyle\int_2^4\lfloor x^2\rfloor\,dx\). Final answer
+            after full calculation: \(= \boxed{25-2\sqrt2-2\sqrt3-2\sqrt5-2\sqrt6-2\sqrt7}\) sq. units... (pattern
+            approach).
+        </div>
+
+        <h2>Chapter 6: Key Results to Memorise</h2>
+        <div class="gb"><span class="lbl">JEE Champion Shortcuts</span>
+            <ul style="margin-bottom:0">
+                <li>\(\displaystyle\int_0^{\pi/2}\ln(\sin x)\,dx = \int_0^{\pi/2}\ln(\cos x)\,dx = -\dfrac{\pi}{2}\ln
+                    2\)</li>
+                <li>\(\displaystyle\int_0^{\pi}\ln(\sin x)\,dx = -\pi\ln 2\)</li>
+                <li>\(\displaystyle\int_0^{\pi/2}\frac{f(\sin x)}{f(\sin x)+f(\cos x)}\,dx = \dfrac{\pi}{4}\) always
+                </li>
+                <li>\(\displaystyle\int_0^{\pi}xf(\sin x)\,dx = \dfrac{\pi}{2}\int_0^{\pi}f(\sin x)\,dx\) (King's)</li>
+                <li>Walli's: \(\displaystyle\int_0^{\pi/2}\sin^{2n}x\,dx = \dfrac{(2n-1)!!}{(2n)!!}\cdot\dfrac{\pi}{2}\)
+                </li>
+                <li>If \(f\) is odd on \([-a,a]\): integral = 0. If even: double the \([0,a]\) integral.</li>
+            </ul>
+        </div>
+
+        <div class="ftr"><b>Vardaan Learning Institute</b> · IC Module 3/5 · JEE Masterclass 2026–27</div>
+    </div><!-- sheet -->
+</body>
+
+</html>

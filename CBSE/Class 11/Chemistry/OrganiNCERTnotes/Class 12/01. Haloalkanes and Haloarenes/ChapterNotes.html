@@ -13,23 +13,24 @@
     <style>
         :root {
             --bg: #ffffff;
-            --bg2: #f3ede0;
-            --bg3: #ede5d0;
+            --bg2: #ffffff;
+            --bg3: #ffffff;
+            --card-bg: #ffffff;
             --ink: #1c140a;
             --ink2: #3d2f1a;
             --ink3: #6b5540;
             --border: #d5c8a8;
             --amber: #b8740a;
             --amber-lt: #f5d88a;
-            --amber-bg: #fff8e6;
+            --amber-bg: #ffffff;
             --teal: #0a5c5c;
-            --teal-bg: #e4f5f5;
+            --teal-bg: #ffffff;
             --violet: #42207a;
-            --violet-bg: #ede6f8;
+            --violet-bg: #ffffff;
             --sage: #1e5e32;
-            --sage-bg: #e2f4e8;
-            --rust: #992210;
-            --rust-bg: #fdeee8;
+            --sage-bg: #ffffff;
+            --rust: #ae2012;
+            --rust-bg: #ffffff;
             --card-shadow: 0 2px 12px rgba(28, 20, 10, .10);
             --box-shadow: 4px 4px 0 var(--border);
             --font-main: 'Source Serif 4', serif;
@@ -39,9 +40,10 @@
         }
 
         [data-theme="dark"] {
-            --bg: #0a0804;
-            --bg2: #12100d;
-            --bg3: #252015;
+            --bg: #000000;
+            --bg2: #1B1306;
+            --bg3: #221a0c;
+            --card-bg: #1B1306;
             --ink: #f0e8d8;
             --ink2: #cfc0a0;
             --ink3: #9a8a70;
@@ -50,12 +52,12 @@
             --amber-lt: #f5d88a;
             --amber-bg: #1e1500;
             --teal: #30b8b8;
-            --teal-bg: #001f1f;
+            --teal-bg: #1B1306;
             --violet: #9070d8;
-            --violet-bg: #160c28;
+            --violet-bg: #1B1306;
             --sage: #50c870;
-            --sage-bg: #041408;
-            --rust: #e05030;
+            --sage-bg: #1B1306;
+            --rust: #ff5d44;
             --rust-bg: #1e0800;
             --card-shadow: 0 2px 20px rgba(0, 0, 0, .5);
             --box-shadow: 4px 4px 0 #2a2010;
@@ -63,6 +65,51 @@
 
         [data-theme="dark"] img {
             filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 30%;
+            height: auto;
+            mix-blend-mode: multiply;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        [data-theme="dark"] .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        [data-theme="dark"] .watermark-image {
+            filter: invert(1);
+            opacity: 0.25;
+        }
+
+        /* white-bg-box: white in light mode, black in dark mode */
+        .white-bg-box {
+            background: #ffffff !important;
+            background-image: none !important;
+        }
+
+        /* dark mode: force white-background boxes to black */
+        [data-theme="dark"] .white-bg-box {
+            background: #000000 !important;
+            background-image: none !important;
         }
 
         * {
@@ -161,16 +208,13 @@
         }
 
         [data-theme="dark"] .theme-toggle {
-            background: #fdf6e3;
+            background: var(--bg2);
             border-color: var(--amber);
         }
 
         .rxn-bg {
-            background-color: #ffffff;
-        }
-
-        [data-theme="dark"] .rxn-bg {
-            background-color: #000000;
+            background: var(--bg) !important;
+            background-image: none !important;
         }
 
         /* ── HEADER ── */
@@ -184,7 +228,7 @@
         }
 
         [data-theme="dark"] .site-header {
-            background: #fdf6e3;
+            background: var(--bg3);
             border-bottom: 2px solid var(--amber);
         }
 
@@ -362,8 +406,8 @@
             padding: 1.5rem 1.8rem;
             margin: 1.8rem 0;
             position: relative;
-            background: var(--bg2);
-            border: 1px solid var(--border);
+            background: var(--bg);
+            border: 1.5px solid var(--border);
             box-shadow: 0 4px 12px rgba(0, 0, 0, .03);
         }
 
@@ -391,7 +435,7 @@
 
         .box-def {
             border-left: 5px solid var(--amber);
-            background: linear-gradient(to right, var(--amber-bg), var(--bg2));
+            background: var(--bg);
         }
 
         .box-def .box-label {
@@ -411,7 +455,7 @@
 
         .box-rule {
             border-left: 5px solid var(--teal);
-            background: linear-gradient(to right, var(--teal-bg), var(--bg2));
+            background: var(--bg);
         }
 
         .box-rule .box-label {
@@ -421,7 +465,7 @@
 
         .box-tip {
             border: 1.5px dashed var(--rust);
-            background: var(--rust-bg);
+            background: var(--bg);
         }
 
         .box-tip .box-label {
@@ -431,7 +475,7 @@
 
         .box-derive {
             border-left: 5px solid var(--sage);
-            background: linear-gradient(to right, var(--sage-bg), var(--bg2));
+            background: var(--bg);
         }
 
         .box-derive .box-label {
@@ -441,7 +485,7 @@
 
         .box-violet {
             border-left: 5px solid var(--violet);
-            background: linear-gradient(to right, var(--violet-bg), var(--bg2));
+            background: var(--bg) !important;
         }
 
         .box-violet .box-label {
@@ -450,8 +494,8 @@
         }
 
         .box-example {
-            background: var(--bg2);
-            border: 1px solid var(--border);
+            background: var(--bg);
+            border: 1.5px solid var(--border);
             border-radius: 8px;
             padding: 1.2rem 1.6rem;
             margin: 1.2rem 0;
@@ -469,7 +513,7 @@
 
         /* ── REACTION BOX ── */
         .rxn-box {
-            background: var(--bg2);
+            background: var(--bg);
             border: 1.5px solid var(--sage);
             border-radius: 4px;
             padding: .9rem 1.3rem;
@@ -479,6 +523,10 @@
             overflow-x: auto;
             color: var(--ink);
             line-height: 2;
+        }
+
+        [data-theme="dark"] .rxn-box {
+            border-color: #6B70D8;
         }
 
         .rxn-box sub {
@@ -502,46 +550,67 @@
             overflow-x: auto;
         }
 
-        /* ── TABLES ── */
+        /* ── TABLES MODERNIZED ── */
         .table-wrap {
             overflow-x: auto;
-            margin: 1.2rem 0;
+            margin: 2rem 0;
+            border-radius: 8px;
+            border: 1.2px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            background: var(--bg);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: .87rem;
-            min-width: 400px;
+            font-size: 0.9rem;
+            min-width: 600px;
         }
 
         th {
-            background: var(--ink);
-            color: var(--amber-lt);
-            padding: .6rem .9rem;
+            background: #1a150e;
+            color: #f5d88a;
+            padding: 1.1rem 1.2rem;
             text-align: left;
             font-family: var(--font-sans);
-            font-size: .76rem;
-            letter-spacing: .04em;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
             font-weight: 700;
-        }
-
-        [data-theme="dark"] th {
-            color: #12100d;
+            border: none;
         }
 
         td {
-            padding: .55rem .9rem;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
+            padding: 0.95rem 1.2rem;
+            border: none;
+            vertical-align: middle;
+            color: var(--ink);
+            font-family: var(--font-main);
+        }
+
+        tr:nth-child(odd) td {
+            background: #FDF9F0;
         }
 
         tr:nth-child(even) td {
-            background: var(--bg2);
+            background: #F1EBDD;
+        }
+
+        [data-theme="dark"] th {
+            background: #fdf6e3;
+            color: #1a150e;
+        }
+
+        [data-theme="dark"] tr:nth-child(odd) td {
+            background: #1B1306;
+        }
+
+        [data-theme="dark"] tr:nth-child(even) td {
+            background: #120e04;
         }
 
         tr:hover td {
-            background: var(--amber-bg);
+            background: var(--amber-bg) !important;
         }
 
         /* ── COMPARE GRID ── */
@@ -553,10 +622,19 @@
         }
 
         .compare-card {
-            background: var(--bg2);
+            background: var(--bg2) !important;
             border: 1.5px solid var(--border);
             border-radius: 4px;
             padding: 1rem 1.2rem;
+            background-image: none !important;
+        }
+
+        .beige-bg {
+            background-color: #F1EBDD !important;
+        }
+
+        [data-theme="dark"] .beige-bg {
+            background-color: #1B1306 !important;
         }
 
         .compare-card-title {
@@ -613,7 +691,8 @@
             flex-wrap: wrap;
             margin: 1.5rem 0;
             padding: 1.2rem;
-            background: rgba(0, 0, 0, .02);
+            background: var(--bg) !important;
+            border: 1.5px solid var(--border);
             border-radius: 12px;
             justify-content: center;
         }
@@ -874,7 +953,7 @@
         }
 
         [data-theme="dark"] .exam-section {
-            background: #110d07;
+            background: #1B1306;
         }
 
         [data-theme="dark"] .exam-q {
@@ -961,7 +1040,8 @@
 
         /* ── MEMORY TRICK ── */
         .memory-trick {
-            background: linear-gradient(135deg, var(--amber-bg), var(--rust-bg));
+            background: var(--bg) !important;
+            background-image: none !important;
             border: 1.5px solid var(--amber);
             border-radius: 5px;
             padding: 1rem 1.3rem;
@@ -1120,10 +1200,43 @@
                 flex-direction: column;
             }
         }
+        /* ── WATERMARK ── */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .watermark-image {
+            max-width: 35%;
+            max-height: 35%;
+            opacity: 0.1;
+            mix-blend-mode: multiply;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Adaptation */
+        [data-theme="dark"] .watermark-image {
+            filter: invert(1);
+            opacity: 0.12;
+            mix-blend-mode: screen;
+        }
     </style>
 </head>
 
 <body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1774344007/VARDAAN_watermark_jxdqqb_yescam.png" 
+             class="watermark-image" 
+             alt="Vardaan Watermark">
+    </div>
 
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
         <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
@@ -1153,7 +1266,7 @@
 
     <!-- TOC -->
     <div class="toc-wrap">
-        <div class="toc-card">
+        <div class="toc-card beige-bg">
             <h2>📋 Table of Contents</h2>
             <div class="toc-grid">
                 <a class="toc-item" href="#s1"><span class="toc-num">6.1</span> Classification</a>
@@ -1184,7 +1297,7 @@
                 <strong>organic halides</strong>.
             </p>
 
-            <div class="box box-def">
+            <div class="box box-def beige-bg">
                 <span class="box-label">Key Distinction</span>
                 <p><strong>Haloalkanes (Alkyl Halides):</strong> Halogen bonded to sp³ hybridised carbon of an alkyl
                     group. General formula: C<sub>n</sub>H<sub>2n+1</sub>X</p>
@@ -1348,82 +1461,86 @@
 
             <div class="box box-rule" style="width:fit-content; margin:1.5rem auto">
                 <span class="box-label">(a) Alkyl Halides — Primary, Secondary, Tertiary</span>
-                <p>Classified based on the nature and degree (primary, secondary, or tertiary) of the carbon atom bearing the halogen.:</p>
-            
+                <p>Classified based on the nature and degree (primary, secondary, or tertiary) of the carbon atom
+                    bearing the halogen.:</p>
 
-            <!-- SVG: Primary, Secondary, Tertiary alkyl halides -->
-            <div class="struct-row" style="justify-content:center; gap:2.5rem; align-items:flex-start">
-                <div class="struct-card" style="min-width:160px;flex:1">
-                    <div class="struct-card-name">Primary (1°)</div>
-                    <svg viewBox="0 0 140 160" width="140" height="160" xmlns="http://www.w3.org/2000/svg">
-                        <!-- R' group left -->
-                        <text x="10" y="85" font-family="'Outfit',sans-serif" font-size="17" fill="#b8740a"
-                            font-weight="700">R'</text>
-                        <line x1="30" y1="78" x2="56" y2="78" stroke="#555" stroke-width="2" />
-                        <!-- Central C -->
-                        <text x="56" y="85" font-family="'Outfit',sans-serif" font-size="19" fill="#1c140a"
-                            font-weight="700">C</text>
-                        <!-- H top -->
-                        <line x1="67" y1="60" x2="67" y2="36" stroke="#555" stroke-width="2" />
-                        <text x="58" y="32" font-family="'Outfit',sans-serif" font-size="17" fill="#4477bb"
-                            font-weight="700">H</text>
-                        <!-- H bottom -->
-                        <line x1="67" y1="90" x2="67" y2="118" stroke="#555" stroke-width="2" />
-                        <text x="58" y="134" font-family="'Outfit',sans-serif" font-size="17" fill="#4477bb"
-                            font-weight="700">H</text>
-                        <!-- X right -->
-                        <line x1="82" y1="78" x2="110" y2="78" stroke="#555" stroke-width="2" />
-                        <text x="110" y="85" font-family="'Outfit',sans-serif" font-size="17" fill="#992210"
-                            font-weight="700">X</text>
-                    </svg>
-                    <div style="font-family:var(--font-sans);font-size:.78rem;color:var(--ink3);text-align:center">One
-                        alkyl group on C bearing X</div>
-                </div>
-                
-                <div class="struct-card" style="min-width:160px;flex:1">
-                    <div class="struct-card-name">Secondary (2°)</div>
-                    <svg viewBox="0 0 140 160" width="140" height="160" xmlns="http://www.w3.org/2000/svg">
-                        <text x="4" y="85" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
-                            font-weight="700">R''</text>
-                        <line x1="26" y1="78" x2="52" y2="78" stroke="#555" stroke-width="2" />
-                        <text x="52" y="85" font-family="'Outfit',sans-serif" font-size="19" fill="#1c140a"
-                            font-weight="700">C</text>
-                        <line x1="67" y1="60" x2="67" y2="36" stroke="#555" stroke-width="2" />
-                        <text x="58" y="32" font-family="'Outfit',sans-serif" font-size="17" fill="#4477bb"
-                            font-weight="700">H</text>
-                        <line x1="67" y1="90" x2="67" y2="118" stroke="#555" stroke-width="2" />
-                        <text x="58" y="134" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
-                            font-weight="700">R'</text>
-                        <line x1="82" y1="78" x2="110" y2="78" stroke="#555" stroke-width="2" />
-                        <text x="110" y="85" font-family="'Outfit',sans-serif" font-size="17" fill="#992210"
-                            font-weight="700">X</text>
-                    </svg>
-                    <div style="font-family:var(--font-sans);font-size:.78rem;color:var(--ink3);text-align:center">Two
-                        alkyl groups on C bearing X</div>
-                </div>
-                <div class="struct-card" style="min-width:160px;flex:1">
-                    <div class="struct-card-name">Tertiary (3°)</div>
-                    <svg viewBox="0 0 150 160" width="150" height="160" xmlns="http://www.w3.org/2000/svg">
-                        <text x="4" y="85" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
-                            font-weight="700">R''</text>
-                        <line x1="26" y1="78" x2="52" y2="78" stroke="#555" stroke-width="2" />
-                        <text x="52" y="85" font-family="'Outfit',sans-serif" font-size="19" fill="#1c140a"
-                            font-weight="700">C</text>
-                        <line x1="67" y1="60" x2="67" y2="36" stroke="#555" stroke-width="2" />
-                        <text x="55" y="32" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
-                            font-weight="700">R'''</text>
-                        <line x1="67" y1="90" x2="67" y2="118" stroke="#555" stroke-width="2" />
-                        <text x="58" y="134" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
-                            font-weight="700">R'</text>
-                        <line x1="82" y1="78" x2="112" y2="78" stroke="#555" stroke-width="2" />
-                        <text x="112" y="85" font-family="'Outfit',sans-serif" font-size="17" fill="#992210"
-                            font-weight="700">X</text>
-                    </svg>
-                    <div style="font-family:var(--font-sans);font-size:.78rem;color:var(--ink3);text-align:center">Three
-                        alkyl groups on C bearing X</div>
+
+                <!-- SVG: Primary, Secondary, Tertiary alkyl halides -->
+                <div class="struct-row" style="justify-content:center; gap:2.5rem; align-items:flex-start">
+                    <div class="struct-card" style="min-width:160px;flex:1">
+                        <div class="struct-card-name">Primary (1°)</div>
+                        <svg viewBox="0 0 140 160" width="140" height="160" xmlns="http://www.w3.org/2000/svg">
+                            <!-- R' group left -->
+                            <text x="10" y="82" font-family="'Outfit',sans-serif" font-size="17" fill="#b8740a"
+                                font-weight="700">R'</text>
+                            <line x1="30" y1="78" x2="58" y2="78" stroke="#555" stroke-width="2" />
+                            <!-- Central C -->
+                            <text x="67" y="78" font-family="'Outfit',sans-serif" font-size="19" fill="#1c140a"
+                                font-weight="700" text-anchor="middle" dominant-baseline="central">C</text>
+                            <!-- H top -->
+                            <line x1="67" y1="68" x2="67" y2="36" stroke="#555" stroke-width="2" />
+                            <text x="67" y="24" font-family="'Outfit',sans-serif" font-size="17" fill="#4477bb"
+                                font-weight="700" text-anchor="middle">H</text>
+                            <!-- H bottom -->
+                            <line x1="67" y1="88" x2="67" y2="118" stroke="#555" stroke-width="2" />
+                            <text x="67" y="134" font-family="'Outfit',sans-serif" font-size="17" fill="#4477bb"
+                                font-weight="700" text-anchor="middle">H</text>
+                            <!-- X right -->
+                            <line x1="76" y1="78" x2="110" y2="78" stroke="#555" stroke-width="2" />
+                            <text x="115" y="82" font-family="'Outfit',sans-serif" font-size="17" fill="#992210"
+                                font-weight="700">X</text>
+                        </svg>
+                        <div style="font-family:var(--font-sans);font-size:.78rem;color:var(--ink3);text-align:center">
+                            One
+                            alkyl group on C bearing X</div>
+                    </div>
+
+                    <div class="struct-card" style="min-width:160px;flex:1">
+                        <div class="struct-card-name">Secondary (2°)</div>
+                        <svg viewBox="0 0 140 160" width="140" height="160" xmlns="http://www.w3.org/2000/svg">
+                            <text x="4" y="82" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
+                                font-weight="700">R''</text>
+                            <line x1="28" y1="78" x2="58" y2="78" stroke="#555" stroke-width="2" />
+                            <text x="67" y="78" font-family="'Outfit',sans-serif" font-size="19" fill="#1c140a"
+                                font-weight="700" text-anchor="middle" dominant-baseline="central">C</text>
+                            <line x1="67" y1="68" x2="67" y2="36" stroke="#555" stroke-width="2" />
+                            <text x="67" y="24" font-family="'Outfit',sans-serif" font-size="17" fill="#4477bb"
+                                font-weight="700" text-anchor="middle">H</text>
+                            <line x1="67" y1="88" x2="67" y2="118" stroke="#555" stroke-width="2" />
+                            <text x="67" y="134" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
+                                font-weight="700" text-anchor="middle">R'</text>
+                            <line x1="76" y1="78" x2="112" y2="78" stroke="#555" stroke-width="2" />
+                            <text x="115" y="82" font-family="'Outfit',sans-serif" font-size="17" fill="#992210"
+                                font-weight="700">X</text>
+                        </svg>
+                        <div style="font-family:var(--font-sans);font-size:.78rem;color:var(--ink3);text-align:center">
+                            Two
+                            alkyl groups on C bearing X</div>
+                    </div>
+                    <div class="struct-card" style="min-width:160px;flex:1">
+                        <div class="struct-card-name">Tertiary (3°)</div>
+                        <svg viewBox="0 0 150 160" width="150" height="160" xmlns="http://www.w3.org/2000/svg">
+                            <text x="4" y="82" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
+                                font-weight="700">R''</text>
+                            <line x1="28" y1="78" x2="58" y2="78" stroke="#555" stroke-width="2" />
+                            <text x="67" y="78" font-family="'Outfit',sans-serif" font-size="19" fill="#1c140a"
+                                font-weight="700" text-anchor="middle" dominant-baseline="central">C</text>
+                            <line x1="67" y1="68" x2="67" y2="36" stroke="#555" stroke-width="2" />
+                            <text x="67" y="22" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
+                                font-weight="700" text-anchor="middle">R'''</text>
+                            <line x1="67" y1="88" x2="67" y2="118" stroke="#555" stroke-width="2" />
+                            <text x="67" y="134" font-family="'Outfit',sans-serif" font-size="15" fill="#b8740a"
+                                font-weight="700" text-anchor="middle">R'</text>
+                            <line x1="76" y1="78" x2="112" y2="78" stroke="#555" stroke-width="2" />
+                            <text x="118" y="82" font-family="'Outfit',sans-serif" font-size="17" fill="#992210"
+                                font-weight="700">X</text>
+                        </svg>
+                        <div style="font-family:var(--font-sans);font-size:.78rem;color:var(--ink3);text-align:center">
+                            Three
+                            alkyl groups on C bearing X</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
             <div class="box box-derive" style="width:fit-content; margin:2rem auto; max-width:900px">
                 <span class="box-label">(b) Allylic Halides</span>
@@ -1585,7 +1702,7 @@
             <h3 class="subsec-title">6.1.3 Compounds with sp² C–X Bond</h3>
 
             <div class="compare-grid">
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">Vinylic Halides</div>
                     <p>Halogen bonded directly to a sp²-hybridised carbon of a C=C double bond. Example:
                         CH<sub>2</sub>=CHCl (Vinyl chloride / Chloroethene)</p>
@@ -1634,7 +1751,7 @@
                         towards nucleophilic substitution — the C–X bond has partial double bond character due to lone
                         pair donation from X into the π system.</p>
                 </div>
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">Aryl Halides</div>
                     <p>Halogen directly bonded to an sp²-hybridised ring carbon. Example: C<sub>6</sub>H<sub>5</sub>Cl
                         (Chlorobenzene)</p>
@@ -2116,18 +2233,18 @@
                                 style="font-family:var(--font-sans);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;background:var(--violet-bg);color:var(--violet);padding:.25rem .8rem;border-radius:4px;font-weight:700;margin-bottom:.5rem">
                                 gem-Dihalide</div>
                             <svg viewBox="0 0 200 130" width="190" height="120" xmlns="http://www.w3.org/2000/svg">
-                                <g transform="translate(15, 85)">
+                                <g transform="translate(20, 90)">
                                     <text x="0" y="0" font-family="var(--font-sans)" font-size="20"
-                                        font-weight="700">CH₃</text>
-                                    <line x1="45" y1="-6" x2="75" y2="-6" stroke="var(--ink)" stroke-width="2.2" />
+                                        font-weight="700">CH3</text>
+                                    <line x1="45" y1="-7" x2="75" y2="-7" stroke="var(--ink)" stroke-width="2.2" />
                                     <text x="80" y="0" font-family="var(--font-sans)" font-size="20"
                                         font-weight="700">CH</text>
-                                    <!-- Double Cl branch -->
-                                    <line x1="95" y1="-20" x2="85" y2="-50" stroke="var(--ink)" stroke-width="2.2" />
-                                    <text x="68" y="-58" font-family="var(--font-sans)" font-size="20"
+                                    <!-- Perpendicular Cl branches from C -->
+                                    <line x1="88" y1="-18" x2="68" y2="-38" stroke="var(--ink)" stroke-width="2.2" />
+                                    <text x="48" y="-45" font-family="var(--font-sans)" font-size="20"
                                         fill="var(--rust)" font-weight="800">Cl</text>
-                                    <line x1="115" y1="-20" x2="125" y2="-50" stroke="var(--ink)" stroke-width="2.2" />
-                                    <text x="122" y="-58" font-family="var(--font-sans)" font-size="20"
+                                    <line x1="95" y1="-18" x2="115" y2="-38" stroke="var(--ink)" stroke-width="2.2" />
+                                    <text x="115" y="-45" font-family="var(--font-sans)" font-size="20"
                                         fill="var(--rust)" font-weight="800">Cl</text>
                                 </g>
                             </svg>
@@ -2143,19 +2260,18 @@
                                 style="font-family:var(--font-sans);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;background:var(--teal-bg);color:var(--teal);padding:.25rem .8rem;border-radius:4px;font-weight:700;margin-bottom:.5rem">
                                 vic-Dihalide</div>
                             <svg viewBox="0 0 220 150" width="200" height="140" xmlns="http://www.w3.org/2000/svg">
-                                <g transform="translate(40, 60)">
+                                <g transform="translate(45, 55)">
                                     <text x="0" y="0" font-family="var(--font-sans)" font-size="20"
                                         font-weight="700">CH₂</text>
-                                    <line x1="48" y1="-6" x2="78" y2="-6" stroke="var(--ink)" stroke-width="2.2" />
+                                    <line x1="48" y1="-7" x2="78" y2="-7" stroke="var(--ink)" stroke-width="2.2" />
                                     <text x="83" y="0" font-family="var(--font-sans)" font-size="20"
                                         font-weight="700">CH₂</text>
-                                    <!-- Left Cl -->
-                                    <line x1="15" y1="15" x2="15" y2="45" stroke="var(--ink)" stroke-width="2.2" />
-                                    <text x="2" y="68" font-family="var(--font-sans)" font-size="20" fill="var(--rust)"
+                                    <!-- Symmetrical downward Cl branches -->
+                                    <line x1="12" y1="12" x2="12" y2="45" stroke="var(--ink)" stroke-width="2.2" />
+                                    <text x="0" y="68" font-family="var(--font-sans)" font-size="20" fill="var(--rust)"
                                         font-weight="800">Cl</text>
-                                    <!-- Right Cl -->
-                                    <line x1="98" y1="15" x2="98" y2="45" stroke="var(--ink)" stroke-width="2.2" />
-                                    <text x="85" y="68" font-family="var(--font-sans)" font-size="20" fill="var(--rust)"
+                                    <line x1="95" y1="12" x2="95" y2="45" stroke="var(--ink)" stroke-width="2.2" />
+                                    <text x="83" y="68" font-family="var(--font-sans)" font-size="20" fill="var(--rust)"
                                         font-weight="800">Cl</text>
                                 </g>
                             </svg>
@@ -2268,29 +2384,7 @@
                 </div>
             </div>
 
-            <div class="box box-example">
-                <div class="box-example-title">📝 Example 6.1</div>
-                <div style="margin-bottom: 0.8rem;"><strong>Q:</strong> Draw the structures of all the eight structural isomers that have the molecular formula C₅H₁₁Br. Name each isomer according to IUPAC system and classify them as primary, secondary or tertiary bromide.</div>
-                
-                <div class="img-placeholder" style="margin: 1rem 0;">
-                    <div class="img-ph-header">
-                        <div class="img-ph-icon">🔬</div>
-                        <div class="img-ph-title">Example 6.1 — Question</div>
-                        <div class="img-ph-page">Suggested filename: example_6_1_question.jpg</div>
-                    </div>
-                </div>
 
-                <button class="stog-btn" style="display:block; width:fit-content" onclick="stoggle(this)">▼ Show Solution</button>
-                <div class="scontent" style="margin-top:0.5rem; display:none;">
-                    <div class="img-placeholder" style="margin: 0;">
-                        <div class="img-ph-header">
-                            <div class="img-ph-icon">🔬</div>
-                            <div class="img-ph-title">Example 6.1 — Solution (8 Isomers)</div>
-                            <div class="img-ph-page">Suggested filename: example_6_1_solution.jpg</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <!-- ════ NCERT SOLVED EXAMPLES ════ -->
@@ -2344,7 +2438,7 @@
             .ncert-body2 {
                 padding: 1.2rem 1.4rem;
                 border-top: 1.5px solid var(--border);
-                background: var(--bg);
+                background: var(--bg) !important;
             }
 
             .ncert-q2 {
@@ -2495,7 +2589,7 @@
                 font-family: var(--font-sans);
                 font-size: .75rem;
                 font-weight: 700;
-                background: var(--amber-bg);
+                background: var(--bg);
                 border: 1px dashed var(--amber);
                 margin: 1.5rem 0;
                 text-align: center;
@@ -2776,13 +2870,13 @@
 
             <h3 class="subsec-title">Comparison: Haloalkane vs Haloarene C–X Bond</h3>
             <div class="compare-grid">
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">Haloalkane (R–X)</div>
                     <p>Carbon is <strong>sp³ hybridised</strong> (25% s-character). Bond length of C–Cl = <strong>177
                             pm</strong>. Bond is purely single bond in nature. Readily undergoes nucleophilic
                         substitution.</p>
                 </div>
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">Haloarene (Ar–X)</div>
                     <p>Carbon is <strong>sp² hybridised</strong> (33% s-character) → more electronegative, holds bond
                         pair more tightly. Bond length of C–Cl = <strong>169 pm</strong>. Bond has partial double bond
@@ -3022,37 +3116,37 @@
                         test
                         for C=C double bond.</span>
                 </div>
-                </section>
-                <h3 class="subsec-title">6.4.3 Halogen Exchange Reactions</h3>
+        </section>
+        <h3 class="subsec-title">6.4.3 Halogen Exchange Reactions</h3>
 
-                <div class="compare-grid">
-                    <div class="compare-card">
-                        <div class="compare-card-title">Finkelstein Reaction (→ Iodide)</div>
-                        <p>Alkyl chlorides/bromides react with NaI in <strong>dry acetone</strong> to give alkyl
-                            iodides.
-                        </p>
-                        <div class="rxn-box">R–<span style="color:#2e7d32;font-weight:700">Cl/Br</span> &nbsp;+&nbsp;
-                            Na<span style="color:#2e7d32;font-weight:700">I</span> &nbsp;<span class="rxn-arrow"><span
-                                    class="rxn-reagent">dry acetone</span><span class="rxn-line"></span></span>&nbsp;
-                            R–<span style="color:#2e7d32;font-weight:700">I</span> &nbsp;+&nbsp; Na<span
-                                style="color:#2e7d32;font-weight:700">Cl</span>/Na<span
-                                style="color:#2e7d32;font-weight:700">Br</span>↓</div>
-                        <p style="font-size:.83rem">NaCl/NaBr precipitates in acetone → drives equilibrium forward (Le
-                            Chatelier's principle).</p>
-                    </div>
-                    <div class="compare-card">
-                        <div class="compare-card-title">Swarts Reaction (→ Fluoride)</div>
-                        <p>Alkyl chlorides/bromides heated with metallic fluorides (AgF, Hg<sub>2</sub>F<sub>2</sub>,
-                            CoF<sub>2</sub>, SbF<sub>3</sub>) to give alkyl fluorides.</p>
-                        <div class="rxn-box">H<sub>3</sub>C–<span style="color:#2e7d32;font-weight:700">Br</span>
-                            &nbsp;+&nbsp; Ag<span style="color:#2e7d32;font-weight:700">F</span> &nbsp;→&nbsp;
-                            H<sub>3</sub>C–<span style="color:#2e7d32;font-weight:700">F</span> &nbsp;+&nbsp; Ag<span
-                                style="color:#2e7d32;font-weight:700">Br</span>↓</div>
-                        <p style="font-size:.83rem">Direct fluorination is too violent; Swarts reaction provides a
-                            controlled route.</p>
-                    </div>
-                </div>
-        
+        <div class="compare-grid">
+            <div class="compare-card beige-bg">
+                <div class="compare-card-title">Finkelstein Reaction (→ Iodide)</div>
+                <p>Alkyl chlorides/bromides react with NaI in <strong>dry acetone</strong> to give alkyl
+                    iodides.
+                </p>
+                <div class="rxn-box">R–<span style="color:#2e7d32;font-weight:700">Cl/Br</span> &nbsp;+&nbsp;
+                    Na<span style="color:#2e7d32;font-weight:700">I</span> &nbsp;<span class="rxn-arrow"><span
+                            class="rxn-reagent">dry acetone</span><span class="rxn-line"></span></span>&nbsp;
+                    R–<span style="color:#2e7d32;font-weight:700">I</span> &nbsp;+&nbsp; Na<span
+                        style="color:#2e7d32;font-weight:700">Cl</span>/Na<span
+                        style="color:#2e7d32;font-weight:700">Br</span>↓</div>
+                <p style="font-size:.83rem">NaCl/NaBr precipitates in acetone → drives equilibrium forward (Le
+                    Chatelier's principle).</p>
+            </div>
+            <div class="compare-card beige-bg">
+                <div class="compare-card-title">Swarts Reaction (→ Fluoride)</div>
+                <p>Alkyl chlorides/bromides heated with metallic fluorides (AgF, Hg<sub>2</sub>F<sub>2</sub>,
+                    CoF<sub>2</sub>, SbF<sub>3</sub>) to give alkyl fluorides.</p>
+                <div class="rxn-box">H<sub>3</sub>C–<span style="color:#2e7d32;font-weight:700">Br</span>
+                    &nbsp;+&nbsp; Ag<span style="color:#2e7d32;font-weight:700">F</span> &nbsp;→&nbsp;
+                    H<sub>3</sub>C–<span style="color:#2e7d32;font-weight:700">F</span> &nbsp;+&nbsp; Ag<span
+                        style="color:#2e7d32;font-weight:700">Br</span>↓</div>
+                <p style="font-size:.83rem">Direct fluorination is too violent; Swarts reaction provides a
+                    controlled route.</p>
+            </div>
+        </div>
+
         <hr class="divider">
 
         <!-- ══════════════════ 6.5 PREPARATION OF HALOARENES ══════════════════ -->
@@ -3164,7 +3258,7 @@
 
 
 
-            <div class="rxn-box">
+            <div class="rxn-box beige-bg">
                 <!-- Sandmeyer Step 1: Diazotization -->
                 <div style="font-weight:700;color:var(--amber);font-size:0.85rem;margin-bottom:0.8rem">(STEP 1)
                     DIAZOTIZATION</div>
@@ -3276,7 +3370,9 @@
                 </div>
 
                 <!-- KI Reaction -->
-                <p style="font-size:.92rem; margin: .5rem 0 .8rem; color:var(--ink2);">Replacement of the diazonium group by iodine does not require the presence of cuprous halide and is done simply by shaking the diazonium salt with potassium iodide.</p>
+                <p style="font-size:.92rem; margin: .5rem 0 .8rem; color:var(--ink2);">Replacement of the diazonium
+                    group by iodine does not require the presence of cuprous halide and is done simply by shaking the
+                    diazonium salt with potassium iodide.</p>
                 <div style="text-align:center">
                     <svg viewBox="0 0 600 140" width="600" height="140" xmlns="http://www.w3.org/2000/svg"
                         style="max-width:100%">
@@ -3575,7 +3671,8 @@
                     <li style="margin-bottom: 1.5rem; overflow:hidden; align-items: flex-start;">
                         <span class="qn2">6.5</span>
                         <div style="flex: 1;">
-                            <div style="margin-bottom: 0.8rem;">Draw the structures of major monohalo products in each of the following reactions:</div>
+                            <div style="margin-bottom: 0.8rem;">Draw the structures of major monohalo products in each
+                                of the following reactions:</div>
                             <div style="padding: 0.5rem 0;">
                                 <img src="Images/QuestionNumber6.5QuestionPart.jpg" alt="Question 6.5"
                                     style="max-width: 550px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
@@ -3706,7 +3803,7 @@
                                 <!-- Top CH3 -->
                                 <line class="svg-bp1-line" x1="56" y1="-12" x2="56" y2="-30" />
                                 <text class="svg-bp1-text" x="43" y="-35">CH<tspan class="svg-bp1-sub" dy="5">3</tspan>
-                                    </text>
+                                </text>
                                 <!-- Bottom Br -->
                                 <line class="svg-bp1-line" x1="56" y1="5" x2="56" y2="28" />
                                 <text class="svg-bp1-hal" x="48" y="44">Br</text>
@@ -3850,14 +3947,18 @@
                         <span class="an">(i)</span>
                         <div class="abody">
                             <span class="afmla">CH₃Cl &lt; CH₃Br &lt; CH₂Br₂ &lt; CHBr₃</span>
-                            <span class="anote">Chloromethane &lt; Bromomethane &lt; Dibromomethane &lt; Bromoform — heavier molecules + more polarisable halogen atoms → stronger van der Waals forces → higher bp.</span>
+                            <span class="anote">Chloromethane &lt; Bromomethane &lt; Dibromomethane &lt; Bromoform —
+                                heavier molecules + more polarisable halogen atoms → stronger van der Waals forces →
+                                higher bp.</span>
                         </div>
                     </div>
                     <div class="arow">
                         <span class="an">(ii)</span>
                         <div class="abody">
                             <span class="afmla">Isopropyl chloride &lt; 1-Chloropropane &lt; 1-Chlorobutane</span>
-                            <span class="anote">Branching lowers bp (isopropyl chloride, bp 308 K). n-Propyl chain (1-chloropropane, bp 319 K) is higher; longer chain 1-chlorobutane (bp 351 K) is highest.</span>
+                            <span class="anote">Branching lowers bp (isopropyl chloride, bp 308 K). n-Propyl chain
+                                (1-chloropropane, bp 319 K) is higher; longer chain 1-chlorobutane (bp 351 K) is
+                                highest.</span>
                         </div>
                     </div>
                 </div>
@@ -3881,7 +3982,7 @@
         <section id="s7a">
             <h2 class="section-title"><span class="snum">6.7a</span> Nucleophilic Substitution: SN1 &amp; SN2</h2>
 
-            <div class="box box-def">
+            <div class="box box-def beige-bg">
                 <span class="box-label">General Scheme</span>
                 <p>A nucleophile (Nu:) attacks the electron-deficient carbon bearing the halogen. The halide ion (X⁻)
                     departs as the <strong>leaving group</strong>.</p>
@@ -4043,7 +4144,7 @@
             <div style="text-align:center; padding: 1.5rem 0;">
                 <img src="Images/Mirror Image Configurations (Structures A & B.jpg"
                     alt="Configuration and Walden Inversion"
-                    style="max-width: 600px; width: 100%; height: auto; border:none; box-shadow:none;">
+                    style="max-width: 400px; width: 100%; height: auto; border:none; box-shadow:none;">
                 <p
                     style="margin-top:0.8rem; font-family: var(--font-sans); font-size: 0.9rem; color: var(--ink2); font-weight:600; text-align:center;">
                     Structure (A) is the mirror image of Structure (B).
@@ -4052,7 +4153,8 @@
 
             <p style="margin-top:1.2rem">If the reactant is optically active, this inversion results in a product with a
                 different spatial orientation. This fundamental principle explains why S<sub>N</sub>2 reactions are
-                <strong>stereospecific</strong>.</p>
+                <strong>stereospecific</strong>.
+            </p>
 
 
             <!-- SN1 MECHANISM -->
@@ -4171,18 +4273,28 @@
                         (CH<sub>3</sub>)<sub>2</sub>CHCH<sub>2</sub>Br, CH<sub>3</sub>CH<sub>2</sub>CHBrCH<sub>3</sub>,
                         (CH<sub>3</sub>)<sub>3</sub>CBr
                     </p>
-                    
-                    <button class="stog-btn" style="display:block; width:fit-content; margin-top: 1rem;" onclick="stoggle(this)">▼ Show Solution</button>
+
+                    <button class="stog-btn" style="display:block; width:fit-content; margin-top: 1rem;"
+                        onclick="stoggle(this)">▼ Show Solution</button>
                     <div class="scontent" style="margin-top:0.5rem; display:none;">
-                        <div style="background: var(--bg); padding: 1.2rem; border-radius: 6px; border-left: 3px solid var(--amber);">
-                            <p style="margin-bottom: 0.8rem; color: var(--ink);"><strong>Answer:</strong> CH<sub>3</sub>CH<sub>2</sub>CH<sub>2</sub>CH<sub>2</sub>Br &lt;
-                                (CH<sub>3</sub>)<sub>2</sub>CHCH<sub>2</sub>Br &lt; CH<sub>3</sub>CH<sub>2</sub>CHBrCH<sub>3</sub>
+                        <div
+                            style="background: var(--bg); padding: 1.2rem; border-radius: 6px; border-left: 3px solid var(--amber);">
+                            <p style="margin-bottom: 0.8rem; color: var(--ink);"><strong>Answer:</strong>
+                                CH<sub>3</sub>CH<sub>2</sub>CH<sub>2</sub>CH<sub>2</sub>Br &lt;
+                                (CH<sub>3</sub>)<sub>2</sub>CHCH<sub>2</sub>Br &lt;
+                                CH<sub>3</sub>CH<sub>2</sub>CHBrCH<sub>3</sub>
                                 &lt; (CH<sub>3</sub>)<sub>3</sub>CBr</p>
-                            <p style="font-size: 0.95rem; color: var(--ink2); margin-bottom: 1rem; line-height: 1.6;"><em>Reasoning:</em> SN1 stability ∝ carbocation stability. The last compound (3° halide) gives the
-                                most stable 3° carbocation. The second compound, though primary, gives a secondary-like carbocation
-                                due to inductive effect of the adjacent isopropyl group, so it's more reactive than a normal primary
-                                halide.</p>
-                            <p style="font-size: 0.95rem; color: var(--rust);"><strong>SN2 reactivity order is exactly REVERSED:</strong><br>
+                            <p style="font-size: 0.95rem; color: var(--ink2); margin-bottom: 1rem; line-height: 1.6;">
+                                <em>Reasoning:</em> SN1 stability ∝ carbocation stability. The last compound (3° halide)
+                                gives the
+                                most stable 3° carbocation. The second compound, though primary, gives a secondary-like
+                                carbocation
+                                due to inductive effect of the adjacent isopropyl group, so it's more reactive than a
+                                normal primary
+                                halide.
+                            </p>
+                            <p style="font-size: 0.95rem; color: var(--rust);"><strong>SN2 reactivity order is exactly
+                                    REVERSED:</strong><br>
                                 (CH<sub>3</sub>)<sub>3</sub>CBr &lt; CH<sub>3</sub>CH<sub>2</sub>CHBrCH<sub>3</sub> &lt;
                                 (CH<sub>3</sub>)<sub>2</sub>CHCH<sub>2</sub>Br &lt;
                                 CH<sub>3</sub>CH<sub>2</sub>CH<sub>2</sub>CH<sub>2</sub>Br</p>
@@ -4211,12 +4323,15 @@
 
             <h3 class="subsec-title">Chirality &amp; Asymmetric Carbon</h3>
             <ul style="margin-bottom: 1.5rem;">
-                <li><strong>J. Van't Hoff &amp; C. Le Bel (1874):</strong> Independently argued that the spatial arrangement around a central carbon is tetrahedral.</li>
-                <li>If all four substituents attached to that carbon are different, the mirror image is <strong>non-superimposable</strong>.</li>
+                <li><strong>J. Van't Hoff &amp; C. Le Bel (1874):</strong> Independently argued that the spatial
+                    arrangement around a central carbon is tetrahedral.</li>
+                <li>If all four substituents attached to that carbon are different, the mirror image is
+                    <strong>non-superimposable</strong>.
+                </li>
                 <li>Such a carbon is called an <strong>asymmetric carbon</strong> or <strong>stereocentre</strong>.</li>
             </ul>
-            
-            <div class="box box-def">
+
+            <div class="box box-def beige-bg">
                 <span class="box-label">Key Definitions</span>
                 <p><strong>Asymmetric carbon (stereocentre):</strong> A carbon atom bonded to four <em>different</em>
                     groups. The molecule cannot be superimposed on its mirror image.</p>
@@ -4230,63 +4345,68 @@
             </div>
 
             <!-- [Placeholder: Fig 6.4 Chirality Objects] -->
-            <div style="margin: 1.5rem 0;"><img src="Images/chirality_examples.jpg" alt="Common examples of chiral and achiral objects" style="max-width: 650px; width: 100%; height: auto; border:none; box-shadow:none;"></div>
+            <div style="margin: 1.5rem 0;"><img src="Images/chirality_examples.jpg"
+                    alt="Common examples of chiral and achiral objects"
+                    style="max-width: 650px; width: 100%; height: auto; border:none; box-shadow:none;"></div>
 
-            <p>The above test of molecular chirality can be applied to organic molecules by constructing models and its mirror
-                images or by drawing three dimensional structures and attempting to superimpose them in our minds. Let us
-                consider two simple molecules propan-2-ol (Fig 6.5) and butan-2-ol (Fig 6.6) and their mirror images.</p>
+            <p>The above test of molecular chirality can be applied to organic molecules by constructing models and its
+                mirror
+                images or by drawing three dimensional structures and attempting to superimpose them in our minds. Let
+                us
+                consider two simple molecules, propan-2-ol and butan-2-ol, and their mirror images.</p>
 
-            <!-- Image A: Propan-2-ol chirality -->
-            <div class="img-placeholder" style="margin: 1.5rem 0;">
-                <div class="img-ph-header">
-                    <div class="img-ph-icon">🔬</div>
-                    <div class="img-ph-title">Propan-2-ol — Achiral Molecule</div>
-                    <div class="img-ph-page">Suggested filename: propan2ol_chirality.jpg</div>
-                </div>
-                <div style="padding: 0.6rem 0;">
+            <!-- Propan-2-ol: Achiral -->
+            <div class="box box-rule white-bg-box">
+                <span class="box-label">Propan-2-ol — Achiral Molecule</span>
+                <div style="text-align:center; padding: 1.2rem 0;">
                     <img src="Images/Propan-2-ol%20chirality.jpg" alt="Propan-2-ol chirality"
-                        style="max-width: 600px; width: 100%; height: auto; border:none; box-shadow:none;">
+                        style="max-width: 550px; width: 100%; height: auto; border:none; box-shadow:none;">
                 </div>
-                <div class="img-ph-desc" style="margin-top:0.5rem;">
-                    <strong>For the above image —</strong> Structure A (Propan-2-ol) has two identical groups on the central carbon, so its mirror image B, when rotated 180° to give C, is <em>superimposable</em> on A. Hence Propan-2-ol is <strong>achiral</strong> (optically inactive). <em>B is mirror image of A; B is rotated by 180° and C is obtained; C is superimposable on A.</em>
+                <div style="margin-top:0.5rem; line-height: 1.7;">
+                    <p><strong>Observation:</strong> Structure A (Propan-2-ol) has two identical groups (–CH₃) on the
+                        central carbon. Its mirror image B, when rotated 180° to give C, is <em>superimposable</em> on
+                        A. Therefore, Propan-2-ol is <strong>achiral</strong> (optically inactive).</p>
+                    <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+                        <li><strong>No asymmetric carbon:</strong> Has two identical groups attached to the central C.
+                        </li>
+                        <li>Mirror image (B), when rotated 180° (structure C), completely overlaps with (A).</li>
+                    </ul>
                 </div>
             </div>
 
-            <ul style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-                <li><strong>No asymmetric carbon:</strong> Has two identical groups attached to the central C.</li>
-                <li>Mirror image (B), when rotated 180° (structure C), completely overlaps with (A).</li>
-                <li>Therefore, Propan-2-ol is an <strong>achiral</strong> molecule.</li>
-            </ul>
-
-            <!-- Image B: Butan-2-ol chirality -->
-            <div class="img-placeholder" style="margin: 1.5rem 0;">
-                <div class="img-ph-header">
-                    <div class="img-ph-icon">🔬</div>
-                    <div class="img-ph-title">Butan-2-ol — Chiral Molecule</div>
-                    <div class="img-ph-page">Suggested filename: butan2ol_chirality.jpg</div>
-                </div>
-                <div style="padding: 0.6rem 0;">
+            <!-- Butan-2-ol: Chiral -->
+            <div class="box box-violet white-bg-box">
+                <span class="box-label">Butan-2-ol — Chiral Molecule</span>
+                <div style="text-align:center; padding: 1.2rem 0;">
                     <img src="Images/Butan-2-ol%20chirality.jpg" alt="Butan-2-ol chirality"
-                        style="max-width: 600px; width: 100%; height: auto; border:none; box-shadow:none;">
+                        style="max-width: 550px; width: 100%; height: auto; border:none; box-shadow:none;">
                 </div>
-                <div class="img-ph-desc" style="margin-top:0.5rem;">
-                    <strong>For the above image —</strong> Structure D (Butan-2-ol) has four <em>different</em> groups on the central carbon (–CH₃, –C₂H₅, –OH, –H). Its mirror image E, rotated 180° to give F, is <em>non-superimposable</em> on D. Butan-2-ol is therefore <strong>chiral</strong> and the forms D and F are <strong>enantiomers</strong>. <em>E is mirror image of D; E is rotated by 180° to get F and F is non-superimposable on its mirror image D.</em>
+                <div style="margin-top:0.5rem; line-height: 1.7;">
+                    <p><strong>Observation:</strong> Structure D (Butan-2-ol) has four <em>different</em> groups on the
+                        central carbon (–CH₃, –C₂H₅, –OH, –H). Its mirror image E, rotated 180° to give F, is
+                        <em>non-superimposable</em> on D.
+                    </p>
+                    <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+                        <li>Therefore, Butan-2-ol is <strong>chiral</strong>, and the forms D and F are
+                            <strong>enantiomers</strong>.
+                        </li>
+                        <li><strong>Common Chiral Examples:</strong> 2-chlorobutane, 2,3-dihydroxypropanal,
+                            bromochloro-iodomethane, 2-bromopropanoic acid.</li>
+                    </ul>
                 </div>
             </div>
 
-            <ul style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-                <li>Has four <em>different</em> groups attached to the tetrahedral carbon.</li>
-                <li>Therefore, it is a <strong>chiral</strong> molecule.</li>
-                <li><strong>Common Chiral Examples:</strong> 2-chlorobutane, 2,3-dihydroxypropanal (OHC–CHOH–CH₂OH), bromochloro-iodomethane (BrClCHI), 2-bromopropanoic acid (H₃C–CHBr–COOH).</li>
-            </ul>
-
-            <p>The stereoisomers related to each other as non-superimposable mirror images are called <strong>enantiomers</strong>.
-                Enantiomers possess identical physical properties (melting point, boiling point, refractive index) but differ
-                in the direction of optical rotation.</p>
+            <p>The stereoisomers related to each other as non-superimposable mirror images are called
+                <strong>enantiomers</strong>.
+                Enantiomers possess identical physical properties (melting point, boiling point, refractive index) but
+                differ
+                in the direction of optical rotation.
+            </p>
 
             <!-- [Placeholder: Fig 6.7 Molecular Model] -->
             <div style="margin: 2rem 0; text-align: center;">
-                <img src="Images/chiral_molecular_model.jpg" alt="A chiral molecule and its mirror image" style="max-width: 350px; width: 100%; height: auto; border:none; box-shadow:none;">
+                <img src="Images/chiral_molecular_model.jpg" alt="A chiral molecule and its mirror image"
+                    style="max-width: 350px; width: 100%; height: auto; border:none; box-shadow:none;">
                 <div class="img-caption">Pair of Chiral Enantiomers — Non-superimposable mirror images</div>
             </div>
 
@@ -4304,16 +4424,20 @@
                     <span class="ncert-title2">Identify Chiral and Achiral Molecules</span>
                 </div>
                 <div class="ncert-body2 rxn-bg">
-                    <p class="ncert-q2" style="font-weight: 500;">Identify chiral and achiral molecules in each of the following pair of compounds. (Wedge and Dash representations according to Class XI).</p>
-                    
+                    <p class="ncert-q2" style="font-weight: 500;">Identify chiral and achiral molecules in each of the
+                        following pair of compounds. (Wedge and Dash representations according to Class XI).</p>
+
                     <div style="margin: 1rem 0;">
-                        <img src="Images/example_6_8_question.jpg" alt="Example 6.8 Pairs of Compounds" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                        <img src="Images/example_6_8_question.jpg" alt="Example 6.8 Pairs of Compounds"
+                            style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                     </div>
 
-                    <button class="stog-btn" style="display:block; width:fit-content; margin-top: 1rem;" onclick="stoggle(this)">▼ Show Solution</button>
+                    <button class="stog-btn" style="display:block; width:fit-content; margin-top: 1rem;"
+                        onclick="stoggle(this)">▼ Show Solution</button>
                     <div class="scontent" style="margin-top:0.5rem; display:none;">
                         <div style="margin: 0;">
-                            <img src="Images/example_6_8_questionSolution.jpg" alt="Example 6.8 Solution" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                            <img src="Images/example_6_8_questionSolution.jpg" alt="Example 6.8 Solution"
+                                style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                         </div>
                     </div>
                 </div>
@@ -4321,7 +4445,7 @@
 
             <h3 class="subsec-title">Stereochemical Outcomes — 3 Possibilities</h3>
             <div class="compare-grid">
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">SN2 → Inversion of Configuration</div>
                     <p>Nucleophile attacks from the back of the C–X bond. The three remaining groups flip to the other
                         side (like umbrella inversion). Product has <em>opposite configuration</em> at the asymmetric
@@ -4333,10 +4457,11 @@
                         <li><strong>Example:</strong> (–)-2-bromooctane + <sup>–</sup>OH → (+)-octan-2-ol.</li>
                     </ul>
                     <div style="margin: .8rem 0 0; text-align: center;">
-                        <img src="Images/sn2_inversion_optically_active.jpg" alt="SN2 Inversion of (-)-2-Bromooctane" style="max-width: 100%; height: auto; border:none; box-shadow:none;">
+                        <img src="Images/sn2_inversion_optically_active.jpg" alt="SN2 Inversion of (-)-2-Bromooctane"
+                            style="max-width: 100%; height: auto; border:none; box-shadow:none;">
                     </div>
                 </div>
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">SN1 → Racemisation</div>
                     <p>Carbocation intermediate is sp² hybridised, planar and <em>achiral</em>. Nucleophile can attack
                         from either face with equal probability → equimolar mixture of (+) and (–) products → racemic
@@ -4346,32 +4471,42 @@
                         <li>Accompanied by <strong>racemisation</strong>.</li>
                         <li>Carbocation is sp² hybridised and planar (achiral).</li>
                         <li>Nucleophile attacks from either face → equimolar mixture of (+) and (–) products.</li>
-                        <li><strong>Example:</strong> Hydrolysis of optically active 2-bromobutane → (±)-butan-2-ol.</li>
+                        <li><strong>Example:</strong> Hydrolysis of optically active 2-bromobutane → (±)-butan-2-ol.
+                        </li>
                     </ul>
                     <div style="margin: .8rem 0 0; text-align: center;">
-                        <img src="Images/sn1_racemisation_optically_active.jpg" alt="SN1 Racemisation of (+/-)-2-Bromobutane" style="max-width: 100%; height: auto; border:none; box-shadow:none;">
+                        <img src="Images/sn1_racemisation_optically_active.jpg"
+                            alt="SN1 Racemisation of (+/-)-2-Bromobutane"
+                            style="max-width: 100%; height: auto; border:none; box-shadow:none;">
                     </div>
                 </div>
             </div>
 
             <div class="box rxn-bg" style="border: 1.5px solid var(--violet); border-radius: 6px;">
-                <span class="box-label" style="background: var(--violet); color: white;">Retention of Configuration</span>
+                <span class="box-label" style="background: var(--violet); color: white;">Retention of
+                    Configuration</span>
                 <ul style="margin-bottom: 1rem;">
-                    <li><strong>Definition:</strong> Preservation of the spatial arrangement of bonds to an asymmetric centre during a reaction.</li>
+                    <li><strong>Definition:</strong> Preservation of the spatial arrangement of bonds to an asymmetric
+                        centre during a reaction.</li>
                     <li>Occurs when <em>no bond to the stereocentre is broken</em>.</li>
                     <li><strong>Example:</strong> (–)-2-methylbutan-1-ol + HCl → (+)-1-chloro-2-methylbutane.</li>
                 </ul>
                 <div style="margin: 1.5rem 0; text-align: center;">
-                    <img src="Images/retention_configuration_diagram.jpg" alt="(–)-2-Methylbutan-1-ol + HCl → (+)-1-Chloro-2-methylbutane (Retention)" style="max-width: 600px; width: 100%; height: auto; border:none; box-shadow:none;">
+                    <img src="Images/retention_configuration_diagram.jpg"
+                        alt="(–)-2-Methylbutan-1-ol + HCl → (+)-1-Chloro-2-methylbutane (Retention)"
+                        style="max-width: 600px; width: 100%; height: auto; border:none; box-shadow:none;">
                 </div>
                 <ul style="margin-bottom: 1rem;">
-                    <li><strong>Key Note:</strong> Spatial configuration remains the same, but the <strong>sign of optical rotation can change</strong> (e.g., from – to +).</li>
+                    <li><strong>Key Note:</strong> Spatial configuration remains the same, but the <strong>sign of
+                            optical rotation can change</strong> (e.g., from – to +).</li>
                 </ul>
-                <p style="font-size:.85rem;color:var(--rust);margin-bottom: 1rem;"><strong>Important distinction:</strong> Same configuration
+                <p style="font-size:.85rem;color:var(--rust);margin-bottom: 1rem;"><strong>Important
+                        distinction:</strong> Same configuration
                     ≠ same sign of rotation. The sign depends on the actual groups and their priority, not just the
                     spatial arrangement.</p>
-                
-                <div style="background-color: var(--card-bg); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--violet); margin-bottom: 1rem;">
+
+                <div
+                    style="background-color: var(--card-bg); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--violet); margin-bottom: 1rem;">
                     <strong>Three Outcomes when a bond to an asymmetric carbon IS broken:</strong>
                     <ul style="margin-top: 0.5rem; margin-bottom: 0;">
                         <li>If only product (A) is obtained → <strong>Retention</strong> of configuration</li>
@@ -4380,7 +4515,9 @@
                     </ul>
                 </div>
                 <div style="margin: 1.5rem 0; text-align: center;">
-                    <img src="Images/stereochemical_outcomes_summary.jpg" alt="Inversion, Retention and Racemisation — Summary Diagram (A, B, A+B)" style="max-width: 650px; width: 100%; height: auto; border:none; box-shadow:none;">
+                    <img src="Images/stereochemical_outcomes_summary.jpg"
+                        alt="Inversion, Retention and Racemisation — Summary Diagram (A, B, A+B)"
+                        style="max-width: 650px; width: 100%; height: auto; border:none; box-shadow:none;">
                 </div>
 
             </div>
@@ -4395,21 +4532,23 @@
             <p>When a haloalkane <em>with a β-hydrogen</em> is heated with <strong>alcoholic KOH</strong> (not aqueous),
                 elimination occurs: H is removed from the β-carbon and X from the α-carbon → alkene is formed.</p>
 
-            <div class="box box-def">
+            <div class="box box-def beige-bg">
                 <span class="box-label">Definition: α and β Carbon</span>
                 <p><strong>α-carbon:</strong> The carbon directly bonded to the halogen atom.</p>
                 <p><strong>β-carbon:</strong> The carbon adjacent to the α-carbon (one carbon further away from X).</p>
             </div>
 
-            <div class="rxn-box">
+            <div class="rxn-box beige-bg">
                 <strong>General β-Elimination:</strong><br>
                 <div style="margin: 0.8rem 0 1.5rem 0;">
-                    <img src="Images/general_beta_elimination.jpg" alt="General β-Elimination Reaction" style="max-width: 400px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/general_beta_elimination.jpg" alt="General β-Elimination Reaction"
+                        style="max-width: 400px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
-                
+
                 <strong>Example — 2-Bromopentane:</strong><br>
                 <div style="margin: 0.8rem 0 0 0;">
-                    <img src="Images/2_bromopentane_elimination.jpg" alt="2-Bromopentane Elimination Reaction" style="max-width: 650px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/2_bromopentane_elimination.jpg" alt="2-Bromopentane Elimination Reaction"
+                        style="max-width: 650px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
@@ -4489,7 +4628,8 @@
                             halogen are delocalised into the aromatic ring → C–X bond acquires partial double bond
                             character → bond is stronger and harder to break.
                             <div style="margin-top: 1rem;">
-                                <img src="Images/haloarenes_resonance.jpg" alt="Resonance in Haloarenes" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                                <img src="Images/haloarenes_resonance.jpg" alt="Resonance in Haloarenes"
+                                    style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                             </div>
                         </span>
                     </li>
@@ -4500,7 +4640,9 @@
                             electronegative) → holds the bonding pair more tightly → C–Cl bond is shorter (169 pm vs 177
                             pm in haloalkanes) → shorter bond = stronger bond = harder to break.
                             <div style="margin-top: 1rem;">
-                                <img src="Images/haloarenes_hybridisation.jpg" alt="sp² vs sp³ Hybridisation in Haloarenes" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                                <img src="Images/haloarenes_hybridisation.jpg"
+                                    alt="sp² vs sp³ Hybridisation in Haloarenes"
+                                    style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                             </div>
                         </span>
                     </li>
@@ -4521,45 +4663,49 @@
             <p>The presence of strongly electron-withdrawing groups (like –NO<sub>2</sub>) at the <strong>ortho and para
                     positions</strong> significantly activates haloarenes towards nucleophilic substitution.</p>
 
-            <div class="rxn-box" style="margin-bottom: 1rem;">
+            <div class="rxn-box beige-bg" style="margin-bottom: 1rem;">
                 <strong>Example 1 — Chlorobenzene (requires harsh conditions):</strong><br>
                 C<sub>6</sub>H<sub>5</sub>Cl &nbsp;+&nbsp; NaOH(aq) &nbsp;<span class="rxn-arrow"><span
                         class="rxn-reagent">623 K, 300 atm</span><span class="rxn-line"></span></span>&nbsp;
                 C<sub>6</sub>H<sub>5</sub>OH (Phenol) &nbsp;+&nbsp; NaCl
                 <div style="margin-top: 1rem;">
-                    <img src="Images/chlorobenzene_to_phenol.jpg" alt="Chlorobenzene to Phenol Substitution" style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/chlorobenzene_to_phenol.jpg" alt="Chlorobenzene to Phenol Substitution"
+                        style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
-            <div class="rxn-box" style="margin-bottom: 1rem;">
+            <div class="rxn-box beige-bg" style="margin-bottom: 1rem;">
                 <strong>Example 2 — o-Nitrochlorobenzene (milder conditions):</strong><br>
                 o-NO<sub>2</sub>–C<sub>6</sub>H<sub>4</sub>–Cl &nbsp;+&nbsp; NaOH &nbsp;<span class="rxn-arrow"><span
                         class="rxn-reagent">443 K</span><span class="rxn-line"></span></span>&nbsp;
                 o-NO<sub>2</sub>–C<sub>6</sub>H<sub>4</sub>–OH
                 <div style="margin-top: 1rem;">
-                    <img src="Images/o_nitrochlorobenzene_sub.jpg" alt="o-Nitrochlorobenzene Substitution" style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/o_nitrochlorobenzene_sub.jpg" alt="o-Nitrochlorobenzene Substitution"
+                        style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
-            <div class="rxn-box" style="margin-bottom: 1rem;">
+            <div class="rxn-box beige-bg" style="margin-bottom: 1rem;">
                 <strong>Example 3 — 2,4-Dinitrochlorobenzene (even milder):</strong><br>
                 2,4-(NO<sub>2</sub>)<sub>2</sub>–C<sub>6</sub>H<sub>3</sub>–Cl &nbsp;+&nbsp; NaOH &nbsp;<span
                     class="rxn-arrow"><span class="rxn-reagent">368 K, warm H₂O</span><span
                         class="rxn-line"></span></span>&nbsp;
                 2,4-(NO<sub>2</sub>)<sub>2</sub>–C<sub>6</sub>H<sub>3</sub>–OH
                 <div style="margin-top: 1rem;">
-                    <img src="Images/2_4_dinitrochlorobenzene_sub.jpg" alt="2,4-Dinitrochlorobenzene Substitution" style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/2_4_dinitrochlorobenzene_sub.jpg" alt="2,4-Dinitrochlorobenzene Substitution"
+                        style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
-            <div class="rxn-box" style="margin-bottom: 1.5rem;">
+            <div class="rxn-box beige-bg" style="margin-bottom: 1.5rem;">
                 <strong>Example 4 — 2,4,6-Trinitrochlorobenzene (mildest conditions):</strong><br>
-                2,4,6-(NO<sub>2</sub>)<sub>3</sub>–C<sub>6</sub>H<sub>2</sub>–Cl &nbsp;+&nbsp; H<sub>2</sub>O &nbsp;<span
-                    class="rxn-arrow"><span class="rxn-reagent">warm</span><span
+                2,4,6-(NO<sub>2</sub>)<sub>3</sub>–C<sub>6</sub>H<sub>2</sub>–Cl &nbsp;+&nbsp; H<sub>2</sub>O
+                &nbsp;<span class="rxn-arrow"><span class="rxn-reagent">warm</span><span
                         class="rxn-line"></span></span>&nbsp;
                 2,4,6-(NO<sub>2</sub>)<sub>3</sub>–C<sub>6</sub>H<sub>2</sub>–OH (Picric acid)
                 <div style="margin-top: 1rem;">
-                    <img src="Images/2_4_6_trinitrochlorobenzene_sub.jpg" alt="2,4,6-Trinitrochlorobenzene Substitution" style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/2_4_6_trinitrochlorobenzene_sub.jpg" alt="2,4,6-Trinitrochlorobenzene Substitution"
+                        style="max-width: 350px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
@@ -4573,10 +4719,11 @@
                     <em>not</em> appear on the carbon bearing the nitro group, so the nitro group cannot stabilise it
                     through resonance → no rate enhancement.
                 </p>
-                
+
                 <h4 style="margin: 1.5rem 0 0.5rem 0; color: var(--text-dark);">Mechanism of the Reaction</h4>
                 <div style="margin-top: 0.5rem;">
-                    <img src="Images/nucleophilic_sub_mechanism.jpg" alt="Nucleophilic Substitution Reaction Mechanism" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/nucleophilic_sub_mechanism.jpg" alt="Nucleophilic Substitution Reaction Mechanism"
+                        style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
@@ -4603,66 +4750,104 @@
             </div>
 
             <div class="rxn-box rxn-bg" style="margin-bottom: 1.2rem;">
-                <h4 style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">(i) Halogenation</h4>
-                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> Cl<sub>2</sub> / Anhydrous FeCl<sub>3</sub><br>
-                <strong>Products:</strong> 1,4-Dichlorobenzene (Major) + 1,2-Dichlorobenzene (Minor)</p>
+                <h4
+                    style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">
+                    (i) Halogenation</h4>
+                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> Cl<sub>2</sub> / Anhydrous
+                    FeCl<sub>3</sub><br>
+                    <strong>Products:</strong> 1,4-Dichlorobenzene (Major) + 1,2-Dichlorobenzene (Minor)
+                </p>
                 <div style="margin-top: 0.5rem;">
-                    <img src="Images/eas_halogenation.jpg" alt="Halogenation of Chlorobenzene" style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/eas_halogenation.jpg" alt="Halogenation of Chlorobenzene"
+                        style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
             <div class="rxn-box rxn-bg" style="margin-bottom: 1.2rem;">
-                <h4 style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">(ii) Nitration</h4>
-                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> HNO<sub>3</sub> / conc. H<sub>2</sub>SO<sub>4</sub> (room temp)<br>
-                <strong>Products:</strong> 1-Chloro-4-nitrobenzene (Major) + 1-Chloro-2-nitrobenzene (Minor)</p>
+                <h4
+                    style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">
+                    (ii) Nitration</h4>
+                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> HNO<sub>3</sub> / conc.
+                    H<sub>2</sub>SO<sub>4</sub> (room temp)<br>
+                    <strong>Products:</strong> 1-Chloro-4-nitrobenzene (Major) + 1-Chloro-2-nitrobenzene (Minor)
+                </p>
                 <div style="margin-top: 0.5rem;">
-                    <img src="Images/eas_nitration.jpg" alt="Nitration of Chlorobenzene" style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/eas_nitration.jpg" alt="Nitration of Chlorobenzene"
+                        style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
             <div class="rxn-box rxn-bg" style="margin-bottom: 1.2rem;">
-                <h4 style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">(iii) Sulphonation</h4>
-                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> Conc. H<sub>2</sub>SO<sub>4</sub> (heat / Δ)<br>
-                <strong>Products:</strong> 4-Chlorobenzenesulphonic acid (Major) + 2-Chlorobenzenesulphonic acid (Minor)</p>
+                <h4
+                    style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">
+                    (iii) Sulphonation</h4>
+                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> Conc. H<sub>2</sub>SO<sub>4</sub> (heat /
+                    Δ)<br>
+                    <strong>Products:</strong> 4-Chlorobenzenesulphonic acid (Major) + 2-Chlorobenzenesulphonic acid
+                    (Minor)
+                </p>
                 <div style="margin-top: 0.5rem;">
-                    <img src="Images/eas_sulphonation.jpg" alt="Sulphonation of Chlorobenzene" style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/eas_sulphonation.jpg" alt="Sulphonation of Chlorobenzene"
+                        style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
             <div class="rxn-box rxn-bg" style="margin-bottom: 1.2rem;">
-                <h4 style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">(iv) Friedel-Crafts Alkylation</h4>
-                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> CH<sub>3</sub>Cl / Anhydrous AlCl<sub>3</sub><br>
-                <strong>Products:</strong> 1-Chloro-4-methylbenzene (Major) + 1-Chloro-2-methylbenzene (Minor)</p>
+                <h4
+                    style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">
+                    (iv) Friedel-Crafts Alkylation</h4>
+                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> CH<sub>3</sub>Cl / Anhydrous
+                    AlCl<sub>3</sub><br>
+                    <strong>Products:</strong> 1-Chloro-4-methylbenzene (Major) + 1-Chloro-2-methylbenzene (Minor)
+                </p>
                 <div style="margin-top: 0.5rem;">
-                    <img src="Images/eas_fc_alkylation.jpg" alt="Friedel-Crafts Alkylation" style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/eas_fc_alkylation.jpg" alt="Friedel-Crafts Alkylation"
+                        style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
             <div class="rxn-box rxn-bg" style="margin-bottom: 2rem;">
-                <h4 style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">(v) Friedel-Crafts Acylation</h4>
-                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> CH<sub>3</sub>COCl / Anhydrous AlCl<sub>3</sub><br>
-                <strong>Products:</strong> 4-Chloroacetophenone (Major) + 2-Chloroacetophenone (Minor)</p>
+                <h4
+                    style="margin: 0 0 0.5rem 0; color: var(--violet); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 0.3rem;">
+                    (v) Friedel-Crafts Acylation</h4>
+                <p style="margin-bottom: 0.8rem;"><strong>Reagent:</strong> CH<sub>3</sub>COCl / Anhydrous
+                    AlCl<sub>3</sub><br>
+                    <strong>Products:</strong> 4-Chloroacetophenone (Major) + 2-Chloroacetophenone (Minor)
+                </p>
                 <div style="margin-top: 0.5rem;">
-                    <img src="Images/eas_fc_acylation.jpg" alt="Friedel-Crafts Acylation" style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                    <img src="Images/eas_fc_acylation.jpg" alt="Friedel-Crafts Acylation"
+                        style="max-width: 500px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                 </div>
             </div>
 
             <div class="ncert-block" style="margin-bottom: 2rem;">
                 <div class="ncert-block-hdr" style="background-color: var(--amber-bg);">
                     <span class="ncert-tag2 ex2" style="white-space: nowrap;">Example 6.9</span>
-                    <span class="ncert-title2">Although chlorine is an electron withdrawing group, yet it is ortho-, para- directing in electrophilic aromatic substitution reactions. Why?</span>
+                    <span class="ncert-title2">Although chlorine is an electron withdrawing group, yet it is ortho-,
+                        para- directing in electrophilic aromatic substitution reactions. Why?</span>
                 </div>
                 <div class="ncert-body2 rxn-bg">
-                    <button class="stog-btn" style="margin-bottom:1rem; display:block;" onclick="stoggle(this)">▼ Show Solution</button>
+                    <button class="stog-btn" style="margin-bottom:1rem; display:block;" onclick="stoggle(this)">▼ Show
+                        Solution</button>
                     <div class="scontent" style="display:none;">
-                        <p style="margin-top:0;">Chlorine withdraws electrons through inductive effect and releases electrons through resonance. Through inductive effect, chlorine destabilises the intermediate carbocation formed during the electrophilic substitution.</p>
-                        
+                        <p style="margin-top:0;">Chlorine withdraws electrons through inductive effect and releases
+                            electrons through resonance. Through inductive effect, chlorine destabilises the
+                            intermediate carbocation formed during the electrophilic substitution.</p>
+
                         <div style="margin: 1.2rem 0;">
-                            <img src="Images/example_6_9_mechanism.jpg" alt="Example 6.9 Resonance Mechanism" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
+                            <img src="Images/example_6_9_mechanism.jpg" alt="Example 6.9 Resonance Mechanism"
+                                style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0; border:none; box-shadow:none;">
                         </div>
 
-                        <p>Through resonance, halogen tends to stabilise the carbocation and the effect is more pronounced at <em>ortho-</em> and <em>para-</em> positions. The inductive effect is stronger than resonance and causes net electron withdrawal and thus causes net deactivation. The resonance effect tends to oppose the inductive effect for the attack at <em>ortho-</em> and <em>para-</em> positions and hence makes the deactivation less for <em>ortho-</em> and <em>para-</em> attack.<br><br>
-                        <strong>Reactivity is thus controlled by the stronger inductive effect and orientation is controlled by resonance effect.</strong></p>
+                        <p>Through resonance, halogen tends to stabilise the carbocation and the effect is more
+                            pronounced at <em>ortho-</em> and <em>para-</em> positions. The inductive effect is stronger
+                            than resonance and causes net electron withdrawal and thus causes net deactivation. The
+                            resonance effect tends to oppose the inductive effect for the attack at <em>ortho-</em> and
+                            <em>para-</em> positions and hence makes the deactivation less for <em>ortho-</em> and
+                            <em>para-</em> attack.<br><br>
+                            <strong>Reactivity is thus controlled by the stronger inductive effect and orientation is
+                                controlled by resonance effect.</strong>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -4670,7 +4855,7 @@
             <h3 class="subsec-title">3. Reactions with Metals</h3>
 
             <div class="compare-grid">
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">Wurtz-Fittig Reaction</div>
                     <p>A mixture of <strong>aryl halide + alkyl halide</strong> with sodium in dry ether gives an
                         alkylarene.</p>
@@ -4680,10 +4865,11 @@
                     <p style="font-size:.83rem">Example: C<sub>6</sub>H<sub>5</sub>Br + CH<sub>3</sub>Br + 2Na →
                         C<sub>6</sub>H<sub>5</sub>CH<sub>3</sub> (toluene) + 2NaBr</p>
                     <div style="margin-top: 1rem; text-align: center;">
-                        <img src="Images/wurtz_fittig_reaction.jpg" alt="Wurtz-Fittig Reaction" style="max-width: 450px; width: 100%; height: auto; border:none; box-shadow:none;">
+                        <img src="Images/wurtz_fittig_reaction.jpg" alt="Wurtz-Fittig Reaction"
+                            style="max-width: 450px; width: 100%; height: auto; border:none; box-shadow:none;">
                     </div>
                 </div>
-                <div class="compare-card">
+                <div class="compare-card beige-bg">
                     <div class="compare-card-title">Fittig Reaction</div>
                     <p>Two <strong>aryl halide</strong> molecules with sodium in dry ether join together (two aryl
                         groups coupled).</p>
@@ -4694,7 +4880,8 @@
                     <p style="font-size:.83rem">Example: 2C<sub>6</sub>H<sub>5</sub>Br + 2Na →
                         C<sub>6</sub>H<sub>5</sub>–C<sub>6</sub>H<sub>5</sub> (biphenyl) + 2NaBr</p>
                     <div style="margin-top: 1rem; text-align: center;">
-                        <img src="Images/fittig_reaction.jpg" alt="Fittig Reaction" style="max-width: 450px; width: 100%; height: auto; border:none; box-shadow:none;">
+                        <img src="Images/fittig_reaction.jpg" alt="Fittig Reaction"
+                            style="max-width: 450px; width: 100%; height: auto; border:none; box-shadow:none;">
                     </div>
                 </div>
             </div>
@@ -4795,7 +4982,8 @@
 
             <h3 class="subsec-title">DDT Structure</h3>
             <div style="text-align:center; margin: 1.5rem 0;">
-                <img src="Images/ddt_structure_diagram.jpg" alt="DDT Structure Diagram" style="max-width: 300px; width: 100%; height: auto; border:none; box-shadow:none;">
+                <img src="Images/ddt_structure_diagram.jpg" alt="DDT Structure Diagram"
+                    style="max-width: 300px; width: 100%; height: auto; border:none; box-shadow:none;">
             </div>
         </section>
         <hr class="divider">

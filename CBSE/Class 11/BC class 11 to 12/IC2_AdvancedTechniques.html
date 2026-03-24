@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IC-2: Advanced Techniques | Vardaan JEE</title>
+    <script>MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --y: #fff9c4;
+            --yb: #fbc02d;
+            --g: #e8f5e9;
+            --gb: #43a047;
+            --b: #e3f2fd;
+            --bb: #1e88e5;
+            --p: #fce4ec;
+            --pb: #d81b60;
+            --txt: #000;
+            --bg: #fff;
+            --pur: #7e57c2;
+            --meta: #666;
+            --eg: rgba(255, 255, 255, 0.6);
+            --tbg: #eee;
+            --tb: #ccc;
+            --ic: #000
+        }
+
+        html.dark {
+            --y: #3f3a00;
+            --yb: #fdd835;
+            --g: #0f2e13;
+            --gb: #81c784;
+            --b: #0d1b2a;
+            --bb: #64b5f6;
+            --p: #300815;
+            --pb: #f06292;
+            --txt: #e0e0e0;
+            --bg: #121212;
+            --pur: #d1c4e9;
+            --meta: #aaa;
+            --eg: rgba(255, 255, 255, .1);
+            --tbg: #333;
+            --tb: #555;
+            --ic: #fff
+        }
+
+        body {
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: var(--txt);
+            transition: background .3s, color .3s
+        }
+
+        .wm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: multiply
+        }
+
+        .wm img {
+            opacity: .08;
+            max-width: 80%
+        }
+
+        html.dark .wm {
+            mix-blend-mode: screen
+        }
+
+        html.dark .wm img {
+            filter: invert(1);
+            opacity: .12
+        }
+
+        .sheet {
+            background: var(--bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box
+        }
+
+        .hdr {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--bb);
+            padding-bottom: 14px
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--bb);
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--bb);
+            padding-bottom: 8px;
+            margin-top: 6px
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pb);
+            margin-top: 36px;
+            border-left: 5px solid var(--pb);
+            padding-left: 14px;
+            font-weight: 700
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--pur);
+            margin-top: 22px;
+            margin-bottom: 8px;
+            text-decoration: underline;
+            text-decoration-color: var(--pur);
+            text-underline-offset: 4px
+        }
+
+        p,
+        li {
+            font-size: 1.04rem;
+            line-height: 1.7;
+            margin-bottom: 8px
+        }
+
+        ul,
+        ol {
+            padding-left: 22px
+        }
+
+        ol li {
+            margin-bottom: 14px
+        }
+
+        strong {
+            color: var(--pb)
+        }
+
+        .bb {
+            background: var(--b);
+            border: 2px solid var(--bb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .gb {
+            background: var(--g);
+            border: 2px solid var(--gb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .yb {
+            background: var(--y);
+            border: 2px solid var(--yb);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 22px 0;
+            position: relative
+        }
+
+        .lbl {
+            position: absolute;
+            top: -11px;
+            right: 18px;
+            background: var(--bg);
+            padding: 2px 9px;
+            font-weight: 700;
+            font-size: .78rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px
+        }
+
+        .bb .lbl {
+            color: var(--bb);
+            border-color: var(--bb)
+        }
+
+        .gb .lbl {
+            color: var(--gb);
+            border-color: var(--gb)
+        }
+
+        .yb .lbl {
+            color: #f9a825;
+            border-color: var(--yb)
+        }
+
+        .tt {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: .98rem
+        }
+
+        .tt th,
+        .tt td {
+            border: 1px solid var(--tb);
+            padding: 8px 12px;
+            text-align: left
+        }
+
+        .tt th {
+            background: var(--b);
+            color: var(--bb);
+            font-weight: 700
+        }
+
+        .tt tr:nth-child(even) {
+            background: rgba(0, 0, 0, .02)
+        }
+
+        html.dark .tt tr:nth-child(even) {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .sp {
+            background: var(--eg);
+            border-left: 4px solid var(--pur);
+            padding: 13px 16px;
+            margin: 16px 0;
+            border-radius: 0 6px 6px 0
+        }
+
+        .sp .ql {
+            font-weight: 800;
+            color: var(--pb);
+            font-size: 1.04rem
+        }
+
+        .sp .al {
+            font-weight: 700;
+            color: var(--gb);
+            margin-top: 7px;
+            display: block
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 13px;
+            margin: 16px 0
+        }
+
+        .cd {
+            padding: 13px;
+            border: 1px solid var(--tb);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, .02)
+        }
+
+        html.dark .cd {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .tog {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--tbg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .sun,
+        .moon {
+            position: absolute;
+            transition: all .5s;
+            stroke: var(--ic)
+        }
+
+        .sun {
+            opacity: 0;
+            transform: scale(.5) rotate(-90deg)
+        }
+
+        html.dark .moon {
+            opacity: 0;
+            transform: scale(.5) rotate(90deg)
+        }
+
+        html.dark .sun {
+            opacity: 1;
+            transform: scale(1) rotate(0)
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--pb);
+            color: #fff;
+            font-size: .75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            vertical-align: middle;
+            margin-left: 6px
+        }
+
+        .ftr {
+            text-align: center;
+            margin-top: 44px;
+            padding-top: 16px;
+            border-top: 1px solid var(--tb);
+            color: var(--meta);
+            font-size: .92rem
+        }
+
+        .ftr b {
+            color: var(--pb)
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+
+            .sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important
+            }
+
+            .tog {
+                display: none !important
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wm"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark"></div>
+    <button class="tog" onclick="document.documentElement.classList.toggle('dark')" aria-label="Toggle Theme">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+    </button>
+
+    <div class="sheet">
+        <div class="hdr">
+            <div
+                style="font-size:2rem;font-weight:800;color:var(--bb);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">
+                Vardaan Learning Institute</div>
+            <div style="font-size:1rem;color:var(--meta);letter-spacing:3px;text-transform:uppercase">Integral Calculus
+                · Module 2 of 5 · JEE Main &amp; Advanced</div>
+        </div>
+        <h1>Advanced Integration Techniques</h1>
+
+        <div class="bb"><span class="lbl">Module 2 Objective</span>
+            <p style="margin:0">This module covers three high-yield JEE techniques: <strong>Integration by Parts
+                    (IBP)</strong>, <strong>Partial Fractions</strong>, and <strong>Special Trigonometric
+                    Integrals</strong>. Together, these methods solve 90% of the complex integration questions that
+                appear in JEE Main and Advanced.</p>
+        </div>
+
+        <!-- ======================= PART A: IBP ======================= -->
+        <h2>Part A: Integration by Parts (IBP)</h2>
+
+        <p>IBP is used when the integrand is a <strong>product of two fundamentally different types</strong> of
+            functions (e.g., polynomial × trig, polynomial × log, \(e^x\) × trig).</p>
+
+        <div class="bb"><span class="lbl">The IBP Formula</span>
+            \[\int u \cdot v\,dx = u\int v\,dx - \int\!\left(\frac{du}{dx}\cdot\int v\,dx\right)dx\]
+            <p style="margin:8px 0 0"><strong>ILATE Rule — Pick \(u\) (to differentiate) in this descending
+                    priority:</strong><br>
+                <strong>I</strong>nverse Trig → <strong>L</strong>ogarithm → <strong>A</strong>lgebraic (polynomial) →
+                <strong>T</strong>rigonometric → <strong>E</strong>xponential<br>
+                The remaining factor becomes \(v\) (to integrate).
+            </p>
+        </div>
+
+        <h3>When to Use Each Combination</h3>
+        <table class="tt">
+            <tr>
+                <th>Integrand Type</th>
+                <th>Choose \(u\)</th>
+                <th>Choose \(v\,dx\)</th>
+            </tr>
+            <tr>
+                <td>\(x^n \ln x\)</td>
+                <td>\(\ln x\) (L before A)</td>
+                <td>\(x^n\,dx\)</td>
+            </tr>
+            <tr>
+                <td>\(x^n \sin x\) or \(x^n \cos x\)</td>
+                <td>\(x^n\) (A before T)</td>
+                <td>\(\sin x\,dx\) or \(\cos x\,dx\)</td>
+            </tr>
+            <tr>
+                <td>\(x^n e^x\)</td>
+                <td>\(x^n\) (A before E)</td>
+                <td>\(e^x\,dx\)</td>
+            </tr>
+            <tr>
+                <td>\(e^{ax}\sin bx\) or \(e^{ax}\cos bx\)</td>
+                <td>Either (cyclical — apply IBP twice)</td>
+                <td>The other</td>
+            </tr>
+            <tr>
+                <td>\(\sin^{-1}x\) or \(\tan^{-1}x\) alone</td>
+                <td>The inverse trig (I)</td>
+                <td>\(dx\) → \(\int 1\,dx = x\)</td>
+            </tr>
+        </table>
+
+        <div class="sp">
+            <span class="ql">Q1. Evaluate \(\displaystyle\int x\cos x\,dx\)</span>
+            <span class="al">Solution — ILATE: \(u=x\) (A), \(v=\cos x\)</span>
+            \[\int x\cos x\,dx = x(\sin x) - \int 1\cdot\sin x\,dx = x\sin x+\cos x+C\]
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q2. Evaluate \(\displaystyle\int x^2 e^x\,dx\)</span>
+            <span class="al">Solution — Apply IBP twice:</span>
+            <strong>Round 1:</strong> \(u=x^2\), \(v=e^x\): \(= x^2 e^x - \displaystyle\int 2xe^x\,dx\)<br>
+            <strong>Round 2 on \(\int 2xe^x\):</strong>&nbsp; \(u=2x\), \(v=e^x\): \(= 2xe^x - 2e^x\)<br>
+            \[\boxed{\int x^2 e^x\,dx = e^x(x^2-2x+2)+C}\]
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q3. Evaluate \(\displaystyle\int \ln x\,dx\)</span>
+            <span class="al">Solution — \(u=\ln x\) (L), \(v=1\) so \(\int v\,dx = x\)</span>
+            \[\int \ln x \cdot 1\,dx = x\ln x - \int \frac{1}{x}\cdot x\,dx = x\ln x - x + C = \boxed{x(\ln x - 1)+C}\]
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q4. Evaluate \(\displaystyle\int e^{2x}\sin 3x\,dx\)</span>
+            <span class="al">Solution — Cyclical IBP:</span>
+            Let \(I = \int e^{2x}\sin 3x\,dx\). IBP with \(u=\sin 3x\), \(v=e^{2x}\):<br>
+            \(I = \dfrac{e^{2x}\sin 3x}{2} - \dfrac{3}{2}\int e^{2x}\cos 3x\,dx\)<br>
+            IBP again on the new integral: \(\int e^{2x}\cos 3x\,dx = \dfrac{e^{2x}\cos 3x}{2}+\dfrac{3}{2}\int
+            e^{2x}\sin 3x\,dx\)<br>
+            Substituting back: \(I = \dfrac{e^{2x}\sin 3x}{2} - \dfrac{3}{2}\left[\dfrac{e^{2x}\cos
+            3x}{2}+\dfrac{3}{2}I\right]\)<br>
+            \(I + \dfrac{9}{4}I = \dfrac{e^{2x}(2\sin 3x-3\cos 3x)}{4} \Rightarrow \dfrac{13I}{4} = \dfrac{e^{2x}(2\sin
+            3x-3\cos 3x)}{4}\)<br>
+            \[\boxed{I = \frac{e^{2x}(2\sin 3x-3\cos 3x)}{13}+C}\]
+        </div>
+
+        <div class="gb"><span class="lbl">JEE Star Formula — Memorise This!</span>
+            \[\int e^x[f(x)+f'(x)]\,dx = e^x\cdot f(x) + C\]
+            <p style="margin:0">This form appears in almost every JEE Main paper. The strategy: spot \(f(x)\) in the
+                first bracket and confirm the second bracket equals \(f'(x)\). <strong>Examples:</strong><br>
+                \(\int e^x(\sin x+\cos x)\,dx = e^x\sin x+C\) &nbsp;|&nbsp; \(\int
+                e^x\left(\dfrac{1}{x}-\dfrac{1}{x^2}\right)dx = \dfrac{e^x}{x}+C\) &nbsp;|&nbsp; \(\int e^x(\tan
+                x+\sec^2 x)\,dx = e^x\tan x+C\)</p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q5. Evaluate \(\displaystyle\int e^x\left(\frac{x-1}{x^2}\right)dx\)</span>
+            <span class="al">Solution — Identify \(f(x)\):</span>
+            Write integrand as \(e^x\left[\dfrac{1}{x}-\dfrac{1}{x^2}\right]\). Here \(f(x)=\dfrac{1}{x}\),
+            \(f'(x)=-\dfrac{1}{x^2}\). ✓<br>
+            \(\boxed{= \dfrac{e^x}{x}+C}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q6. Evaluate \(\displaystyle\int \tan^{-1}x\,dx\)</span>
+            <span class="al">Solution — \(u=\tan^{-1}x\) (I), \(\int v\,dx = x\)</span>
+            \[\int \tan^{-1}x\,dx = x\tan^{-1}x - \int\frac{x}{1+x^2}\,dx = x\tan^{-1}x - \frac{1}{2}\ln(1+x^2)+C\]
+        </div>
+
+        <div style="page-break-after:always;"></div>
+
+        <!-- ======================= PART B: PARTIAL FRACTIONS ======================= -->
+        <h2>Part B: Partial Fractions</h2>
+        <p>Used to integrate <strong>rational functions</strong> \(\dfrac{P(x)}{Q(x)}\). If deg\((P) \ge\) deg\((Q)\),
+            first perform <strong>long division</strong>.</p>
+
+        <div class="bb"><span class="lbl">Complete Decomposition Guide</span>
+            <table class="tt" style="margin:8px 0 0">
+                <tr>
+                    <th>Factor in Q(x)</th>
+                    <th>Partial Fraction Form</th>
+                </tr>
+                <tr>
+                    <td>Linear: \((x-a)\)</td>
+                    <td>\(\dfrac{A}{x-a}\)</td>
+                </tr>
+                <tr>
+                    <td>Repeated Linear: \((x-a)^2\)</td>
+                    <td>\(\dfrac{A}{x-a}+\dfrac{B}{(x-a)^2}\)</td>
+                </tr>
+                <tr>
+                    <td>Repeated Linear: \((x-a)^n\)</td>
+                    <td>\(\dfrac{A_1}{x-a}+\dfrac{A_2}{(x-a)^2}+\cdots+\dfrac{A_n}{(x-a)^n}\)</td>
+                </tr>
+                <tr>
+                    <td>Irreducible Quadratic: \((x^2+bx+c)\)</td>
+                    <td>\(\dfrac{Ax+B}{x^2+bx+c}\)</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>Finding Constants — Two Methods</h3>
+        <div class="g2">
+            <div class="cd"><strong>Substitution Method (Heaviside Cover-up)</strong><br>Substitute the root of each
+                linear factor to quickly get that constant. E.g., for factor \((x-2)\), put \(x=2\).</div>
+            <div class="cd"><strong>Comparison of Coefficients</strong><br>Expand the right side, then equate
+                coefficients of like powers of \(x\) to form a system of equations for the remaining constants.</div>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q7. Evaluate \(\displaystyle\int\frac{2x+5}{(x-1)(x+2)}\,dx\)</span>
+            <span class="al">Solution:</span>
+            Let \(\dfrac{2x+5}{(x-1)(x+2)} = \dfrac{A}{x-1}+\dfrac{B}{x+2}\). Multiply through:<br>
+            \(2x+5 = A(x+2)+B(x-1)\)<br>
+            \(x=1\): \(7=3A \Rightarrow A=7/3\).<br>
+            \(x=-2\): \(1=-3B \Rightarrow B=-1/3\).<br>
+            \(\displaystyle\int\left[\frac{7/3}{x-1}+\frac{-1/3}{x+2}\right]dx =
+            \boxed{\frac{7}{3}\ln|x-1|-\frac{1}{3}\ln|x+2|+C}\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q8. Evaluate \(\displaystyle\int\frac{x^2+1}{x(x-1)^2}\,dx\)</span>
+            <span class="al">Solution:</span>
+            \(\dfrac{x^2+1}{x(x-1)^2} = \dfrac{A}{x}+\dfrac{B}{x-1}+\dfrac{C}{(x-1)^2}\)<br>
+            \(x=0\): \(1=A\). \(x=1\): \(2=C\). Coefficient of \(x^2\): \(1=A+B \Rightarrow B=0\).<br>
+            \(\displaystyle\int\left[\frac{1}{x}+\frac{2}{(x-1)^2}\right]dx = \ln|x|-\frac{2}{x-1}+C\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q9. Evaluate \(\displaystyle\int\frac{3x+1}{(x-2)(x^2+1)}\,dx\)</span>
+            <span class="al">Solution:</span>
+            \(\dfrac{3x+1}{(x-2)(x^2+1)} = \dfrac{A}{x-2}+\dfrac{Bx+C}{x^2+1}\)<br>
+            \(x=2\): \(7=5A \Rightarrow A=7/5\).<br>
+            Expanding and comparing:\(x^2\): \(0=A+B \Rightarrow B=-7/5\). Constant: \(1=-2A+C-2B \Rightarrow
+            C=1/5\).<br>
+            \(\displaystyle\int\!\left[\frac{7/5}{x-2}+\frac{-7x/5+1/5}{x^2+1}\right]dx =
+            \frac{7}{5}\ln|x-2|-\frac{7}{10}\ln(x^2+1)+\frac{1}{5}\tan^{-1}x+C\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q10. Evaluate \(\displaystyle\int\frac{x^3+x+1}{x^2-1}\,dx\)</span>
+            <span class="al">Solution — Long Division First (deg of num ≥ deg of denom):</span>
+            \(x^3+x+1 \div (x^2-1)\): Quotient \(= x\), Remainder \(= 2x+1\).<br>
+            \(\displaystyle\int x\,dx + \int\frac{2x+1}{x^2-1}\,dx = \frac{x^2}{2}+\int\frac{2x+1}{(x-1)(x+1)}\,dx\)<br>
+            Partial fractions: \(\dfrac{2x+1}{(x-1)(x+1)} = \dfrac{3/2}{x-1}+\dfrac{1/2}{x+1}\)<br>
+            \(= \dfrac{x^2}{2}+\dfrac{3}{2}\ln|x-1|+\dfrac{1}{2}\ln|x+1|+C\)
+        </div>
+
+        <div style="page-break-after:always;"></div>
+
+        <!-- ======================= PART C: SPECIAL TRIG INTEGRALS ======================= -->
+        <h2>Part C: Special Trigonometric Integrals</h2>
+
+        <h3>Type 1 — Powers of Sin/Cos</h3>
+        <div class="gb"><span class="lbl">Core Identities</span>
+            <ul style="margin-bottom:0">
+                <li>\(\sin^2 x = \dfrac{1-\cos 2x}{2}\) &nbsp;&nbsp; \(\cos^2 x = \dfrac{1+\cos 2x}{2}\)</li>
+                <li>\(\sin^3 x = \dfrac{3\sin x-\sin 3x}{4}\) &nbsp;&nbsp; \(\cos^3 x = \dfrac{3\cos x+\cos 3x}{4}\)
+                </li>
+                <li>\(\sin x\cos x = \dfrac{\sin 2x}{2}\)</li>
+                <li>\(\sin^2 x\cos^2 x = \dfrac{1-\cos 4x}{8}\)</li>
+            </ul>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q11. Evaluate \(\displaystyle\int\sin^4 x\,dx\)</span>
+            <span class="al">Solution:</span>
+            \(\sin^4 x = \left(\dfrac{1-\cos 2x}{2}\right)^2 = \dfrac{1-2\cos 2x+\cos^2 2x}{4} = \dfrac{1-2\cos
+            2x+\frac{1+\cos 4x}{2}}{4}\)<br>
+            \(= \dfrac{3}{8}-\dfrac{\cos 2x}{2}+\dfrac{\cos 4x}{8}\)<br>
+            \(\displaystyle\int\sin^4 x\,dx = \frac{3x}{8}-\frac{\sin 2x}{4}+\frac{\sin 4x}{32}+C\)
+        </div>
+
+        <h3>Type 2 — Integrals of the form \(\int \frac{dx}{a+b\sin x}\), \(\int\frac{dx}{a+b\cos x}\)</h3>
+        <div class="bb"><span class="lbl">Weierstrass / t-Substitution</span>
+            <p style="margin:0">Put \(t = \tan\dfrac{x}{2}\). Then:<br>
+                \(\sin x = \dfrac{2t}{1+t^2}\) &nbsp; \(\cos x = \dfrac{1-t^2}{1+t^2}\) &nbsp; \(dx =
+                \dfrac{2\,dt}{1+t^2}\)<br>
+                <strong>This converts any rational function of \(\sin x, \cos x\) into a rational function of
+                    \(t\).</strong>
+            </p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q12. Evaluate \(\displaystyle\int\frac{dx}{3+2\cos x}\)</span>
+            <span class="al">Solution using \(t=\tan(x/2)\):</span>
+            \(\cos x = \dfrac{1-t^2}{1+t^2}\), \(dx = \dfrac{2dt}{1+t^2}\).<br>
+            \(\displaystyle\int\frac{1}{3+2\cdot\frac{1-t^2}{1+t^2}}\cdot\frac{2\,dt}{1+t^2} =
+            \int\frac{2\,dt}{3(1+t^2)+2(1-t^2)} = \int\frac{2\,dt}{5+t^2}\)<br>
+            \(= \dfrac{2}{\sqrt{5}}\tan^{-1}\!\dfrac{t}{\sqrt{5}}+C =
+            \boxed{\dfrac{2}{\sqrt{5}}\tan^{-1}\!\left(\dfrac{\tan(x/2)}{\sqrt{5}}\right)+C}\)
+        </div>
+
+        <h3>Type 3 — \(\int\frac{dx}{a\sin^2 x + b\cos^2 x}\) type</h3>
+        <div class="gb"><span class="lbl">Technique</span>
+            <p style="margin:0">Divide numerator and denominator by \(\cos^2 x\). The denominator becomes \(a\tan^2x +
+                b\). Let \(t = \tan x\), \(dt = \sec^2 x\,dx\). This directly reduces to \(\int\frac{dt}{at^2+b}\) — a
+                standard inverse tan form.</p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q13. Evaluate \(\displaystyle\int\frac{dx}{4\sin^2 x+9\cos^2 x}\)</span>
+            <span class="al">Solution:</span>
+            Divide by \(\cos^2x\): \(\displaystyle\int\frac{\sec^2 x\,dx}{4\tan^2 x+9}\)<br>
+            Let \(t=\tan x\), \(dt=\sec^2 x\,dx\):<br>
+            \(\displaystyle\int\frac{dt}{4t^2+9} = \frac{1}{4}\int\frac{dt}{t^2+(3/2)^2} =
+            \frac{1}{4}\cdot\frac{1}{3/2}\tan^{-1}\!\frac{2t}{3}+C = \boxed{\frac{1}{6}\tan^{-1}\!\frac{2\tan x}{3}+C}\)
+        </div>
+
+        <h3>Type 4 — \(\int\frac{p\sin x+q\cos x}{a\sin x+b\cos x}\,dx\) type</h3>
+        <div class="bb"><span class="lbl">Technique</span>
+            <p style="margin:0">Express numerator as \(\lambda(\text{denominator})+\mu(\text{derivative of
+                denominator})\). Find \(\lambda, \mu\) by comparing coefficients. The integral splits into \(\lambda x +
+                \mu\ln|\text{denominator}|+C\).</p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q14. Evaluate \(\displaystyle\int\frac{3\sin x+2\cos x}{2\sin x+3\cos x}\,dx\)</span>
+            <span class="al">Solution:</span>
+            Write \(3\sin x+2\cos x = \lambda(2\sin x+3\cos x)+\mu(2\cos x-3\sin x)\)<br>
+            Comparing \(\sin x\): \(3=2\lambda-3\mu\). Comparing \(\cos x\): \(2=3\lambda+2\mu\).<br>
+            Solving: \(\lambda=12/13\), \(\mu=-5/13\).<br>
+            \(\displaystyle\int\left[\frac{12}{13}+\frac{-5}{13}\cdot\frac{2\cos x-3\sin x}{2\sin x+3\cos x}\right]dx =
+            \frac{12x}{13}-\frac{5}{13}\ln|2\sin x+3\cos x|+C\)
+        </div>
+
+        <h3>Type 5 — \(\int\frac{px+q}{ax^2+bx+c}\,dx\) and \(\int\frac{px+q}{\sqrt{ax^2+bx+c}}\,dx\)</h3>
+        <div class="gb"><span class="lbl">Technique</span>
+            <p style="margin:0">Express numerator \(px+q = \lambda(2ax+b)+\mu\). Find \(\lambda = p/(2a)\) and \(\mu =
+                q-pb/(2a)\). The first part gives a log/root, the second gives an inverse trig after completing the
+                square.</p>
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q15. Evaluate \(\displaystyle\int\frac{x+3}{x^2+2x+5}\,dx\)</span>
+            <span class="al">Solution:</span>
+            Write \(x+3 = \lambda(2x+2)+\mu\). Solving: \(\lambda=1/2\), \(\mu=2\).<br>
+            \(\displaystyle\int\!\left[\frac{1}{2}\cdot\frac{2x+2}{x^2+2x+5}+\frac{2}{x^2+2x+5}\right]dx =
+            \frac{1}{2}\ln(x^2+2x+5)+2\int\frac{dx}{(x+1)^2+4}\)<br>
+            \(\displaystyle = \frac{1}{2}\ln(x^2+2x+5)+\tan^{-1}\!\frac{x+1}{2}+C\)
+        </div>
+
+        <div class="sp">
+            <span class="ql">Q16. Evaluate \(\displaystyle\int\frac{2x+3}{\sqrt{x^2+4x+1}}\,dx\)</span>
+            <span class="al">Solution:</span>
+            Write \(2x+3 = \lambda(2x+4)+\mu\). Solving: \(\lambda=1\), \(\mu=-1\).<br>
+            \(\displaystyle\int\!\left[\frac{2x+4}{\sqrt{x^2+4x+1}}-\frac{1}{\sqrt{x^2+4x+1}}\right]dx\)<br>
+            First part: \(2\sqrt{x^2+4x+1}\). Second: complete the square — \(\sqrt{(x+2)^2-3}\), use formula 24.<br>
+            \(\displaystyle = 2\sqrt{x^2+4x+1}-\ln\!\left|(x+2)+\sqrt{x^2+4x+1}\right|+C\)
+        </div>
+
+        <h2>Chapter Summary — Decision Flowchart</h2>
+        <table class="tt">
+            <tr>
+                <th>Integrand Type</th>
+                <th>Method</th>
+            </tr>
+            <tr>
+                <td>Composite function with inner derivative present</td>
+                <td>Substitution</td>
+            </tr>
+            <tr>
+                <td>Product of two different function types</td>
+                <td>IBP (use ILATE)</td>
+            </tr>
+            <tr>
+                <td>Form \(e^x[f(x)+f'(x)]\)</td>
+                <td>Direct formula: \(e^x f(x)+C\)</td>
+            </tr>
+            <tr>
+                <td>Rational function \(P(x)/Q(x)\)</td>
+                <td>Partial Fractions (divide first if needed)</td>
+            </tr>
+            <tr>
+                <td>Rational function of \(\sin x, \cos x\)</td>
+                <td>Weierstrass t-substitution</td>
+            </tr>
+            <tr>
+                <td>\(\dfrac{dx}{a\sin^2x+b\cos^2x}\)</td>
+                <td>Divide by \(\cos^2x\), then substitute \(t=\tan x\)</td>
+            </tr>
+            <tr>
+                <td>\(\dfrac{p\sin x+q\cos x}{a\sin x+b\cos x}\)</td>
+                <td>Decompose numerator as \(\lambda(\text{denom})+\mu(\text{denom}')\)</td>
+            </tr>
+            <tr>
+                <td>\(\dfrac{px+q}{ax^2+bx+c}\)</td>
+                <td>Decompose numerator, log + inverse trig</td>
+            </tr>
+        </table>
+
+        <div class="ftr"><b>Vardaan Learning Institute</b> · IC Module 2/5 · JEE Masterclass 2026–27</div>
+    </div><!-- sheet -->
+</body>
+
+</html>
