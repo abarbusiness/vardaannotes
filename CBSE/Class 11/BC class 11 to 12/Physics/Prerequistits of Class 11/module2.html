@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vectors - Physics | Vardaan Learning Institute</title>
+
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --purple-bg: #f3e5f5;
+            --purple-border: #8e24aa;
+            --orange-bg: #fff3e0;
+            --orange-border: #ef6c00;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #000000;
+            --yellow-border: #fdd835;
+            --green-bg: #000000;
+            --green-border: #81c784;
+            --blue-bg: #000000;
+            --blue-border: #64b5f6;
+            --pink-bg: #000000;
+            --pink-border: #f06292;
+            --purple-bg: #000000;
+            --purple-border: #ba68c8;
+            --orange-bg: #000000;
+            --orange-border: #ffb74d;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(0, 0, 0, 1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul,
+        ol {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pink-box {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .purple-box {
+            background-color: var(--purple-bg);
+            border: 2px solid var(--purple-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .orange-box {
+            background-color: var(--orange-bg);
+            border: 2px solid var(--orange-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        .pink-box .box-label {
+            color: var(--pink-border);
+            border-color: var(--pink-border);
+        }
+
+        .purple-box .box-label {
+            color: var(--purple-border);
+            border-color: var(--purple-border);
+        }
+
+        .orange-box .box-label {
+            color: var(--orange-border);
+            border-color: var(--orange-border);
+        }
+
+        /* --- FORMULA BOX --- */
+        .formula-box {
+            background: linear-gradient(135deg, var(--blue-bg), var(--purple-bg));
+            border: 2px solid var(--accent-purple);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .formula-box .formula-title {
+            font-size: 0.9rem;
+            color: var(--meta-text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .formula-box .formula {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* --- TABLE STYLES --- */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 1rem;
+        }
+
+        .comparison-table th {
+            background: var(--blue-border);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--toggle-border);
+            background: var(--example-bg);
+        }
+
+        .comparison-table tr:nth-child(even) td {
+            background: var(--blue-bg);
+        }
+
+        /* --- IMAGE STYLES --- */
+        .content-image {
+            display: block;
+            max-width: 65%;
+            height: auto;
+            margin: 25px auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .image-caption {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--meta-text);
+            margin-top: -15px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            display: block;
+        }
+
+        html.dark-mode .content-image {
+            filter: invert(1);
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- EXAMPLE BOX --- */
+        .example-box {
+            background: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .example-box .example-title {
+            font-weight: 700;
+            color: var(--green-border);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* --- VECTOR NOTATION --- */
+        .vector {
+            position: relative;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .vector::after {
+            content: '→';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7em;
+        }
+
+        .unit-vector {
+            font-weight: 700;
+            color: var(--orange-border);
+        }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+                mix-blend-mode: normal !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left {
+                    content: none;
+                }
+
+                @bottom-right {
+                    content: none;
+                }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 11 Physics • Prerequisites Module 2</div>
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <!-- CONTENT STARTS HERE -->
+        <h1>📐 Vectors</h1>
+
+        <h2>1. Scalar vs Vector Quantities</h2>
+        <p>In physics, we deal with two types of physical quantities based on how they are described:</p>
+
+        <div class="blue-box">
+            <span class="box-label">Definition</span>
+            <p><strong>Scalar Quantity:</strong> A physical quantity that has <strong>only magnitude</strong> (size or
+                numerical value) but no direction. Examples: Mass, Time, Temperature, Speed, Energy, Distance, Work.</p>
+            <p style="margin-top: 15px;"><strong>Vector Quantity:</strong> A physical quantity that has <strong>both
+                    magnitude and direction</strong>. Examples: Displacement, Velocity, Acceleration, Force, Momentum.
+            </p>
+        </div>
+
+        <table class="comparison-table">
+            <tr>
+                <th>Property</th>
+                <th>Scalar Quantity</th>
+                <th>Vector Quantity</th>
+            </tr>
+            <tr>
+                <td><strong>Definition</strong></td>
+                <td>Has only magnitude</td>
+                <td>Has both magnitude & direction</td>
+            </tr>
+            <tr>
+                <td><strong>Representation</strong></td>
+                <td>Simple number with unit</td>
+                <td>Arrow with length & direction</td>
+            </tr>
+            <tr>
+                <td><strong>Examples</strong></td>
+                <td>Mass, Time, Speed, Energy</td>
+                <td>Displacement, Velocity, Force</td>
+            </tr>
+            <tr>
+                <td><strong>Addition Rule</strong></td>
+                <td>Simple arithmetic addition</td>
+                <td>Vector addition laws required</td>
+            </tr>
+            <tr>
+                <td><strong>Symbol</strong></td>
+                <td>Normal letters ($m, t, E$)</td>
+                <td>Letters with arrow ($\vec{A}$) or bold ($\mathbf{A}$)</td>
+            </tr>
+        </table>
+
+        <div class="yellow-box">
+            <span class="box-label">Remember</span>
+            <p>🎯 <strong>Speed</strong> is scalar, but <strong>Velocity</strong> is vector! <strong>Distance</strong>
+                is scalar, but <strong>Displacement</strong> is vector!</p>
+        </div>
+
+        <h2>2. Representation of Vectors</h2>
+        <p>Vectors can be represented in two ways:</p>
+
+        <h3>Symbolic Representation</h3>
+        <ul>
+            <li><strong>Arrow notation:</strong> $\vec{A}$ (arrow over the letter)</li>
+            <li><strong>Bold letters:</strong> $\mathbf{A}$ or $\mathbf{B}$ (used in textbooks)</li>
+            <li><strong>Magnitude:</strong> $|\vec{A}|$ or simply $A$ (without arrow)</li>
+            <li><strong>Unit vector:</strong> $\hat{A}$ (A-hat) - indicates direction only</li>
+        </ul>
+
+        <h3>Graphical Representation</h3>
+        <p>A vector is represented by an <strong>arrow</strong> (directed line segment):</p>
+        <ul>
+            <li><strong>Length of arrow</strong> → Represents the magnitude</li>
+            <li><strong>Direction of arrow</strong> → Represents the direction</li>
+            <li><strong>Arrowhead (Head)</strong> → Shows the sense of direction</li>
+            <li><strong>Starting point (Tail)</strong> → Point of application</li>
+        </ul>
+
+        <img src="Images/Vector Representation.jpg" alt="Vector Representation" class="content-image">
+        <span class="image-caption">Vector Representation</span>
+
+        <h2>3. Vector Addition</h2>
+        <p>Unlike scalars, vectors cannot be added using simple arithmetic. We use special laws for vector addition.</p>
+
+        <h3>Triangle Law of Vector Addition</h3>
+        <div class="green-box">
+            <span class="box-label">Law</span>
+            <p><strong>Statement:</strong> If two vectors are represented by two sides of a triangle taken in the same
+                order (head to tail), then their resultant is represented by the third side of the triangle taken in the
+                <strong>opposite order</strong>.</p>
+        </div>
+
+        <p><strong>Steps to apply Triangle Law:</strong></p>
+        <ol>
+            <li>Draw the first vector $\vec{A}$</li>
+            <li>From the head of $\vec{A}$, draw the second vector $\vec{B}$</li>
+            <li>Join the tail of $\vec{A}$ to the head of $\vec{B}$</li>
+            <li>This joining line represents the resultant $\vec{R} = \vec{A} + \vec{B}$</li>
+        </ol>
+
+        <img src="Images/Triangle Law of Vector Addition.jpg" alt="Triangle Law of Vector Addition"
+            class="content-image">
+        <span class="image-caption">Triangle Law of Vector Addition</span>
+
+        <h3>Parallelogram Law of Vector Addition</h3>
+        <div class="green-box">
+            <span class="box-label">Law</span>
+            <p><strong>Statement:</strong> If two vectors acting at a point are represented by two adjacent sides of a
+                parallelogram, then their resultant is represented by the <strong>diagonal</strong> of the parallelogram
+                passing through that point.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Magnitude of Resultant</div>
+            <div class="formula">$|\vec{R}| = \sqrt{A^2 + B^2 + 2AB \cos \theta}$</div>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Direction of Resultant (angle $\alpha$ with $\vec{A}$)</div>
+            <div class="formula">$\tan \alpha = \frac{B \sin \theta}{A + B \cos \theta}$</div>
+        </div>
+
+        <p>Where $\theta$ is the angle between vectors $\vec{A}$ and $\vec{B}$.</p>
+
+        <img src="Images/Parallelogram Law of Vector Addition.jpg" alt="Parallelogram Law of Vector Addition"
+            class="content-image">
+        <span class="image-caption">Parallelogram Law of Vector Addition</span>
+
+        <h3>Special Cases of Vector Addition</h3>
+        <div class="purple-box">
+            <span class="box-label">Important Cases</span>
+            <p><strong>1. Same Direction ($\theta = 0^\circ$):</strong> $R = A + B$ (Maximum resultant)</p>
+            <p><strong>2. Opposite Direction ($\theta = 180^\circ$):</strong> $R = |A - B|$ (Minimum resultant)</p>
+            <p><strong>3. Perpendicular ($\theta = 90^\circ$):</strong> $R = \sqrt{A^2 + B^2}$ (Pythagorean theorem)</p>
+            <p><strong>4. Equal Vectors ($A = B$):</strong> $R = 2A \cos(\theta/2)$ (Resultant bisects the angle)</p>
+        </div>
+
+        <h2>4. Resolution of Vectors</h2>
+        <p>Resolution is the <strong>reverse process</strong> of vector addition. It is the process of splitting a
+            single vector into two or more component vectors along given directions (usually perpendicular).</p>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <p>When a vector $\vec{A}$ makes an angle $\theta$ with the positive x-axis:</p>
+            <ul>
+                <li><strong>X-Component (Horizontal):</strong> $A_x = A \cos \theta$</li>
+                <li><strong>Y-Component (Vertical):</strong> $A_y = A \sin \theta$</li>
+            </ul>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Component Form</div>
+            <div class="formula">$\vec{A} = A_x \hat{i} + A_y \hat{j} = (A \cos \theta)\hat{i} + (A \sin \theta)\hat{j}$
+            </div>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Magnitude from Components</div>
+            <div class="formula">$|\vec{A}| = \sqrt{A_x^2 + A_y^2}$</div>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Direction from Components</div>
+            <div class="formula">$\tan \theta = \frac{A_y}{A_x}$</div>
+        </div>
+
+        <img src="Images/Resolution of Vectors into Components.jpg" alt="Resolution of Vectors into Components"
+            class="content-image">
+        <span class="image-caption">Resolution of Vectors into Components</span>
+
+        <div class="yellow-box">
+            <span class="box-label">Tip</span>
+            <p>🎯 <strong>Memory trick:</strong> "cos" sounds like "close" — the component <strong>close</strong> to the
+                angle uses cosine. The component perpendicular (far) uses sine!</p>
+        </div>
+
+        <h2>5. Unit Vectors</h2>
+        <p>A <strong>unit vector</strong> is a vector that has a magnitude of exactly <strong>1 (unity)</strong>. It is
+            used to specify direction only.</p>
+
+        <div class="formula-box">
+            <div class="formula-title">Unit Vector Formula</div>
+            <div class="formula">$\hat{A} = \frac{\vec{A}}{|\vec{A}|}$</div>
+        </div>
+
+        <h3>Standard Unit Vectors (Cartesian)</h3>
+        <div class="orange-box">
+            <span class="box-label">$\hat{i}, \hat{j}, \hat{k}$</span>
+            <ul>
+                <li><span class="unit-vector">$\hat{i}$</span> (i-hat) → Unit vector along positive
+                    <strong>X-axis</strong></li>
+                <li><span class="unit-vector">$\hat{j}$</span> (j-hat) → Unit vector along positive
+                    <strong>Y-axis</strong></li>
+                <li><span class="unit-vector">$\hat{k}$</span> (k-hat) → Unit vector along positive
+                    <strong>Z-axis</strong></li>
+            </ul>
+            <p style="margin-top: 15px;">Each has magnitude = 1 and they are mutually perpendicular to each other.</p>
+        </div>
+
+        <img src="Images/Standard Unit Vectors (3D Coordinate System).jpg"
+            alt="Standard Unit Vectors (3D Coordinate System)" class="content-image">
+        <span class="image-caption">Standard Unit Vectors (3D Coordinate System)</span>
+
+        <div class="formula-box">
+            <div class="formula-title">Vector in Component Form</div>
+            <div class="formula">$\vec{A} = A_x \hat{i} + A_y \hat{j} + A_z \hat{k}$</div>
+        </div>
+
+        <div class="example-box">
+            <div class="example-title">📝 Solved Example</div>
+            <p>If $\vec{A} = 3\hat{i} + 4\hat{j}$, find the magnitude and unit vector.</p>
+            <p><strong>Solution:</strong></p>
+            <p>Magnitude: $|\vec{A}| = \sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = \mathbf{5\text{ units}}$</p>
+            <p>Unit vector: $\hat{A} = \frac{\vec{A}}{|\vec{A}|} = \frac{3\hat{i} + 4\hat{j}}{5} = \mathbf{0.6\hat{i} +
+                0.8\hat{j}}$</p>
+        </div>
+
+        <h2>6. Dot Product (Scalar Product)</h2>
+        <p>The dot product of two vectors is a <strong>scalar</strong> quantity. It is called scalar product because the
+            result is a scalar, not a vector.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Definition</span>
+            <p>The <strong>dot product</strong> of two vectors $\vec{A}$ and $\vec{B}$ is defined as the product of
+                their magnitudes and the cosine of the angle between them.</p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Dot Product Formula</div>
+            <div class="formula">$\vec{A} \cdot \vec{B} = |\vec{A}| |\vec{B}| \cos \theta = AB \cos \theta$</div>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Component Form</div>
+            <div class="formula">$\vec{A} \cdot \vec{B} = A_x B_x + A_y B_y + A_z B_z$</div>
+        </div>
+
+        <h3>Finding Angle Between Two Vectors</h3>
+        <div class="formula-box">
+            <div class="formula-title">Angle Formula</div>
+            <div class="formula">$\cos \theta = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| |\vec{B}|}$</div>
+        </div>
+
+        <h3>Properties of Dot Product</h3>
+        <ul>
+            <li><strong>Commutative:</strong> $\vec{A} \cdot \vec{B} = \vec{B} \cdot \vec{A}$</li>
+            <li><strong>Distributive:</strong> $\vec{A} \cdot (\vec{B} + \vec{C}) = \vec{A} \cdot \vec{B} + \vec{A}
+                \cdot \vec{C}$</li>
+            <li><strong>Scalar multiplication:</strong> $(m\vec{A}) \cdot \vec{B} = m(\vec{A} \cdot \vec{B})$</li>
+            <li><strong>Self dot product:</strong> $\vec{A} \cdot \vec{A} = |\vec{A}|^2$</li>
+        </ul>
+
+        <h3>Unit Vector Dot Products</h3>
+        <div class="green-box">
+            <span class="box-label">Remember</span>
+            <p><strong>Same unit vectors:</strong> $\hat{i} \cdot \hat{i} = \hat{j} \cdot \hat{j} = \hat{k} \cdot
+                \hat{k} = \mathbf{1}$</p>
+            <p><strong>Different unit vectors:</strong> $\hat{i} \cdot \hat{j} = \hat{j} \cdot \hat{k} = \hat{k} \cdot
+                \hat{i} = \mathbf{0}$</p>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">Key Condition</span>
+            <p>⚠️ <strong>Condition for Perpendicular Vectors:</strong></p>
+            <p style="text-align: center; font-size: 1.3rem; font-weight: 700;">If $\vec{A} \cdot \vec{B} = 0$, then
+                $\vec{A} \perp \vec{B}$ (perpendicular)</p>
+            <p style="text-align: center; color: var(--meta-text);">(Because $\theta = 90^\circ$, so $\cos 90^\circ =
+                0$)</p>
+        </div>
+
+        <div class="example-box">
+            <div class="example-title">📝 Solved Example</div>
+            <p>Check if $\vec{A} = 2\hat{i} + 3\hat{j}$ and $\vec{B} = 3\hat{i} - 2\hat{j}$ are perpendicular.</p>
+            <p><strong>Solution:</strong></p>
+            <p>$\vec{A} \cdot \vec{B} = (2)(3) + (3)(-2) = 6 - 6 = \mathbf{0}$</p>
+            <p>Since $\vec{A} \cdot \vec{B} = 0$, the vectors are <strong>perpendicular!</strong> ✓</p>
+        </div>
+
+        <h2>7. Cross Product (Vector Product)</h2>
+        <p>The cross product of two vectors is a <strong>vector</strong> quantity. It is called vector product because
+            the result is a vector, not a scalar.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Definition</span>
+            <p>The <strong>cross product</strong> of two vectors $\vec{A}$ and $\vec{B}$ is a vector perpendicular to
+                both, with magnitude equal to the product of their magnitudes and the sine of the angle between them.
+            </p>
+        </div>
+
+        <div class="formula-box">
+            <div class="formula-title">Cross Product Formula</div>
+            <div class="formula">$\vec{A} \times \vec{B} = |\vec{A}| |\vec{B}| \sin \theta \cdot \hat{n}$</div>
+        </div>
+
+        <p>Where n̂ is the unit vector perpendicular to both A⃗ and B⃗ (found using right-hand rule).</p>
+
+        <div class="formula-box">
+            <div class="formula-title">Magnitude of Cross Product</div>
+            <div class="formula">$|\vec{A} \times \vec{B}| = AB \sin \theta$</div>
+        </div>
+
+        <p>This magnitude equals the <strong>area of the parallelogram</strong> formed by the two vectors.</p>
+
+        <img src="Images/Dot Product Visualization.jpg" alt="Dot Product Visualization" class="content-image">
+        <span class="image-caption">Dot Product Visualization</span>
+
+        <h3>Right-Hand Rule (Direction)</h3>
+        <div class="orange-box">
+            <span class="box-label">Rule</span>
+            <p>To find the direction of $\vec{A} \times \vec{B}$:</p>
+            <ol>
+                <li>Point your fingers along vector $\vec{A}$</li>
+                <li>Curl your fingers toward vector $\vec{B}$ (through the smaller angle)</li>
+                <li>Your <strong>thumb</strong> points in the direction of $ \vec{A} \times \vec{B}$</li>
+            </ol>
+        </div>
+
+        <img src="Images/Right-Hand Rule for Cross Product.jpg" alt="Right-Hand Rule for Cross Product"
+            class="content-image">
+        <span class="image-caption">Right-Hand Rule for Cross Product</span>
+
+        <img src="Images/Cross Product - Area of Parallelogram.jpg" alt="Cross Product - Area of Parallelogram"
+            class="content-image">
+        <span class="image-caption">Cross Product - Area of Parallelogram</span>
+
+        <h3>Component Form (Determinant Method)</h3>
+        <div class="formula-box">
+            <div class="formula-title">Cross Product using Determinant</div>
+            <div class="formula" style="font-size: 1.2rem;">
+                $\vec{A} \times \vec{B} = (A_y B_z - A_z B_y)\hat{i} - (A_x B_z - A_z B_x)\hat{j} + (A_x B_y - A_y
+                B_x)\hat{k}$
+            </div>
+        </div>
+
+        <h3>Unit Vector Cross Products</h3>
+        <div class="green-box">
+            <span class="box-label">Remember</span>
+            <p><strong>Same unit vectors:</strong> $\hat{i} \times \hat{i} = \hat{j} \times \hat{j} = \hat{k} \times
+                \hat{k} = \mathbf{0}$</p>
+            <p style="margin-top: 10px;"><strong>Cyclic order (clockwise):</strong></p>
+            <p>$\hat{i} \times \hat{j} = \hat{k} \quad | \quad \hat{j} \times \hat{k} = \hat{i} \quad | \quad \hat{k}
+                \times \hat{i} = \hat{j}$</p>
+            <p style="margin-top: 10px;"><strong>Anti-cyclic order (anti-clockwise):</strong></p>
+            <p>$\hat{j} \times \hat{i} = -\hat{k} \quad | \quad \hat{k} \times \hat{j} = -\hat{i} \quad | \quad \hat{i}
+                \times \hat{k} = -\hat{j}$</p>
+        </div>
+
+        <img src="Images/Cyclic Order of Unit Vectors (î, ĵ, k̂).jpg" alt="Cyclic Order of Unit Vectors (î, ĵ, k̂)"
+            class="content-image">
+        <span class="image-caption">Cyclic Order of Unit Vectors (î, ĵ, k̂)</span>
+
+        <h3>Properties of Cross Product</h3>
+        <ul>
+            <li><strong>Anti-commutative:</strong> $\vec{A} \times \vec{B} = -(\vec{B} \times \vec{A})$ ⚠️ Order
+                matters!</li>
+            <li><strong>Distributive:</strong> $\vec{A} \times (\vec{B} + \vec{C}) = \vec{A} \times \vec{B} + \vec{A}
+                \times \vec{C}$</li>
+            <li><strong>Scalar multiplication:</strong> $(m\vec{A}) \times \vec{B} = m(\vec{A} \times \vec{B})$</li>
+            <li><strong>Self cross product:</strong> $\vec{A} \times \vec{A} = \mathbf{0}$</li>
+        </ul>
+
+        <div class="pink-box">
+            <span class="box-label">Key Condition</span>
+            <p>⚠️ <strong>Condition for Parallel Vectors:</strong></p>
+            <p style="text-align: center; font-size: 1.3rem; font-weight: 700;">If $\vec{A} \times \vec{B} =
+                \mathbf{0}$, then $\vec{A} \parallel \vec{B}$ (parallel)</p>
+            <p style="text-align: center; color: var(--meta-text);">(Because $\theta = 0^\circ$ or $180^\circ$, so $\sin
+                \theta = 0$)</p>
+        </div>
+
+        <div class="example-box">
+            <div class="example-title">📝 Solved Example</div>
+            <p>Check if $\vec{A} = 2\hat{i} + 4\hat{j}$ and $\vec{B} = \hat{i} + 2\hat{j}$ are parallel.</p>
+            <p><strong>Solution:</strong></p>
+            <p>$\vec{A} \times \vec{B} = (2\hat{i} + 4\hat{j}) \times (\hat{i} + 2\hat{j}) = (2)(2) - (4)(1) =
+                \mathbf{0}$</p>
+            <p>Since $\vec{A} \times \vec{B} = \mathbf{0}$, the vectors are <strong>parallel!</strong> ✓</p>
+            <p>(Note: $\vec{A} = 2\vec{B}$, confirming they are parallel)</p>
+        </div>
+
+        <h2>8. Dot Product vs Cross Product</h2>
+        <table class="comparison-table">
+            <tr>
+                <th>Property</th>
+                <th>Dot Product ($\vec{A} \cdot \vec{B}$)</th>
+                <th>Cross Product ($\vec{A} \times \vec{B}$)</th>
+            </tr>
+            <tr>
+                <td><strong>Result Type</strong></td>
+                <td>Scalar (number)</td>
+                <td>Vector</td>
+            </tr>
+            <tr>
+                <td><strong>Formula</strong></td>
+                <td>$AB \cos \theta$</td>
+                <td>$AB \sin \theta \cdot \hat{n}$</td>
+            </tr>
+            <tr>
+                <td><strong>Commutativity</strong></td>
+                <td>Commutative ($\vec{A} \cdot \vec{B} = \vec{B} \cdot \vec{A}$)</td>
+                <td>Anti-commutative ($\vec{A} \times \vec{B} = -\vec{B} \times \vec{A}$)</td>
+            </tr>
+            <tr>
+                <td><strong>When $\theta = 0^\circ$</strong></td>
+                <td>Maximum ($AB$)</td>
+                <td>Zero ($\mathbf{0}$)</td>
+            </tr>
+            <tr>
+                <td><strong>When $\theta = 90^\circ$</strong></td>
+                <td>Zero ($0$)</td>
+                <td>Maximum ($AB$)</td>
+            </tr>
+            <tr>
+                <td><strong>Physical Examples</strong></td>
+                <td>Work, Power</td>
+                <td>Torque, Angular Momentum</td>
+            </tr>
+            <tr>
+                <td><strong>Zero Condition</strong></td>
+                <td>Vectors are Perpendicular ($\perp$)</td>
+                <td>Vectors are Parallel ($\parallel$)</td>
+            </tr>
+        </table>
+
+        <h2>9. Quick Formula Summary</h2>
+        <div class="purple-box">
+            <span class="box-label">Formulas</span>
+            <p><strong>Vector Addition (Parallelogram Law):</strong></p>
+            <p style="text-align: center;">$|\vec{R}| = \sqrt{A^2 + B^2 + 2AB \cos \theta} \quad | \quad \tan \alpha =
+                \frac{B \sin \theta}{A + B \cos \theta}$</p>
+
+            <p style="margin-top: 15px;"><strong>Resolution of Vectors:</strong></p>
+            <p style="text-align: center;">$A_x = A \cos \theta \quad | \quad A_y = A \sin \theta \quad | \quad A =
+                \sqrt{A_x^2 + A_y^2}$</p>
+
+            <p style="margin-top: 15px;"><strong>Unit Vector:</strong></p>
+            <p style="text-align: center;">$\hat{A} = \frac{\vec{A}}{|\vec{A}|}$</p>
+
+            <p style="margin-top: 15px;"><strong>Dot Product:</strong></p>
+            <p style="text-align: center;">$\vec{A} \cdot \vec{B} = AB \cos \theta = A_x B_x + A_y B_y + A_z B_z \quad |
+                \quad \text{If } \vec{A} \cdot \vec{B} = 0 \to \vec{A} \perp \vec{B}$</p>
+
+            <p style="margin-top: 15px;"><strong>Cross Product:</strong></p>
+            <p style="text-align: center;">$|\vec{A} \times \vec{B}| = AB \sin \theta \quad | \quad \text{If } \vec{A}
+                \times \vec{B} = \mathbf{0} \to \vec{A} \parallel \vec{B}$</p>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Pro Tips</span>
+            <p>🎯 <strong>cos</strong> is for <strong>DOT</strong> (same direction component)</p>
+            <p>🎯 <strong>sin</strong> is for <strong>CROSS</strong> (perpendicular component)</p>
+            <p>🎯 Dot product = 0 → <strong>Perpendicular</strong></p>
+            <p>🎯 Cross product = $\mathbf{0}$ → <strong>Parallel</strong></p>
+        </div>
+
+        <!-- BRANDING FOOTER -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
