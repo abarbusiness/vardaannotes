@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Work, Energy, and Power - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #000000;
+            --yellow-border: #fdd835;
+            --green-bg: #000000;
+            --green-border: #81c784;
+            --blue-bg: #000000;
+            --blue-border: #64b5f6;
+            --pink-bg: #000000;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.05);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1); 
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* --- IMAGE STYLING --- */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            margin: 35px 0;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .visual-container img {
+            max-width: 85%;
+            height: auto;
+            border: none;
+            box-shadow: none;
+            transition: filter 0.3s ease;
+        }
+
+        .image-caption {
+            font-size: 0.95rem;
+            color: var(--meta-text);
+            margin-top: 12px;
+            font-style: italic;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        html.dark-mode .visual-container img {
+            filter: invert(1);
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 11 Physics • Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Module 4: Work, Energy, and Power</h1>
+
+        <p><em>Dear Class 12 Student! In your upcoming syllabus, you will encounter terms like <strong>"Electrostatic Potential Energy," "Work done in moving a charge," and "Power of an AC Circuit."</strong> Physics is a cumulative subject. The definitions of Work, Energy, and Power do not change when we move from mechanical blocks to electrons. Master these core mechanical definitions now, and Class 12 Physics will feel like a breeze!</em></p>
+
+        <h2>1. Work Done by a Constant Force</h2>
+        <p>In physics, "Work" has a very specific meaning. Work is said to be done by a force only when the point of application of the force moves in the direction of the force.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Work Done ($W$):</strong> Mathematically, work is defined as the <strong>Dot Product (Scalar Product)</strong> of the Force vector ($\vec{F}$) and the Displacement vector ($\vec{s}$).
+            $$ W = \vec{F} \cdot \vec{s} = Fs \cos \theta $$
+            Where $\theta$ is the angle between the force and displacement vectors. It is a <strong>Scalar Quantity</strong>. SI unit is Joules ($J$).
+        </div>
+
+        <p>Because of the $\cos \theta$ term, work can be:</p>
+        <ul>
+            <li><strong>Positive Work ($\theta < 90^\circ$):</strong> Force assists motion. Example: Gravity pulling an apple down.</li>
+            <li><strong>Negative Work ($\theta > 90^\circ$):</strong> Force opposes motion. Example: Friction acting on a sliding block ($\theta = 180^\circ$, $\cos 180^\circ = -1$).</li>
+            <li><strong>Zero Work ($\theta = 90^\circ$):</strong> Force is perpendicular to motion. Example: Tension in a pendulum string, or the <strong>Magnetic Force on a moving charge</strong> in Class 12 ($\cos 90^\circ = 0$).</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/Module5Diagram of a person pulling a heavy suitcase.jpg" alt="Work Done Calculation">
+            <div class="image-caption">Fig 5.1: Applied force and displacement vectors for work calculation.</div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> A force $\vec{F} = (5\hat{i} + 3\hat{j} + 2\hat{k})$ N is applied over a particle which displaces it from its origin to the point $\vec{s} = (2\hat{i} - \hat{j}) $ m. Find the work done on the particle.
+            
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Work done is the dot product of Force and Displacement: $W = \vec{F} \cdot \vec{s}$<br>
+                $W = (5\hat{i} + 3\hat{j} + 2\hat{k}) \cdot (2\hat{i} - 1\hat{j} + 0\hat{k})$<br>
+                $W = (5 \times 2) + (3 \times -1) + (2 \times 0)$<br>
+                $W = 10 - 3 + 0 = \mathbf{7 \text{ Joules}}$
+            </div>
+        </div>
+
+        <h2>2. Kinetic Energy ($KE = \frac{1}{2}mv^2$)</h2>
+        <p>Kinetic energy is the energy possessed by a body by virtue of its motion. The faster it moves, or the more massive it is, the more kinetic energy it has.</p>
+
+        <div class="green-box">
+            <span class="box-label">Formula</span>
+            <strong>Kinetic Energy ($K$ or $KE$):</strong> 
+            $$ KE = \frac{1}{2}mv^2 $$
+            It is always positive since mass is positive and the square of velocity is positive.
+        </div>
+
+        <p><strong>Crucial Relation for Class 12:</strong> The relationship between Kinetic Energy ($K$) and Linear Momentum ($p$):</p>
+        <p>We know $p = mv \implies v = p/m$. Substituting this into the KE formula:</p>
+        $$ K = \frac{1}{2}m \left(\frac{p}{m}\right)^2 = \frac{p^2}{2m} $$
+        <p><em>Note: You will use this exact formula in the "Dual Nature of Radiation and Matter" (Class 12) to find the de Broglie wavelength of an electron: $\lambda = \frac{h}{\sqrt{2mK}}$.</em></p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2</span>
+            <strong>Question:</strong> Two bodies A and B of masses $m$ and $4m$ respectively have the same linear momentum. What is the ratio of their kinetic energies?
+            
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Given: $p_A = p_B = p$<br>
+                Using $K = \frac{p^2}{2m}$, we see that for a constant momentum, $K \propto \frac{1}{m}$.<br>
+                $\frac{K_A}{K_B} = \frac{m_B}{m_A} = \frac{4m}{m} = \mathbf{4 : 1}$<br>
+                <em>Concept takeaway: The lighter body has more kinetic energy if momenta are equal!</em>
+            </div>
+        </div>
+
+        <h2>3. Work-Energy Theorem (for a constant force)</h2>
+        <p>This is arguably the most powerful tool in mechanics. It connects forces (Work) to kinematics (Energy) directly, without needing to calculate acceleration or time.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Theorem</span>
+            <strong>Statement:</strong> <em>"The net work done by ALL forces acting on a body is equal to the change in its kinetic energy."</em>
+            $$ W_{net} = \Delta K = K_{final} - K_{initial} $$
+        </div>
+
+        <p><strong>Derivation:</strong><br>
+        Using the equation of motion: $v^2 - u^2 = 2as$<br>
+        Multiply both sides by $\frac{1}{2}m$:<br>
+        $\frac{1}{2}mv^2 - \frac{1}{2}mu^2 = \frac{1}{2}m(2as)$<br>
+        $K_f - K_i = (ma)s$<br>
+        Since $F = ma$, we get:<br>
+        $K_f - K_i = Fs \implies \mathbf{\Delta K = W}$</p>
+
+        <div class="visual-container">
+            <img src="Images/Module5Initial Kinetic Energy Kᵢ). An arrow pointing right showing 'Net Force F applying Work W over distance s.jpg" alt="Work Energy Theorem">
+            <div class="image-caption">Fig 5.2: Visualization of the Work-Energy Theorem.</div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3</span>
+            <strong>Question:</strong> A bullet of mass $10 \text{ g}$ moving with a velocity of $400 \text{ m/s}$ gets embedded in a freely suspended wooden block. If it penetrates $20 \text{ cm}$ into the block before stopping, find the average resistive force offered by the block.
+            
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Let's use the Work-Energy Theorem: $W_{net} = K_f - K_i$<br>
+                Initial KE ($K_i$) = $\frac{1}{2} m v^2 = \frac{1}{2} \times 0.010 \times (400)^2 = 800 \text{ J}$<br>
+                Final KE ($K_f$) = $0$ (since the bullet stops).<br>
+                Work done by resistive force = $F \times s \times \cos(180^\circ) = -F \times 0.20 \text{ m}$<br>
+                $-0.20F = 0 - 800$<br>
+                $F = \frac{800}{0.20} = \mathbf{4000 \text{ N}}$
+            </div>
+        </div>
+
+        <h2>4. Concept of Potential Energy (PE)</h2>
+        <p>Potential energy is the stored energy of an object based on its <strong>position</strong> or <strong>configuration</strong> within a conservative force field.</p>
+        <p><em>Important Note:</em> You cannot define absolute potential energy at a point. We only define the <strong>change in potential energy ($\Delta U$)</strong>, which is defined as the negative of the work done by a conservative force.</p>
+        $$ \Delta U = U_f - U_i = - W_{conservative} $$
+
+        <h2>5. Gravitational Potential Energy near Earth's Surface</h2>
+        <p>If you lift a mass $m$ to a height $h$, the work done by gravity is $-mgh$ (force is down, displacement is up). Therefore, the change in potential energy is $-(-mgh) = +mgh$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Formula</span>
+            <strong>Gravitational PE ($U$):</strong>
+            $$ U = mgh $$
+            Where $h$ is the height above a chosen reference level (where $U=0$). The reference level is arbitrary and chosen for mathematical convenience (usually the ground).
+        </div>
+
+        <h2>6. Conservative and Non-Conservative Forces</h2>
+        <p>This distinction is vital for understanding Electrostatics (Chapter 1, Class 12) because the electrostatic force is purely conservative!</p>
+
+        <ul>
+            <li><strong>Conservative Force:</strong> A force is conservative if the work done by it in moving a particle from one point to another <strong>depends only on the initial and final positions</strong> and is <em>independent of the path taken</em>. 
+            <br><em>Examples:</em> Gravitational force, Electrostatic force, Spring force.
+            <br><em>Key property:</em> Work done in a closed loop is ZERO ($\oint \vec{F} \cdot d\vec{s} = 0$).</li>
+            
+            <li style="margin-top: 15px;"><strong>Non-Conservative Force:</strong> A force is non-conservative if the work done depends on the actual path taken. These forces usually dissipate mechanical energy as heat.
+            <br><em>Examples:</em> Friction, Air resistance, Viscous drag.</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/module5diagram showing two distinct paths from Point A (bottom of a mountain) to Point B.jpg" alt="Conservative Forces">
+            <div class="image-caption">Fig 5.3: Path independence of work done by conservative forces.</div>
+        </div>
+
+        <h2>7. Principle of Conservation of Mechanical Energy</h2>
+        <p>If only <strong>conservative forces</strong> are doing work on a system, the total mechanical energy (Kinetic + Potential) of the system remains constant.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Conservation</span>
+            $$ K_i + U_i = K_f + U_f $$
+            $$ \text{Total Mechanical Energy } (E) = K + U = \text{Constant} $$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4</span>
+            <strong>Question:</strong> A simple pendulum of length $1 \text{ m}$ is pulled aside until the string is horizontal, and then released from rest. Find the speed of the pendulum bob at the lowest point of its trajectory. (Take $g = 10 \text{ m/s}^2$, ignore air resistance).
+            
+            <div class="visual-container">
+                <img src="Images/Module5Diagram of a pendulum. Point A is horizontally aligned with the pivot (height = L)..jpg" alt="Pendulum Conservation of Energy">
+                <div class="image-caption">Fig 5.4: Conservation of Mechanical Energy in a simple pendulum.</div>
+            </div>
+
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Let the lowest point be the reference level for PE ($h=0$).<br>
+                <strong>At Initial Horizontal Position (Point A):</strong><br>
+                $v = 0 \implies K_i = 0$<br>
+                Height $h = 1 \text{ m} \implies U_i = mgh = m \times 10 \times 1 = 10m$<br>
+                Total $E_i = 10m$<br><br>
+                <strong>At Lowest Position (Point B):</strong><br>
+                Height $h = 0 \implies U_f = 0$<br>
+                Speed is $v \implies K_f = \frac{1}{2}mv^2$<br>
+                Total $E_f = \frac{1}{2}mv^2$<br><br>
+                By Conservation of Energy: $E_i = E_f$<br>
+                $10m = \frac{1}{2}mv^2 \implies v^2 = 20 \implies \mathbf{v = \sqrt{20} \approx 4.47 \text{ m/s}}$
+            </div>
+        </div>
+
+        <h2>8. Power</h2>
+        <p>Power is the rate at which work is done, or the rate at which energy is transferred.</p>
+
+        <h3>A. Average Power</h3>
+        <p>$$ P_{avg} = \frac{\text{Total Work Done}}{\text{Total Time Taken}} = \frac{W}{t} $$</p>
+
+        <h3>B. Instantaneous Power</h3>
+        <p>The power at a specific instant of time. If a force $\vec{F}$ is pushing an object causing a velocity $\vec{v}$:</p>
+        $$ P_{inst} = \frac{dW}{dt} = \frac{\vec{F} \cdot d\vec{s}}{dt} = \vec{F} \cdot \vec{v} $$
+        <p>SI Unit of Power is the Watt ($W$) = 1 Joule/second. Another common unit is Horsepower ($1 \text{ HP} = 746 \text{ W}$).</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5</span>
+            <strong>Question:</strong> An elevator of total mass (elevator + passengers) $1800 \text{ kg}$ is moving up with a constant speed of $2 \text{ m/s}$. A frictional force of $4000 \text{ N}$ opposes its motion. Determine the minimum power delivered by the motor to the elevator. (Take $g = 10 \text{ m/s}^2$).
+            
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                The motor must pull upward to balance two downward forces (since speed is constant, net force = 0).<br>
+                Downward forces = Weight of elevator + Frictional drag<br>
+                Total downward force = $(1800 \times 10) + 4000 = 18000 + 4000 = 22000 \text{ N}$.<br>
+                Therefore, the force applied by the motor $\vec{F} = 22000 \text{ N}$ (upwards).<br>
+                Velocity $\vec{v} = 2 \text{ m/s}$ (upwards).<br>
+                Since $\vec{F}$ and $\vec{v}$ are in the same direction ($\theta = 0^\circ$):<br>
+                Power $P = Fv \cos(0^\circ) = 22000 \times 2 = \mathbf{44000 \text{ W}} \text{ or } \mathbf{44 \text{ kW}}$
+            </div>
+        </div>
+
+        <h2>9. Elastic and Inelastic Collisions in One Dimension</h2>
+        <p>A collision is an isolated event in which two or more colliding bodies exert strong forces on each other for a relatively short time. <strong>In ALL collisions, the total linear momentum is conserved</strong> (because external forces are negligible).</p>
+
+        <ul>
+            <li><strong>Elastic Collision:</strong> A collision where there is NO loss of kinetic energy. Both Momentum and Kinetic Energy are conserved.<br>
+            <em>(e.g., Collisions between atomic or subatomic particles, or idealized billiard balls).</em></li>
+            
+            <li style="margin-top: 10px;"><strong>Inelastic Collision:</strong> A collision where kinetic energy is NOT conserved. Some KE is transformed into heat, sound, or deformation energy. Momentum is still conserved.<br>
+            <em>(e.g., Car crashes, a bouncing rubber ball that doesn't reach its original height).</em></li>
+            
+            <li style="margin-top: 10px;"><strong>Perfectly Inelastic Collision:</strong> A special case of inelastic collision where the two bodies stick together after colliding and move with a common velocity. This results in the <em>maximum</em> possible loss of kinetic energy.<br>
+            <em>(e.g., A bullet getting embedded in a wooden block).</em></li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/modul3Top Panel (Elastic Collision) Two hard billiard balls bouncing perfectly off each other with speed lines showing preserved energy.jpg" alt="Elastic and Inelastic Collisions">
+            <div class="image-caption">Fig 5.5: Comparison of Elastic and Inelastic Collisions.</div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

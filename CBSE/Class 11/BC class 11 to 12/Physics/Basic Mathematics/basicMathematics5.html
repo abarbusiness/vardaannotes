@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Part 7: Vectors | Physics Math | Vardaan</title>
+    <title>Part 5: Calculus — Differentiation | Physics Math | Vardaan</title>
 
     <!-- MathJax for rendering LaTeX math formulas -->
     <script>
@@ -16,6 +16,9 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* --- CSS VARIABLES (Vardaan Theming) --- */
@@ -41,16 +44,16 @@
 
         /* --- DARK MODE VARIABLES --- */
         html.dark-mode {
-            --yellow-bg: #3f3a00;
+            --yellow-bg: #000000;
             --yellow-border: #fdd835;
-            --green-bg: #0f2e13;
+            --green-bg: #000000;
             --green-border: #81c784;
-            --blue-bg: #0d1b2a;
+            --blue-bg: #000000;
             --blue-border: #64b5f6;
-            --pink-bg: #300815;
+            --pink-bg: #000000;
             --pink-border: #f06292;
             --text-main: #e0e0e0;
-            --paper-bg: #121212;
+            --paper-bg: #000000;
             --accent-purple: #d1c4e9;
             --meta-text: #aaaaaa;
             --example-bg: rgba(255, 255, 255, 0.05);
@@ -390,8 +393,25 @@
             color: var(--blue-border);
             font-weight: bold;
         }
+        
+        .table-wide { width:100%; border-collapse:collapse; margin:14px 0; background: var(--example-bg); }
+        .table-wide th, .table-wide td { border:1px solid var(--toggle-border); padding:8px 12px; text-align:center; font-size:.97rem; }
+        .table-wide th { background:var(--pink-bg); color:var(--pink-border); font-weight:700; }
 
-        .vec-svg { display:block; margin:20px auto; background: var(--example-bg); border-radius: 8px; border: 1px solid var(--toggle-border); }
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--example-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--toggle-border);
+        }
+
+        .physics-insight { border-left:4px solid #ff8f00; background:#fff8e1; padding:12px 18px; border-radius:0 8px 8px 0; margin:20px 0; font-size:.97rem; }
+        html.dark-mode .physics-insight { background:#2a1f00; border-left-color:#ffca28; }
+        .physics-insight strong { color:#e65100; }
+        html.dark-mode .physics-insight strong { color:#ffcc02; }
 
         /* --- THEME TOGGLE --- */
         .theme-toggle {
@@ -486,8 +506,10 @@
             .yellow-box,
             .pink-box,
             .solved-example,
+            .chart-container,
             .card,
-            .vec-svg {
+            .physics-insight,
+            .table-wide {
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
@@ -561,7 +583,7 @@
         <div class="branding-header">
             <div class="created-by" style="color: var(--meta-text); font-size: 0.8rem; margin-bottom: 5px;">Created by Team Vardaan with ❤️</div>
             <div class="institute-name">Vardaan Learning Institute</div>
-            <div class="system-name">CLASS 11 PHYSICS • BASIC MATHEMATICS — PART 7 OF 7</div>
+            <div class="system-name">CLASS 11 PHYSICS • BASIC MATHEMATICS — PART 5 OF 7</div>
             <div class="powered-by" style="margin-top: 5px;">Powered by Vardaan Comet</div>
 
             <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
@@ -576,112 +598,159 @@
             <a href="basicMathematics2.html" class="pill">2: Logarithms</a>
             <a href="basicMathematics3.html" class="pill">3: Trigonometry</a>
             <a href="basicMathematics4.html" class="pill">4: Coord. Geometry</a>
-            <a href="basicMathematics5.html" class="pill">5: Differentiation</a>
+            <a href="basicMathematics5.html" class="pill active">5: Differentiation</a>
             <a href="basicMathematics6.html" class="pill">6: Integration</a>
-            <a href="basicMathematics7.html" class="pill active">7: Vectors</a>
+            <a href="basicMathematics7.html" class="pill">7: Vectors</a>
         </nav>
 
         <!-- DYNAMIC CONTENT STARTS HERE -->
-        <h1>VECTORS <span style="font-size: 0.9rem; background: var(--green-border); color: white; padding: 2px 8px; border-radius: 10px; vertical-align: middle;">FINAL PART</span></h1>
+        <h1>CALCULUS — DIFFERENTIATION</h1>
 
         <div class="blue-box">
             <span class="box-label">WHY THIS MATTERS</span>
-            <p>The real world is <strong>3-dimensional</strong>. A force isn't just a number — it has magnitude AND direction. A vector is the mathematical object that captures both. Velocity, force, momentum — every important quantity in physics is a vector. <strong>Understanding vectors means understanding physics itself.</strong></p>
+            <p>Calculus is the mathematical engine that drives all of physics. <strong>Differentiation</strong> answers the question: <em>"At this exact instant, how fast is this quantity changing?"</em>. Velocity is the derivative of position. Acceleration is the derivative of velocity. Finding maxima and minima of functions — projectile range, maximum kinetic energy — all need differentiation.</p>
         </div>
 
-        <h2>§1. Scalars vs. Vectors</h2>
+        <h2>§1. The Concept of Rate of Change</h2>
+        <h3>Average Rate vs. Instantaneous Rate</h3>
         <div class="card-grid">
-            <div class="card" style="border-top:4px solid var(--blue-border)">
-                <strong>Scalar Quantities:</strong> Only have <em>magnitude</em>. Examples: Mass, Time, Energy, Distance, Speed.
+            <div class="card">
+                <strong>Average Rate of Change</strong><br><br>
+                Over a finite interval $[x_1, x_2]$:<br>
+                $$\frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1}$$
+                This is the slope of the <em>secant line</em> joining two points.
             </div>
-            <div class="card" style="border-top:4px solid var(--pink-border)">
-                <strong>Vector Quantities:</strong> Have both <em>magnitude and direction</em>. Examples: Displacement, Velocity, Force, Momentum.
+            <div class="card">
+                <strong>Instantaneous Rate (Derivative)</strong><br><br>
+                As $\Delta x \to 0$:<br>
+                $$\frac{dy}{dx} = \lim_{\Delta x \to 0}\frac{f(x+\Delta x) - f(x)}{\Delta x}$$
+                This is the slope of the <em>tangent line</em> at a single point.
             </div>
         </div>
 
-        <div class="yellow-box">
-            <span class="box-label">NOTATION</span>
-            <p>Vectors are written with an arrow: $\vec{A}$ or in bold: $\mathbf{A}$. Magnitude of $\vec{A}$ is written as $|\vec{A}|$ or simply $A$.</p>
+        <div class="chart-container">
+            <canvas id="secantChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Secant line approaching tangent at $x=2$ on $y=x^2$</p>
         </div>
 
-        <h2>§2. Types of Vectors</h2>
-        <div class="card-grid">
-            <div class="card"><strong>Unit Vector ($\hat{A}$):</strong> Magnitude exactly 1. $\hat{A} = \vec{A}/|\vec{A}|$. Standard: $\hat{i}, \hat{j}, \hat{k}$.</div>
-            <div class="card"><strong>Null Vector:</strong> Magnitude = 0. Direction undefined.</div>
-            <div class="card"><strong>Equal Vectors:</strong> Same magnitude AND direction.</div>
-            <div class="card"><strong>Negative Vector:</strong> Same magnitude, opposite direction.</div>
+        <div class="physics-insight">
+            <strong>⚛️ Physics Interpretation:</strong><br>
+            If $s(t)$ = displacement, then:<br>
+            • $v = \frac{ds}{dt}$ = Instantaneous velocity (slope of s-t graph)<br>
+            • $a = \frac{dv}{dt} = \frac{d^2s}{dt^2}$ = Instantaneous acceleration (slope of v-t graph)
         </div>
 
-        <h2>§3. Vector Addition</h2>
-        <h3>Triangle Law & Parallelogram Law</h3>
-        <p>If two vectors $\vec{A}$ and $\vec{B}$ act at an angle $\theta$, their resultant $\vec{R} = \vec{A} + \vec{B}$ is:</p>
-
+        <h2>§2. First Principles of Differentiation</h2>
         <div class="blue-box">
-            <span class="box-label">MAGNITUDE & DIRECTION</span>
+            <span class="box-label">DEFINITION</span>
             <div style="text-align: center; font-size: 1.25rem; margin: 15px 0;">
-                $$|\vec{R}| = \sqrt{A^2 + B^2 + 2AB\cos\theta}$$
-                $$\tan\alpha = \frac{B\sin\theta}{A + B\cos\theta}$$
+                $$f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
             </div>
-        </div>
-
-        <!-- TRIANGLE LAW SVG -->
-        <svg class="vec-svg" width="300" height="150" viewBox="0 0 300 150">
-            <defs>
-                <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                    <path d="M0,0 L0,6 L9,3 z" fill="#1e88e5" />
-                </marker>
-            </defs>
-            <line x1="50" y1="120" x2="180" y2="120" stroke="#1e88e5" stroke-width="2.5" marker-end="url(#arrow)" />
-            <text x="115" y="140" fill="#1e88e5">$\vec{A}$</text>
-            <line x1="180" y1="120" x2="250" y2="40" stroke="#43a047" stroke-width="2.5" marker-end="url(#arrow)" />
-            <text x="220" y="80" fill="#43a047">$\vec{B}$</text>
-            <line x1="50" y1="120" x2="250" y2="40" stroke="#d81b60" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#arrow)" />
-            <text x="130" y="70" fill="#d81b60">$\vec{R} = \vec{A} + \vec{B}$</text>
-        </svg>
-
-        <h2>§4. Resolution of a Vector (Components)</h2>
-        <div class="green-box">
-            <span class="box-label">RESOLUTION</span>
-            <p>$A_x = A\cos\theta \qquad A_y = A\sin\theta$</p>
-            <p>$\vec{A} = A_x\hat{i} + A_y\hat{j} = (A\cos\theta)\hat{i} + (A\sin\theta)\hat{j}$</p>
         </div>
 
         <div class="solved-example">
-            <p><strong>Example:</strong> Force of 50 N acts at 37° above horizontal. Find components.</p>
-            <p>$F_x = 50\cos 37° = 50(0.8) = \mathbf{40\text{ N}}$</p>
-            <p>$F_y = 50\sin 37° = 50(0.6) = \mathbf{30\text{ N}}$</p>
+            <p><strong>Derivation from First Principles: $f(x) = x^3$</strong></p>
+            <p>$f'(x) = \lim_{h\to 0}\frac{(x+h)^3 - x^3}{h}$. Expanding gives $3x^2h + 3xh^2 + h^3$. Dividing by $h$ and letting $h \to 0$ results in $\mathbf{3x^2}$.</p>
         </div>
 
-        <h2>§5. Dot Product & Cross Product</h2>
+        <h2>§3. Standard Derivative Formulas</h2>
+        <p>These are the fundamental building blocks. <strong>Memorize every single one.</strong></p>
+        <table class="table-wide">
+            <thead>
+                <tr><th>Function $f(x)$</th><th>Derivative $f'(x)$</th><th>Function $f(x)$</th><th>Derivative $f'(x)$</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>$c$ (constant)</td><td>$0$</td><td>$\sin x$</td><td>$\cos x$</td></tr>
+                <tr><td>$x^n$</td><td>$nx^{n-1}$</td><td>$\cos x$</td><td>$-\sin x$</td></tr>
+                <tr><td>$\sqrt{x} = x^{1/2}$</td><td>$\frac{1}{2\sqrt{x}}$</td><td>$\tan x$</td><td>$\sec^2 x$</td></tr>
+                <tr><td>$e^x$</td><td>$e^x$</td><td>$\ln x$</td><td>$1/x$</td></tr>
+                <tr><td>$\ln x$</td><td>$1/x$</td><td>$\sin^{-1} x$</td><td>$1/\sqrt{1-x^2}$</td></tr>
+            </tbody>
+        </table>
+
+        <h2>§4. The Golden Rules of Differentiation</h2>
         <div class="card-grid">
-            <div class="card">
-                <strong>Dot Product (Scalar):</strong><br>
-                $\vec{A}\cdot\vec{B} = AB\cos\theta$<br>
-                Physics: Work, Power, Flux.
+            <div class="card" style="border-top:4px solid var(--blue-border)">
+                <strong>1. Constant Multiple Rule</strong><br><br>
+                $\frac{d}{dx}[cf(x)] = c \cdot f'(x)$
             </div>
-            <div class="card">
-                <strong>Cross Product (Vector):</strong><br>
-                $|\vec{A}\times\vec{B}| = AB\sin\theta$<br>
-                Physics: Torque, Angular Momentum.
+            <div class="card" style="border-top:4px solid var(--green-border)">
+                <strong>2. Sum / Difference Rule</strong><br><br>
+                $\frac{d}{dx}[f \pm g] = f' \pm g'$
             </div>
+            <div class="card" style="border-top:4px solid var(--pink-border)">
+                <strong>3. Product Rule (UV)</strong><br><br>
+                $\frac{d}{dx}[uv] = u'v + uv'$
+            </div>
+            <div class="card" style="border-top:4px solid var(--accent-purple)">
+                <strong>4. Quotient Rule (U/V)</strong><br><br>
+                $\frac{d}{dx}[\frac{u}{v}] = \frac{u'v - uv'}{v^2}$
+            </div>
+            <div class="card" style="border-top:4px solid #ff8f00">
+                <strong>5. Chain Rule</strong><br><br>
+                $\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Product Rule Example:</strong> Differentiate $y = x^2\sin x$</p>
+            <p>$\frac{dy}{dx} = (2x)(\sin x) + (x^2)(\cos x) = \mathbf{2x\sin x + x^2\cos x}$</p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Chain Rule Example:</strong> Differentiate $y = (3x^2 + 5)^4$</p>
+            <p>$\frac{dy}{dx} = 4(3x^2+5)^3 \cdot (6x) = \mathbf{24x(3x^2+5)^3}$</p>
+        </div>
+
+        <h2>§5. Higher Order Derivatives</h2>
+        <p>The derivative of a derivative is the <strong>Second Derivative</strong> ($\frac{d^2y}{dx^2}$).</p>
+        <div class="physics-insight">
+            <strong>⚛️ Physics Meaning:</strong><br>
+            If $s$ is displacement: $v = \frac{ds}{dt}$ (velocity), $a = \frac{d^2s}{dt^2}$ (acceleration). In SHM: $\frac{d^2x}{dt^2} = -\omega^2 x$.
+        </div>
+
+        <h2>§6. Application — Maxima & Minima</h2>
+        <div class="blue-box">
+            <span class="box-label">METHOD</span>
+            <p><strong>Step 1:</strong> Set $\frac{dy}{dx} = 0$. Solve for $x$ (Critical points).</p>
+            <p><strong>Step 2:</strong> Check $\frac{d^2y}{dx^2}$ at those points:</p>
+            <ul>
+                <li>If $\frac{d^2y}{dx^2} < 0$ → <strong>Maxima</strong></li>
+                <li>If $\frac{d^2y}{dx^2} > 0$ → <strong>Minima</strong></li>
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="maxMinChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Maxima and Minima of $y = x^3 - 3x$</p>
         </div>
 
         <h2>Practice Questions</h2>
         <div class="green-box">
-            <span class="box-label">DRILL 1 — BASIC VECTORS</span>
+            <span class="box-label">DRILL 1 — STANDARD DERIVATIVES</span>
             <ul class="drill-list">
-                <li>1. Find the magnitude of $\vec{A} = 3\hat{i} - 4\hat{j}$.</li>
-                <li>2. Two forces of 6 N and 8 N act at 90°. Find the resultant.</li>
-                <li>3. Find the unit vector along $\vec{B} = 6\hat{i} + 2\hat{j} + 3\hat{k}$.</li>
+                <li>1. Differentiate $y = 5x^4 - 3x^2 + 7x - 2$</li>
+                <li>2. Differentiate $y = \sqrt{x} + 1/\sqrt{x}$</li>
+                <li>3. Find $dy/dx$ for $y = 3e^x - 2\ln x$</li>
+                <li>4. Differentiate $y = \sin x + \cos x - \tan x$</li>
             </ul>
         </div>
 
         <div class="blue-box">
-            <span class="box-label">DRILL 2 — PRODUCTS</span>
+            <span class="box-label">DRILL 2 — PRODUCT, QUOTIENT & CHAIN RULES</span>
             <ul class="drill-list">
-                <li value="4">4. Find $\vec{A}\cdot\vec{B}$ if $\vec{A}=2\hat{i}+3\hat{j}$ and $\vec{B}=\hat{i}-2\hat{j}$.</li>
-                <li>5. Find work done by $\vec{F}=5\hat{i}+3\hat{j}$ N in displacement $\vec{d}=2\hat{i}+4\hat{j}$ m.</li>
-                <li>6. The dot product of two vectors is zero. What is the angle between them?</li>
+                <li value="5">5. Differentiate $y = x^3\cos x$</li>
+                <li>6. Differentiate $y = e^x \sin x$</li>
+                <li>7. Differentiate $y = \sin(3x^2)$</li>
+                <li>8. Differentiate $y = (2x^3 - 5)^6$</li>
+            </ul>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">DRILL 3 — MAXIMA/MINIMA</span>
+            <ul class="drill-list">
+                <li value="9">9. Find the maxima/minima of $y = x^3 - 3x$</li>
+                <li>10. A ball height is $h = 40t - 5t^2$. When is $h$ maximum?</li>
             </ul>
         </div>
 
@@ -694,20 +763,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr><td>1</td><td>$|\vec{A}| = \sqrt{3^2 + (-4)^2} = \sqrt{25} = \mathbf{5}$</td></tr>
-                <tr><td>2</td><td>$R = \sqrt{6^2 + 8^2} = \mathbf{10\text{ N}}$</td></tr>
-                <tr><td>3</td><td>$|\vec{B}| = \sqrt{36+4+9} = 7$. $\hat{B} = \mathbf{(6\hat{i}+2\hat{j}+3\hat{k})/7}$</td></tr>
-                <tr><td>4</td><td>$(2)(1) + (3)(-2) = 2 - 6 = \mathbf{-4}$</td></tr>
-                <tr><td>5</td><td>$W = \vec{F}\cdot\vec{d} = 10 + 12 = \mathbf{22\text{ J}}$</td></tr>
-                <tr><td>6</td><td>$\cos\theta = 0 \implies \mathbf{90°}$ (Perpendicular)</td></tr>
+                <tr><td>1</td><td>$20x^3 - 6x + 7$</td></tr>
+                <tr><td>2</td><td>$\frac{1}{2\sqrt{x}} - \frac{1}{2x^{3/2}}$</td></tr>
+                <tr><td>3</td><td>$3e^x - 2/x$</td></tr>
+                <tr><td>5</td><td>$3x^2\cos x - x^3\sin x$</td></tr>
+                <tr><td>6</td><td>$e^x(\sin x + \cos x)$</td></tr>
+                <tr><td>7</td><td>$6x\cos(3x^2)$</td></tr>
+                <tr><td>9</td><td>Max at $x=-1$, Min at $x=1$</td></tr>
+                <tr><td>10</td><td>$dh/dt = 40 - 10t = 0 \implies t = \mathbf{4\text{ s}}$</td></tr>
             </tbody>
         </table>
 
         <!-- BRANDING FOOTER (MANDATORY) -->
-        <div class="branding-footer" style="border-top: 1px solid var(--toggle-border); padding-top: 20px;">
+        <div class="branding-footer">
             <p class="created-by">Created by Team Vardaan ❤️</p>
             <p class="powered-by">Powered by Vardaan Comet</p>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: var(--green-border); font-weight: bold;">SERIES COMPLETE! YOU ARE READY FOR PHYSICS.</p>
         </div>
 
     </div>
@@ -717,7 +787,72 @@
         // Theme Toggle Logic
         function toggleTheme() {
             document.documentElement.classList.toggle('dark-mode');
+            rebuildAll();
         }
+
+        let charts = [];
+        function tc() { return document.documentElement.classList.contains('dark-mode') ? '#aaa' : '#666'; }
+        function gc() { return document.documentElement.classList.contains('dark-mode') ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'; }
+
+        function destroyAll() {
+            charts.forEach(c => c.destroy());
+            charts = [];
+        }
+
+        function buildAll() {
+            const tColor = tc(), gColor = gc();
+
+            // 1. Secant/Tangent Chart
+            const ctx1 = document.getElementById('secantChart').getContext('2d');
+            const xl1 = [], y1 = [], y2 = [];
+            for (let x = 0; x <= 4; x += 0.2) {
+                xl1.push(x.toFixed(1));
+                y1.push(x * x);
+                y2.push(4 * x - 4); // Tangent at x=2
+            }
+            charts.push(new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: xl1,
+                    datasets: [
+                        { label: 'y = x²', data: y1, borderColor: '#1e88e5', borderWidth: 2.5, pointRadius: 0 },
+                        { label: 'Tangent at x=2', data: y2, borderColor: '#43a047', borderWidth: 2, pointRadius: 0, borderDash: [5, 5] }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: tColor } }, title: { display: true, text: 'Curve and Tangent', color: tColor } },
+                    scales: { x: { ticks: { color: tColor }, grid: { color: gColor } }, y: { ticks: { color: tColor }, grid: { color: gColor } } }
+                }
+            }));
+
+            // 2. Max/Min Chart
+            const ctx2 = document.getElementById('maxMinChart').getContext('2d');
+            const xl2 = [], y3 = [];
+            for (let x = -2.5; x <= 2.5; x += 0.1) {
+                xl2.push(x.toFixed(1));
+                y3.push(x * x * x - 3 * x);
+            }
+            charts.push(new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: xl2,
+                    datasets: [{ label: 'y = x³ - 3x', data: y3, borderColor: '#d81b60', borderWidth: 2.5, pointRadius: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: tColor } }, title: { display: true, text: 'Local Maximum and Minimum', color: tColor } },
+                    scales: { x: { ticks: { color: tColor }, grid: { color: gColor } }, y: { ticks: { color: tColor }, grid: { color: gColor } } }
+                }
+            }));
+        }
+
+        function rebuildAll() {
+            destroyAll();
+            buildAll();
+        }
+
+        window.addEventListener('load', buildAll);
     </script>
 </body>
 

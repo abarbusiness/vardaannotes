@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Laws of Motion - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #000000;
+            --yellow-border: #fdd835;
+            --green-bg: #000000;
+            --green-border: #81c784;
+            --blue-bg: #000000;
+            --blue-border: #64b5f6;
+            --pink-bg: #000000;
+            --pink-border: #f06292;
+            --purple-bg: #000000;
+            --purple-border: #ba68c8;
+            --orange-bg: #000000;
+            --orange-border: #ffb74d;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1); 
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px; /* TIGHTENED LAYOUT */
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO (Updated V2.2) --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            
+            /* DEFAULT STATE: Hidden on screen */
+            display: none;
+            
+            /* Layout properties (active when visible) */
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            
+            /* TIGHTENED LAYOUT */
+            margin-top: 5px; 
+            
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label {
+            color: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .solution {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dotted var(--toggle-border);
+            font-size: 0.95rem;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            /* 1. Reset Colors to Clean White/Black */
+            body { 
+                background-color: #ffffff !important; 
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+            
+            .paper-sheet { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                box-shadow: none !important;
+            }
+
+            /* 2. FORCE HIDE Toggle & Web Footer ONLY */
+            .theme-toggle, 
+            .branding-footer {
+                display: none !important;
+            }
+
+            /* 3. FORCE SHOW Contact Info in Print (Updated V2.2) */
+            .contact-info {
+                display: flex !important;
+            }
+
+            /* 4. Force Watermark Visibility in Print */
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+                mix-blend-mode: normal !important; 
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+
+            .watermark-image {
+                filter: none !important; 
+                max-width: 80% !important;
+            }
+
+            /* 5. Configure PDF/Print Page Numbers */
+            @page {
+                size: A4;
+                margin: 2cm;
+                
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+
+                /* The Pink Disc */
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60; 
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box {
+            border: 2px dashed #999;
+            background-color: rgba(150, 150, 150, 0.1);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-family: monospace;
+            text-align: center;
+        }
+        
+        /* Utility for centering SVGs and Canvas */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .visual-container img {
+            max-width: 85%; /* Ideal dimension: not too wide, not too small */
+            height: auto;
+            border: none;
+            box-shadow: none;
+            transition: filter 0.3s ease;
+        }
+
+        /* Invert images in dark mode as requested */
+        html.dark-mode .visual-container img {
+            filter: invert(1);
+        }
+
+        .image-caption {
+            font-size: 0.9rem;
+            color: var(--meta-text);
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+        
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 11 Physics • Chapter Notes</div>
+            
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Module 4: Laws of Motion</h1>
+        
+        <p><em>Dear Class 12 Student, welcome! Before we dive into advanced concepts like Electrostatics and Electromagnetism in Class 12, it is <strong>strictly mandatory</strong> that you master the concepts in this module. Mechanics is the language of Physics. If you don't understand how forces interact here, you will struggle to understand how electric and magnetic forces interact later. Read these notes meticulously!</em></p>
+
+        <h2>1. Concept of Force and Inertia</h2>
+        <p>In our daily experience, we push, pull, or lift things. This interaction that changes or tends to change the state of rest or uniform motion of an object is called a <strong>Force</strong>.</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Force ($F$):</strong> A push or pull which changes or tends to change the state of rest, uniform motion, or direction of motion of a body. It is a <strong>Vector Quantity</strong>. SI unit is Newton ($N$).
+        </div>
+
+        <p><strong>Inertia</strong> is the inherent property of a material body by virtue of which it cannot change its state of rest or uniform motion in a straight line on its own. There are three types of inertia:</p>
+        <ul>
+            <li><strong>Inertia of Rest:</strong> A book lying on a table will remain there until someone moves it.</li>
+            <li><strong>Inertia of Motion:</strong> Passengers fall forward when a moving bus stops suddenly (their lower body stops with the bus, but upper body tries to stay in motion).</li>
+            <li><strong>Inertia of Direction:</strong> Mud flying tangentially off a spinning bicycle wheel.</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/Module4illustration of passengers inside a bus.jpg" alt="Inertia of Motion - Passengers in a Bus">
+            <div class="image-caption">Fig 4.1: Passengers leaning forward due to inertia of motion when the bus stops.</div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <strong>Mass is the measure of Inertia.</strong> A heavier object (like a truck) has more inertia than a lighter object (like a bicycle). It is harder to start, stop, or turn a truck than a bicycle.
+        </div>
+
+        <h2>2. Newton's First Law of Motion</h2>
+        <p>Often known as the <strong>Law of Inertia</strong> (originally proposed by Galileo), this law provides the qualitative definition of force.</p>
+        <p><strong>Statement:</strong> <em>"Every body continues to be in its state of rest or of uniform motion in a straight line unless compelled by some external unbalanced force to act otherwise."</em></p>
+
+        <p>What this means for Class 12: If you see a charged particle moving with a constant velocity (constant speed and straight line), or resting perfectly still, you immediately know that the <strong>Net Force on it is ZERO</strong> ($\Sigma F = 0$).</p>
+
+        <h2>3. Linear Momentum ($p = mv$)</h2>
+        <p>Momentum is mathematically the product of an object's mass and its velocity. Think of it as the <strong>"Quantity of Motion"</strong> contained in a body.</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Linear Momentum ($\vec{p}$):</strong> 
+            $$ \vec{p} = m \vec{v} $$
+            It is a <strong>Vector Quantity</strong>. Its direction is the same as the direction of velocity. SI unit is $kg \cdot m/s$.
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            Imagine a bullet (small mass, high velocity) and a truck (huge mass, low velocity). Both can have the <strong>same momentum</strong> and both require the same amount of effort (Impulse) to bring them to rest in a given time!
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Module4ConparativeIllustrative.jpg" alt="Momentum Comparison - Bullet vs Truck">
+            <div class="image-caption">Fig 4.2: Comparison of momentum for objects with different masses and velocities.</div>
+        </div>
+
+        <h2>4. Newton's Second Law of Motion ($F = ma$)</h2>
+        <p>While the first law tells us what happens when force is absent, the second law tells us how to calculate the force.</p>
+        <p><strong>Statement:</strong> <em>"The rate of change of linear momentum of a body is directly proportional to the applied external force and takes place in the direction in which the force acts."</em></p>
+
+        <p><strong>Mathematical Derivation:</strong></p>
+        <p>Let Force be $\vec{F}$, and momentum be $\vec{p}$. According to the law:</p>
+        $$ \vec{F} \propto \frac{d\vec{p}}{dt} $$
+        $$ \vec{F} = k \frac{d}{dt}(m\vec{v}) $$
+        <p>In SI units, $k = 1$. If the mass $m$ remains constant (which is true for almost all classical mechanics problems we solve), we can pull $m$ out of the differentiation:</p>
+        $$ \vec{F} = m \left(\frac{d\vec{v}}{dt}\right) $$
+        <p>Since $\frac{d\vec{v}}{dt}$ is acceleration ($\vec{a}$):</p>
+        $$ \vec{F} = m\vec{a} $$
+
+        <div class="yellow-box">
+            <span class="box-label">Important Trap</span>
+            Class 12 students beware: $F = ma$ is <strong>only valid when mass is constant</strong>. The fundamental formula is $F = \frac{dp}{dt}$. If mass changes (like a rocket ejecting fuel), you must use $F = m\frac{dv}{dt} + v\frac{dm}{dt}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> A constant force acting on a body of mass $3.0 \text{ kg}$ changes its speed from $2.0 \text{ m/s}$ to $3.5 \text{ m/s}$ in $25 \text{ s}$. The direction of the motion of the body remains unchanged. What is the magnitude and direction of the force?
+            
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Given: $m = 3.0 \text{ kg}$, $u = 2.0 \text{ m/s}$, $v = 3.5 \text{ m/s}$, $t = 25 \text{ s}$.<br>
+                1. Find acceleration ($a$): $a = \frac{v - u}{t} = \frac{3.5 - 2.0}{25} = \frac{1.5}{25} = 0.06 \text{ m/s}^2$<br>
+                2. Apply Newton's 2nd Law: $F = ma = 3.0 \times 0.06 = \mathbf{0.18 \text{ N}}$<br>
+                <em>Direction:</em> Along the direction of motion.
+            </div>
+        </div>
+
+        <h2>5. Impulse and Impulsive Force</h2>
+        <p>Sometimes, a very large force acts for a very short duration of time (e.g., a bat hitting a cricket ball, or a hammer striking a nail). We call this an <strong>Impulsive Force</strong>. It is difficult to measure the force and time separately, so we measure their product, called <strong>Impulse</strong>.</p>
+
+        <p><strong>Impulse ($J$ or $I$):</strong> Product of average force and the time interval.</p>
+        $$ \vec{J} = \vec{F}_{avg} \times \Delta t $$
+        
+        <p><strong>Impulse-Momentum Theorem:</strong></p>
+        <p>Since $\vec{F} = \frac{\Delta\vec{p}}{\Delta t}$, we can write $\vec{F} \Delta t = \Delta\vec{p}$. Therefore:</p>
+        $$ \vec{J} = \Delta\vec{p} = \vec{p}_{final} - \vec{p}_{initial} $$
+        <p><em>Example:</em> A cricket fielder pulls his hands backward while catching a ball. By increasing the time ($\Delta t$) of catching, he reduces the force ($\vec{F}$) exerted by the ball on his hands, since the change in momentum ($\Delta\vec{p}$) remains constant.</p>
+
+        <h2>6. Newton's Third Law of Motion</h2>
+        <p><strong>Statement:</strong> <em>"To every action, there is always an equal and opposite reaction."</em></p>
+        $$ \vec{F}_{AB} = - \vec{F}_{BA} $$
+        <p>(Force on body A by body B is equal and opposite to Force on body B by body A).</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            Action and Reaction pairs <strong>NEVER act on the same body</strong>. They act on two different bodies. Therefore, they never cancel each other out! 
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Module4diagram showing a person's foot walking on ground.jpg" alt="Newton's Third Law - Walking">
+            <div class="image-caption">Fig 4.3: Action-Reaction pairs during walking.</div>
+        </div>
+
+        <h2>7. Law of Conservation of Linear Momentum</h2>
+        <p>This is a direct consequence of the Second and Third Laws. It is heavily used in modern physics (nuclear reactions, collisions of atoms).</p>
+        <p><strong>Statement:</strong> <em>"In an isolated system (where net external force is zero), the total linear momentum of the system remains constant."</em></p>
+        $$ \text{If } \vec{F}_{ext} = 0, \text{ then } \frac{d\vec{p}}{dt} = 0 \implies \vec{p}_{total} = \text{Constant} $$
+        
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2</span>
+            <strong>Question:</strong> A shell of mass $0.020 \text{ kg}$ is fired by a gun of mass $100 \text{ kg}$. If the muzzle speed of the shell is $80 \text{ m/s}$, what is the recoil speed of the gun?
+            
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Initial momentum of system (Gun + Shell) = 0 (since both are at rest).<br>
+                Final momentum = $m_{\text{shell}} v_{\text{shell}} + m_{\text{gun}} v_{\text{gun}}$<br>
+                By Conservation of Momentum:<br>
+                $0 = (0.020 \times 80) + (100 \times v_{\text{gun}})$<br>
+                $0 = 1.6 + 100 v_{\text{gun}}$<br>
+                $v_{\text{gun}} = \frac{-1.6}{100} = \mathbf{-0.016 \text{ m/s}}$ (The negative sign indicates recoil direction).
+            </div>
+        </div>
+
+        <h2>8. Common Forces in Mechanics</h2>
+        <p>To master Class 12 Physics, you must accurately identify these three fundamental mechanical forces at a glance:</p>
+
+        <h3>A. Weight ($W$)</h3>
+        <p>The gravitational force with which the Earth pulls an object. It always acts <strong>vertically downwards</strong> towards the center of the earth, regardless of the angle of the surface the object is on.</p>
+        $$ W = mg $$
+
+        <h3>B. Normal Reaction ($N$ or $R$)</h3>
+        <p>The contact force exerted by a surface on an object. It acts <strong>perpendicular (normal)</strong> to the surfaces in contact, pushing away from the surface.</p>
+
+        <h3>C. Tension ($T$)</h3>
+        <p>The pulling force transmitted through a string, rope, or cable. It always acts <strong>away from the tied mass</strong> and along the string.</p>
+
+        <div class="visual-container">
+            <img src="Images/Module4A solid metallic block is hanging suspended from a ceiling by a single string.jpg" alt="Tension and Weight in a suspended block">
+            <div class="image-caption">Fig 4.4: Tension (T) and Weight (mg) acting on a suspended block.</div>
+        </div>
+
+        <h2>9. Concept and Drawing of Free Body Diagrams (FBD)</h2>
+        <p>This is the most critical skill for a Class 12 student. An FBD is a diagram that isolates a single object and shows <strong>ALL</strong> the external forces acting ON that object.</p>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <strong>Steps to draw an FBD:</strong><br>
+            1. Isolate the object (treat it as a point mass).<br>
+            2. Draw Weight ($mg$) vertically down.<br>
+            3. Draw Normal force ($N$) perpendicular to contact surfaces.<br>
+            4. Draw Tension ($T$) along strings, away from the object.<br>
+            5. Draw Friction ($f$) opposite to the direction of relative motion.<br>
+            6. Do NOT include internal forces or forces exerted BY the object on other things.
+        </div>
+
+        <p><strong>Visualization: FBD of a Block on an Inclined Plane</strong></p>
+        
+        <div class="visual-container">
+            <img src="Images/Module4A Free Body Diagram (FBD) of a pink rectangular block resting on a grey inclined plane.jpg" alt="FBD of Block on Inclined Plane">
+            <div class="image-caption">Fig 4.5: Free Body Diagram showing forces (N, f, mg) on an inclined plane.</div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3</span>
+            <strong>Question:</strong> Two masses $m_1 = 5 \text{ kg}$ and $m_2 = 3 \text{ kg}$ are connected by an inextensible string passing over a frictionless pulley. Calculate the acceleration of the masses and the tension in the string. (Take $g = 10 \text{ m/s}^2$)
+            
+            <div class="visual-container">
+                <img src="Images/Module4Diagram of an Atwood machine.jpg" alt="Atwood Machine Diagram">
+                <div class="image-caption">Fig 4.6: Connected masses over a pulley (Atwood Machine).</div>
+            </div>
+
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Let acceleration be $a$ (downwards for $m_1$, upwards for $m_2$). Let Tension be $T$.<br>
+                <strong>FBD of $m_1$:</strong> $m_1g - T = m_1a \implies 50 - T = 5a$ --- (Eq 1)<br>
+                <strong>FBD of $m_2$:</strong> $T - m_2g = m_2a \implies T - 30 = 3a$ --- (Eq 2)<br>
+                Add Eq 1 & 2: $20 = 8a \implies \mathbf{a = 2.5 \text{ m/s}^2}$<br>
+                Put $a$ in Eq 2: $T - 30 = 3(2.5) \implies T = 30 + 7.5 = \mathbf{37.5 \text{ N}}$
+            </div>
+        </div>
+
+
+        <h2>10. Equilibrium of Concurrent Forces</h2>
+        <p>Forces acting at the same point on a body are called concurrent forces. A body is said to be in <strong>translational equilibrium</strong> if the vector sum of all concurrent forces acting on it is exactly zero.</p>
+        $$ \Sigma \vec{F} = \vec{F}_1 + \vec{F}_2 + \vec{F}_3 + ... = 0 $$
+        <p>For solving numericals in 2D, we resolve forces into X and Y components. Equilibrium means:</p>
+        $$ \Sigma F_x = 0 \quad \text{and} \quad \Sigma F_y = 0 $$
+        
+        <p><strong>Lami's Theorem:</strong> If three concurrent forces are in equilibrium, each force is proportional to the sine of the angle between the other two forces.</p>
+        $$ \frac{F_1}{\sin \alpha} = \frac{F_2}{\sin \beta} = \frac{F_3}{\sin \gamma} $$
+
+
+        <h2>11. Friction</h2>
+        <p>Friction is the opposing force that comes into play when one body moves or tends to move over the surface of another body. It always opposes the <strong>relative motion</strong> between the two surfaces.</p>
+
+        <div class="visual-container">
+            <img src="Images/Module4A zoomed-in, microscopic view circular callout of two apparently smooth surfaces.jpg" alt="Microscopic View of Friction">
+            <div class="image-caption">Fig 4.8: Microscopic view showing jagged surfaces interlocking (cold welds).</div>
+        </div>
+
+        <h3>A. Static Friction ($f_s$)</h3>
+        <p>The friction that exists between a stationary object and the surface on which it's resting. It is a <strong>self-adjusting force</strong>. If you apply 2N of force and the block doesn't move, static friction is exactly 2N.</p>
+        <p>The maximum value of static friction is called <strong>Limiting Friction</strong> ($f_{max}$).</p>
+        $$ f_{max} = \mu_s N $$
+        <p>Where $\mu_s$ is the coefficient of static friction and $N$ is the Normal reaction.</p>
+
+        <h3>B. Kinetic (Sliding) Friction ($f_k$)</h3>
+        <p>Once the applied force overcomes limiting friction, the object starts moving. The friction acting during motion is called kinetic friction. It is slightly <strong>less</strong> than limiting static friction.</p>
+        $$ f_k = \mu_k N $$
+        <p>Where $\mu_k$ is the coefficient of kinetic friction. Note: $\mu_k < \mu_s$. Kinetic friction remains roughly constant regardless of the speed.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Graph of Friction vs Applied Force:</strong> Notice how friction perfectly matches the applied force at a 45° angle until the "limiting" breaking point, then drops slightly to a constant kinetic value.
+        </div>
+
+        <!-- Chart.js Graph Implementation -->
+        <div class="visual-container" style="width: 80%; max-width: 600px; margin: 0 auto;">
+            <canvas id="frictionChart"></canvas>
+        </div>
+        <script>
+            // Ensure Chart renders after the DOM is fully loaded
+            document.addEventListener("DOMContentLoaded", function() {
+                const ctx = document.getElementById('frictionChart').getContext('2d');
+                const frictionChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [0, 1, 2, 3, 4, 5, 5.1, 6, 7, 8, 9, 10], // Applied Force
+                        datasets: [{
+                            label: 'Frictional Force (N)',
+                            data: [0, 1, 2, 3, 4, 5, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2], // Friction Force
+                            borderColor: '#d81b60',
+                            backgroundColor: 'rgba(216, 27, 96, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0, // Keep lines straight to show the sharp drop
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false },
+                            annotation: {
+                                annotations: {
+                                    text1: {
+                                        type: 'label', xValue: 2.5, yValue: 3.5,
+                                        content: ['Static Friction', '(f = F)'], font: {size: 14}
+                                    },
+                                    text2: {
+                                        type: 'label', xValue: 8, yValue: 5,
+                                        content: ['Kinetic Friction', '(Constant)'], font: {size: 14}
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Applied Force (F)', font: { size: 14, weight: 'bold' } },
+                                grid: { display: false }
+                            },
+                            y: {
+                                title: { display: true, text: 'Force of Friction (f)', font: { size: 14, weight: 'bold' } },
+                                min: 0,
+                                max: 6
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4</span>
+            <strong>Question:</strong> A block of mass $2 \text{ kg}$ rests on a rough inclined plane making an angle of $30^\circ$ with the horizontal. The coefficient of static friction is $0.7$. Find the frictional force on the block. (Take $g = 9.8 \text{ m/s}^2$)
+            
+            <div class="visual-container">
+                <img src="Images/Module4A diagram of a 2 kg block resting on a 30-degree rough inclined plane.jpg" alt="Block on Rough Inclined Plane">
+                <div class="image-caption">Fig 4.7: Numerical analysis of forces on a rough inclined plane.</div>
+            </div>
+
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Calculate Normal force ($N$): $N = mg \cos(30^\circ) = 2 \times 9.8 \times \frac{\sqrt{3}}{2} = 16.97 \text{ N}$<br>
+                2. Calculate Limiting Friction ($f_{max}$): $f_{max} = \mu_s N = 0.7 \times 16.97 = \mathbf{11.88 \text{ N}}$<br>
+                3. Calculate sliding force down the plane: $F_{\text{down}} = mg \sin(30^\circ) = 2 \times 9.8 \times 0.5 = \mathbf{9.8 \text{ N}}$<br>
+                <strong>Conclusion:</strong> Since the sliding force ($9.8 \text{ N}$) is LESS than the limiting friction ($11.88 \text{ N}$), the block will not move. Static friction is self-adjusting, so the actual frictional force acting will simply balance the downward force.<br>
+                Actual Frictional Force = $\mathbf{9.8 \text{ N}}$
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
