@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Relations and Functions - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chart.js for Graph Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+        .visual-container { display: flex; justify-content: center; margin: 30px 0; align-items: center; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 11 Mathematics • Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Module 3: Relations and Functions</h1>
+
+        <p><em>Dear Class 12 Student! <strong>"Relations and Functions" is Chapter 1 of your Class 12 syllabus.</strong> You cannot understand advanced concepts like Bijective functions or Invertible matrices without a crystal clear understanding of Class 11 basics. This module is the ultimate survival toolkit for Calculus. Master the graphs, domains, and mapping rules here!</em></p>
+
+        <h2>1. Cartesian Product of Sets</h2>
+        <p>Before relations, we must define how sets "interact."</p>
+
+        <div class="blue-box">
+            <span class="box-label">Definition</span>
+            <strong>Cartesian Product ($A \times B$):</strong> Given two non-empty sets A and B, the Cartesian product $A \times B$ is the set of all ordered pairs $(a, b)$ such that $a \in A$ and $b \in B$.
+            $$A \times B = \{ (a, b) : a \in A, b \in B \}$$
+            <strong>Key Fact:</strong> If $n(A) = p$ and $n(B) = q$, then $n(A \times B) = p \times q$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> If $A = \{1, 2\}$ and $B = \{3, 4, 5\}$, list $A \times B$ and calculate the total number of relations from A to B.
+            
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. $A \times B = \{(1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)\}$.<br>
+                2. $n(A \times B) = 2 \times 3 = 6$.<br>
+                3. Total Relations = $2^{n(A \times B)} = 2^6 = \mathbf{64}$.
+            </div>
+        </div>
+
+        <h2>2. Definition of a Relation and a Function</h2>
+        
+        <ul>
+            <li><strong>Relation ($R$):</strong> Any subset of $A \times B$. It establishes a "connection" between elements.</li>
+            <li><strong>Function ($f$):</strong> A special type of relation where <strong>every</strong> element in the Domain (Set A) has <strong>exactly one</strong> image in the Codomain (Set B).</li>
+        </ul>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Manual Insertion Required]</strong><br>
+            <em>AI Prompt to generate image:</em> "A comparative infographic showing two mapping diagrams. Left diagram (Relation but NOT a Function): Set A has an element '1' pointing to two different elements in Set B, and an element '3' with no arrows. Right diagram (A Valid Function): Every element in Set A has exactly one arrow originating from it, pointing to a single element in Set B. Use clean white/grey circles for sets. Label: 'Relation vs. Function' in bold math style."
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Vertical Line Test</span>
+            To check if a graph is a function: Draw a vertical line. If it hits the graph in more than one place, it is <strong>NOT</strong> a function (one $x$ having multiple $y$ values).
+        </div>
+
+        <h2>3. Important Functions and their Graphs</h2>
+        <p>You must recognize these graphs instantly to master Class 12 Application of Integrals.</p>
+
+        <h3>A. Identity & Constant Functions</h3>
+        <ul>
+            <li><strong>Identity ($f(x) = x$):</strong> A 45° straight line through the origin. Domain: $\mathbb{R}$, Range: $\mathbb{R}$.</li>
+            <li><strong>Constant ($f(x) = c$):</strong> A horizontal line. Domain: $\mathbb{R}$, Range: $\{c\}$.</li>
+        </ul>
+        <div class="visual-container">
+            <canvas id="graphA" style="max-height: 250px; width: 100%;"></canvas>
+        </div>
+        <div class="practice-box">
+            <span class="box-label">Function Check A</span>
+            <strong>Question:</strong> If $f(x)$ is an identity function, find the value of $f(-2) + f(5)$.
+            <div class="solution">
+                <strong>Solution:</strong> Since $f(x) = x$, then $f(-2) = -2$ and $f(5) = 5$.<br>
+                Sum = $-2 + 5 = \mathbf{3}$.
+            </div>
+        </div>
+
+        <h3>B. Polynomial Functions ($x^2, x^3$)</h3>
+        <ul>
+            <li><strong>Parabola ($f(x) = x^2$):</strong> Upward opening, symmetric about y-axis. Range: $[0, \infty)$.</li>
+            <li><strong>Cubic ($f(x) = x^3$):</strong> Symmetric about origin (Odd function). Range: $\mathbb{R}$.</li>
+        </ul>
+        <div class="visual-container">
+            <canvas id="graphB" style="max-height: 250px; width: 100%;"></canvas>
+        </div>
+        <div class="practice-box">
+            <span class="box-label">Function Check B</span>
+            <strong>Question:</strong> Find the intersection points of the parabola $y = x^2$ and the identity line $y = x$.
+            <div class="solution">
+                <strong>Solution:</strong> Set them equal: $x^2 = x \implies x^2 - x = 0 \implies x(x - 1) = 0$.<br>
+                The $x$-values are 0 and 1. Plugging back in, the points are $\mathbf{(0,0)}$ and $\mathbf{(1,1)}$.
+            </div>
+        </div>
+
+        <h3>C. Rational Function ($f(x) = 1/x$)</h3>
+        <p>A rectangular hyperbola. The function is never defined at $x=0$.</p>
+        <div class="visual-container">
+            <canvas id="graphC" style="max-height: 250px; width: 100%;"></canvas>
+        </div>
+        <div class="practice-box">
+            <span class="box-label">Function Check C</span>
+            <strong>Question:</strong> Why is the graph of $f(x) = \frac{1}{x-3}$ disconnected? What is its domain?
+            <div class="solution">
+                <strong>Solution:</strong> The function creates a rational hyperbola that has an asymptote when the denominator is zero.<br>
+                $x - 3 \neq 0 \implies x \neq 3$. The domain is $\mathbf{\mathbb{R} - \{3\}}$, causing the break.
+            </div>
+        </div>
+
+        <h3>D. Modulus Function ($f(x) = |x|$)</h3>
+        <p>The "V-shape" function. Piecewise definition: $x$ if $x \ge 0$ and $-x$ if $x < 0$.</p>
+        <div class="visual-container">
+            <canvas id="graphD" style="max-height: 250px; width: 100%;"></canvas>
+        </div>
+        <div class="practice-box">
+            <span class="box-label">Function Check D</span>
+            <strong>Question:</strong> Solve the equation for $x$: $|x - 2| = 5$.
+            <div class="solution">
+                <strong>Solution:</strong> A modulus equation splits into a positive case and a negative case:<br>
+                Case 1 (Positive): $x - 2 = 5 \implies x = 7$<br>
+                Case 2 (Negative): $x - 2 = -5 \implies x = -3$<br>
+                Answer: $\mathbf{x \in \{-3, 7\}}$.
+            </div>
+        </div>
+
+        <h3>E. Signum Function</h3>
+        <p>Outputs -1 for negatives, 0 for zero, and 1 for positives.</p>
+        <div class="visual-container">
+            <canvas id="graphE" style="max-height: 250px; width: 100%;"></canvas>
+        </div>
+        <div class="practice-box">
+            <span class="box-label">Function Check E</span>
+            <strong>Question:</strong> What is the value of $sgn(\pi - 4)$?
+            <div class="solution">
+                <strong>Solution:</strong> Since $\pi \approx 3.14$, the value of $(\pi - 4)$ is intrinsically negative.<br>
+                The Signum function outputs $-1$ for any negative input. Therefore, $sgn(\pi - 4) = \mathbf{-1}$.
+            </div>
+        </div>
+
+        <h3>F. Greatest Integer Function ($f(x) = [x]$)</h3>
+        <p>The "Step function". Always rounds DOWN to the nearest integer.</p>
+        <div class="visual-container">
+            <canvas id="graphF" style="max-height: 250px; width: 100%;"></canvas>
+        </div>
+        <div class="practice-box">
+            <span class="box-label">Function Check F</span>
+            <strong>Question:</strong> Evaluate exactly: $[2.9] + [-2.1]$.
+            <div class="solution">
+                <strong>Solution:</strong> The Greatest Integer Function always rounds DOWN mapping to the left on the number line.<br>
+                $[2.9]$ rounds down to $2$.<br>
+                $[-2.1]$ rounds DOWN to $-3$ (It does <em>not</em> round to $-2$!).<br>
+                Sum = $2 + (-3) = \mathbf{-1}$.
+            </div>
+        </div>
+
+        <h2>4. Finding Domain and Range</h2>
+        <p>Mastering these three rules is the only way to survive Class 12 Calculus.</p>
+
+        <div class="green-box">
+            <span class="box-label">The 3 Golden Rules</span>
+            <ol>
+                <li><strong>Denominator $\neq 0$:</strong> If $f(x) = 1/g(x)$, set $g(x) \neq 0$.</li>
+                <li><strong>Square Root $\ge 0$:</strong> If $f(x) = \sqrt{g(x)}$, set $g(x) \ge 0$.</li>
+                <li><strong>Logarithm $> 0$:</strong> If $f(x) = \log(g(x))$, set $g(x) > 0$.</li>
+            </ol>
+        </div>
+
+        <h2>MEGA PRACTICE BANK</h2>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 1: Rational Domain</span>
+            <strong>Question:</strong> Find the domain of $f(x) = \frac{x^2 + 2x + 1}{x^2 - 8x + 12}$.
+            <div class="solution">
+                <strong>Solution:</strong> Denominator $\neq 0 \implies x^2 - 8x + 12 \neq 0$.<br>
+                Factorizing: $(x-6)(x-2) \neq 0 \implies x \neq 2, 6$.<br>
+                <strong>Domain: $\mathbb{R} - \{2, 6\}$</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 2: Square Root Logic</span>
+            <strong>Question:</strong> Find the domain of $f(x) = \sqrt{x^2 - 9}$.
+            <div class="solution">
+                <strong>Solution:</strong> $x^2 - 9 \ge 0 \implies (x-3)(x+3) \ge 0$.<br>
+                Using Wavy Curve: $\mathbf{x \in (-\infty, -3] \cup [3, \infty)}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 3: Wavy Curve Challenge</span>
+            <strong>Question:</strong> Solve for $x$: $\frac{x-1}{(x-2)(x+3)} < 0$.
+            
+            <div class="ai-prompt-box" style="margin: 10px 0; padding: 10px;">
+                <strong>[AI Image Placeholder: Landscape (16:9)]</strong><br>
+                <em>Prompt:</em> "Wavy curve diagram on a number line for critical points -3, 1, and 2. The curve starts from top-right (+), crosses down at 2 (-), crosses up at 1 (+), and crosses down at -3 (-). Color negative regions red. Label intervals clearly."
+            </div>
+
+            <div class="solution">
+                <strong>Solution:</strong> The <strong>$-$</strong> regions are $(-\infty, -3) \cup (1, 2)$.<br>
+                <strong>Answer: $x \in (-\infty, -3) \cup (1, 2)$</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 4: Range Calculation</span>
+            <strong>Question:</strong> Find the range of $f(x) = \frac{1}{1 + x^2}$.
+            <div class="solution">
+                <strong>Solution:</strong> Since $x^2 \ge 0$, then $1+x^2 \ge 1$.<br>
+                Taking reciprocal (flips inequality): $0 < \frac{1}{1+x^2} \le 1$.<br>
+                <strong>Range: $(0, 1]$</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 5: Signum Equation</span>
+            <strong>Question:</strong> Solve for $x$: $sgn(x^2 - 4) = 1$.
+            <div class="solution">
+                <strong>Solution:</strong> $sgn(k)=1 \implies k > 0$.<br>
+                So, $x^2 - 4 > 0 \implies (x-2)(x+2) > 0$.<br>
+                <strong>Answer: $x \in (-\infty, -2) \cup (2, \infty)$</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 6: Combined Domain</span>
+            <strong>Question:</strong> Find domain of $f(x) = \log_{10}(x - 4) + \sqrt{10 - x}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. From log: $x-4 > 0 \implies x > 4$.<br>
+                2. From root: $10-x \ge 0 \implies x \le 10$.<br>
+                Intersection of $x > 4$ and $x \le 10$: $\mathbf{x \in (4, 10]}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 7: Relation vs Function Status</span>
+            <strong>Question:</strong> A relation $R$ from set $A = \{1, 2, 3\}$ to set $B = \{4, 5\}$ is defined as $R = \{(1, 4), (2, 5), (1, 5)\}$. Is $R$ a function? Why or why not?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                For a relation to be a function, <strong>every</strong> element in the domain must map to <strong>exactly one</strong> unique element in the codomain.<br>
+                In the given relation, the element '1' from domain Set A maps to <em>both</em> '4' and '5' in Set B (since we have $(1, 4)$ and $(1, 5)$).<br>
+                Therefore, $R$ is <strong>NOT a function</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 8: Quadratic Range Target</span>
+            <strong>Question:</strong> Find the range of the quadratic function $f(x) = x^2 - 6x + 13$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                To find the range of a quadratic $ax^2 + bx + c$, it's fastest to complete the square.<br>
+                $f(x) = (x^2 - 6x + 9) + 4$<br>
+                $f(x) = (x - 3)^2 + 4$<br><br>
+                Since the square of any real number is always non-negative, $(x - 3)^2 \ge 0$.<br>
+                Add 4 to both sides: $(x - 3)^2 + 4 \ge 4$.<br>
+                Therefore, $f(x) \ge 4$.<br>
+                <strong>Range: $[4, \infty)$</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Problem 9: Piecewise Evaluation</span>
+            <strong>Question:</strong> Let $f(x) = \begin{cases} 2x + 3, & \text{if } x < -1 \\ x^2, & \text{if } -1 \le x < 2 \\ 5, & \text{if } x \ge 2 \end{cases}$. Find the value of $f(-2) + f(1) + f(5)$.
+            
+            <div class="ai-prompt-box" style="margin: 10px 0; padding: 10px; border-color: var(--pink-border); background-color: var(--pink-bg);">
+                <strong>[AI Image Placeholder: Landscape (16:9)]</strong><br>
+                <em>Prompt:</em> "A clean math graph showing a 3-part piecewise function. Left part ($x < -1$): A straight line with positive slope ending in a hollow circle at $(-1, 1)$. Middle part ($-1 \le x < 2$): A parabolic curve starting with a solid dot at $(-1, 1)$ curving up to a hollow circle at $(2, 4)$. Right part ($x \ge 2$): A horizontal line starting with a solid dot at $(2, 5)$ and continuing right. Highlight the three distinct colors for each piece."
+            </div>
+
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. For $x = -2$, the condition is $x < -1$. Use the first formula.<br>
+                $f(-2) = 2(-2) + 3 = -1$.<br><br>
+                2. For $x = 1$, the condition is $-1 \le x < 2$. Use the second formula.<br>
+                $f(1) = 1^2 = 1$.<br><br>
+                3. For $x = 5$, the condition is $x \ge 2$. Use the third formula.<br>
+                $f(5) = 5$.<br><br>
+                Summing them up: $-1 + 1 + 5 = \mathbf{5}$.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+
+        // --- CHART JS GENERATION ---
+        const commonOptions = { responsive: true, maintainAspectRatio: false, elements: { point:{ radius: 0 } } };
+
+        // Graph A: Identity and Constant
+        new Chart(document.getElementById('graphA').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [-5,-4,-3,-2,-1,0,1,2,3,4,5],
+                datasets: [
+                    { label: 'f(x) = x', data: [-5,-4,-3,-2,-1,0,1,2,3,4,5], borderColor: '#1e88e5', borderWidth: 2, fill: false },
+                    { label: 'y = 3', data: [3,3,3,3,3,3,3,3,3,3,3], borderColor: '#d81b60', borderWidth: 2, fill: false }
+                ]
+            },
+            options: commonOptions
+        });
+
+        // Graph B: Polynomials
+        const xB = []; const y2B = []; const y3B = [];
+        for(let x=-3; x<=3; x+=0.1){ xB.push(x.toFixed(1)); y2B.push(x*x); y3B.push(x*x*x); }
+        new Chart(document.getElementById('graphB'), {
+            type: 'line',
+            data: { labels: xB, datasets: [
+                { label: 'f(x) = x²', data: y2B, borderColor: '#43a047', borderWidth: 2 },
+                { label: 'f(x) = x³', data: y3B, borderColor: '#7e57c2', borderWidth: 2 }
+            ]},
+            options: commonOptions
+        });
+
+        // Graph C: Rational 1/x
+        const xC = []; const yC = [];
+        for(let x=-5; x<=5; x+=0.1) {
+            let xv = parseFloat(x.toFixed(1));
+            xC.push(xv);
+            if(Math.abs(xv) < 0.1) { yC.push(null); } // Asymptote
+            else { yC.push(1/xv); }
+        }
+        new Chart(document.getElementById('graphC'), {
+            type: 'line',
+            data: { labels: xC, datasets: [{ label: 'f(x) = 1/x', data: yC, borderColor: '#1e88e5', borderWidth: 2, spanGaps: false }] },
+            options: { ...commonOptions, scales: { y: { min: -10, max: 10 } } }
+        });
+
+        // Graph D: Modulus
+        const xD = []; const yD = [];
+        for(let x=-5; x<=5; x+=0.1) { xD.push(x.toFixed(1)); yD.push(Math.abs(x)); }
+        new Chart(document.getElementById('graphD'), {
+            type: 'line',
+            data: { labels: xD, datasets: [{ label: 'f(x) = |x|', data: yD, borderColor: '#d81b60', borderWidth: 2 }] },
+            options: commonOptions
+        });
+
+        // Graph E: Signum Function (Scatter to prevent slanted lines)
+        new Chart(document.getElementById('graphE'), {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    { label: 'x < 0 (-1)', data: [{x:-5, y:-1}, {x:-0.01, y:-1}], borderColor: '#fbc02d', showLine: true, borderWidth: 3 },
+                    { label: 'x = 0 (0)', data: [{x:0, y:0}], backgroundColor: '#fbc02d', pointRadius: 6 },
+                    { label: 'x > 0 (1)', data: [{x:0.01, y:1}, {x:5, y:1}], borderColor: '#fbc02d', showLine: true, borderWidth: 3 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { min: -5, max: 5 }, y: { min: -2, max: 2 } }, plugins: { legend: {display: false} } }
+        });
+
+        // Graph F: Greatest Integer [x]
+        const stepData = [];
+        for(let i=-3; i<=3; i++) {
+            stepData.push({ data: [{x: i, y: i}, {x: i+0.98, y: i}], borderColor: '#43a047', showLine: true, pointRadius: 0, borderWidth: 3 }); // Line
+            stepData.push({ data: [{x: i, y: i}], backgroundColor: '#43a047', pointRadius: 5 }); // Solid Dot Left
+            stepData.push({ data: [{x: i+1, y: i}], backgroundColor: 'rgba(0,0,0,0)', borderColor: '#43a047', pointRadius: 5, borderWidth: 2 }); // Hollow Dot Right
+        }
+        new Chart(document.getElementById('graphF'), {
+            type: 'scatter',
+            data: { datasets: stepData },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { min: -3, max: 4 }, y: { min: -4, max: 4 } }, plugins: { legend: {display: false} } }
+        });
+    </script>
+</body>
+</html>
