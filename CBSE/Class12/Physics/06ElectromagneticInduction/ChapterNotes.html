@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Electromagnetic Induction - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid var(--toggle-border); padding: 10px; text-align: left; }
+        th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+        .visual-container { display: flex; justify-content: center; margin: 30px 0; align-items: center; width: 100%; }
+        .visual-container img { max-width: 100%; transition: filter 0.3s ease; border: none !important; box-shadow: none !important; }
+        html.dark-mode .visual-container img { filter: invert(1); }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Physics • Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 6: Electromagnetic Induction</h1>
+
+        <p><em>Dear Class 12 Student! Oersted proved that moving charges (current) create magnetic fields. Michael Faraday reversed the question: <strong>Can moving magnetic fields create current?</strong> The answer is YES, and this discovery—Electromagnetic Induction (EMI)—is the reason you have electricity in your home today. This chapter is heavily numerical and relies on your understanding of Magnetic Flux. Let's master the principles of power generation!</em></p>
+
+        <h2>1. Magnetic Flux ($\Phi_B$)</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "A diagram demonstrating Magnetic Flux. A flat, circular 2D surface area 'A' tilted at an angle. Uniform magnetic field lines (represented by vectors $\vec{B}$) pierce through the surface. Draw an Area Vector ($\vec{A}$) pointing perfectly perpendicular (normal) to the surface plane. Show the angle $\theta$ between the Magnetic field vector $\vec{B}$ and the Area vector $\vec{A}$. Display the formula $\Phi_B = BA \cos\theta$. Pure white background #FFFFFF, clean textbook style."
+        </div>
+
+        <p><strong>Definition:</strong> The total number of magnetic field lines passing normally (perpendicularly) through a given surface area is called magnetic flux.</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Formula & Units</span>
+            <strong>$$\Phi_B = \vec{B} \cdot \vec{A} = BA \cos\theta$$</strong>
+            Where $\theta$ is the angle between the magnetic field $\vec{B}$ and the <strong>Area Vector $\vec{A}$</strong> (which is always perpendicular to the surface).
+            <ul>
+                <li><strong>SI Unit:</strong> Weber (Wb) or Tesla meter-squared ($T\cdot m^2$).</li>
+                <li><strong>CGS Unit:</strong> Maxwell. ($1 \text{ Wb} = 10^8 \text{ Maxwell}$).</li>
+                <li><strong>Nature:</strong> It is a <strong>Scalar Quantity</strong>.</li>
+            </ul>
+        </div>
+
+        <p><strong>Conditions based on $\theta$:</strong></p>
+        <ul>
+            <li><strong>Positive Flux:</strong> When $0^\circ \le \theta < 90^\circ$ ($\cos\theta$ is positive). Field lines exit the surface.</li>
+            <li><strong>Zero Flux:</strong> When $\theta = 90^\circ$ ($\cos 90^\circ = 0$). The magnetic field is <em>parallel</em> to the surface, so no lines pierce through it!</li>
+            <li><strong>Negative Flux:</strong> When $90^\circ < \theta \le 180^\circ$ ($\cos\theta$ is negative). Field lines enter the surface.</li>
+        </ul>
+
+        <h2>2. Faraday's Experiments and Laws of Induction</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Faraday's Magnet and Coil experiment. A multi-turn wire coil is connected to a sensitive Galvanometer (labeled G). A bar magnet with its North pole facing the coil is being pushed TOWARDS the coil (show a velocity vector 'v'). The galvanometer needle deflects to one side, indicating an induced current. Show faint magnetic field lines from the North pole piercing the coil. White background #FFFFFF."
+        </div>
+
+        <h3>The Experiments</h3>
+        <ul>
+            <li><strong>Magnet and Coil Experiment:</strong> When a bar magnet is pushed toward or pulled away from a closed coil, the galvanometer shows a deflection. The deflection lasts <em>only</em> as long as there is relative motion.</li>
+            <li><strong>Coil and Coil Experiment:</strong> Two coils are placed side by side. When the current in the primary coil is switched on, switched off, or varied, a momentary current is induced in the secondary coil.</li>
+        </ul>
+
+        <h3>Faraday's Laws of Electromagnetic Induction</h3>
+        <div class="green-box">
+            <span class="box-label">Statements and Formula</span>
+            <strong>First Law:</strong> Whenever the magnetic flux linked with a closed circuit changes, an electromotive force (emf) is induced in it. The induced emf lasts only as long as the change in flux continues.<br><br>
+            <strong>Second Law:</strong> The magnitude of the induced emf is directly proportional to the time rate of change of magnetic flux linked with the circuit.<br>
+            <strong>$$\epsilon = -N \frac{d\Phi_B}{dt}$$</strong>
+            <em>(Where $N$ is the number of turns in the coil. The negative sign is a mathematical representation of Lenz's Law).</em>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Main Transition: Induced Charge</span>
+            While induced EMF ($\epsilon$) depends on how <em>fast</em> the flux changes ($dt$), the total <strong>Induced Charge ($q$)</strong> does NOT depend on time!<br>
+            $I = \frac{\epsilon}{R} = \frac{1}{R} \left( \frac{d\Phi}{dt} \right)$. Since $I = \frac{dq}{dt}$, we get $\frac{dq}{dt} = \frac{1}{R} \frac{d\Phi}{dt} \implies$ <strong>$$q = \frac{\Delta\Phi}{R}$$</strong>
+            <em>The induced charge only depends on the net change in flux and the resistance of the circuit.</em>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> The magnetic flux linked with a coil of resistance $10 \, \Omega$ changes from $10 \text{ Wb}$ to $2 \text{ Wb}$ in $0.1 \text{ s}$. Calculate the induced emf and the induced charge in the coil.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Given: $\Phi_{initial} = 10 \text{ Wb}$, $\Phi_{final} = 2 \text{ Wb}$, $dt = 0.1 \text{ s}$, $R = 10 \, \Omega$.<br>
+                Change in flux $d\Phi = \Phi_{final} - \Phi_{initial} = 2 - 10 = -8 \text{ Wb}$.<br><br>
+                1. <strong>Induced EMF ($\epsilon$):</strong><br>
+                   $\epsilon = -\frac{d\Phi}{dt} = -\left(\frac{-8}{0.1}\right) = \mathbf{80 \text{ V}}$.<br><br>
+                2. <strong>Induced Charge ($q$):</strong><br>
+                   Current $I = \frac{\epsilon}{R} = \frac{80}{10} = 8 \text{ A}$.<br>
+                   Charge $q = I \times dt = 8 \times 0.1 = \mathbf{0.8 \text{ C}}$.<br>
+                   <em>(Alternatively: $q = \frac{|\Delta\Phi|}{R} = \frac{8}{10} = 0.8 \text{ C}$).</em>
+            </div>
+        </div>
+
+        <h2>3. Lenz's Law and Conservation of Energy</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Lenz's Law visualization. A metallic ring lies horizontally. A bar magnet is dropped vertically through the ring, North pole facing down. The ring induces a counter-clockwise current (viewed from above), creating its own North pole on the top face to REPEL the falling magnet. Draw opposing magnetic field lines from the ring pushing back against the magnet. White background #FFFFFF."
+        </div>
+
+        <p><strong>Statement:</strong> The direction of the induced current (or emf) is always such that it <strong>opposes the change in magnetic flux</strong> that produced it.</p>
+        
+        <p><strong>Application (Right-Hand Grip Rule):</strong> If the North pole of a magnet is pushed toward a closed coil, the magnetic flux through the coil increases. According to Lenz's law, the coil must oppose this increase by repelling the magnet. Therefore, the face of the coil towards the magnet becomes a North pole (current flows anti-clockwise). If the magnet is pulled away, the face becomes a South pole (current flows clockwise) to attract it back!</p>
+
+        <p><strong>Conservation of Energy:</strong> Lenz's law is a direct consequence of the law of conservation of energy. When we push the magnet against the repulsive induced field, we must do <strong>mechanical work</strong>. This mechanical work is exactly what transforms into the <strong>electrical energy</strong> (heat/current) in the coil. If Lenz's law were false (if the coil attracted the falling magnet), we would get infinite free energy, violating the laws of physics.</p>
+
+        <h2>4. Motional Electromotive Force (Motional EMF)</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Motional EMF Derivation Diagram. A U-shaped conducting rail lies horizontally in a uniform magnetic field pointing INTO the page (represented by 'x' marks). A straight conducting rod of length 'l' is placed across the rails, forming a rectangular loop. The rod is being pulled to the right with velocity 'v'. Show the area of the loop increasing. Label the dimensions x (width) and l (length). White background #FFFFFF."
+        </div>
+
+        <p>When a conductor moves across a magnetic field, it cuts the magnetic flux, inducing an EMF across its ends.</p>
+
+        <h3>Derivation for a Straight Conductor (Important Board Derivation)</h3>
+        <p>Consider a straight conducting rod of length $l$ sliding with velocity $v$ on a U-shaped conducting frame in a perpendicular, uniform magnetic field $B$. Let $x$ be the distance of the rod from the closed end of the U-frame.<br>
+        The area of the rectangular loop formed is $A = lx$.<br>
+        Magnetic flux through the loop: $\Phi_B = BA = Blx$.<br>
+        By Faraday's Law, the induced EMF is:<br>
+        $\epsilon = -\frac{d\Phi_B}{dt} = -\frac{d}{dt}(Blx) = -Bl\left(\frac{dx}{dt}\right)$<br>
+        Since velocity $v = -\frac{dx}{dt}$ (because $x$ is decreasing if we move left, or if moving right, we take magnitude):</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Formula</span>
+            <strong>$$\epsilon = Bvl$$</strong>
+        </div>
+
+        <h3>Lorentz Force Explanation</h3>
+        <p>Inside the moving rod, a free electron experiences a magnetic force $F_m = qvB$. This force pushes electrons to one end of the rod, making it negative and the other end positive. This charge separation creates an internal Electric Field $E$.<br>
+        Equilibrium is reached when the electric force balances the magnetic force: $F_e = F_m \implies qE = qvB \implies E = vB$.<br>
+        Since Potential Difference (EMF) $\epsilon = E \times l$, we get <strong>$\epsilon = vBl$</strong>.</p>
+
+        <h3>Energy Consideration (Power Dissipation)</h3>
+        <p>Induced current in the loop: $I = \frac{\epsilon}{R} = \frac{Bvl}{R}$.<br>
+        The magnetic field exerts a retarding force on this current-carrying rod: $F = IlB = \left(\frac{Bvl}{R}\right)lB = \frac{B^2 v l^2}{R}$.<br>
+        Mechanical Power required to push the rod against this force: $P_{mech} = F \cdot v = \mathbf{\frac{B^2 v^2 l^2}{R}}$.<br>
+        Electrical Power dissipated as heat in the resistor: $P_{elec} = I^2 R = \left(\frac{Bvl}{R}\right)^2 R = \mathbf{\frac{B^2 v^2 l^2}{R}}$.<br>
+        <em>Conclusion: Mechanical power provided exactly equals electrical power dissipated!</em></p>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Main Transition: Rotating Conductor</span>
+            If a conducting rod of length $l$ rotates with angular velocity $\omega$ in a uniform magnetic field $B$ (perpendicular to the plane of rotation), the EMF induced between its center and its tip is:
+            <strong>$$\epsilon = \frac{1}{2} B \omega l^2$$</strong>
+            <em>This exact formula applies to a rotating metallic disc (where $l$ is the radius $R$) between its center and rim.</em>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2</span>
+            <strong>Question:</strong> An aircraft with a wingspan of $40 \text{ m}$ flies at a speed of $1080 \text{ km/h}$ in a region where the vertical component of the earth's magnetic field is $1.75 \times 10^{-5} \text{ T}$. What is the potential difference developed between the tips of the wings?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                The wings of the aircraft act as a straight conductor cutting through the vertical magnetic field lines of the earth.<br>
+                Given: $l = 40 \text{ m}$, $B = 1.75 \times 10^{-5} \text{ T}$.<br>
+                Velocity $v = 1080 \text{ km/h} = 1080 \times \frac{5}{18} \text{ m/s} = 300 \text{ m/s}$.<br>
+                Using Motional EMF formula:<br>
+                $\epsilon = Bvl = (1.75 \times 10^{-5}) \times 300 \times 40$<br>
+                $\epsilon = 1.75 \times 10^{-5} \times 12000 = 1.75 \times 1.2 \times 10^{-1} = 2.1 \times 10^{-1} = \mathbf{0.21 \text{ V}}$.
+            </div>
+        </div>
+
+        <h2>5. Eddy Currents</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Eddy currents visualization. Two panels. Panel 1: A solid metallic block placed in a changing magnetic field. Show swirling, circular whirlpool-like current loops (Eddy currents) inside the solid block. Panel 2: A laminated metallic core (made of thin stacked sheets separated by insulating layers) in the same field. Show that the eddy current loops are severely restricted and tiny within each thin sheet, heavily reducing their overall effect. White background #FFFFFF."
+        </div>
+
+        <p><strong>Concept:</strong> When bulk pieces of conductors (like solid metal plates) are subjected to changing magnetic flux, circulating currents are induced within the body of the metal. These look like whirlpools or eddies in water, hence the name Eddy Currents.</p>
+
+        <ul>
+            <li><strong>Undesirable Effects:</strong> In transformers, dynamos, and motors, eddy currents cause massive heating of the solid iron cores, leading to huge electrical energy loss.</li>
+            <li><strong>Minimization:</strong> This is overcome by using <strong>Laminated Cores</strong>. The core is built by stacking thin sheets of metal, separated by insulating varnish. This breaks the paths for the eddy currents, drastically increasing resistance and reducing the current magnitude.</li>
+            <li><strong>Applications:</strong> 
+                <ol>
+                    <li><strong>Magnetic Braking in Trains:</strong> Electromagnets are activated above the rails. The induced eddy currents strongly oppose the motion of the train (Lenz's Law), causing smooth braking without physical friction.</li>
+                    <li><strong>Electromagnetic Damping:</strong> In galvanometers to bring the oscillating needle to rest quickly.</li>
+                    <li><strong>Induction Furnaces:</strong> High-frequency alternating magnetic fields induce massive eddy currents in metals, melting them via heat.</li>
+                </ol>
+            </li>
+        </ul>
+
+        <h2>6. Inductance (The "Inertia" of Electricity)</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Self-Induction circuit. A coil (inductor L) connected to a battery and a switch key. Show current 'I' flowing through the coil, creating its own magnetic field lines that link back through the coil itself. Add a label showing a 'Back EMF $\epsilon$' opposing the battery voltage when the switch is just closed. White background #FFFFFF."
+        </div>
+
+        <p>Inductance is the property of an electrical circuit by which it opposes any change in the current flowing through it. Just as mass opposes change in velocity (inertia) in mechanics, inductance opposes change in current in electromagnetism.</p>
+
+        <h3>A. Self-Induction</h3>
+        <p>When the current in a coil changes, the magnetic flux linked with <em>itself</em> changes, inducing an opposing EMF in the same coil.</p>
+        <p>Total flux linked $\Phi \propto I \implies$ <strong>$\Phi = LI$</strong><br>
+        Where $L$ is the <strong>Coefficient of Self-Induction</strong>. SI Unit: <strong>Henry (H)</strong>. Dimensions: $[ML^2T^{-2}A^{-2}]$.</p>
+        <p>Induced EMF: $\epsilon = -\frac{d\Phi}{dt} = -L \frac{dI}{dt}$</p>
+
+        <div class="green-box">
+            <span class="box-label">Self-Inductance of a Long Solenoid (Important Board Derivation)</span>
+            Consider a solenoid of length $l$, area $A$, with total turns $N$ (so $n = N/l$). Current is $I$.<br>
+            Magnetic field inside solenoid: $B = \mu_0 n I = \frac{\mu_0 N I}{l}$.<br>
+            Magnetic flux linked with one turn: $\phi = BA = \left(\frac{\mu_0 N I}{l}\right)A$.<br>
+            Total flux linked with all $N$ turns: $\Phi = N \phi = \frac{\mu_0 N^2 A I}{l}$.<br>
+            Since $\Phi = LI$, comparing the two gives:<br>
+            <strong>$$L = \frac{\mu_0 N^2 A}{l} \quad \text{or} \quad L = \mu_0 n^2 A l$$</strong>
+            <em>Notice $L$ depends strictly on the geometry of the coil and the medium ($\mu_0$).</em>
+        </div>
+
+        <h3>B. Energy Stored in an Inductor</h3>
+        <p>To build up a steady current in an inductor, work must be done against the opposing back-EMF. This work is stored as <strong>Magnetic Potential Energy</strong>.<br>
+        $dW = |\epsilon| I dt = \left( L \frac{dI}{dt} \right) I dt = LI dI$.<br>
+        Integrating from $0$ to $I$: <strong>$U = \frac{1}{2} L I^2$</strong>.<br>
+        <em>(Compare this to Kinetic Energy $K = \frac{1}{2}mv^2$. Notice how Inductance $L$ plays the role of mass $m$!)</em></p>
+        <p>Magnetic Energy Density: $u_B = \frac{U}{\text{Volume}} = \mathbf{\frac{B^2}{2\mu_0}}$.</p>
+
+        <h2>7. Mutual Induction</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Mutual Induction diagram. Two coils, Coil 1 (Primary) and Coil 2 (Secondary), placed close to each other. Primary is connected to an AC source or a battery with a variable resistor, carrying current $I_1$. Show magnetic field lines generated by Coil 1 expanding and piercing through Coil 2. Coil 2 is connected only to a sensitive Galvanometer, which shows a deflection. White background #FFFFFF."
+        </div>
+
+        <p>The phenomenon of inducing an EMF in one coil due to a changing current in a neighboring coil.</p>
+        <p>Flux linked with secondary coil $\Phi_2 \propto I_1 \implies$ <strong>$\Phi_2 = M I_1$</strong><br>
+        Where $M$ is the <strong>Coefficient of Mutual Induction</strong>. SI Unit: Henry (H).</p>
+        <p>Induced EMF in secondary: $\epsilon_2 = -M \frac{dI_1}{dt}$</p>
+
+        <div class="green-box">
+            <span class="box-label">Mutual Inductance of Two Co-axial Solenoids (Board Derivation)</span>
+            Consider two long co-axial solenoids. Inner solenoid $S_1$ (radius $r_1$, turns $N_1$) and outer solenoid $S_2$ (radius $r_2$, turns $N_2$). Length $l$.<br>
+            Let current $I_1$ flow in $S_1$. Field inside $S_1$ is $B_1 = \mu_0 \frac{N_1}{l} I_1$.<br>
+            This field links with $S_2$. Flux linked with each turn of $S_2$ is $\phi_2 = B_1 A_1$ (since field only exists in area $A_1 = \pi r_1^2$).<br>
+            Total flux linked with $S_2$: $\Phi_2 = N_2 \phi_2 = N_2 \left( \mu_0 \frac{N_1}{l} I_1 \right) A_1 = \frac{\mu_0 N_1 N_2 A_1}{l} I_1$.<br>
+            Since $\Phi_2 = M_{21} I_1$, we get:<br>
+            <strong>$$M_{21} = \frac{\mu_0 N_1 N_2 A_1}{l}$$</strong>
+            By symmetry (Reciprocity Theorem), $M_{12} = M_{21} = M$.
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Main Transition: Coupling Coefficient</span>
+            The fraction of magnetic flux produced by one coil that links with the other is measured by the Coefficient of Coupling ($K$).<br>
+            <strong>$$K = \frac{M}{\sqrt{L_1 L_2}}$$</strong>
+            If perfectly coupled (co-axial, tightly wound), $K = 1$. If placed far apart or perpendicular, $K \to 0$.<br>
+            <strong>Inductors in Series:</strong> $L_{eq} = L_1 + L_2 \pm 2M$ (+ if fluxes aid each other, - if they oppose).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3</span>
+            <strong>Question:</strong> Two concentric circular coils, one of small radius $r_1$ and the other of large radius $r_2$, such that $r_1 \ll r_2$, are placed co-axially with centers coinciding. Obtain the mutual inductance of the arrangement.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Let current $I_2$ flow through the larger coil $C_2$.<br>
+                Magnetic field at its center: $B_2 = \frac{\mu_0 I_2}{2 r_2}$.<br>
+                Since the inner coil $C_1$ is very small ($r_1 \ll r_2$), we can assume the magnetic field $B_2$ is uniform over its entire area $A_1 = \pi r_1^2$.<br>
+                Flux linked with inner coil $C_1$:<br>
+                $\Phi_1 = B_2 A_1 = \left( \frac{\mu_0 I_2}{2 r_2} \right) \times (\pi r_1^2)$.<br>
+                Since $\Phi_1 = M I_2$, we equate:<br>
+                $M I_2 = \frac{\mu_0 \pi r_1^2}{2 r_2} I_2$<br>
+                <strong>$$M = \frac{\mu_0 \pi r_1^2}{2 r_2}$$</strong>
+            </div>
+        </div>
+
+        <h2>8. AC Generator</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Schematic of an AC Generator. A rectangular armature coil (ABCD) is placed between the concave poles of two strong permanent magnets (N and S). The coil is attached to an axis of rotation. The ends of the coil connect to two separate full slip rings ($R_1, R_2$) rotating with the axis. Two stationary carbon brushes ($B_1, B_2$) press against the slip rings, connecting to an external circuit with a Galvanometer. Show the rotation vector $\omega$. White background #FFFFFF."
+        </div>
+
+        <p><strong>Principle:</strong> It is based on Electromagnetic Induction. When a closed coil is rotated rapidly in a uniform magnetic field, the magnetic flux linked with it changes continuously, inducing an alternating EMF.</p>
+
+        <h3>Theory and Working (Crucial Derivation)</h3>
+        <p>Consider a rectangular coil of $N$ turns and area $A$ rotating with constant angular velocity $\omega$ in a uniform magnetic field $B$.<br>
+        Let $\theta$ be the angle between the Area Vector $\vec{A}$ and Magnetic Field $\vec{B}$ at any instant $t$. Then $\theta = \omega t$.<br>
+        Magnetic flux at instant $t$:<br>
+        $$\Phi = N B A \cos\theta = NAB \cos(\omega t)$$<br>
+        By Faraday's Law, the induced EMF is:<br>
+        $$\epsilon = -\frac{d\Phi}{dt} = -\frac{d}{dt}[NAB \cos(\omega t)]$$<br>
+        Since derivative of $\cos(\omega t)$ is $-\omega \sin(\omega t)$:<br>
+        $$\epsilon = -NAB (-\omega \sin(\omega t))$$
+        <strong>$$\epsilon = NAB\omega \sin(\omega t)$$</strong></p>
+        
+        <p><strong>Peak EMF ($\epsilon_0$):</strong> The maximum value of EMF occurs when $\sin(\omega t) = \pm 1$ (i.e., when the plane of the coil is parallel to the magnetic field).<br>
+        <strong>$$\epsilon_0 = NAB\omega$$</strong><br>
+        So the equation can be written as: <strong>$\epsilon = \epsilon_0 \sin(\omega t)$</strong>.</p>
+        
+        <p><em>Graphical Representation:</em> If plotted against time $t$ or angle $\omega t$, the EMF traces a perfect sinusoidal wave, alternating between $+\epsilon_0$ and $-\epsilon_0$. This is exactly why household electricity is Alternating Current (AC)!</p>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

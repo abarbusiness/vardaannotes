@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Wave Optics - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000; /* Standardized Really Dark Background */
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid var(--toggle-border); padding: 10px; text-align: left; }
+        th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+
+        /* --- VISUAL ASSET STANDARDIZATION --- */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            align-items: center;
+            width: 100%;
+        }
+
+        .visual-container img {
+            max-width: 100%;
+            transition: filter 0.3s ease;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        html.dark-mode .visual-container img {
+            filter: invert(1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Physics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 10: Wave Optics</h1>
+
+        <p><em>Dear Class 12 Student! While Ray Optics assumed light travels in perfectly straight lines, Wave Optics reveals the true, bending nature of light. This chapter shifts from geometry to the physical interference of waves. The Huygens' proofs and Young's Double Slit Experiment (YDSE) are absolute goldmines for the CBSE 5-mark section, while Resolving Power and Polarization are critical for cracking JEE Mains. Let's ride the wave!</em></p>
+
+        <h2>1. Wavefront and Huygens Principle</h2>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Wavefront:</strong> It is defined as the continuous locus of all particles of a medium which are vibrating in the exact same phase. Imagine dropping a stone in a calm pond; the expanding circular ripples are wavefronts.
+            <br><br>
+            <strong>Ray of Light:</strong> An arrow drawn strictly perpendicular to the wavefront, indicating the direction of propagation of the wave energy.
+        </div>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Diagram showing three types of wavefronts. 1. A point source (dot) emitting concentric spherical wavefronts with outward pointing radial rays. 2. A linear light source (slit) emitting expanding cylindrical wavefronts. 3. Parallel rays from an infinite distance passing through vertical flat planes, representing plane wavefronts. Clean, technical textbook style, black and white vectors, pure white background #FFFFFF."
+        </div>
+
+        <h3>Types of Wavefronts</h3>
+        <ul>
+            <li><strong>Spherical Wavefront:</strong> Produced by a <em>point source</em> of light. The wavefronts are concentric spheres centered at the source.</li>
+            <li><strong>Cylindrical Wavefront:</strong> Produced by a <em>linear source</em> of light (like a narrow slit). The wavefronts are coaxial cylinders.</li>
+            <li><strong>Plane Wavefront:</strong> A small portion of a spherical or cylindrical wavefront at an <em>infinite distance</em> from the source appears flat. Produced by sources at infinity (like the Sun).</li>
+        </ul>
+
+        <h3>Huygens Principle (Foundation of Wave Optics)</h3>
+        <p>Christiaan Huygens proposed a geometrical method to find the new position of a wavefront at any later instant.</p>
+        <ol>
+            <li>Every point on a given primary wavefront acts as a fresh source of new disturbance, called <strong>secondary wavelets</strong>, which travel in all directions with the velocity of light in that medium.</li>
+            <li>The new position of the wavefront at any later instant is the <strong>forward envelope (tangent surface)</strong> of these secondary wavelets.</li>
+        </ol>
+
+        <h2>2. Proof of Laws of Reflection & Refraction (5-Mark Board Favorites)</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Huygens Refraction Derivation Diagram. A plane wavefront 'AB' strikes a horizontal plane interface separating Medium 1 (velocity $v_1$) and Medium 2 (velocity $v_2$, where $v_2 < v_1$). Point A is on the boundary, point B is in Medium 1. Draw a secondary wavelet from A into Medium 2 with radius $v_2\tau$. In the same time $\tau$, point B travels a distance $v_1\tau$ to reach point C on the boundary. Draw tangent 'CD' from C to the wavelet from A. Label angles 'i' and 'r' with normals. White background #FFFFFF."
+        </div>
+
+        <h3>A. Refraction using Huygens Principle (Proof of Snell's Law)</h3>
+        <p>Let a plane wavefront $AB$ be incident on a surface $XY$ separating Medium 1 (rarer, velocity $v_1$) and Medium 2 (denser, velocity $v_2$). Let the angle of incidence be $i$.<br>
+        As the wavefront advances, point $A$ hits the surface first. According to Huygens principle, $A$ becomes a source of secondary wavelets in Medium 2.<br>
+        Let $\tau$ be the time taken by the wavefront at $B$ to reach point $C$ on the surface. Distance $BC = v_1 \tau$.<br>
+        In the same time $\tau$, the secondary wavelet from $A$ travels a distance $AD = v_2 \tau$ into Medium 2.<br>
+        Draw a tangent $CD$ from $C$ to this wavelet. $CD$ is the <strong>refracted wavefront</strong>, and let its angle of refraction be $r$.</p>
+        
+        <div class="green-box">
+            <span class="box-label">Derivation</span>
+            In right-angled triangle $\Delta ABC$:<br>
+            $$\sin i = \frac{BC}{AC} = \frac{v_1 \tau}{AC}$$<br>
+            In right-angled triangle $\Delta ADC$:<br>
+            $$\sin r = \frac{AD}{AC} = \frac{v_2 \tau}{AC}$$<br>
+            Dividing the two equations:<br>
+            <strong>$$\frac{\sin i}{\sin r} = \frac{v_1 \tau / AC}{v_2 \tau / AC} = \frac{v_1}{v_2}$$</strong><br>
+            Since the ratio of velocities $\frac{v_1}{v_2}$ is the relative refractive index $\mu_{21}$:<br>
+            <strong>$$\frac{\sin i}{\sin r} = \mu_{21}$$</strong> <em>(This proves Snell's Law of Refraction).</em>
+        </div>
+
+        <p><strong>Crucial Conceptual Note:</strong> When light enters a denser medium ($v_2 < v_1$), the formula shows $\sin r < \sin i$, meaning light bends towards the normal. <br>
+        Furthermore, frequency ($\nu$) depends on the source and remains constant. Since $v = \nu\lambda$, we get $\lambda_2 = \frac{v_2}{v_1}\lambda_1$. Because $v_2 < v_1$, <strong>the wavelength of light decreases in a denser medium</strong> ($\lambda' = \lambda / \mu$).</p>
+
+        <h3>B. Reflection using Huygens Principle</h3>
+        <p>For reflection, the wavefront remains in the same medium. The distance traveled by the wavefront from $B$ to $C$ ($BC = v\tau$) must equal the radius of the secondary wavelet emitted from $A$ ($AD = v\tau$).<br>
+        In triangles $\Delta ABC$ and $\Delta ADC$:<br>
+        1. $AC$ is common.<br>
+        2. $\angle B = \angle D = 90^\circ$ (Ray is perpendicular to wavefront).<br>
+        3. $BC = AD = v\tau$.<br>
+        Therefore, $\Delta ABC \cong \Delta ADC$ (RHS congruence criterion).<br>
+        This proves that <strong>$\angle i = \angle r$</strong> (Law of Reflection).</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Behavior of Optical Elements</span>
+            Tracing plane wavefronts through optical elements:<br>
+            <strong>1. Prism:</strong> The lower portion of the wavefront travels through thicker glass, slowing it down more than the upper portion. The emerging plane wavefront is tilted.<br>
+            <strong>2. Convex Lens:</strong> The central part of the plane wavefront travels through the thickest glass and is delayed the most. The emerging wavefront is spherical and converging.<br>
+            <strong>3. Concave Mirror:</strong> The edges of the plane wavefront hit the mirror first and reflect back, while the center travels further. The reflected wavefront is spherical and converging.
+        </div>
+
+        <h2>3. Interference of Light and Coherent Sources</h2>
+
+        <p><strong>Principle of Superposition:</strong> When two or more light waves travel through a medium, the resultant displacement at any point is the vector sum of the individual displacements: $\vec{y} = \vec{y_1} + \vec{y_2}$.</p>
+
+        <p><strong>Coherent Sources:</strong> Two sources of light are coherent if they emit light waves of the same frequency (and wavelength) and have a zero or constant phase difference ($\phi$) with respect to time.<br>
+        <em>Why two independent bulbs can never be coherent:</em> Light is emitted by billions of atoms independently in bursts lasting $\approx 10^{-8}$ seconds. The phase difference between two independent bulbs changes millions of times a second, averaging the intensity out. Coherent sources must be derived from a single parent source.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Mathematical Analysis of Interference</span>
+            Let two waves be $y_1 = a_1 \sin(\omega t)$ and $y_2 = a_2 \sin(\omega t + \phi)$.<br>
+            <strong>Resultant Amplitude ($A$):</strong><br>
+            $$A = \sqrt{a_1^2 + a_2^2 + 2a_1 a_2 \cos\phi}$$<br>
+            Since Intensity ($I$) is directly proportional to Amplitude squared ($I \propto A^2$):<br>
+            <strong>Resultant Intensity ($I$):</strong><br>
+            $$I = I_1 + I_2 + 2\sqrt{I_1 I_2} \cos\phi$$<br>
+            The term $2\sqrt{I_1 I_2} \cos\phi$ is the <em>Interference Term</em>.
+        </div>
+
+        <h3>Constructive Interference (Bright Fringes)</h3>
+        <p>Occurs when waves meet in phase (crest meets crest). Intensity is maximum.<br>
+        Condition for $\cos\phi = +1$:<br>
+        - <strong>Phase Difference:</strong> $\phi = 2n\pi$ (where $n = 0, 1, 2, \dots$)<br>
+        - <strong>Path Difference:</strong> $\Delta x = n\lambda$<br>
+        - <strong>Maximum Intensity:</strong> $I_{max} = (\sqrt{I_1} + \sqrt{I_2})^2$. If $I_1 = I_2 = I_0$, then $I_{max} = 4I_0$.</p>
+
+        <h3>Destructive Interference (Dark Fringes)</h3>
+        <p>Occurs when waves meet out of phase (crest meets trough). Intensity is minimum.<br>
+        Condition for $\cos\phi = -1$:<br>
+        - <strong>Phase Difference:</strong> $\phi = (2n - 1)\pi$ (where $n = 1, 2, 3, \dots$)<br>
+        - <strong>Path Difference:</strong> $\Delta x = (n - 0.5)\lambda$ or $(2n-1)\frac{\lambda}{2}$<br>
+        - <strong>Minimum Intensity:</strong> $I_{min} = (\sqrt{I_1} - \sqrt{I_2})^2$. If $I_1 = I_2 = I_0$, then $I_{min} = 0$.</p>
+
+        <h2>4. Young's Double Slit Experiment (YDSE)</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Young's Double Slit Experiment Setup. Monochromatic light passes through a single slit S to become coherent, then passes through two narrow slits $S_1$ and $S_2$ separated by distance 'd'. Spherical wavefronts emerge and overlap. A screen is placed at distance 'D' (where $D \gg d$). A point 'P' is located on the screen at distance 'y' from the central axis 'O'. Path difference $\Delta x = S_2P - S_1P$ is shown by dropping a perpendicular from $S_1$ to $S_2P$. Clean textbook style, white background #FFFFFF."
+        </div>
+
+        <p>In 1801, Thomas Young definitively proved the wave nature of light. He used a single pinhole to illuminate two very closely spaced pinholes ($S_1$ and $S_2$), making them coherent sources. The overlapping waves created an interference pattern of alternating bright and dark bands (fringes) on a screen.</p>
+
+        <h3>Path Difference and Position of Fringes</h3>
+        <p>Let $d$ be the distance between slits, $D$ be the distance to the screen, and $y$ be the position of point $P$ from the center $O$.<br>
+        The path difference is $\Delta x = S_2P - S_1P$. By geometry (assuming $D \gg d$ and $y \ll D$, so $\sin\theta \approx \tan\theta \approx \theta$):<br>
+        <strong>$$\Delta x = d \sin\theta \approx d \left(\frac{y}{D}\right) \implies \Delta x = \frac{y d}{D}$$</strong></p>
+
+        <div class="green-box">
+            <span class="box-label">Fringe Positions & Fringe Width ($\beta$)</span>
+            <strong>Position of $n^{th}$ Bright Fringe:</strong> Equate $\Delta x$ to $n\lambda$.<br>
+            $$\frac{y d}{D} = n\lambda \implies \mathbf{y_n = \frac{n\lambda D}{d}}$$ (where $n = 0$ is the Central Bright Fringe).<br><br>
+            
+            <strong>Position of $n^{th}$ Dark Fringe:</strong> Equate $\Delta x$ to $(n - 0.5)\lambda$.<br>
+            $$\frac{y d}{D} = (n - 0.5)\lambda \implies \mathbf{y_n = \frac{(2n - 1)\lambda D}{2d}}$$ (where $n=1$ is the first dark fringe).<br><br>
+            
+            <strong>Fringe Width ($\beta$):</strong> The distance between two consecutive bright or dark fringes. <br>
+            $\beta = y_{n} - y_{n-1} = \frac{n\lambda D}{d} - \frac{(n-1)\lambda D}{d}$<br>
+            <strong>$$\beta = \frac{\lambda D}{d}$$</strong>
+            <em>Conclusion:</em> Since $\beta$ is independent of $n$, all bright and dark fringes in YDSE have exactly equal widths.
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Main Foundation: YDSE Advanced Cases</span>
+            <strong>1. Introduction of a Glass Slab:</strong> If a thin transparent slab of thickness $t$ and refractive index $\mu$ is placed in front of slit $S_1$, the optical path increases by $(\mu - 1)t$. The entire fringe pattern shifts towards the slit covered by the slab.
+            <strong>$$\text{Shift } (\Delta y) = \frac{D}{d}(\mu - 1)t = \frac{\beta}{\lambda}(\mu - 1)t$$</strong><br>
+            
+            <strong>2. YDSE with White Light:</strong> White light consists of wavelengths from 400nm to 700nm. 
+            - The central fringe ($y=0$) has a path difference of zero for ALL wavelengths. Thus, all colors interfere constructively here, making the <strong>central fringe pure WHITE</strong>.
+            - As we move away from the center, the closest dark fringe formed corresponds to the color with the shortest wavelength (Violet/Blue). Conversely, the closest bright fringe is formed by Violet.
+            - Fringes quickly overlap and wash out into uniform white illumination after a few orders.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> In YDSE, the slits are $2 \text{ mm}$ apart and illuminated by light of wavelength $600 \text{ nm}$. The screen is $1.5 \text{ m}$ away. Calculate the distance between the 2nd bright fringe and the 4th dark fringe on the same side of the central maximum.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Given: $d = 2 \times 10^{-3} \text{ m}$, $\lambda = 600 \times 10^{-9} \text{ m}$, $D = 1.5 \text{ m}$.<br>
+                First, calculate Fringe Width ($\beta$):<br>
+                $\beta = \frac{\lambda D}{d} = \frac{600 \times 10^{-9} \times 1.5}{2 \times 10^{-3}} = 450 \times 10^{-6} \text{ m} = 0.45 \text{ mm}$.<br>
+                Position of 2nd bright fringe ($n=2$): $y_{B2} = 2\beta = 2(0.45) = 0.90 \text{ mm}$.<br>
+                Position of 4th dark fringe ($n=4$): $y_{D4} = (4 - 0.5)\beta = 3.5\beta = 3.5(0.45) = 1.575 \text{ mm}$.<br>
+                Distance between them $= y_{D4} - y_{B2} = 1.575 - 0.90 = \mathbf{0.675 \text{ mm}}$.
+            </div>
+        </div>
+
+        <h2>5. Diffraction of Light at a Single Slit</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Single Slit Diffraction Setup and Intensity Graph. Left side: Plane wavefront hits a single slit of width 'a'. Light bends and hits a screen. Right side: A graph of Intensity (y-axis) vs. Angle $\theta$ (x-axis). The central maximum at $\theta=0$ is massive, twice as wide as others, and reaches highest intensity. Secondary maxima on both sides rapidly drop in height. Minima occur at $\lambda/a, 2\lambda/a$, etc. White background #FFFFFF."
+        </div>
+
+        <p><strong>Diffraction</strong> is the phenomenon of bending of light around the sharp corners of an obstacle or aperture and its encroachment into the geometrical shadow region. It occurs when the size of the aperture is comparable to the wavelength of light ($a \approx \lambda$).</p>
+        
+        <p>In single slit diffraction, we imagine the single slit of width '$a$' is divided into $n$ smaller coherent sources (Huygens wavelets). The interference of these wavelets from the <em>same</em> slit creates the pattern.</p>
+        <p>Path difference between wavelets from the top and bottom of the slit: $\Delta x = a \sin\theta$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Conditions for Diffraction Fringes</span>
+            <strong>Minima (Dark Bands):</strong> Unlike YDSE, here integer multiples of $\lambda$ cause destruction. If $\Delta x = \lambda$, we can split the slit into two halves; the top half wavelets perfectly cancel the bottom half wavelets ($\Delta x = \lambda/2$ for corresponding pairs).
+            <strong>$$a \sin\theta = n\lambda \quad (n = 1, 2, 3, \dots)$$</strong>
+            
+            <strong>Secondary Maxima (Bright Bands):</strong> Occur roughly halfway between minima. If $\Delta x = 1.5\lambda$, split the slit into thirds. Two thirds cancel, leaving one third to produce weak brightness.
+            <strong>$$a \sin\theta = (n + 0.5)\lambda \quad (n = 1, 2, 3, \dots)$$</strong>
+        </div>
+
+        <h3>Width of Central Maximum</h3>
+        <p>The central maximum lies between the first minimum on the left ($\theta = -\lambda/a$) and the first minimum on the right ($\theta = +\lambda/a$).<br>
+        - <strong>Angular Width:</strong> $2\theta = \frac{2\lambda}{a}$.<br>
+        - <strong>Linear Width ($W$):</strong> $W = D(2\theta) \implies \mathbf{W = \frac{2\lambda D}{a}}$.<br>
+        <em>Note: The central maximum is twice as wide as any secondary maximum ($W_{sec} = \lambda D/a$).</em></p>
+
+        <p><strong>Interference vs. Diffraction:</strong> Interference (YDSE) is the superposition of waves from two distinct coherent sources. All fringes have equal width and intensity. Diffraction is the superposition of wavelets originating from different parts of the <em>same</em> wavefront. The central fringe is widest and brightest, with intensity falling off rapidly.</p>
+
+        <h2>6. Resolving Power (JEE Main Focus)</h2>
+        <p>Diffraction limits the ability of optical instruments to distinguish between two closely spaced objects. According to <strong>Rayleigh's Criterion for Resolution</strong>, two point objects are just resolved if the central maximum of the diffraction pattern of one coincides exactly with the first minimum of the other.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Formulas for Resolving Power (RP)</span>
+            <strong>1. Microscope:</strong> A microscope observes tiny objects close up. Resolving power is the reciprocal of the minimum resolving distance ($\Delta d$).
+            <strong>$$RP = \frac{1}{\Delta d} = \frac{2\mu \sin\theta}{\lambda}$$</strong>
+            <em>Note: The term $(\mu \sin\theta)$ is called the <strong>Numerical Aperture (NA)</strong>. To increase RP, use shorter wavelength light (like UV or electron beams) or immerse the objective in an oil of high refractive index $\mu$.</em><br><br>
+            
+            <strong>2. Telescope:</strong> A telescope observes distant objects. Resolving power is the reciprocal of the minimum resolving angular separation ($\Delta \theta$).
+            <strong>$$RP = \frac{1}{\Delta \theta} = \frac{D}{1.22\lambda}$$</strong>
+            <em>(Where $D$ is the diameter/aperture of the objective lens). To see finer details of distant stars, telescopes are built with massive diameters.</em>
+        </div>
+
+        <h2>7. Polarization of Light (JEE Main Focus)</h2>
+        <p>Interference and diffraction prove light is a wave, but they don't tell us if it's longitudinal or transverse. <strong>Polarization proves light is a transverse electromagnetic wave.</strong></p>
+        
+        <p><strong>Unpolarized Light:</strong> The electric field vectors vibrate randomly in all directions perpendicular to the direction of propagation (like normal bulb light).<br>
+        <strong>Plane Polarized Light:</strong> The electric field vectors vibrate in only one single plane.</p>
+
+        <p><strong>Polaroids:</strong> Synthetic plastic sheets containing long chain molecules aligned in a specific direction. They only allow electric field vibrations parallel to their <strong>Transmission Axis</strong> to pass through, absorbing the rest. If unpolarized light of intensity $I_0$ passes through a polarizer, its intensity becomes exactly half: $\mathbf{I = I_0/2}$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Malus's Law & Brewster's Law</span>
+            <strong>1. Malus's Law:</strong> When completely plane-polarized light of intensity $I_0$ is incident on an analyzer, the intensity $I$ of the transmitted light depends on the angle $\theta$ between the transmission axes of the polarizer and analyzer:
+            <strong>$$I = I_0 \cos^2\theta$$</strong>
+            <em>(If $\theta = 90^\circ$, they are "crossed", and $I=0$).</em><br><br>
+            
+            <strong>2. Polarization by Reflection (Brewster's Law):</strong> When unpolarized light hits a transparent boundary, the reflected light is partially polarized. At a specific angle of incidence called the <strong>Brewster angle ($i_p$)</strong>, the reflected light becomes 100% plane-polarized (vibrating parallel to the surface).<br>
+            <strong>$$\mu = \tan i_p$$</strong>
+            <em>Proof Condition:</em> At this exact angle, the reflected ray and refracted ray are completely perpendicular to each other ($\mathbf{i_p + r = 90^\circ}$).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2</span>
+            <strong>Question:</strong> Unpolarized light of intensity $I_0$ passes through three polaroids $P_1$, $P_2$, and $P_3$. The pass axis of $P_2$ makes an angle of $30^\circ$ with $P_1$, and the pass axis of $P_3$ is crossed ($90^\circ$) with $P_1$. Find the intensity of light transmitted through $P_3$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. After $P_1$: Unpolarized light becomes polarized. Intensity $I_1 = \frac{I_0}{2}$.<br>
+                2. After $P_2$: Angle between $P_1$ and $P_2$ is $30^\circ$. Apply Malus's Law:<br>
+                   $I_2 = I_1 \cos^2(30^\circ) = \left(\frac{I_0}{2}\right) \left(\frac{\sqrt{3}}{2}\right)^2 = \left(\frac{I_0}{2}\right) \left(\frac{3}{4}\right) = \frac{3I_0}{8}$.<br>
+                3. After $P_3$: $P_3$ is at $90^\circ$ to $P_1$. $P_2$ is at $30^\circ$ to $P_1$. So, the angle between $P_2$ and $P_3$ is $90^\circ - 30^\circ = 60^\circ$. Apply Malus's Law again:<br>
+                   $I_3 = I_2 \cos^2(60^\circ) = \left(\frac{3I_0}{8}\right) \left(\frac{1}{2}\right)^2 = \left(\frac{3I_0}{8}\right) \left(\frac{1}{4}\right) = \mathbf{\frac{3I_0}{32}}$.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
