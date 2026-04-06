@@ -3,150 +3,498 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 13: Nuclei - Vardaan Learning Institute</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Nuclei - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            --paper-color: #ffffff;
-            --ink-color: #2c3e50;
-            --highlight-yellow: #fff9c4;
-            --highlight-blue: #e3f2fd;
-            --accent-red: #c62828;
-            --accent-blue: #1565c0;
-            --accent-purple: #7b1fa2;
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
             --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
 
+        /* --- DARK MODE VARIABLES --- */
         html.dark-mode {
-            --paper-color: #000000;
-            --ink-color: #e0e0e0;
-            --paper-bg: #000000;
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0 }
-        body { background-color: var(--paper-bg); color: var(--ink-color); font-family: 'Outfit', sans-serif; line-height: 1.7; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: background-color 0.3s ease; }
-        
-        .paper-sheet { width: 210mm; max-width: 100%; min-height: 297mm; background-color: var(--paper-color); padding: 20mm; box-sizing: border-box; position: relative; transition: background-color 0.3s ease; }
-        
-        .header-institute { margin-bottom: 20px; color: #555; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ddd; padding-bottom: 10px; text-align: center; }
-        .header-title { margin-top: 5px; margin-bottom: 15px; color: var(--accent-blue); font-size: 2.2rem; font-weight: 800; text-align: center; }
-        .header-subtitle { text-align: center; font-size: 1em; color: #555; font-weight: 500; margin-bottom: 40px; font-style: italic; }
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-        h2 { color: var(--accent-blue); border-bottom: 3px solid var(--accent-blue); padding-bottom: 5px; margin-top: 50px; font-size: 1.8rem; font-weight: 600; }
-        h3 { color: var(--accent-red); margin-top: 35px; font-size: 1.4rem; border-left: 5px solid var(--accent-red); padding-left: 10px; display: block; font-weight: 600; }
-        
-        p, li { margin-bottom: 15px; }
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
         ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
 
-        .definition-box { border: 2px solid #4a148c; background-color: rgba(123, 31, 162, 0.05); padding: 20px; margin: 25px 0; border-radius: 8px; }
-        .rule-box { border: 2px solid #fbc02d; background-color: rgba(251, 192, 45, 0.1); border-radius: 8px; padding: 20px; margin: 25px 0; }
-        .derivation-box { border: 3px solid #333; border-radius: 10px; background-color: transparent; padding: 25px; margin: 30px 0; position: relative; }
-        .derivation-box::after { content: "DERIVATION"; position: absolute; top: -15px; right: 20px; background: #333; color: #fff; padding: 4px 12px; font-size: 0.85em; font-weight: bold; border-radius: 4px; }
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
         
-        .formula-box { border: 2px solid #e65100; background-color: rgba(230, 81, 0, 0.05); padding: 20px; margin: 30px 0; border-radius: 8px; text-align: center; }
-        .formula-box::before { content: "📝 FORMULA"; font-weight: bold; display: block; margin-bottom: 12px; color: #e65100; border-bottom: 1px dashed #e65100; padding-bottom: 5px; }
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid var(--toggle-border); padding: 10px; text-align: left; }
+        th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
 
-        .visual-container { display: flex; justify-content: center; margin: 30px 0; align-items: center; width: 100%; }
-        .visual-container img { max-width: 100%; transition: filter 0.3s ease; border: none !important; box-shadow: none !important; }
-        html.dark-mode .visual-container img { filter: invert(1); }
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
 
-        .theme-toggle { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .icon-sun { display: none; }
-        html.dark-mode .icon-sun { display: block; }
-        html.dark-mode .icon-moon { display: none; }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        .watermark-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 9999; opacity: 0.1; }
-        .watermark-image { width: 600px; max-width: 80%; }
-
-        @media print { .theme-toggle { display: none; } .paper-sheet { width: 100%; padding: 0; } body { background-color: white; } }
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
     </style>
 </head>
 <body>
-    <div class="watermark-overlay"><img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image"></div>
-    
-    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
     </button>
 
     <div class="paper-sheet">
-        <h1 class="header-institute">VARDAAN LEARNING INSTITUTE</h1>
-        <h2 class="header-title">Chapter 13: Nuclei</h2>
-        <p class="header-subtitle">CBSE Class 12 Physics • Comprehensive Notes</p>
-
-        <div class="rule-box">
-            <p><strong>Chapter Overview</strong></p>
-            <p>In this chapter, we dive into the heart of the atom—the nucleus. We cover nuclear composition, binding energy, nuclear forces, and the high-energy processes of fission and fusion.</p>
-        </div>
-
-        <h2>13.1 Composition and Size of Nucleus</h2>
-        <p>The nucleus is composed of protons and neutrons, collectively known as <strong>nucleons</strong>. Atomic mass is measured in <strong>Atomic Mass Units (u)</strong>, where $1 \text{ u} = \frac{1}{12}^{th}$ of the mass of a $^{12}\text{C}$ atom.</p>
         
-        <div class="definition-box">
-            <p><strong>Nuclear Density:</strong> The nucleus is incredibly dense. Almost all mass of the atom is packed into a volume $10^{15}$ times smaller than the atom itself. Interestingly, nuclear density is <strong>independent</strong> of the mass number ($A$).</p>
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Physics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
         </div>
 
-        <h3>Nuclear Radius ($R$):</h3>
-        <p>Experiments show that the volume of a nucleus is proportional to its mass number $A$. Therefore, the radius is:</p>
-        <div class="formula-box">
-            $$ R = R_0 A^{1/3} $$
-            <p>Where $R_0 \approx 1.2 \times 10^{-15} \text{ m}$ (or 1.2 femptometers/fermi).</p>
-        </div>
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 13: Nuclei</h1>
 
-        <h2>13.2 Isotopes, Isobars, and Isotones</h2>
-        <ul>
-            <li><strong>Isotopes:</strong> Atoms of same element having same atomic number ($Z$) but different mass number ($A$). (e.g., $^{1}\text{H}, ^{2}\text{H}, ^{3}\text{H}$).</li>
-            <li><strong>Isobars:</strong> Atoms of different elements having same mass number ($A$) but different atomic number ($Z$). (e.g., $^{40}_{18}\text{Ar}, ^{40}_{20}\text{Ca}$).</li>
-            <li><strong>Isotones:</strong> Atoms of different elements having same number of neutrons ($A-Z$).</li>
-        </ul>
+        <p><em>Dear Class 12 Student! In the previous chapter, we explored the vast orbital regions of the atom. Now, we dive into the incredibly dense, profoundly energetic core: the Nucleus. The forces that hold the nucleus together are the strongest in nature, and the energy released when it splits or fuses literally powers the stars. Pay extremely close attention to the Binding Energy Curve, as it is a perennial favorite in the Boards!</em></p>
 
-        <h2>13.3 Nuclear Force</h2>
-        <p>The force that binds protons and neutrons together in the nucleus despite the strong electromagnetic repulsion between protons. It is the strongest known force in nature.</p>
-        <h3>Key Properties:</h3>
-        <ul>
-            <li>Short-ranged (acts only over distances of $\sim$ few fermis).</li>
-            <li>Strongly attractive but becomes repulsive at very short distances (< 0.5 fm).</li>
-            <li>Charge-independent (acts same between $p-p, n-n, \text{ and } p-n$).</li>
-            <li>Non-central and dependent on spin.</li>
-        </ul>
+        <h2>1. Atomic Masses and Composition of Nucleus</h2>
+        <p>The nucleus lies at the very center of the atom, holding almost the entirety of its mass and all of its positive charge. It consists of two types of particles collectively known as <strong>Nucleons</strong>: Protons and Neutrons.</p>
 
-        <h2>13.4 Mass Defect and Binding Energy</h2>
-        <p>The observed mass of a nucleus is always <strong>less</strong> than the sum of the masses of its constituent nucleons. This difference is called the <strong>Mass Defect ($\Delta m$)</strong>.</p>
-        
-        <div class="formula-box">
-            $$ \Delta m = [Z m_p + (A-Z) m_n] - M_{nucleus} $$
-        </div>
-
-        <h3>Einstein's Mass-Energy Equivalence:</h3>
-        <p>Energy and mass are inter-convertible: $E = \Delta m c^2$. The energy equivalent of the mass defect is the <strong>Binding Energy ($E_b$)</strong> of the nucleus.</p>
-        <div class="formula-box">
-            $$ E_b = \Delta m c^2 $$
-            <p>For $1 \text{ u}$ mass defect, the energy is approximately <strong>$931.5 \text{ MeV}$</strong>.</p>
-        </div>
-
-        <div class="visual-container">
-            <img src="Images/binding_energy_curve.jpg" alt="Binding Energy per Nucleon Curve" onerror="this.src='https://placehold.co/600x400/png?text=Binding+Energy+Curve'">
-        </div>
-
-        <h2>13.5 Radioactivity</h2>
-        <p>The spontaneous disintegration of unstable nuclei by emitting radiations ($\alpha, \beta, \gamma$).</p>
-        <ul>
-            <li><strong>Alpha Decay:</strong> Emission of a helium nucleus $^{4}_{2}\text{He}$. Atomic number decreases by 2, mass number by 4.</li>
-            <li><strong>Beta Decay:</strong> Emission of an electron ($\beta^-$) or positron ($\beta^+$). Atomic number changes by $\pm 1$, mass number remains same.</li>
-            <li><strong>Gamma Decay:</strong> Emission of high-energy photons. Nucleus moves from excited state to ground state. No change in $A$ or $Z$.</li>
-        </ul>
-
-        <h2>13.6 Nuclear Reaction: Fission and Fusion</h2>
         <div class="blue-box">
-            <p><strong>Nuclear Fission:</strong> A heavy nucleus splits into two medium-sized nuclei, releasing a massive amount of energy (e.g., Uranium-235 in nuclear reactors).</p>
-            <p><strong>Nuclear Fusion:</strong> Two light nuclei combine to form a heavier nucleus, releasing even more energy than fission (e.g., source of energy in the Sun, Hydrogen-Hydrogen fusion).</p>
+            <span class="box-label">Nuclear Notation</span>
+            A nucleus of an element $X$ is represented as <strong>${}^{A}_{Z}\text{X}$</strong>.
+            <ul>
+                <li><strong>Atomic Number ($Z$):</strong> The number of protons. It determines the chemical identity of the element.</li>
+                <li><strong>Mass Number ($A$):</strong> The total number of nucleons (protons + neutrons). <br>Number of neutrons $N = A - Z$.</li>
+            </ul>
         </div>
 
-        <div class="branding-footer">
-            <p>Created by Team Vardaan ❤️ | Powered by Vardaan Comet</p>
+        <h3>Atomic Mass Unit (amu or u)</h3>
+        <p>Because macroscopic units like kilograms are inconveniently large for subatomic particles, we use the Atomic Mass Unit. It is defined as exactly <strong>1/12th of the mass of an unbonded Carbon-12 (${}^{12}\text{C}$) atom at rest</strong>.</p>
+        <p><strong>$1 \text{ u} = 1.660539 \times 10^{-27} \text{ kg}$</strong></p>
+        <p>Using Einstein's $E=mc^2$, the energy equivalent of 1 atomic mass unit is incredibly useful for nuclear calculations:<br>
+        <strong>$1 \text{ u} \approx 931.5 \text{ MeV}$</strong></p>
+
+        <h3>Classification of Nuclei</h3>
+        <ul>
+            <li><strong>Isotopes:</strong> Nuclei with the <em>same Atomic Number ($Z$)</em> but different Mass Numbers ($A$). They belong to the same element and have identical chemical properties. <em>Example: Hydrogen (${}^1_1\text{H}$), Deuterium (${}^2_1\text{H}$), Tritium (${}^3_1\text{H}$).</em></li>
+            <li><strong>Isobars:</strong> Nuclei with the <em>same Mass Number ($A$)</em> but different Atomic Numbers ($Z$). They are different elements with different chemical properties. <em>Example: Argon-40 (${}^{40}_{18}\text{Ar}$) and Calcium-40 (${}^{40}_{20}\text{Ca}$).</em></li>
+            <li><strong>Isotones:</strong> Nuclei with the <em>same number of Neutrons ($N = A - Z$)</em>. <em>Example: Carbon-14 (${}^{14}_6\text{C}$) and Nitrogen-15 (${}^{15}_7\text{N}$). Both have 8 neutrons.</em></li>
+        </ul>
+
+        <h2>2. Size and Density of the Nucleus</h2>
+        <p>Experiments (like high-energy electron scattering) have shown that a nucleus has a somewhat spherical shape. The volume of a nucleus is directly proportional to its mass number ($A$).</p>
+        
+        <p>Since Volume $V \propto A$, and for a sphere $V = \frac{4}{3}\pi R^3$, it implies that $R^3 \propto A$.</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Nuclear Radius Formula</span>
+            <strong>$$R = R_0 A^{1/3}$$</strong>
+            Where $R_0$ is an empirical constant approximately equal to <strong>$1.2 \times 10^{-15} \text{ m}$</strong> or <strong>$1.2 \text{ fm}$ (fermi)</strong>.
         </div>
+
+        <div class="green-box">
+            <span class="box-label">Crucial Board Derivation: Constant Nuclear Density</span>
+            We need to prove that the density of nuclear matter is constant and completely independent of the mass number ($A$).<br><br>
+            1. Let $m$ be the average mass of a single nucleon (proton or neutron).<br>
+            2. The total mass of the nucleus is approximately $M = m \times A$.<br>
+            3. The volume of the nucleus is $V = \frac{4}{3}\pi R^3 = \frac{4}{3}\pi (R_0 A^{1/3})^3 = \frac{4}{3}\pi R_0^3 A$.<br>
+            4. Nuclear Density ($\rho$) is Mass / Volume:<br>
+            $$\rho = \frac{m A}{\frac{4}{3}\pi R_0^3 A}$$<br>
+            <strong>$$\rho = \frac{3m}{4\pi R_0^3}$$</strong><br>
+            <em>Conclusion:</em> Since $A$ cancels out perfectly, nuclear density is independent of the mass number. Plugging in $m \approx 1.66 \times 10^{-27} \text{ kg}$ and $R_0 = 1.2 \times 10^{-15} \text{ m}$, we get $\rho \approx \mathbf{2.3 \times 10^{17} \text{ kg/m}^3}$. <br>
+            (This is a mind-boggling density! A teaspoon of nuclear matter would weigh over a billion tons on Earth).
+        </div>
+
+        <h2>3. Mass Defect and Binding Energy (High Board Priority)</h2>
+        <p>You might expect that the mass of a nucleus is exactly equal to the sum of the masses of its constituent protons and neutrons. Astonishingly, <strong>the actual mass of any stable nucleus is always less than the sum of the masses of its individual nucleons.</strong></p>
+
+        <h3>Mass Defect ($\Delta m$)</h3>
+        <p>The difference between the sum of the masses of individual nucleons and the actual resting mass of the nucleus is called the Mass Defect.</p>
+        <strong>$$\Delta m = [Z m_p + (A-Z)m_n] - M_{nucleus}$$</strong>
+        <em>Where $m_p$ is mass of a proton, $m_n$ is mass of a neutron, and $M_{nucleus}$ is the actual mass of the nucleus.</em>
+
+        <h3>Nuclear Binding Energy ($BE$)</h3>
+        <p>Where did that missing mass ($\Delta m$) go? According to Einstein's mass-energy equivalence principle ($E=mc^2$), the missing mass was converted into energy and radiated away when the nucleus was formed. Therefore, to break the nucleus back apart into individual nucleons, we must supply this exact same amount of energy from the outside. This is called Binding Energy.</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Binding Energy Formulas</span>
+            <strong>In Joules:</strong> $$BE = \Delta m \cdot c^2$$ (Requires $\Delta m$ in kg)<br><br>
+            <strong>In MeV (Highly preferred for numericals):</strong> 
+            $$BE = \Delta m \times 931.5 \text{ MeV}$$ (Requires $\Delta m$ strictly in amu)
+        </div>
+
+        <h3>Binding Energy per Nucleon ($BE/A$)</h3>
+        <p>The total Binding Energy ($BE$) tells us how much energy is needed to smash the whole nucleus apart. But to compare the stability of different nuclei, we must look at the average energy required to remove just <em>one</em> nucleon. This is the <strong>Binding Energy per Nucleon ($BE/A$)</strong>.</p>
+        <p><strong>Rule of thumb: The higher the $BE/A$, the more tightly bound and stable the nucleus is.</strong></p>
+
+        <h2>4. The Binding Energy Curve</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Graph of Binding Energy per Nucleon (BE/A in MeV) on the y-axis versus Mass Number (A) on the x-axis. The curve starts low at Hydrogen, rises sharply with jagged spikes at He-4, C-12, O-16. It flattens out into a broad plateau around 8 MeV for intermediate nuclei (A=30 to A=170). The absolute peak is at Fe-56 (8.8 MeV). After A=170, the curve slowly drops down towards U-238 (approx 7.6 MeV). Clean, professional textbook style graph, white background."
+        </div>
+
+        <h3>Key Observations (Must-Know for Boards)</h3>
+        <ol>
+            <li>For intermediate nuclei ($30 < A < 170$), the curve is almost flat, showing a practically constant $BE/A$ of approximately $\mathbf{8.0 \text{ MeV/nucleon}}$.</li>
+            <li>The maximum $BE/A$ occurs for Iron-56 (${}^{56}\text{Fe}$) at roughly $\mathbf{8.8 \text{ MeV/nucleon}}$. Iron is the most thermodynamically stable nucleus in the universe.</li>
+            <li>For very light nuclei ($A < 30$), the $BE/A$ is significantly lower (though there are sharp peaks for exceptionally stable "magic number" nuclei like ${}^4_2\text{He}$, ${}^{12}_6\text{C}$, ${}^{16}_8\text{O}$).</li>
+            <li>For very heavy nuclei ($A > 170$), the $BE/A$ gradually decreases, dropping to about $7.6 \text{ MeV/nucleon}$ for Uranium-238.</li>
+        </ol>
+
+        <div class="yellow-box">
+            <span class="box-label">Deductions from the Curve (Energy Generation)</span>
+            Nature always tends toward maximum stability (highest $BE/A$). Therefore:<br>
+            <strong>1. Nuclear Fission:</strong> When a very heavy nucleus ($A > 170$) splits into two lighter, intermediate nuclei, the resulting products land on the higher, flatter part of the curve. Because the final $BE/A$ is greater than the initial $BE/A$, a massive amount of energy is released.<br><br>
+            <strong>2. Nuclear Fusion:</strong> When two very light nuclei ($A < 10$) combine to form a heavier nucleus, the resulting nucleus again jumps up to a higher point on the curve. This increase in $BE/A$ releases an astonishing amount of energy (powering stars).
+        </div>
+
+        <h2>5. Nuclear Force</h2>
+        <p>Protons in a tiny nucleus experience immense electrostatic repulsion. What prevents the nucleus from exploding? A new, fundamentally different force comes into play: the <strong>Strong Nuclear Force</strong>.</p>
+
+        <h3>Key Properties of the Nuclear Force</h3>
+        <ul>
+            <li>It is the <strong>strongest fundamental force</strong> in nature, roughly 100 times stronger than the electrostatic force.</li>
+            <li>It is extremely <strong>short-ranged</strong>. It is effective only over distances of $\sim 2-3 \text{ fm}$. Beyond this, it drops rapidly to zero.</li>
+            <li>It is strongly attractive between $0.7 \text{ fm}$ and $2.5 \text{ fm}$. However, if nucleons are pushed closer than $0.7 \text{ fm}$, the force becomes <strong>violently repulsive</strong>. This repulsive core prevents the nucleus from collapsing entirely.</li>
+            <li>It is <strong>charge-independent</strong>. The strong nuclear force between a proton-proton (p-p), a neutron-neutron (n-n), and a proton-neutron (p-n) is practically identical.</li>
+            <li><strong>Saturation Property:</strong> A nucleon interacts only with its nearest neighboring nucleons, not with all nucleons in the nucleus. This is the exact reason why $BE/A$ is constant for intermediate and heavy nuclei!</li>
+            <li>It is a non-central and spin-dependent force.</li>
+        </ul>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Graph of Potential Energy (U) of a pair of nucleons (y-axis) versus separation distance r (x-axis). At very small r (less than 0.7 fm), the potential energy shoots up to positive infinity, indicating strong repulsion. The curve drops sharply, crossing the x-axis at r_0 = 0.8 fm, and reaches a deep negative minimum well, indicating strong attraction. It then gradually rises asymptotically back to 0 at larger distances (approx 3 fm). Professional educational style, white background."
+        </div>
+
+        <h2>6. Radioactivity (JEE Main Focus)</h2>
+        <p><em>Note: Specifics of alpha/beta/gamma decay and the mathematical decay law have been heavily rationalized in recent CBSE syllabi. Always verify against your current year's board syllabus. However, they remain absolutely essential for JEE Mains.</em></p>
+
+        <p>Radioactivity is the spontaneous disintegration of unstable heavy nuclei accompanied by the emission of energetic particles or radiation.</p>
+
+        <h3>A. Alpha ($\alpha$) Decay</h3>
+        <p>An unstable nucleus emits a Helium nucleus (${}^4_2\text{He}$). The parent nucleus loses 2 protons and 2 neutrons.<br>
+        Reaction: <strong>${}^{A}_{Z}\text{X} \longrightarrow {}^{A-4}_{Z-2}\text{Y} + {}^{4}_{2}\text{He} + Q$</strong></p>
+        <p>The $Q$-value (energy released) is calculated using mass differences:<br>
+        $Q = [m_X - m_Y - m_\alpha] c^2$. If $Q > 0$, the decay occurs spontaneously.</p>
+
+        <h3>B. Beta ($\beta$) Decay</h3>
+        <p>Driven by the <em>Weak Nuclear Force</em>. An internal transformation of a nucleon.</p>
+        <ul>
+            <li><strong>$\beta^-$ decay:</strong> A neutron turns into a proton, emitting an electron ($e^-$) and an electron antineutrino ($\bar{\nu}_e$). The atomic number ($Z$) increases by 1.<br>
+            $n \longrightarrow p + e^- + \bar{\nu}_e$</li>
+            <li><strong>$\beta^+$ decay:</strong> A proton turns into a neutron, emitting a positron ($e^+$) and an electron neutrino ($\nu_e$). The atomic number ($Z$) decreases by 1.<br>
+            $p \longrightarrow n + e^+ + \nu_e$</li>
+        </ul>
+
+        <h3>C. Gamma ($\gamma$) Decay</h3>
+        <p>Just like electrons, the nucleus itself has discrete energy levels. After an $\alpha$ or $\beta$ decay, the daughter nucleus is often left in an excited state. It immediately transitions to the ground state by emitting a highly energetic photon (Gamma ray). Atomic number ($Z$) and mass number ($A$) remain unchanged.</p>
+
+        <div class="green-box">
+            <span class="box-label">Radioactive Decay Law (JEE Crucial)</span>
+            The rate of disintegration is directly proportional to the number of undecayed nuclei ($N$) present at that instant.<br>
+            $$\frac{dN}{dt} \propto -N \implies \frac{dN}{dt} = -\lambda N$$<br>
+            Where $\lambda$ is the Radioactive Decay Constant.<br>
+            Integrating this differential equation gives the exponential decay law:<br>
+            <strong>$$N = N_0 e^{-\lambda t}$$</strong>
+        </div>
+
+        <h3>Activity and Half-Life</h3>
+        <ul>
+            <li><strong>Activity ($R$):</strong> The number of disintegrations per second. $R = |\frac{dN}{dt}| = \lambda N = R_0 e^{-\lambda t}$.<br>
+            <em>SI Unit:</em> Becquerel ($1 \text{ Bq} = 1 \text{ decay/s}$). <em>Historical Unit:</em> Curie ($1 \text{ Ci} = 3.7 \times 10^{10} \text{ Bq}$).</li>
+            <li><strong>Half-Life ($T_{1/2}$):</strong> The time required for half of the radioactive nuclei to decay.<br>
+            <strong>$$T_{1/2} = \frac{\ln 2}{\lambda} \approx \frac{0.693}{\lambda}$$</strong></li>
+            <li><strong>Mean Life ($\tau$):</strong> The average lifetime of all nuclei.<br>
+            $\tau = \frac{1}{\lambda} = \frac{T_{1/2}}{0.693} \approx 1.44 T_{1/2}$.</li>
+        </ul>
+
+        <h2>7. Nuclear Energy</h2>
+
+        <h3>A. Nuclear Fission</h3>
+        <p>The splitting of a massive nucleus into two intermediate-mass fragments, accompanied by the release of neutrons and a massive amount of energy ($\sim 200 \text{ MeV}$ per fission).</p>
+        <p><strong>Example:</strong> When Uranium-235 is bombarded by a slow thermal neutron:<br>
+        <strong>${}^{235}_{92}\text{U} + {}^1_0\text{n} \longrightarrow {}^{236}_{92}\text{U}^* \longrightarrow {}^{144}_{56}\text{Ba} + {}^{89}_{36}\text{Kr} + 3 {}^1_0\text{n} + Q$</strong></p>
+        <p>Because each fission produces multiple neutrons, they can trigger further fissions, leading to a <strong>Chain Reaction</strong>. This is controlled in nuclear power reactors using control rods (Cadmium/Boron to absorb neutrons) and uncontrolled in atomic bombs.</p>
+
+        <h3>B. Nuclear Fusion</h3>
+        <p>The combining of two light nuclei to form a heavier, more stable nucleus, releasing energy.</p>
+        <p><strong>Conditions:</strong> Fusion requires extreme temperatures ($\sim 10^7 \text{ K}$) and immense pressure. This is necessary to give the positively charged light nuclei enough kinetic energy to overcome their mutual Coulomb electrostatic repulsion and get close enough for the strong nuclear force to bind them. Because of the thermal requirement, fusion reactions are called <em>thermonuclear reactions</em>.</p>
+        
+        <p><strong>Stellar Energy (The Sun):</strong> The primary source of energy in stars like our Sun is the fusion of hydrogen into helium via the <strong>Proton-Proton cycle</strong>.<br>
+        Overall simplified reaction:<br>
+        <strong>$4 {}^1_1\text{H} \longrightarrow {}^4_2\text{He} + 2e^+ + 2\nu_e + 26.7 \text{ MeV}$</strong></p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> The mass defect of an alpha particle (${}^4_2\text{He}$) is $0.0303 \text{ u}$. Calculate its total Binding Energy and Binding Energy per Nucleon in MeV.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Given Mass Defect $\Delta m = 0.0303 \text{ u}$.<br>
+                2. Total Binding Energy $BE = \Delta m \times 931.5 \text{ MeV/u}$<br>
+                   $BE = 0.0303 \times 931.5 \approx \mathbf{28.22 \text{ MeV}}$.<br>
+                3. The mass number ($A$) of an alpha particle is 4 (2 protons + 2 neutrons).<br>
+                4. Binding Energy per nucleon ($BE/A$) $= \frac{28.22 \text{ MeV}}{4} = \mathbf{7.055 \text{ MeV/nucleon}}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2</span>
+            <strong>Question:</strong> A radioactive sample has a half-life of 5 years. If the initial mass of the sample is $80 \text{ grams}$, how much of the sample will remain undecayed after 15 years?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Given: Half-life $T_{1/2} = 5 \text{ years}$, Total time $t = 15 \text{ years}$. Initial mass $N_0 = 80 \text{ g}$.<br>
+                2. Number of half-lives passed ($n$) $= \frac{t}{T_{1/2}} = \frac{15}{5} = 3$.<br>
+                3. The amount remaining after $n$ half-lives is given by the formula: $N = N_0 \left(\frac{1}{2}\right)^n$.<br>
+                4. $N = 80 \times \left(\frac{1}{2}\right)^3 = 80 \times \frac{1}{8} = \mathbf{10 \text{ grams}}$.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
     </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 </html>
