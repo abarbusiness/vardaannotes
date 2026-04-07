@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Linear Programming (LPP) - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; color: var(--text-main); }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 12: Linear Programming (LPP)</h1>
+
+        <p><em>Dear Class 12 Student! Welcome to Linear Programming. This chapter is the ultimate intersection of algebra and real-world economics. It teaches us how to make the best possible decisions (maximizing profits or minimizing costs) when we are restricted by limited resources like time, money, or materials. This is a guaranteed 5/6 mark question in the Board Exams. Mastering the "Corner Point Method" and identifying the "Unbounded Region Trap" are your keys to full marks!</em></p>
+
+        <h2>1. Introduction and Basic Terminology</h2>
+        
+        <p>A <strong>Linear Programming Problem (LPP)</strong> is a mathematical method used to allocate limited resources in an optimal manner, where all relationships are strictly linear (degree 1 equations and inequalities).</p>
+
+        <div class="blue-box">
+            <span class="box-label">The Core Components of LPP</span>
+            <strong>1. Decision Variables:</strong> The unknown quantities whose exact values are to be determined to solve the problem. They are usually denoted by $x$ and $y$.<br><br>
+            
+            <strong>2. Objective Function:</strong> The linear function that needs to be optimized (either strictly Maximized for profit or Minimized for cost). It is denoted by $Z$.<br>
+            <strong>$$ Z = ax + by $$</strong>
+            
+            <strong>3. Constraints:</strong> The linear inequalities or equations that represent the physical restrictions or limitations on the resources (e.g., machine hours, labor, raw materials). <br>
+            <em>Example: $2x + 3y \le 12$</em><br><br>
+
+            <strong>4. Non-negative Restrictions:</strong> In real life, you cannot produce a negative number of chairs or eat negative amounts of food. Thus, decision variables cannot be negative.<br>
+            <strong>$$ x \ge 0, \quad y \ge 0 $$</strong>
+            <em>Geometric Significance:</em> This restriction strictly confines the entire graph of the problem to the <strong>First Quadrant</strong> of the Cartesian plane.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Identifying Components</span>
+            <strong>Question:</strong> In the following mathematical model, identify the Objective Function, the Constraints, and the Non-negative Restrictions.<br>
+            Maximize $Z = 50x + 15y$<br>
+            Subject to: <br>
+            $5x + y \le 100$<br>
+            $x + y \le 60$<br>
+            $x, y \ge 0$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Objective Function:</strong> $Z = 50x + 15y$ (This is the function to be optimized/maximized).<br>
+                2. <strong>Constraints:</strong> The resource limitations are $5x + y \le 100$ and $x + y \le 60$.<br>
+                3. <strong>Non-negative Restrictions:</strong> $x, y \ge 0$ (Ensuring production quantities are not negative).
+            </div>
+        </div>
+
+        <h2>2. Graphical Concepts</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "A standard 2D Cartesian coordinate graph showing a bounded feasible region in the first quadrant. The x and y axes are drawn. Two solid straight lines intersect each other in the first quadrant, forming a convex, enclosed polygon (quadrilateral) with the x and y axes. This enclosed region is shaded in light blue and labeled 'Feasible Region'. The four corner points (vertices) of this shaded polygon are marked with distinct prominent red dots. Clean textbook geometric style, white background."
+        </div>
+
+        <ul>
+            <li><strong>Feasible Region:</strong> The common region determined by <em>all</em> the constraints including the non-negative constraints. Every single point $(x, y)$ residing inside this region or on its boundary is a valid solution to the problem.</li>
+            <li><strong>Infeasible Region:</strong> Any region outside the feasible region. Points here violate at least one constraint.</li>
+            <li><strong>Feasible Solution:</strong> Any valid point $(x, y)$ inside or on the boundary of the feasible region.</li>
+            <li><strong>Optimal (Feasible) Solution:</strong> The specific point in the feasible region that yields the absolute maximum or minimum value of the objective function $Z$.</li>
+            <li><strong>Convex Set:</strong> The feasible region of a linear programming problem is <em>always</em> a convex polygon. (A region is convex if a straight line segment joining any two points inside the region lies entirely inside the region).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Checking Feasibility</span>
+            <strong>Question:</strong> Given the constraints $2x + y \le 8$ and $x + 2y \le 10$ with $x, y \ge 0$. Determine if the point $(3, 3)$ lies in the feasible region.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                To lie in the feasible region, the point must satisfy <strong>all</strong> constraints simultaneously.<br>
+                1. Check non-negative restrictions: $x=3 \ge 0$ and $y=3 \ge 0$. (Satisfied).<br>
+                2. Check Constraint 1: $2(3) + 3 = 6 + 3 = 9$. The inequality is $9 \le 8$, which is <strong>FALSE</strong>.<br>
+                3. Since it violates even one constraint, the point $(3, 3)$ lies in the <strong>Infeasible Region</strong>.
+            </div>
+        </div>
+
+        <h2>3. Mathematical Formulation of LPP (Word Problems)</h2>
+        <p>Translating a real-world word problem into mathematical equations is Step 1. R.D. Sharma categorizes these beautifully into three main types:</p>
+
+        <ol>
+            <li><strong>Manufacturing / Production Problems:</strong> Involve determining the number of units of different products to manufacture to maximize profit, given strict constraints on machine hours, labor, and raw materials.</li>
+            <li><strong>Diet Problems:</strong> Involve determining the amount of different foods/ingredients to mix to <em>minimize cost</em> while strictly meeting specific minimum daily nutritional requirements (vitamins, proteins, etc.). <em>Note: Diet problems usually feature $\ge$ constraints (minimum requirements).</em></li>
+            <li><strong>Transportation Problems:</strong> Designing a shipping schedule to transport goods from factories to markets at a minimum cost. <em>(Note: Check current CBSE syllabus rationalization regarding transportation problems, though historically a 6-mark favorite).</em></li>
+        </ol>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Formulation (Manufacturing)</span>
+            <strong>Question:</strong> A furniture company manufactures tables and chairs. A table requires 2 hours of labor and 3 units of wood. A chair requires 1 hour of labor and 2 units of wood. The maximum available labor is 40 hours, and wood is 60 units. Profit on a table is Rs 500 and on a chair is Rs 300. Formulate the LPP to maximize profit.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Decision Variables:</strong> Let $x$ be the number of tables produced, and $y$ be the number of chairs produced.<br>
+                2. <strong>Objective Function:</strong> We want to maximize total profit $Z$.<br>
+                   $\mathbf{\text{Maximize } Z = 500x + 300y}$<br>
+                3. <strong>Constraints:</strong><br>
+                   - Labor constraint: $2x + 1y \le 40$ (Max 40 hours available).<br>
+                   - Wood constraint: $3x + 2y \le 60$ (Max 60 units available).<br>
+                4. <strong>Non-negative Restrictions:</strong> We cannot produce negative furniture.<br>
+                   $\mathbf{x \ge 0, \quad y \ge 0}$
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Formulation (Diet)</span>
+            <strong>Question:</strong> A dietician wishes to mix two types of foods, Food X and Food Y. Food X costs Rs 10/kg and contains 2 units/kg of Vitamin A and 1 unit/kg of Vitamin B. Food Y costs Rs 15/kg and contains 1 unit/kg of Vitamin A and 2 units/kg of Vitamin B. The minimum daily requirement is 8 units of Vitamin A and 10 units of Vitamin B. Formulate the LPP to minimize the cost of the mixture.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Decision Variables:</strong> Let $x$ kg of Food X and $y$ kg of Food Y be mixed.<br>
+                2. <strong>Objective Function:</strong> We want to minimize total cost $Z$.<br>
+                   $\mathbf{\text{Minimize } Z = 10x + 15y}$<br>
+                3. <strong>Constraints:</strong> (Since it is a <em>minimum</em> requirement, we use $\ge$).<br>
+                   - Vitamin A constraint: $2x + 1y \ge 8$<br>
+                   - Vitamin B constraint: $1x + 2y \ge 10$<br>
+                4. <strong>Non-negative Restrictions:</strong><br>
+                   $\mathbf{x \ge 0, \quad y \ge 0}$
+            </div>
+        </div>
+
+        <h2>4. The Corner Point Method (The Standard Board Algorithm)</h2>
+        
+        <div class="green-box">
+            <span class="box-label">Theorem 1 (The Fundamental Theorem of LPP)</span>
+            Let $R$ be the feasible region (convex polygon) for a linear programming problem and let $Z = ax + by$ be the objective function. When $Z$ has an optimal value (maximum or minimum), where the variables $x$ and $y$ are subject to constraints described by linear inequalities, <strong>this optimal value MUST occur at a corner point (vertex) of the feasible region.</strong>
+        </div>
+
+        <h3>Algorithm for Solving via Corner Point Method</h3>
+        <ol>
+            <li><strong>Formulate:</strong> Formulate the LPP mathematically (if it's a word problem).</li>
+            <li><strong>Graph:</strong> Draw the graph of all the constraint lines. (Treat inequalities as equations, find the $x$ and $y$ intercepts by putting $y=0$ then $x=0$, and draw the straight lines).</li>
+            <li><strong>Determine Valid Region:</strong> For each constraint line, test a point not on the line (usually the origin $(0,0)$). If the inequality holds true, shade towards the origin; if false, shade away.</li>
+            <li><strong>Shade and Identify:</strong> Shade the <em>common</em> Feasible Region. Identify all its corner points (vertices). <em>Crucial: If a corner point is formed by the intersection of two constraint lines, solve their equations simultaneously to find the exact coordinates. Do not guess from the graph!</em></li>
+            <li><strong>Evaluate:</strong> Create a table and evaluate the objective function $Z = ax + by$ at each corner point.</li>
+            <li><strong>Conclude:</strong> Identify the maximum or minimum value from the table.</li>
+        </ol>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Solving a Bounded LPP</span>
+            <strong>Question:</strong> Maximize $Z = 3x + 4y$<br>
+            Subject to: <br>
+            $x + y \le 4$<br>
+            $x \ge 0, y \ge 0$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Graph the constraint:</strong> Consider $x + y = 4$. <br>
+                   Points are $(4,0)$ and $(0,4)$. Plot the line. Test origin $(0,0) \implies 0 \le 4$ (True). Shade towards origin. The region is bounded in the 1st quadrant.<br>
+                2. <strong>Identify Corner Points:</strong> The vertices of the shaded triangle are $O(0,0)$, $A(4,0)$, and $B(0,4)$.<br>
+                3. <strong>Evaluate $Z$:</strong><br>
+                   - At $O(0,0)$: $Z = 3(0) + 4(0) = 0$<br>
+                   - At $A(4,0)$: $Z = 3(4) + 4(0) = 12$<br>
+                   - At $B(0,4)$: $Z = 3(0) + 4(4) = 16$<br>
+                4. <strong>Conclusion:</strong> The maximum value of $Z$ is <strong>$16$</strong>, which occurs at the point <strong>$(0, 4)$</strong>.
+            </div>
+        </div>
+
+        <h2>5. Handling Bounded vs. Unbounded Regions (The Crucial Trap)</h2>
+        <p>This is the most critical distinction in LPP. If you miss checking this in the board exam, you will lose marks.</p>
+
+        <ul>
+            <li><strong>Bounded Region:</strong> If the feasible region is enclosed on all sides (forming a closed polygon), the maximum or minimum value found at the corner points in your table is the absolute, guaranteed optimal solution.</li>
+            <li><strong>Unbounded Region:</strong> If the feasible region is open-ended (goes to infinity, usually upwards and to the right in diet problems), the max/min value found at the corner points is <strong>NOT guaranteed</strong> to be the final answer. You must perform a check!</li>
+        </ul>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Graph of an Unbounded Feasible Region in LPP. The first quadrant of a Cartesian plane. Two solid constraint lines form an open-ended feasible region that stretches infinitely upwards and to the right. The region is shaded light blue. The three corner points along the bottom left edge are marked with red dots. An additional dashed (dotted) line representing the objective function inequality (ax + by < m) is drawn. This dashed line DOES NOT intersect the shaded blue region. Clean, educational vector graphic."
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">The Unbounded Region Check (Algorithm)</span>
+            Let the maximum/minimum value found at the corner points of the unbounded region be $M$ (for max) or $m$ (for min).<br><br>
+            
+            <strong>For Maximization:</strong><br>
+            1. Draw the graph of the open half-plane <strong>$ax + by > M$</strong> (draw a <em>dotted</em> line $ax+by=M$ and shade away from origin).<br>
+            2. <em>Condition:</em> If this open half-plane has <strong>NO points in common</strong> with the feasible region, then $M$ is indeed the maximum value. <br>
+            3. If it <em>does</em> share points, the LPP has <strong>No Maximum Value</strong>.<br><br>
+            
+            <strong>For Minimization:</strong><br>
+            1. Draw the graph of the open half-plane <strong>$ax + by < m$</strong> (draw a <em>dotted</em> line $ax+by=m$ and shade towards origin).<br>
+            2. <em>Condition:</em> If this open half-plane has <strong>NO points in common</strong> with the feasible region, then $m$ is indeed the minimum value. <br>
+            3. If it <em>does</em> share points, the LPP has <strong>No Minimum Value</strong>.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Solving an Unbounded LPP</span>
+            <strong>Question:</strong> Minimize $Z = 3x + 5y$<br>
+            Subject to:<br>
+            $x + 3y \ge 3$<br>
+            $x + y \ge 2$<br>
+            $x \ge 0, y \ge 0$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Graph constraints:</strong><br>
+                   - Line 1: $x + 3y = 3 \implies$ Points $(3,0), (0,1)$. Test $(0,0) \implies 0 \ge 3$ (False). Shade away from origin.<br>
+                   - Line 2: $x + y = 2 \implies$ Points $(2,0), (0,2)$. Test $(0,0) \implies 0 \ge 2$ (False). Shade away from origin.<br>
+                2. <strong>Feasible Region:</strong> The region is strictly in the 1st quadrant, bounded below by the lines, but extending infinitely upwards and rightwards. It is <strong>Unbounded</strong>.<br>
+                3. <strong>Corner Points:</strong> <br>
+                   - Y-axis intercept of Line 2: $A(0,2)$.<br>
+                   - Intersection of L1 and L2: Solve $x+3y=3$ and $x+y=2$. Subtracting yields $2y=1 \implies y=0.5$. Thus $x=1.5$. Point $B(1.5, 0.5)$.<br>
+                   - X-axis intercept of Line 1: $C(3,0)$.<br>
+                4. <strong>Evaluate $Z = 3x + 5y$:</strong><br>
+                   - At $A(0,2)$: $Z = 3(0) + 5(2) = 10$<br>
+                   - At $B(1.5, 0.5)$: $Z = 3(1.5) + 5(0.5) = 4.5 + 2.5 = \mathbf{7}$ (This is $m$).<br>
+                   - At $C(3,0)$: $Z = 3(3) + 5(0) = 9$<br>
+                5. <strong>Unbounded Check:</strong> The region is unbounded, so 7 is tentative. We must graph the open half-plane <strong>$3x + 5y < 7$</strong>.<br>
+                   Draw dotted line $3x + 5y = 7$ (passes through $(0, 1.4)$ and $(2.33, 0)$). <br>
+                   Observe that this entire dotted line and its shaded region (towards origin) lie entirely <em>below</em> our feasible region. They have <strong>no points in common</strong>.<br>
+                6. <strong>Conclusion:</strong> Since there are no common points, the minimum value is confirmed. The minimum value is <strong>$7$</strong> at the point <strong>$(1.5, 0.5)$</strong>.
+            </div>
+        </div>
+
+        <h2>6. Types of Optimal Solutions</h2>
+        
+        <ul>
+            <li><strong>Unique Optimal Solution:</strong> The maximum or minimum value occurs at exactly one specific corner point (e.g., Problem 5).</li>
+            <li><strong>Multiple (Infinite) Optimal Solutions:</strong> If the optimal value occurs identically at <em>two adjacent corner points</em>, then every single point on the line segment joining these two points will give the exact same optimal value. <br>
+            <em>Conceptual Reason:</em> This happens when the slope of the Objective Function line is perfectly parallel to the slope of one of the active constraint lines.</li>
+            <li><strong>Infeasible LPP:</strong> When the constraints are strictly opposing and contradict each other, resulting in absolutely no common overlapping region. (e.g., $x+y \le 2$ AND $x+y \ge 5$). The LPP has no solution.</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: Multiple Optimal Solutions</span>
+            <strong>Question:</strong> Maximize $Z = 4x + 6y$<br>
+            Subject to:<br>
+            $3x + 2y \le 12$<br>
+            $2x + 3y \le 12$<br>
+            $x \ge 0, y \ge 0$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Graph constraints:</strong> Both lines form a bounded region near the origin.<br>
+                2. <strong>Corner Points:</strong> Origin $O(0,0)$, X-intercept of L1 $A(4,0)$, Y-intercept of L2 $C(0,4)$. Intersection point $B$ of L1 and L2 is $(12/5, 12/5)$ or $(2.4, 2.4)$.<br>
+                3. <strong>Evaluate $Z = 4x + 6y$:</strong><br>
+                   - At $O(0,0)$: $Z = 0$<br>
+                   - At $A(4,0)$: $Z = 4(4) + 0 = 16$<br>
+                   - At $B(12/5, 12/5)$: $Z = 4(12/5) + 6(12/5) = 48/5 + 72/5 = 120/5 = \mathbf{24}$<br>
+                   - At $C(0,4)$: $Z = 4(0) + 6(4) = \mathbf{24}$<br>
+                4. <strong>Conclusion:</strong> The maximum value is 24, and it occurs at TWO adjacent corner points: $B(12/5, 12/5)$ and $C(0,4)$. Therefore, the maximum value 24 occurs at <strong>every single point on the line segment joining B and C</strong>. The LPP has infinitely many optimal solutions.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Infeasibility</span>
+            <strong>Question:</strong> Maximize $Z = x + y$ subject to $x + y \le 2$, $x + y \ge 4$, $x \ge 0, y \ge 0$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. The first constraint $x + y \le 2$ shades the region <em>towards</em> the origin.<br>
+                2. The second constraint $x + y \ge 4$ shades the region <em>away</em> from the origin.<br>
+                3. These two shaded regions do not overlap at all. There is no common intersection.<br>
+                4. <strong>Conclusion:</strong> Since there is no common feasible region, the LPP is <strong>Infeasible</strong> and has no solution.
+            </div>
+        </div>
+
+        <h2>7. Iso-Profit / Iso-Cost Method (R.D. Sharma Alternative)</h2>
+        <p><em>Note: While the Corner Point Method is universally mandated by CBSE, understanding the Iso-Profit method provides excellent conceptual clarity for competitive exams.</em></p>
+
+        <div class="blue-box">
+            <span class="box-label">Concept of the Iso-Profit Line</span>
+            Instead of evaluating $Z$ at every corner, we graph the objective function itself!<br>
+            1. Let the objective function be $Z = ax + by$.<br>
+            2. Equate it to an arbitrary, easy-to-plot constant $k$ (e.g., $ax + by = k$) and draw this dotted line on your graph. This is the <strong>Iso-Profit/Iso-Cost Line</strong> (every point on this line gives the same profit $k$).<br>
+            3. <strong>For Maximization:</strong> Imagine sliding this dotted line parallel to itself <em>away</em> from the origin. The very last point of the feasible region that the sliding line touches before leaving the region completely is your optimal maximum point.<br>
+            4. <strong>For Minimization:</strong> Slide the dotted line parallel to itself <em>towards</em> the origin. The very first point of the feasible region it touches is your optimal minimum point.
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

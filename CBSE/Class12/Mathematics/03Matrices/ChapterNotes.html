@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Matrices - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 3: Matrices</h1>
+
+        <p><em>Dear Class 12 Student! Matrices are the foundation of linear algebra. Initially devised to solve systems of linear equations rapidly, they are now the backbone of computer graphics, quantum mechanics, and cryptography. For the Boards, mastering Matrix Multiplication and Symmetric/Skew-Symmetric properties is critical. For JEE, the Trace properties and Special Matrices (Nilpotent, Orthogonal) frequently appear in MCQs. Let's arrange our thoughts!</em></p>
+
+        <h2>1. Introduction to Matrices</h2>
+        <p><strong>Definition:</strong> A matrix is an ordered rectangular array of numbers or functions. The numbers or functions are called the <em>elements</em> or the <em>entries</em> of the matrix.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Order and Representation</span>
+            <strong>Order of a Matrix:</strong> A matrix having $m$ rows (horizontal) and $n$ columns (vertical) is said to be of order $\mathbf{m \times n}$ (read as "$m$ by $n$").<br>
+            <strong>General Representation:</strong> 
+            $$ A = \begin{bmatrix} 
+            a_{11} & a_{12} & \dots & a_{1n} \\ 
+            a_{21} & a_{22} & \dots & a_{2n} \\ 
+            \vdots & \vdots & \ddots & \vdots \\ 
+            a_{m1} & a_{m2} & \dots & a_{mn} 
+            \end{bmatrix} $$
+            In compact form: $A = [a_{ij}]_{m \times n}$, where $a_{ij}$ represents the element in the $i^{th}$ row and $j^{th}$ column.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Construction of a Matrix</span>
+            <strong>Question:</strong> Construct a $2 \times 2$ matrix, $A = [a_{ij}]$, whose elements are given by $a_{ij} = \frac{|i - 2j|}{2}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                For a $2 \times 2$ matrix, the elements are $a_{11}, a_{12}, a_{21}, a_{22}$.<br>
+                1. $a_{11} = \frac{|1 - 2(1)|}{2} = \frac{|-1|}{2} = \frac{1}{2}$<br>
+                2. $a_{12} = \frac{|1 - 2(2)|}{2} = \frac{|-3|}{2} = \frac{3}{2}$<br>
+                3. $a_{21} = \frac{|2 - 2(1)|}{2} = \frac{0}{2} = 0$<br>
+                4. $a_{22} = \frac{|2 - 2(2)|}{2} = \frac{|-2|}{2} = \frac{2}{2} = 1$<br>
+                Therefore, the required matrix is: 
+                <strong>$$ A = \begin{bmatrix} 1/2 & 3/2 \\ 0 & 1 \end{bmatrix} $$</strong>
+            </div>
+        </div>
+
+        <h2>2. Types of Matrices (NCERT Focus)</h2>
+        <ul>
+            <li><strong>Column Matrix:</strong> A matrix having only one column. Order: $m \times 1$.</li>
+            <li><strong>Row Matrix:</strong> A matrix having only one row. Order: $1 \times n$.</li>
+            <li><strong>Square Matrix:</strong> A matrix in which the number of rows equals the number of columns ($m = n$). A matrix of order $n \times n$ is simply called a square matrix of order $n$.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Diagonal, Scalar, and Identity Matrices</span>
+            <em>(Note: These definitions apply ONLY to Square Matrices).</em><br><br>
+            <strong>1. Diagonal Matrix:</strong> All its non-diagonal elements are zero. ($a_{ij} = 0$ when $i \neq j$).<br>
+            Can be denoted as $\text{diag}(d_1, d_2, d_3, \dots)$.<br><br>
+            <strong>2. Scalar Matrix:</strong> A diagonal matrix in which all the principal diagonal elements are exactly equal to a scalar constant $k$. ($a_{ij} = 0$ for $i \neq j$, and $a_{ii} = k$).<br><br>
+            <strong>3. Identity (Unit) Matrix ($I$):</strong> A scalar matrix in which all principal diagonal elements are exactly $1$.
+            $$ I_2 = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}, \quad I_3 = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} $$
+        </div>
+        
+        <ul>
+            <li><strong>Zero (Null) Matrix ($O$):</strong> A matrix in which all elements are zero. It can be of any order (not necessarily square).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Identifying Matrices</span>
+            <strong>Question:</strong> Classify the following matrix: $A = \begin{bmatrix} 5 & 0 & 0 \\ 0 & 5 & 0 \\ 0 & 0 & 5 \end{bmatrix}$. Can it be called a diagonal matrix?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                The given matrix is a square matrix ($3 \times 3$). All non-diagonal elements are zero, and all diagonal elements are equal (to 5).<br>
+                Therefore, it is a <strong>Scalar Matrix</strong>. <br>
+                Yes, every scalar matrix is a special case of a <strong>Diagonal Matrix</strong>. (It is also a square matrix).
+            </div>
+        </div>
+
+        <h2>3. Special Matrices and Concepts (R.D. Sharma / JEE Focus)</h2>
+
+        <div class="yellow-box">
+            <span class="box-label">Trace of a Matrix ($Tr(A)$)</span>
+            The Trace of a square matrix $A$ is defined as the <strong>sum of its principal diagonal elements</strong>.<br>
+            $$ Tr(A) = \sum_{i=1}^{n} a_{ii} = a_{11} + a_{22} + \dots + a_{nn} $$
+            <strong>Crucial JEE Properties:</strong><br>
+            1. $Tr(A \pm B) = Tr(A) \pm Tr(B)$<br>
+            2. $Tr(kA) = k \cdot Tr(A)$<br>
+            3. $\mathbf{Tr(AB) = Tr(BA)}$ (Even though $AB \neq BA$!)
+        </div>
+
+        <h3>Advanced Square Matrices</h3>
+        <ul>
+            <li><strong>Idempotent Matrix:</strong> A matrix $A$ is idempotent if <strong>$A^2 = A$</strong>. (e.g., Identity matrix $I$).</li>
+            <li><strong>Nilpotent Matrix:</strong> A matrix $A$ is nilpotent if <strong>$A^k = O$</strong> for some positive integer $k$. The smallest such $k$ is called the <em>index</em> of nilpotence.</li>
+            <li><strong>Involutory Matrix:</strong> A matrix $A$ is involutory if <strong>$A^2 = I$</strong>. (e.g., Identity matrix $I$ is involutory).</li>
+            <li><strong>Orthogonal Matrix:</strong> A real square matrix $A$ is orthogonal if <strong>$A A' = A' A = I$</strong> (where $A'$ is the transpose).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Trace Properties</span>
+            <strong>Question:</strong> If $A$ and $B$ are square matrices of order 3, such that $Tr(A) = 4$ and $Tr(B) = -2$, find the trace of the matrix $(2A - 3B)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Using the linear properties of Trace:<br>
+                $Tr(2A - 3B) = Tr(2A) - Tr(3B)$<br>
+                $= 2 \cdot Tr(A) - 3 \cdot Tr(B)$<br>
+                $= 2(4) - 3(-2)$<br>
+                $= 8 + 6 = \mathbf{14}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Idempotent Matrix</span>
+            <strong>Question:</strong> Show that the matrix $A = \begin{bmatrix} 2 & -2 & -4 \\ -1 & 3 & 4 \\ 1 & -2 & -3 \end{bmatrix}$ is an idempotent matrix.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                A matrix is idempotent if $A^2 = A$. We must calculate $A \times A$.<br>
+                $$ A^2 = \begin{bmatrix} 2 & -2 & -4 \\ -1 & 3 & 4 \\ 1 & -2 & -3 \end{bmatrix} \begin{bmatrix} 2 & -2 & -4 \\ -1 & 3 & 4 \\ 1 & -2 & -3 \end{bmatrix} $$
+                Row 1 $\times$ Col 1: $(2)(2) + (-2)(-1) + (-4)(1) = 4 + 2 - 4 = 2$<br>
+                Row 1 $\times$ Col 2: $(2)(-2) + (-2)(3) + (-4)(-2) = -4 - 6 + 8 = -2$<br>
+                Row 1 $\times$ Col 3: $(2)(-4) + (-2)(4) + (-4)(-3) = -8 - 8 + 12 = -4$<br>
+                Continuing this for all rows, we get:<br>
+                $$ A^2 = \begin{bmatrix} 2 & -2 & -4 \\ -1 & 3 & 4 \\ 1 & -2 & -3 \end{bmatrix} = A $$
+                Since $A^2 = A$, the matrix is <strong>idempotent</strong>.
+            </div>
+        </div>
+
+        <h2>4. Equality of Matrices</h2>
+        <p>Two matrices $A = [a_{ij}]$ and $B = [b_{ij}]$ are said to be equal ($A = B$) if and only if:</p>
+        <ol>
+            <li>They are of the <strong>exact same order</strong>.</li>
+            <li>Each corresponding element is identically equal ($a_{ij} = b_{ij}$ for all possible values of $i$ and $j$).</li>
+        </ol>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Solving Equations using Equality</span>
+            <strong>Question:</strong> Find the values of $x, y, z,$ and $w$ if:
+            $$ \begin{bmatrix} x - y & 2x + z \\ 2x - y & 3z + w \end{bmatrix} = \begin{bmatrix} -1 & 5 \\ 0 & 13 \end{bmatrix} $$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Equating the corresponding elements of the two matrices:<br>
+                1) $x - y = -1$<br>
+                2) $2x - y = 0 \implies y = 2x$<br>
+                Substitute (2) into (1): $x - 2x = -1 \implies -x = -1 \implies \mathbf{x = 1}$.<br>
+                From (2), $y = 2(1) \implies \mathbf{y = 2}$.<br>
+                3) $2x + z = 5 \implies 2(1) + z = 5 \implies \mathbf{z = 3}$.<br>
+                4) $3z + w = 13 \implies 3(3) + w = 13 \implies 9 + w = 13 \implies \mathbf{w = 4}$.
+            </div>
+        </div>
+
+        <h2>5. Operations on Matrices</h2>
+
+        <h3>A. Addition and Scalar Multiplication</h3>
+        <p><strong>Addition:</strong> Valid ONLY if the matrices are of the same order. You simply add the corresponding elements.<br>
+        <em>Properties:</em> Commutative ($A+B = B+A$), Associative ($(A+B)+C = A+(B+C)$), Additive Identity is the Null Matrix ($A+O = A$), Additive Inverse is $-A$.</p>
+        
+        <p><strong>Scalar Multiplication:</strong> If a matrix $A$ is multiplied by a scalar $k$, then <em>every single element</em> of $A$ is multiplied by $k$. ($[k a_{ij}]$).</p>
+
+        <h3>B. Multiplication of Matrices (Crucial Skill)</h3>
+        <div class="blue-box">
+            <span class="box-label">Condition for Matrix Multiplication</span>
+            Two matrices $A$ and $B$ can be multiplied to find the product $AB$ <strong>ONLY IF</strong> the number of <em>columns in $A$</em> equals the number of <em>rows in $B$</em>.<br>
+            If $A$ is of order $(m \times \mathbf{n})$ and $B$ is of order $(\mathbf{n} \times p)$, then $AB$ is defined and its order will be $\mathbf{m \times p}$.
+        </div>
+
+        <p><strong>Row-by-Column Rule:</strong> To find the element in the $i^{th}$ row and $j^{th}$ column of the product matrix $AB$, you take the dot product of the $i^{th}$ row of matrix $A$ and the $j^{th}$ column of matrix $B$.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Matrix Multiplication</span>
+            <strong>Question:</strong> Let $A = \begin{bmatrix} 1 & -2 & 3 \\ -4 & 2 & 5 \end{bmatrix}$ and $B = \begin{bmatrix} 2 & 3 \\ 4 & 5 \\ 2 & 1 \end{bmatrix}$. Find $AB$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Order of $A$ is $2 \times 3$. Order of $B$ is $3 \times 2$. <br>
+                Columns of $A$ (3) = Rows of $B$ (3). Matrix multiplication is possible. The resulting matrix $AB$ will be of order $2 \times 2$.<br>
+                Let $AB = C = \begin{bmatrix} c_{11} & c_{12} \\ c_{21} & c_{22} \end{bmatrix}$.<br><br>
+                $c_{11} = (\text{Row 1 of A}) \cdot (\text{Col 1 of B}) = (1)(2) + (-2)(4) + (3)(2) = 2 - 8 + 6 = 0$<br>
+                $c_{12} = (\text{Row 1 of A}) \cdot (\text{Col 2 of B}) = (1)(3) + (-2)(5) + (3)(1) = 3 - 10 + 3 = -4$<br>
+                $c_{21} = (\text{Row 2 of A}) \cdot (\text{Col 1 of B}) = (-4)(2) + (2)(4) + (5)(2) = -8 + 8 + 10 = 10$<br>
+                $c_{22} = (\text{Row 2 of A}) \cdot (\text{Col 2 of B}) = (-4)(3) + (2)(5) + (5)(1) = -12 + 10 + 5 = 3$<br><br>
+                <strong>$$ AB = \begin{bmatrix} 0 & -4 \\ 10 & 3 \end{bmatrix} $$</strong>
+            </div>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Properties of Matrix Multiplication</span>
+            1. <strong>Non-Commutative:</strong> In general, $AB \neq BA$. Even if $AB$ is defined, $BA$ might not be defined. Even if both are defined, they are rarely equal.<br>
+            2. <strong>Associative:</strong> $(AB)C = A(BC)$, provided dimensions allow multiplication.<br>
+            3. <strong>Distributive:</strong> $A(B + C) = AB + AC$.<br>
+            4. <strong>Multiplicative Identity:</strong> For any square matrix $A$ of order $n$, $AI = IA = A$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: Zero Divisors Anomaly</span>
+            <strong>Question:</strong> In real numbers, if $ab = 0$, then either $a = 0$ or $b = 0$. Show by an example that this is NOT true for matrices.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Let $A = \begin{bmatrix} 0 & -1 \\ 0 & 2 \end{bmatrix}$ and $B = \begin{bmatrix} 3 & 5 \\ 0 & 0 \end{bmatrix}$.<br>
+                Clearly, $A \neq O$ and $B \neq O$.<br>
+                Now, compute $AB$:<br>
+                $$ AB = \begin{bmatrix} 0(3) + (-1)(0) & 0(5) + (-1)(0) \\ 0(3) + 2(0) & 0(5) + 2(0) \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix} = O $$<br>
+                Thus, the product of two non-zero matrices can be a zero matrix.
+            </div>
+        </div>
+
+        <h2>6. Transpose of a Matrix</h2>
+        <p><strong>Definition:</strong> The matrix obtained by interchanging the rows and columns of matrix $A$ is called the transpose of $A$. It is denoted by $A'$ or $A^T$.<br>
+        If $A = [a_{ij}]_{m \times n}$, then $A' = [a_{ji}]_{n \times m}$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Properties of Transpose (Must Memorize)</span>
+            1. $(A')' = A$<br>
+            2. $(kA)' = kA'$ (where $k$ is a scalar)<br>
+            3. $(A + B)' = A' + B'$<br>
+            4. <strong>Reversal Law for Transpose:</strong> $\mathbf{(AB)' = B' A'}$ (Extremely crucial for algebraic proofs).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Verifying Reversal Law</span>
+            <strong>Question:</strong> If $A = \begin{bmatrix} -2 \\ 4 \\ 5 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 3 & -6 \end{bmatrix}$, verify that $(AB)' = B'A'$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Order of $A$ is $3 \times 1$. Order of $B$ is $1 \times 3$. $AB$ will be $3 \times 3$.<br>
+                $$ AB = \begin{bmatrix} -2(1) & -2(3) & -2(-6) \\ 4(1) & 4(3) & 4(-6) \\ 5(1) & 5(3) & 5(-6) \end{bmatrix} = \begin{bmatrix} -2 & -6 & 12 \\ 4 & 12 & -24 \\ 5 & 15 & -30 \end{bmatrix} $$
+                2. Take transpose: $(AB)' = \begin{bmatrix} -2 & 4 & 5 \\ -6 & 12 & 15 \\ 12 & -24 & -30 \end{bmatrix}$ <br><br>
+                3. Now, $B' = \begin{bmatrix} 1 \\ 3 \\ -6 \end{bmatrix}$ ($3 \times 1$) and $A' = \begin{bmatrix} -2 & 4 & 5 \end{bmatrix}$ ($1 \times 3$).<br>
+                4. Compute $B'A'$:<br>
+                $$ B'A' = \begin{bmatrix} 1(-2) & 1(4) & 1(5) \\ 3(-2) & 3(4) & 3(5) \\ -6(-2) & -6(4) & -6(5) \end{bmatrix} = \begin{bmatrix} -2 & 4 & 5 \\ -6 & 12 & 15 \\ 12 & -24 & -30 \end{bmatrix} $$<br>
+                Hence, $(AB)' = B'A'$ is verified.
+            </div>
+        </div>
+
+        <h2>7. Symmetric and Skew-Symmetric Matrices</h2>
+        
+        <p><strong>1. Symmetric Matrix:</strong> A square matrix $A = [a_{ij}]$ is said to be symmetric if $A' = A$.<br>
+        This means $a_{ij} = a_{ji}$ for all possible values of $i$ and $j$. The matrix is symmetric across its main diagonal.</p>
+
+        <p><strong>2. Skew-Symmetric Matrix:</strong> A square matrix $A = [a_{ij}]$ is said to be skew-symmetric if $A' = -A$.<br>
+        This means $a_{ij} = -a_{ji}$ for all possible values of $i$ and $j$.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Crucial Property of Skew-Symmetric Matrices</span>
+            In a skew-symmetric matrix, we know $a_{ij} = -a_{ji}$.<br>
+            For the principal diagonal elements, $i = j$.<br>
+            Therefore, $a_{ii} = -a_{ii} \implies 2a_{ii} = 0 \implies \mathbf{a_{ii} = 0}$.<br>
+            <strong>Conclusion:</strong> All principal diagonal elements of a skew-symmetric matrix are ALWAYS strictly zero.
+        </div>
+
+        <h3>Important Theorems (Standard Board Proofs)</h3>
+        <p><strong>Theorem 1:</strong> For any square matrix $A$ with real entries, $(A + A')$ is a symmetric matrix, and $(A - A')$ is a skew-symmetric matrix.<br>
+        <em>Proof Sketch:</em> Let $P = A + A'$. Then $P' = (A + A')' = A' + (A')' = A' + A = P$. Hence symmetric.</p>
+
+        <p><strong>Theorem 2:</strong> Any square matrix can be expressed as the sum of a symmetric and a skew-symmetric matrix.<br>
+        <strong>Formula: $$ A = \frac{1}{2}(A + A') + \frac{1}{2}(A - A') $$</strong></p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 9: Expressing as a Sum</span>
+            <strong>Question:</strong> Express the matrix $A = \begin{bmatrix} 3 & 5 \\ 1 & -1 \end{bmatrix}$ as the sum of a symmetric and a skew-symmetric matrix.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Find $A'$: $A' = \begin{bmatrix} 3 & 1 \\ 5 & -1 \end{bmatrix}$.<br>
+                2. Let $P = \frac{1}{2}(A + A')$ (Symmetric part):<br>
+                   $P = \frac{1}{2} \left( \begin{bmatrix} 3 & 5 \\ 1 & -1 \end{bmatrix} + \begin{bmatrix} 3 & 1 \\ 5 & -1 \end{bmatrix} \right) = \frac{1}{2} \begin{bmatrix} 6 & 6 \\ 6 & -2 \end{bmatrix} = \begin{bmatrix} 3 & 3 \\ 3 & -1 \end{bmatrix}$.<br>
+                   (Notice $P' = P$, so it is symmetric).<br><br>
+                3. Let $Q = \frac{1}{2}(A - A')$ (Skew-Symmetric part):<br>
+                   $Q = \frac{1}{2} \left( \begin{bmatrix} 3 & 5 \\ 1 & -1 \end{bmatrix} - \begin{bmatrix} 3 & 1 \\ 5 & -1 \end{bmatrix} \right) = \frac{1}{2} \begin{bmatrix} 0 & 4 \\ -4 & 0 \end{bmatrix} = \begin{bmatrix} 0 & 2 \\ -2 & 0 \end{bmatrix}$.<br>
+                   (Notice $Q' = -Q$ and diagonals are zero, so it is skew-symmetric).<br><br>
+                4. Final Expression: $A = P + Q = \begin{bmatrix} 3 & 3 \\ 3 & -1 \end{bmatrix} + \begin{bmatrix} 0 & 2 \\ -2 & 0 \end{bmatrix}$.
+            </div>
+        </div>
+
+        <h2>8. Elementary Operations (Transformations) of a Matrix</h2>
+        <p>There are six elementary operations (transformations) on a matrix: three due to rows and three due to columns. (Note: Only row operations are used here for standard clarity, but column operations are identical in logic).</p>
+        <ol>
+            <li><strong>Interchanging any two rows:</strong> $R_i \leftrightarrow R_j$ (e.g., swapping row 1 and row 2).</li>
+            <li><strong>Multiplication of a row by a non-zero scalar:</strong> $R_i \rightarrow k R_i$ (where $k \neq 0$).</li>
+            <li><strong>Adding a scalar multiple of one row to another row:</strong> $R_i \rightarrow R_i + k R_j$.</li>
+        </ol>
+
+        <h2>9. Invertible Matrices and Inverse via Elementary Operations</h2>
+        <p><strong>Definition:</strong> Let $A$ be a square matrix of order $n$. If there exists another square matrix $B$ of the same order such that $AB = BA = I$, then $B$ is called the inverse of $A$, denoted by $A^{-1}$.<br>
+        <em>Key Facts:</em> 
+        - Rectangular matrices do NOT possess an inverse.
+        - Inverse of a square matrix, if it exists, is absolutely unique.
+        - <strong>Reversal Law for Inverse:</strong> $(AB)^{-1} = B^{-1} A^{-1}$.</p>
+
+        <div class="green-box">
+            <span class="box-label">Algorithm: Inverse via Elementary Row Operations</span>
+            To find $A^{-1}$ using row operations:<br>
+            1. Write the equation <strong>$A = IA$</strong>.<br>
+            2. Perform a sequence of elementary <strong>row operations</strong> on the matrix $A$ on the LHS, and simultaneously on the identity matrix $I$ on the RHS. Leave the right-most $A$ untouched.<br>
+            3. Continue these operations until the LHS matrix $A$ transforms into the Identity matrix $I$.<br>
+            4. The equation will transform into <strong>$I = BA$</strong>. The resulting matrix $B$ on the RHS is $A^{-1}$.<br><br>
+            <em>Rule of Thumb for Non-Existence:</em> If, during the row operations, all elements of any one or more rows on the LHS become strictly zero, it signifies that $A^{-1}$ does NOT exist.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 10: Finding Inverse</span>
+            <strong>Question:</strong> Find the inverse of the matrix $A = \begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix}$ using elementary row operations.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Write $A = IA \implies \begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} A$<br><br>
+                <strong>Step 1:</strong> We need a 0 where the '2' is in the second row. Apply $R_2 \rightarrow R_2 - 2R_1$.<br>
+                LHS: $\begin{bmatrix} 1 & 2 \\ (2 - 2) & (-1 - 4) \end{bmatrix} = \begin{bmatrix} 1 & 2 \\ 0 & -5 \end{bmatrix}$<br>
+                RHS: $\begin{bmatrix} 1 & 0 \\ (0 - 2) & (1 - 0) \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ -2 & 1 \end{bmatrix}$<br>
+                Equation: $\begin{bmatrix} 1 & 2 \\ 0 & -5 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ -2 & 1 \end{bmatrix} A$<br><br>
+                
+                <strong>Step 2:</strong> We need a 1 where the '-5' is in the second row. Apply $R_2 \rightarrow \frac{1}{-5} R_2$.<br>
+                Equation: $\begin{bmatrix} 1 & 2 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 2/5 & -1/5 \end{bmatrix} A$<br><br>
+
+                <strong>Step 3:</strong> We need a 0 where the '2' is in the first row. Apply $R_1 \rightarrow R_1 - 2R_2$.<br>
+                LHS: $\begin{bmatrix} (1 - 0) & (2 - 2) \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} = I$<br>
+                RHS: $\begin{bmatrix} (1 - 4/5) & (0 - (-2/5)) \\ 2/5 & -1/5 \end{bmatrix} = \begin{bmatrix} 1/5 & 2/5 \\ 2/5 & -1/5 \end{bmatrix}$<br><br>
+                
+                We have reached $I = BA$. Therefore, the inverse is:<br>
+                <strong>$$ A^{-1} = \begin{bmatrix} 1/5 & 2/5 \\ 2/5 & -1/5 \end{bmatrix} = \frac{1}{5} \begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix} $$</strong>
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

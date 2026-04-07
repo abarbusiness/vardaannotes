@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Determinants - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid var(--toggle-border); padding: 10px; text-align: left; }
+        th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 4: Determinants</h1>
+
+        <p><em>Dear Class 12 Student! While matrices are simple arrays of numbers, a Determinant is a scalar value that compresses an entire square matrix into a single, highly meaningful number. It tells us whether a system of equations has a unique solution, scales the area of transformations, and forms the core of calculating inverses. For the Boards, properties of determinants are a 4-to-6 mark guarantee. For JEE, Adjoint properties and Cramer's Rule are vital. Let's decode the matrix!</em></p>
+
+        <h2>1. Introduction to Determinants</h2>
+        <p><strong>Definition:</strong> To every square matrix $A = [a_{ij}]$ of order $n$, we can associate a unique number (real or complex) called the determinant of the square matrix $A$.</p>
+        <p><strong>Notation:</strong> The determinant of matrix $A$ is written as $det(A)$ or $|A|$ or $\Delta$.<br>
+        <em>Warning:</em> $|A|$ is read as the "determinant of A", NOT the modulus of A.</p>
+
+        <h3>Expansion of Determinants</h3>
+        <ul>
+            <li><strong>Order 1:</strong> If $A = [a]$, then $|A| = a$.</li>
+            <li><strong>Order 2:</strong> $\begin{vmatrix} a & b \\ c & d \end{vmatrix} = ad - bc$.</li>
+            <li><strong>Order 3:</strong> A determinant of order 3 can be expanded along any of its 3 rows or 3 columns. To minimize calculations, it is universally expanded along the row or column containing the <em>maximum number of zeros</em>.</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Sign Convention (Checkerboard Pattern)</span>
+            When expanding a $3 \times 3$ determinant, we attach a sign to each element $a_{ij}$ based on the formula $(-1)^{i+j}$. This creates an alternating checkerboard pattern of signs:<br>
+            <strong>$$ \begin{vmatrix} + & - & + \\ - & + & - \\ + & - & + \end{vmatrix} $$</strong>
+        </div>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Visual representation of the Sarrus Rule (Sarrus Diagram) for a 3x3 determinant. Write a 3x3 matrix. Duplicate the first two columns to the right of the matrix. Draw three solid diagonal arrows pointing downwards from left to right (blue color) indicating multiplication and addition. Draw three dashed diagonal arrows pointing upwards from left to right (red color) indicating multiplication and subtraction. Clear educational diagram, white background."
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Main Transition: Sarrus Rule (Shortcut)</span>
+            The <strong>Sarrus Diagram</strong> is a rapid method to evaluate a $3 \times 3$ determinant without manual cofactors.
+            <br>1. Write the 3 columns of the determinant.
+            <br>2. Rewrite the 1st and 2nd columns next to the 3rd column.
+            <br>3. Multiply elements along the 3 downward-right diagonals and ADD them.
+            <br>4. Multiply elements along the 3 upward-right diagonals and SUBTRACT them.
+            <br><em>(Note: This rule strictly works ONLY for $3 \times 3$ determinants, never for $4 \times 4$).</em>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Expansion</span>
+            <strong>Question:</strong> Evaluate the determinant $\Delta = \begin{vmatrix} 3 & -1 & -2 \\ 0 & 0 & -1 \\ 3 & -5 & 0 \end{vmatrix}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Look for the row or column with the most zeros. Row 2 ($R_2$) has two zeros.<br>
+                We expand along $R_2$. The signs for $R_2$ are $(-, +, -)$.<br>
+                $\Delta = -0 \begin{vmatrix} -1 & -2 \\ -5 & 0 \end{vmatrix} + 0 \begin{vmatrix} 3 & -2 \\ 3 & 0 \end{vmatrix} - (-1) \begin{vmatrix} 3 & -1 \\ 3 & -5 \end{vmatrix}$<br>
+                $\Delta = 0 + 0 + 1 [ (3)(-5) - (-1)(3) ]$<br>
+                $\Delta = 1 [ -15 - (-3) ] = -15 + 3 = \mathbf{-12}$.
+            </div>
+        </div>
+
+        <h2>2. Properties of Determinants (The Core of the Chapter)</h2>
+        <p>These properties simplify the evaluation of complex determinants immensely. (R.D. Sharma provides an exhaustive variety of these proofs).</p>
+
+        <div class="green-box">
+            <span class="box-label">The 7 Fundamental Properties</span>
+            <strong>P1 (Reflection Property):</strong> The value of the determinant remains completely unchanged if its rows and columns are interchanged. $\implies \mathbf{|A| = |A'|}$.<br><br>
+            
+            <strong>P2 (Switching Property):</strong> If any two rows (or columns) of a determinant are interchanged, the sign of the determinant changes. ($\Delta \rightarrow -\Delta$).<br><br>
+            
+            <strong>P3 (Repetition Property):</strong> If any two rows (or columns) of a determinant are identically equal, its value is precisely zero. ($\Delta = 0$).<br><br>
+            
+            <strong>P4 (Scalar Multiple Property):</strong> If each element of a specific row (or column) is multiplied by a constant $k$, the entire value of the determinant gets multiplied by $k$.<br>
+            <em>Crucial Formula extracted from P4:</em> If matrix $A$ of order $n \times n$ is multiplied by scalar $k$, the scalar comes out of EVERY row (n times). Therefore:<br>
+            <strong>$$ |kA| = k^n |A| $$</strong><br>
+            
+            <strong>P5 (Proportionality Property):</strong> If the corresponding elements of any two rows (or columns) are proportional (e.g., $R_1 = kR_2$), the determinant is zero.<br><br>
+            
+            <strong>P6 (Sum Property):</strong> If some or all elements of a row or column are expressed as the sum of two terms, the determinant can be split into the sum of two distinct determinants.<br><br>
+            
+            <strong>P7 (Property of Invariance):</strong> The value of the determinant remains unaltered if we apply operations of the form $R_i \rightarrow R_i + k R_j$ or $C_i \rightarrow C_i + k C_j$. (This is the most heavily used property for proofs).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: |kA| Property</span>
+            <strong>Question:</strong> Let $A$ be a square matrix of order $3 \times 3$. If $|A| = 4$, find the value of $|2A|$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                We use the property $|kA| = k^n |A|$, where $n$ is the order of the matrix.<br>
+                Here, $k = 2$, $n = 3$, and $|A| = 4$.<br>
+                $|2A| = 2^3 \times |A|$<br>
+                $|2A| = 8 \times 4 = \mathbf{32}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Without Expansion Proof</span>
+            <strong>Question:</strong> Without expanding, prove that $\begin{vmatrix} x & y & z \\ a & b & c \\ x+a & y+b & z+c \end{vmatrix} = 0$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                We will use Property 7 (Invariance). Apply the row operation $R_3 \rightarrow R_3 - R_1$.<br>
+                $\Delta = \begin{vmatrix} x & y & z \\ a & b & c \\ (x+a)-x & (y+b)-y & (z+c)-z \end{vmatrix} = \begin{vmatrix} x & y & z \\ a & b & c \\ a & b & c \end{vmatrix}$<br>
+                Now, observe that Row 2 ($R_2$) and Row 3 ($R_3$) are identical ($a, b, c$).<br>
+                According to Property 3 (Repetition Property), if two rows are identical, the determinant is strictly <strong>zero</strong>. (Proved).
+            </div>
+        </div>
+
+        <h2>3. Area of a Triangle using Determinants</h2>
+        <p>If the vertices of a triangle are $(x_1, y_1)$, $(x_2, y_2)$, and $(x_3, y_3)$, the area of the triangle can be elegantly expressed using a determinant.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Area Formula & Key Conditions</span>
+            <strong>$$ \text{Area} = \frac{1}{2} \begin{vmatrix} x_1 & y_1 & 1 \\ x_2 & y_2 & 1 \\ x_3 & y_3 & 1 \end{vmatrix} $$</strong>
+            <ul>
+                <li>Since area is a strictly positive quantity, we always take the <strong>absolute value</strong> of the determinant's result.</li>
+                <li>If the area is already given in a problem and you need to find an unknown coordinate, you MUST use both positive and negative values ($\pm \text{Area}$) for calculation.</li>
+                <li><strong>Condition for Collinearity:</strong> Three points are collinear (lie on a single straight line) if and only if the area of the triangle formed by them is zero. ($\Delta = 0$).</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Unknown Coordinate</span>
+            <strong>Question:</strong> Find the values of $k$ if the area of the triangle is 4 sq. units and its vertices are $(k, 0), (4, 0), (0, 2)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. The area formula is: $\text{Area} = \frac{1}{2} \begin{vmatrix} k & 0 & 1 \\ 4 & 0 & 1 \\ 0 & 2 & 1 \end{vmatrix}$.<br>
+                2. Since area is given as 4, we write: $\frac{1}{2} \begin{vmatrix} k & 0 & 1 \\ 4 & 0 & 1 \\ 0 & 2 & 1 \end{vmatrix} = \pm 4$.<br>
+                3. Expanding along Column 2 ($C_2$) which has two zeros:<br>
+                   $\frac{1}{2} \left[ -0 + 0 - 2 \begin{vmatrix} k & 1 \\ 4 & 1 \end{vmatrix} \right] = \pm 4$<br>
+                4. $\frac{1}{2} [ -2 (k(1) - 4(1)) ] = \pm 4$<br>
+                5. $-(k - 4) = \pm 4 \implies -k + 4 = \pm 4$<br>
+                6. <strong>Case 1 (+4):</strong> $-k + 4 = 4 \implies -k = 0 \implies \mathbf{k = 0}$.<br>
+                7. <strong>Case 2 (-4):</strong> $-k + 4 = -4 \implies -k = -8 \implies \mathbf{k = 8}$.<br>
+                The possible values of $k$ are <strong>$0$ and $8$</strong>.
+            </div>
+        </div>
+
+        <h2>4. Minors and Cofactors</h2>
+        <p>These quantities act as building blocks for determining the Adjoint and Inverse of a matrix.</p>
+
+        <ul>
+            <li><strong>Minor ($M_{ij}$):</strong> The minor of an element $a_{ij}$ is the determinant obtained by physically deleting the $i^{th}$ row and the $j^{th}$ column in which the element lies.</li>
+            <li><strong>Cofactor ($A_{ij}$ or $C_{ij}$):</strong> The cofactor is simply the minor attached with a specific sign. It is defined mathematically as:
+            <strong>$$ A_{ij} = (-1)^{i+j} M_{ij} $$</strong></li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">Crucial Alias/Zero-Sum Properties</span>
+            <strong>Expansion Property:</strong> The sum of the products of the elements of any row (or column) with their <em>corresponding</em> cofactors perfectly equals the determinant.<br>
+            $\Delta = a_{11}A_{11} + a_{12}A_{12} + a_{13}A_{13}$.<br><br>
+            <strong>Zero-Sum Property (Alias Property):</strong> If elements of a row (or column) are multiplied with the cofactors of <em>any other</em> row (or column), their sum is strictly <strong>zero</strong>.<br>
+            $a_{11}A_{21} + a_{12}A_{22} + a_{13}A_{23} = 0$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Cofactors</span>
+            <strong>Question:</strong> Find the cofactors of the elements $a_{12}$ and $a_{22}$ of the matrix $A = \begin{bmatrix} 2 & -3 & 5 \\ 6 & 0 & 4 \\ 1 & 5 & -7 \end{bmatrix}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>For $a_{12}$ (-3):</strong><br>
+                   Delete Row 1 and Col 2. The minor $M_{12} = \begin{vmatrix} 6 & 4 \\ 1 & -7 \end{vmatrix} = 6(-7) - (4)(1) = -42 - 4 = -46$.<br>
+                   Cofactor $A_{12} = (-1)^{1+2} M_{12} = (-1)^3 (-46) = -1(-46) = \mathbf{46}$.<br><br>
+                2. <strong>For $a_{22}$ (0):</strong><br>
+                   Delete Row 2 and Col 2. The minor $M_{22} = \begin{vmatrix} 2 & 5 \\ 1 & -7 \end{vmatrix} = 2(-7) - (5)(1) = -14 - 5 = -19$.<br>
+                   Cofactor $A_{22} = (-1)^{2+2} M_{22} = (-1)^4 (-19) = +1(-19) = \mathbf{-19}$.
+            </div>
+        </div>
+
+        <h2>5. Adjoint and Inverse of a Matrix</h2>
+
+        <div class="green-box">
+            <span class="box-label">Adjoint ($adj A$) and Inverse ($A^{-1}$)</span>
+            <strong>Adjoint:</strong> The adjoint of a square matrix $A$ is defined as the <strong>transpose</strong> of the matrix of cofactors of the elements of $A$.<br>
+            If $A = [a_{ij}]$, and its cofactor matrix is $[A_{ij}]$, then $\mathbf{adj(A) = [A_{ji}]}$.<br><br>
+            <strong>Inverse:</strong> A square matrix is invertible if and only if it is a <strong>non-singular matrix</strong> (meaning its determinant $|A| \neq 0$).<br>
+            <strong>$$ A^{-1} = \frac{1}{|A|} adj(A) $$</strong>
+        </div>
+
+        <h3>Important Theorems (Standard Board Proofs)</h3>
+        <p><strong>Theorem 1:</strong> For any square matrix $A$ of order $n$, multiplying it by its adjoint yields a scalar matrix where the diagonal elements are the determinant $|A|$.<br>
+        <strong>$$ A(adj A) = (adj A)A = |A|I $$</strong></p>
+
+        <div class="blue-box">
+            <span class="box-label">Properties of Adjoint & Inverse (JEE Favorites)</span>
+            These properties are incessantly tested in JEE Mains to avoid lengthy matrix multiplications:<br>
+            1. <strong>Determinant of Adjoint:</strong> $|adj A| = |A|^{n-1}$<br>
+            2. <strong>Adjoint of Adjoint:</strong> $adj(adj A) = |A|^{n-2} A$<br>
+            3. <strong>Determinant of Adjoint of Adjoint:</strong> $|adj(adj A)| = |A|^{(n-1)^2}$<br>
+            4. <strong>Reversal Law for Adjoint:</strong> $adj(AB) = (adj B)(adj A)$<br>
+            5. <strong>Inverse Reversal Law:</strong> $(AB)^{-1} = B^{-1} A^{-1}$<br>
+            6. <strong>Transpose Inverse Swap:</strong> $(A')^{-1} = (A^{-1})'$<br>
+            7. $(A^{-1})^{-1} = A$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Inverse Shortcut for 2x2</span>
+            <strong>Question:</strong> Find the inverse of the matrix $A = \begin{bmatrix} 2 & 3 \\ 1 & 4 \end{bmatrix}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                For a $2 \times 2$ matrix, there is a brilliant shortcut for the adjoint: <strong>Interchange the principal diagonal elements, and change the signs of the off-diagonal elements.</strong><br>
+                1. Find $|A|$: $|A| = (2)(4) - (3)(1) = 8 - 3 = 5$. Since $|A| \neq 0$, $A^{-1}$ exists.<br>
+                2. Find $adj(A)$ using shortcut: Swap 2 and 4. Change signs of 3 and 1.<br>
+                   $adj(A) = \begin{bmatrix} 4 & -3 \\ -1 & 2 \end{bmatrix}$.<br>
+                3. Apply formula $A^{-1} = \frac{1}{|A|} adj(A)$.<br>
+                <strong>$$ A^{-1} = \frac{1}{5} \begin{bmatrix} 4 & -3 \\ -1 & 2 \end{bmatrix} $$</strong>
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: JEE Adjoint Property</span>
+            <strong>Question:</strong> If $A$ is a non-singular matrix of order $3 \times 3$ such that $|A| = 5$, find the value of $|adj A|$ and $|adj(adj A)|$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Given: $n = 3$, $|A| = 5$.<br>
+                1. Using the property $|adj A| = |A|^{n-1}$:<br>
+                   $|adj A| = (5)^{3-1} = 5^2 = \mathbf{25}$.<br><br>
+                2. Using the property $|adj(adj A)| = |A|^{(n-1)^2}$:<br>
+                   $|adj(adj A)| = (5)^{(3-1)^2} = 5^{(2)^2} = 5^4 = \mathbf{625}$.
+            </div>
+        </div>
+
+        <h2>6. Applications: System of Linear Equations</h2>
+        <p>Determinants offer powerful methods to solve simultaneous linear equations and to check their consistency.</p>
+
+        <h3>A. Matrix Method (NCERT Core Focus)</h3>
+        <p>A system of linear equations can be written as $AX = B$, where $A$ is the coefficient matrix, $X$ is the variable matrix, and $B$ is the constant matrix.<br>
+        Multiplying by $A^{-1}$ on both sides yields: <strong>$X = A^{-1} B$</strong>.</p>
+
+        <div class="green-box">
+            <span class="box-label">Consistency Conditions Matrix Method</span>
+            <strong>Case 1: If $|A| \neq 0$ (Non-Singular Matrix)</strong><br>
+            The system is <strong>Consistent</strong> and has a Unique Solution given by $X = A^{-1}B$.<br><br>
+            <strong>Case 2: If $|A| = 0$ (Singular Matrix)</strong><br>
+            We must calculate $(adj A)B$.<br>
+            - If $(adj A)B \neq O$ (Zero Matrix), the system is <strong>Inconsistent</strong> (No Solution). It represents parallel lines/planes.<br>
+            - If $(adj A)B = O$, the system may be either consistent (having infinitely many solutions) or inconsistent.
+        </div>
+
+        <h3>B. Cramer's Rule (R.D. Sharma / JEE Focus)</h3>
+        <p>Cramer's rule bypasses finding the inverse entirely by using multiple determinants.<br>
+        Let $\Delta$ be the determinant of coefficients. Let $\Delta_x$ be the determinant obtained by replacing the $x$-column in $\Delta$ with the constants column. Similarly for $\Delta_y$ and $\Delta_z$.</p>
+        <p><strong>Solutions:</strong> $\quad x = \frac{\Delta_x}{\Delta}, \quad y = \frac{\Delta_y}{\Delta}, \quad z = \frac{\Delta_z}{\Delta}$.</p>
+        
+        <p><strong>Conditions for Cramer's Rule:</strong><br>
+        - If $\Delta \neq 0$: Unique solution (Consistent).<br>
+        - If $\Delta = 0$ and at least one of ($\Delta_x, \Delta_y, \Delta_z$) $\neq 0$: No solution (Inconsistent).<br>
+        - If $\Delta = 0$ and $\Delta_x = \Delta_y = \Delta_z = 0$: Infinitely many solutions (Consistent).</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Matrix Method Consistency</span>
+            <strong>Question:</strong> Check the consistency of the system of equations:<br>
+            $2x - y = 5$<br>
+            $4x - 2y = 7$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Write in $AX = B$ form:<br>
+                   $A = \begin{bmatrix} 2 & -1 \\ 4 & -2 \end{bmatrix}, X = \begin{bmatrix} x \\ y \end{bmatrix}, B = \begin{bmatrix} 5 \\ 7 \end{bmatrix}$.<br>
+                2. Calculate $|A|$:<br>
+                   $|A| = (2)(-2) - (-1)(4) = -4 - (-4) = -4 + 4 = 0$.<br>
+                   Since $|A| = 0$, we must check $(adj A)B$.<br>
+                3. Find $adj A$ using the 2x2 shortcut:<br>
+                   $adj A = \begin{bmatrix} -2 & 1 \\ -4 & 2 \end{bmatrix}$.<br>
+                4. Calculate $(adj A)B$:<br>
+                   $(adj A)B = \begin{bmatrix} -2 & 1 \\ -4 & 2 \end{bmatrix} \begin{bmatrix} 5 \\ 7 \end{bmatrix} = \begin{bmatrix} -10 + 7 \\ -20 + 14 \end{bmatrix} = \begin{bmatrix} -3 \\ -6 \end{bmatrix}$.<br>
+                5. Since $(adj A)B \neq O$, the system is strictly <strong>Inconsistent</strong> (It has no solution).
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 9: Solving via Cramer's Rule</span>
+            <strong>Question:</strong> Solve using Cramer's rule: $3x + y = 5$, $2x - y = 5$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Find $\Delta$: $\Delta = \begin{vmatrix} 3 & 1 \\ 2 & -1 \end{vmatrix} = 3(-1) - (1)(2) = -3 - 2 = -5$. Since $\Delta \neq 0$, unique solution exists.<br>
+                2. Find $\Delta_x$ (replace 1st column with 5, 5):<br>
+                   $\Delta_x = \begin{vmatrix} 5 & 1 \\ 5 & -1 \end{vmatrix} = 5(-1) - (1)(5) = -5 - 5 = -10$.<br>
+                3. Find $\Delta_y$ (replace 2nd column with 5, 5):<br>
+                   $\Delta_y = \begin{vmatrix} 3 & 5 \\ 2 & 5 \end{vmatrix} = 3(5) - (5)(2) = 15 - 10 = 5$.<br>
+                4. Calculate $x$ and $y$:<br>
+                   $x = \frac{\Delta_x}{\Delta} = \frac{-10}{-5} = \mathbf{2}$.<br>
+                   $y = \frac{\Delta_y}{\Delta} = \frac{5}{-5} = \mathbf{-1}$.
+            </div>
+        </div>
+
+        <h2>7. Differentiation and Integration of Determinants (R.D. Sharma/JEE Focus)</h2>
+
+        <h3>A. Differentiation of a Determinant</h3>
+        <p>If the elements of a determinant $\Delta(x)$ are differentiable functions of $x$, then the derivative $\frac{d}{dx}[\Delta(x)]$ is evaluated by differentiating one row (or one column) at a time, keeping the other rows (or columns) entirely constant, and summing the resulting determinants.</p>
+        <p>If $\Delta(x) = \begin{vmatrix} f(x) & g(x) \\ h(x) & m(x) \end{vmatrix}$, then:<br>
+        <strong>$$\Delta'(x) = \begin{vmatrix} f'(x) & g'(x) \\ h(x) & m(x) \end{vmatrix} + \begin{vmatrix} f(x) & g(x) \\ h'(x) & m'(x) \end{vmatrix}$$</strong></p>
+
+        <h3>B. Integration of a Determinant</h3>
+        <p>Integration of a determinant is straightforward <strong>only if</strong> exactly one row (or one column) consists of functions of $x$, while all other rows (or columns) consist strictly of constants. You simply integrate that specific row/column.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 10: Calculus of Determinants</span>
+            <strong>Question:</strong> Let $\Delta(x) = \begin{vmatrix} \sin x & \cos x \\ x & x^2 \end{vmatrix}$. Find $\Delta'(x)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                We apply the row-by-row differentiation rule.<br>
+                $\Delta'(x) = (\text{Diff Row 1, Keep Row 2}) + (\text{Keep Row 1, Diff Row 2})$<br>
+                $\Delta'(x) = \begin{vmatrix} \frac{d}{dx}(\sin x) & \frac{d}{dx}(\cos x) \\ x & x^2 \end{vmatrix} + \begin{vmatrix} \sin x & \cos x \\ \frac{d}{dx}(x) & \frac{d}{dx}(x^2) \end{vmatrix}$<br>
+                <strong>$$\Delta'(x) = \begin{vmatrix} \cos x & -\sin x \\ x & x^2 \end{vmatrix} + \begin{vmatrix} \sin x & \cos x \\ 1 & 2x \end{vmatrix}$$</strong><br>
+                (Note: You can expand these determinants to get the final algebraic derivative expression).
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

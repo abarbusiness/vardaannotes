@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Three Dimensional Geometry - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 11: Three Dimensional Geometry</h1>
+
+        <p><em>Dear Class 12 Student! Building directly upon Vector Algebra, we now map those vectors onto the real 3D world to study Lines and Planes. The Shortest Distance between Skew Lines is a perennial 5-mark board guarantee. While CBSE has rationalized some topics regarding Planes, they remain absolutely essential for JEE Mains and Advanced. Master the interplay between Cartesian and Vector forms!</em></p>
+
+        <h2>1. Fundamentals (Bridging Vectors to 3D)</h2>
+        <p>In 3D geometry, the direction of a line is entirely described by its Direction Ratios (DRs) and Direction Cosines (DCs).</p>
+
+        <div class="blue-box">
+            <span class="box-label">Key Relationships</span>
+            <strong>Direction Cosines ($l, m, n$):</strong> Represent the cosines of the angles a line makes with the positive x, y, and z axes. They satisfy: $\mathbf{l^2 + m^2 + n^2 = 1}$.<br><br>
+            <strong>Direction Ratios ($a, b, c$):</strong> Any three numbers proportional to the direction cosines.<br>
+            If a line passes through two points $P(x_1, y_1, z_1)$ and $Q(x_2, y_2, z_2)$, its Direction Ratios are simply:<br>
+            <strong>$$ a = x_2 - x_1, \quad b = y_2 - y_1, \quad c = z_2 - z_1 $$</strong><br>
+            <strong>Collinearity:</strong> Three points A, B, and C are collinear if the direction ratios of AB are directly proportional to the direction ratios of BC (i.e., $\frac{a_1}{a_2} = \frac{b_1}{b_2} = \frac{c_1}{c_2}$).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Collinearity</span>
+            <strong>Question:</strong> Show that the points $A(2, 3, -4)$, $B(1, -2, 3)$, and $C(3, 8, -11)$ are collinear.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Direction ratios of line segment AB ($a_1, b_1, c_1$):<br>
+                   $a_1 = 1 - 2 = -1$<br>
+                   $b_1 = -2 - 3 = -5$<br>
+                   $c_1 = 3 - (-4) = 7$<br>
+                   DRs of AB are $(-1, -5, 7)$.<br><br>
+                2. Direction ratios of line segment BC ($a_2, b_2, c_2$):<br>
+                   $a_2 = 3 - 1 = 2$<br>
+                   $b_2 = 8 - (-2) = 10$<br>
+                   $c_2 = -11 - 3 = -14$<br>
+                   DRs of BC are $(2, 10, -14)$.<br><br>
+                3. Check for proportionality: $\frac{a_1}{a_2} = \frac{-1}{2}$, $\frac{b_1}{b_2} = \frac{-5}{10} = -\frac{1}{2}$, $\frac{c_1}{c_2} = \frac{7}{-14} = -\frac{1}{2}$.<br>
+                Since the DRs are proportional, lines AB and BC are parallel. Since point B is common to both, the points A, B, and C must lie on the same straight line. They are <strong>Collinear</strong>.
+            </div>
+        </div>
+
+        <h2>2. Equation of a Line in Space</h2>
+        <p>A straight line in 3D space is uniquely determined if you know either: (a) A point on the line and its direction, OR (b) Two points on the line. <em>Every equation must be known in both Vector and Cartesian forms.</em></p>
+
+        <div class="green-box">
+            <span class="box-label">Case 1: Line passing through a point & parallel to a vector</span>
+            Let the line pass through a point $A$ (position vector $\vec{a}$, coordinates $(x_1, y_1, z_1)$) and be parallel to a given direction vector $\vec{b}$ (having DRs $a, b, c$).<br><br>
+            <strong>Vector Form:</strong><br>
+            <strong>$$ \vec{r} = \vec{a} + \lambda\vec{b} $$</strong>
+            (Where $\vec{r}$ is the position vector of any arbitrary point on the line, and $\lambda$ is a real scalar parameter).<br><br>
+            <strong>Cartesian Form (Symmetric Form):</strong><br>
+            <strong>$$ \frac{x - x_1}{a} = \frac{y - y_1}{b} = \frac{z - z_1}{c} $$</strong>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Case 2: Line passing through two given points</span>
+            Let the line pass through points $A(\vec{a})$ and $B(\vec{b})$.<br><br>
+            <strong>Vector Form:</strong><br>
+            <strong>$$ \vec{r} = \vec{a} + \lambda(\vec{b} - \vec{a}) $$</strong><br>
+            <strong>Cartesian Form:</strong><br>
+            <strong>$$ \frac{x - x_1}{x_2 - x_1} = \frac{y - y_1}{y_2 - y_1} = \frac{z - z_1}{z_2 - z_1} $$</strong>
+        </div>
+
+        <h3>The "General Point" on a Line</h3>
+        <p>To find the coordinates of any random point on a line, equate the Cartesian form to a scalar parameter $\lambda$:<br>
+        $\frac{x - x_1}{a} = \frac{y - y_1}{b} = \frac{z - z_1}{c} = \lambda$<br>
+        This yields the coordinates of a <strong>General Point: $(a\lambda + x_1, b\lambda + y_1, c\lambda + z_1)$</strong>. This technique is critical for finding intersections and foot of perpendiculars.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Equation Conversion</span>
+            <strong>Question:</strong> The Cartesian equation of a line is $\frac{x - 5}{3} = \frac{y + 4}{7} = \frac{z - 6}{2}$. Write its vector form.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. From the Cartesian form $\frac{x - x_1}{a} = \frac{y - y_1}{b} = \frac{z - z_1}{c}$, we can extract:<br>
+                   - Point on the line $(x_1, y_1, z_1) = (5, -4, 6)$.<br>
+                   - Direction Ratios $(a, b, c) = (3, 7, 2)$.<br>
+                2. Convert these into vectors:<br>
+                   - Position vector of the point: $\vec{a} = 5\hat{i} - 4\hat{j} + 6\hat{k}$.<br>
+                   - Parallel direction vector: $\vec{b} = 3\hat{i} + 7\hat{j} + 2\hat{k}$.<br>
+                3. The Vector equation is $\vec{r} = \vec{a} + \lambda\vec{b}$:<br>
+                   <strong>$$ \vec{r} = (5\hat{i} - 4\hat{j} + 6\hat{k}) + \lambda(3\hat{i} + 7\hat{j} + 2\hat{k}) $$</strong>
+            </div>
+        </div>
+
+        <h2>3. Angle Between Two Lines</h2>
+        <p>The angle between two lines is exactly the angle between their direction vectors ($\vec{b_1}$ and $\vec{b_2}$).</p>
+
+        <div class="blue-box">
+            <span class="box-label">Angle Formulas</span>
+            <strong>Vector Form:</strong> For lines $\vec{r} = \vec{a_1} + \lambda\vec{b_1}$ and $\vec{r} = \vec{a_2} + \mu\vec{b_2}$:<br>
+            <strong>$$ \cos\theta = \left| \frac{\vec{b_1} \cdot \vec{b_2}}{|\vec{b_1}| |\vec{b_2}|} \right| $$</strong><br>
+            <strong>Cartesian Form:</strong> For lines with DRs $(a_1, b_1, c_1)$ and $(a_2, b_2, c_2)$:<br>
+            <strong>$$ \cos\theta = \left| \frac{a_1 a_2 + b_1 b_2 + c_1 c_2}{\sqrt{a_1^2+b_1^2+c_1^2} \sqrt{a_2^2+b_2^2+c_2^2}} \right| $$</strong><br><br>
+            
+            <strong>Conditions:</strong><br>
+            - <strong>Perpendicular Lines ($\theta = 90^\circ$):</strong> $\vec{b_1} \cdot \vec{b_2} = 0 \implies \mathbf{a_1 a_2 + b_1 b_2 + c_1 c_2 = 0}$.<br>
+            - <strong>Parallel Lines ($\theta = 0^\circ$):</strong> $\vec{b_1} \times \vec{b_2} = \vec{0} \implies \mathbf{\frac{a_1}{a_2} = \frac{b_1}{b_2} = \frac{c_1}{c_2}}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Orthogonality</span>
+            <strong>Question:</strong> Find the value of $p$ so that the lines $\frac{1-x}{3} = \frac{7y-14}{2p} = \frac{z-3}{2}$ and $\frac{7-7x}{3p} = \frac{y-5}{1} = \frac{6-z}{5}$ are at right angles.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Rewrite in Standard Form!</strong> The $x, y, z$ coefficients must be exactly $+1$.<br>
+                   - Line 1: $\frac{-(x-1)}{3} = \frac{7(y-2)}{2p} = \frac{z-3}{2} \implies \frac{x-1}{-3} = \frac{y-2}{2p/7} = \frac{z-3}{2}$.<br>
+                     DRs: $a_1 = -3, b_1 = 2p/7, c_1 = 2$.<br>
+                   - Line 2: $\frac{-7(x-1)}{3p} = \frac{y-5}{1} = \frac{-(z-6)}{5} \implies \frac{x-1}{-3p/7} = \frac{y-5}{1} = \frac{z-6}{-5}$.<br>
+                     DRs: $a_2 = -3p/7, b_2 = 1, c_2 = -5$.<br>
+                2. For lines to be perpendicular (at right angles), $a_1 a_2 + b_1 b_2 + c_1 c_2 = 0$.<br>
+                   $(-3)\left(\frac{-3p}{7}\right) + \left(\frac{2p}{7}\right)(1) + (2)(-5) = 0$<br>
+                   $\frac{9p}{7} + \frac{2p}{7} - 10 = 0 \implies \frac{11p}{7} = 10 \implies 11p = 70 \implies \mathbf{p = \frac{70}{11}}$.
+            </div>
+        </div>
+
+        <h2>4. Shortest Distance Between Two Lines (5-Mark Guarantee)</h2>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Two Skew Lines in 3D space. Line L1 is hovering above Line L2. They are not parallel and do not intersect. Draw a dashed perpendicular line segment 'd' that connects L1 and L2 at exactly a 90-degree angle to BOTH lines simultaneously. Label this dashed line 'Shortest Distance'. Clean textbook geometric style."
+        </div>
+
+        <p><strong>Skew Lines:</strong> Lines in 3D space that are neither parallel nor intersecting. They lie in completely different planes. For such lines, there exists a unique shortest distance ($d$) that is perpendicular to both lines simultaneously.</p>
+
+        <div class="green-box">
+            <span class="box-label">Formulas for Shortest Distance ($d$)</span>
+            <strong>1. Between Two Skew Lines:</strong><br>
+            Let $L_1: \vec{r} = \vec{a_1} + \lambda\vec{b_1}$ and $L_2: \vec{r} = \vec{a_2} + \mu\vec{b_2}$.<br>
+            <strong>$$ d = \left| \frac{(\vec{b_1} \times \vec{b_2}) \cdot (\vec{a_2} - \vec{a_1})}{|\vec{b_1} \times \vec{b_2}|} \right| $$</strong>
+            <em>(Notice the numerator is the Scalar Triple Product $[\vec{b_1} \, \vec{b_2} \, (\vec{a_2}-\vec{a_1})]$).</em><br><br>
+            
+            <strong>Intersection Condition:</strong> If the shortest distance $d = 0$, it strictly means the lines intersect. They are coplanar.<br><br>
+
+            <strong>2. Between Two Parallel Lines:</strong><br>
+            Let $L_1: \vec{r} = \vec{a_1} + \lambda\vec{b}$ and $L_2: \vec{r} = \vec{a_2} + \mu\vec{b}$. (The direction vector $\vec{b}$ is identical).<br>
+            <strong>$$ d = \left| \frac{\vec{b} \times (\vec{a_2} - \vec{a_1})}{|\vec{b}|} \right| $$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Shortest Distance</span>
+            <strong>Question:</strong> Find the shortest distance between the lines $\vec{r} = (\hat{i} + 2\hat{j} + \hat{k}) + \lambda(\hat{i} - \hat{j} + \hat{k})$ and $\vec{r} = (2\hat{i} - \hat{j} - \hat{k}) + \mu(2\hat{i} + \hat{j} + 2\hat{k})$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Identify components:<br>
+                   $\vec{a_1} = \hat{i} + 2\hat{j} + \hat{k}$, $\quad \vec{b_1} = \hat{i} - \hat{j} + \hat{k}$<br>
+                   $\vec{a_2} = 2\hat{i} - \hat{j} - \hat{k}$, $\quad \vec{b_2} = 2\hat{i} + \hat{j} + 2\hat{k}$<br>
+                2. Calculate $(\vec{a_2} - \vec{a_1})$:<br>
+                   $(\vec{a_2} - \vec{a_1}) = (2-1)\hat{i} + (-1-2)\hat{j} + (-1-1)\hat{k} = \hat{i} - 3\hat{j} - 2\hat{k}$.<br>
+                3. Calculate $(\vec{b_1} \times \vec{b_2})$ using determinant:<br>
+                   $\vec{b_1} \times \vec{b_2} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 1 & -1 & 1 \\ 2 & 1 & 2 \end{vmatrix} = \hat{i}(-2 - 1) - \hat{j}(2 - 2) + \hat{k}(1 - (-2)) = -3\hat{i} - 0\hat{j} + 3\hat{k}$.<br>
+                4. Calculate the magnitude $|\vec{b_1} \times \vec{b_2}|$:<br>
+                   $|\vec{b_1} \times \vec{b_2}| = \sqrt{(-3)^2 + 0^2 + 3^2} = \sqrt{9 + 9} = \sqrt{18} = 3\sqrt{2}$.<br>
+                5. Calculate the dot product $(\vec{b_1} \times \vec{b_2}) \cdot (\vec{a_2} - \vec{a_1})$:<br>
+                   $(-3\hat{i} + 3\hat{k}) \cdot (\hat{i} - 3\hat{j} - 2\hat{k}) = (-3)(1) + (0)(-3) + (3)(-2) = -3 + 0 - 6 = -9$.<br>
+                6. Apply formula: $d = \left| \frac{-9}{3\sqrt{2}} \right| = \left| \frac{-3}{\sqrt{2}} \right| = \mathbf{\frac{3\sqrt{2}}{2} \text{ units}}$.
+            </div>
+        </div>
+
+        <h2>5. Foot of Perpendicular and Image of a Point (R.D. Sharma Focus)</h2>
+        <p>This is a heavily tested conceptual algorithm in board exams. Do not try to memorize a direct formula; memorize the procedure.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Algorithm: Foot of Perpendicular from Point $P$ to Line $L$</span>
+            1. Write the equation of Line $L$ in Cartesian symmetric form.<br>
+            2. Equate it to $\lambda$ to find the coordinates of a <strong>General Point $Q$</strong> on the line in terms of $\lambda$.<br>
+            3. Find the <strong>Direction Ratios of the line segment $PQ$</strong> by subtracting coordinates of $P$ from $Q$.<br>
+            4. Since $PQ$ is perpendicular to Line $L$, apply the orthogonality condition: <strong>$a_1 a_2 + b_1 b_2 + c_1 c_2 = 0$</strong> (where $a_1,b_1,c_1$ are DRs of $PQ$, and $a_2,b_2,c_2$ are DRs of line $L$).<br>
+            5. Solve for $\lambda$ and substitute it back into point $Q$. This is the <strong>Foot of the Perpendicular</strong>.<br>
+            6. To find the <strong>Image ($P'$)</strong>, treat $Q$ as the exact midpoint between $P$ and $P'$ using the midpoint formula.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Foot of Perpendicular</span>
+            <strong>Question:</strong> Find the foot of the perpendicular drawn from the point $P(0, 2, 3)$ to the line $\frac{x+3}{5} = \frac{y-1}{2} = \frac{z+4}{3}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Let the foot of the perpendicular be $Q$. Since $Q$ lies on the line, its coordinates in terms of $\lambda$ are:<br>
+                   $\frac{x+3}{5} = \frac{y-1}{2} = \frac{z+4}{3} = \lambda \implies Q(5\lambda - 3, 2\lambda + 1, 3\lambda - 4)$.<br>
+                2. Direction Ratios of line segment $PQ$ (subtracting $P(0,2,3)$ from $Q$):<br>
+                   $a_1 = (5\lambda - 3) - 0 = 5\lambda - 3$<br>
+                   $b_1 = (2\lambda + 1) - 2 = 2\lambda - 1$<br>
+                   $c_1 = (3\lambda - 4) - 3 = 3\lambda - 7$<br>
+                3. Direction Ratios of the given line $L$ are $(a_2, b_2, c_2) = (5, 2, 3)$.<br>
+                4. Since $PQ \perp L$, then $a_1 a_2 + b_1 b_2 + c_1 c_2 = 0$.<br>
+                   $5(5\lambda - 3) + 2(2\lambda - 1) + 3(3\lambda - 7) = 0$<br>
+                   $25\lambda - 15 + 4\lambda - 2 + 9\lambda - 21 = 0$<br>
+                   $38\lambda - 38 = 0 \implies \lambda = 1$.<br>
+                5. Substitute $\lambda = 1$ back into point $Q$:<br>
+                   $Q(5(1) - 3, 2(1) + 1, 3(1) - 4) = \mathbf{(2, 3, -1)}$. This is the foot of the perpendicular.
+            </div>
+        </div>
+
+        <hr style="border: 1px solid var(--toggle-border); margin: 30px 0;">
+
+        <h2>6. The Plane (JEE Focus / State Boards)</h2>
+        <p><em>Notice: While sections on the Plane have been recently rationalized from the core CBSE syllabus, they are absolutely non-negotiable for JEE Mains and Advanced.</em></p>
+
+        <p><strong>Definition:</strong> A plane is a surface such that if any two points are taken on it, the line segment joining them lies completely on the surface.<br>
+        <strong>Normal to a Plane:</strong> A vector strictly perpendicular to the plane. In the Cartesian equation $Ax + By + Cz + D = 0$, the coefficients $(A, B, C)$ are the Direction Ratios of the normal to the plane.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Equations of a Plane</span>
+            <strong>1. Normal Form:</strong> If the perpendicular distance from the origin is $d$ and $\hat{n}$ is the unit normal vector:<br>
+            Vector: $\mathbf{\vec{r} \cdot \hat{n} = d}$ $\quad$ | $\quad$ Cartesian: $\mathbf{lx + my + nz = d}$.<br><br>
+            
+            <strong>2. Point & Normal Form:</strong> Passing through a point $\vec{a}$ and perpendicular to a normal vector $\vec{n}$:<br>
+            Vector: $\mathbf{(\vec{r} - \vec{a}) \cdot \vec{n} = 0}$ $\quad$ | $\quad$ Cartesian: $\mathbf{A(x - x_1) + B(y - y_1) + C(z - z_1) = 0}$.<br><br>
+            
+            <strong>3. Passing through 3 non-collinear points:</strong> $\vec{a}, \vec{b}, \vec{c}$.<br>
+            Vector: $\mathbf{(\vec{r} - \vec{a}) \cdot [(\vec{b} - \vec{a}) \times (\vec{c} - \vec{a})] = 0}$. (Represented as a $3 \times 3$ determinant in Cartesian).<br><br>
+            
+            <strong>4. Intercept Form:</strong> If the plane cuts intercepts $a, b, c$ on the x, y, and z axes:<br>
+            <strong>$$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Plane through 3 Points</span>
+            <strong>Question:</strong> Find the equation of the plane passing through the points $A(1, 1, -1)$, $B(6, 4, -5)$, and $C(-4, -2, 3)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                To find the equation of a plane through 3 points, we use the determinant form:<br>
+                $\begin{vmatrix} x - x_1 & y - y_1 & z - z_1 \\ x_2 - x_1 & y_2 - y_1 & z_2 - z_1 \\ x_3 - x_1 & y_3 - y_1 & z_3 - z_1 \end{vmatrix} = 0$<br><br>
+                Substitute the points:<br>
+                $\begin{vmatrix} x - 1 & y - 1 & z - (-1) \\ 6 - 1 & 4 - 1 & -5 - (-1) \\ -4 - 1 & -2 - 1 & 3 - (-1) \end{vmatrix} = 0$<br><br>
+                $\begin{vmatrix} x - 1 & y - 1 & z + 1 \\ 5 & 3 & -4 \\ -5 & -3 & 4 \end{vmatrix} = 0$<br><br>
+                Notice that Row 2 ($5, 3, -4$) is exactly the negative of Row 3 ($-5, -3, 4$). Thus $R_2 \propto R_3$. The determinant is identically zero for ALL $x,y,z$.<br>
+                This means the points are <strong>collinear</strong>. Infinite planes can pass through them, so a unique plane equation <strong>does not exist</strong>.
+            </div>
+        </div>
+
+        <h2>7. Interaction of Planes and Lines (JEE Focus)</h2>
+
+        <ul>
+            <li><strong>Angle Between Two Planes:</strong> This is exactly the angle between their normal vectors.<br>
+            $\cos\theta = \left| \frac{\vec{n_1} \cdot \vec{n_2}}{|\vec{n_1}| |\vec{n_2}|} \right|$.</li>
+            
+            <li><strong>Angle Between a Line and a Plane:</strong> If the angle between the line and the plane is $\theta$, then the angle between the line and the plane's normal is $(90^\circ - \theta)$. Therefore, the formula uses sine instead of cosine!<br>
+            <strong>$\sin\theta = \left| \frac{\vec{b} \cdot \vec{n}}{|\vec{b}| |\vec{n}|} \right|$</strong></li>
+            
+            <li><strong>Condition for Parallelism:</strong> A line is parallel to a plane if the line is perpendicular to the plane's normal.<br>
+            $\vec{b} \perp \vec{n} \implies \mathbf{\vec{b} \cdot \vec{n} = 0}$.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Family of Planes (Intersection)</span>
+            The equation of a plane passing through the line of intersection of two given planes $P_1 = 0$ and $P_2 = 0$ is given by:<br>
+            <strong>$$ P_1 + \lambda P_2 = 0 $$</strong>
+            (You find $\lambda$ using an extra given condition, like passing through a 3rd point or being perpendicular to another plane).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: Line and Plane Interaction</span>
+            <strong>Question:</strong> Find the angle between the line $\frac{x+1}{2} = \frac{y}{3} = \frac{z-3}{6}$ and the plane $10x + 2y - 11z = 3$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Extract the direction vector of the line ($\vec{b}$): $\vec{b} = 2\hat{i} + 3\hat{j} + 6\hat{k}$.<br>
+                2. Extract the normal vector of the plane ($\vec{n}$): $\vec{n} = 10\hat{i} + 2\hat{j} - 11\hat{k}$.<br>
+                3. Use the formula: $\sin\theta = \left| \frac{\vec{b} \cdot \vec{n}}{|\vec{b}| |\vec{n}|} \right|$.<br>
+                4. Dot product $\vec{b} \cdot \vec{n} = (2)(10) + (3)(2) + (6)(-11) = 20 + 6 - 66 = -40$.<br>
+                5. Magnitude $|\vec{b}| = \sqrt{2^2 + 3^2 + 6^2} = \sqrt{4+9+36} = \sqrt{49} = 7$.<br>
+                6. Magnitude $|\vec{n}| = \sqrt{10^2 + 2^2 + (-11)^2} = \sqrt{100+4+121} = \sqrt{225} = 15$.<br>
+                7. $\sin\theta = \left| \frac{-40}{7 \times 15} \right| = \frac{40}{105} = \frac{8}{21}$.<br>
+                8. Angle $\theta = \mathbf{\sin^{-1}\left(\frac{8}{21}\right)}$.
+            </div>
+        </div>
+
+        <h2>8. Distance Formulas involving Planes</h2>
+
+        <ul>
+            <li><strong>Distance of a Point from a Plane:</strong> The perpendicular distance from a point $(x_1, y_1, z_1)$ to the plane $Ax + By + Cz + D = 0$ is:<br>
+            <strong>$$ d = \left| \frac{Ax_1 + By_1 + Cz_1 + D}{\sqrt{A^2 + B^2 + C^2}} \right| $$</strong></li>
+            
+            <li><strong>Distance between Two Parallel Planes:</strong> For planes $Ax + By + Cz + D_1 = 0$ and $Ax + By + Cz + D_2 = 0$ (ensure $A,B,C$ coefficients are identical):<br>
+            <strong>$$ d = \left| \frac{D_1 - D_2}{\sqrt{A^2 + B^2 + C^2}} \right| $$</strong></li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Distance to Plane</span>
+            <strong>Question:</strong> Find the distance of the point $(2, 5, -3)$ from the plane $\vec{r} \cdot (6\hat{i} - 3\hat{j} + 2\hat{k}) = 4$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Convert plane to Cartesian form: $6x - 3y + 2z = 4 \implies 6x - 3y + 2z - 4 = 0$.<br>
+                2. Identify parameters: Point $(x_1, y_1, z_1) = (2, 5, -3)$. Plane $(A, B, C, D) = (6, -3, 2, -4)$.<br>
+                3. Use distance formula: $d = \left| \frac{A x_1 + B y_1 + C z_1 + D}{\sqrt{A^2 + B^2 + C^2}} \right|$.<br>
+                4. $d = \left| \frac{6(2) + (-3)(5) + 2(-3) - 4}{\sqrt{6^2 + (-3)^2 + 2^2}} \right|$<br>
+                5. $d = \left| \frac{12 - 15 - 6 - 4}{\sqrt{36 + 9 + 4}} \right| = \left| \frac{-13}{\sqrt{49}} \right| = \left| \frac{-13}{7} \right|$.<br>
+                6. Distance $d = \mathbf{\frac{13}{7} \text{ units}}$.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

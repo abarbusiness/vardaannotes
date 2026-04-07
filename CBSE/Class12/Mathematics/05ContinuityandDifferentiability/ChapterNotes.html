@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Continuity and Differentiability - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering dynamic Mathematical Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Graph Containers */
+        .graph-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            background: var(--paper-bg);
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 5: Continuity and Differentiability</h1>
+
+        <p><em>Dear Class 12 Student! Welcome to the gateway of advanced Calculus. In Class 11, we learned how to evaluate limits. Now, we use limits to check if a function is perfectly unbroken (Continuous) and if it has a smooth, predictable rate of change (Differentiable). This chapter requires absolute mastery of the Chain Rule and Logarithmic Differentiation, as they will haunt you in every subsequent chapter of Integration and Differential Equations. Let's trace the curve!</em></p>
+
+        <h2>1. Continuity of a Function</h2>
+        
+        <p><strong>Intuitive Idea:</strong> A function is considered continuous at a point if you can draw its graph around that point without ever lifting your pen from the paper. There are no breaks, jumps, or holes.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Continuity at a Point ($x=c$)</span>
+            A function $f(x)$ is strictly continuous at a point $x = c$ if and only if the following three conditions are met:
+            <br>1. The function is defined at $x = c$ (i.e., $f(c)$ exists).
+            <br>2. The limit of the function as $x \to c$ exists (i.e., $LHL = RHL$).
+            <br>3. The value of the limit exactly equals the value of the function at that point.
+            <strong>$$\lim_{x \to c^-} f(x) = \lim_{x \to c^+} f(x) = f(c)$$</strong>
+        </div>
+
+        <h3>Continuity in an Interval</h3>
+        <ul>
+            <li><strong>Open Interval $(a, b)$:</strong> $f(x)$ is continuous at every single point lying between $a$ and $b$.</li>
+            <li><strong>Closed Interval $[a, b]$:</strong> $f(x)$ must be continuous in $(a, b)$, and additionally:
+                <br>- It must be right-continuous at $a$: $\lim_{x \to a^+} f(x) = f(a)$.
+                <br>- It must be left-continuous at $b$: $\lim_{x \to b^-} f(x) = f(b)$.
+            </li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Algorithm for Testing Continuity (RD Sharma Style)</span>
+            To check continuity at $x = c$:<br>
+            <strong>Step 1:</strong> Find Left Hand Limit (LHL) by substituting $x = c - h$:<br>
+            $\quad LHL = \lim_{h \to 0} f(c - h)$<br>
+            <strong>Step 2:</strong> Find Right Hand Limit (RHL) by substituting $x = c + h$:<br>
+            $\quad RHL = \lim_{h \to 0} f(c + h)$<br>
+            <strong>Step 3:</strong> Find the exact value $f(c)$.<br>
+            <strong>Step 4:</strong> Compare. If $LHL = RHL = f(c)$, it is continuous. Otherwise, it is discontinuous.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> Check the continuity of the function $f(x)$ at $x = 2$, where:<br>
+            $f(x) = \begin{cases} 2x + 3, & \text{if } x \le 2 \\ 2x - 3, & \text{if } x > 2 \end{cases}$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                We check at $x = 2$.<br>
+                1. <strong>Value of function at $x=2$:</strong> Use the upper branch ($x \le 2$).<br>
+                   $f(2) = 2(2) + 3 = 4 + 3 = 7$.<br>
+                2. <strong>LHL:</strong> $\lim_{x \to 2^-} f(x)$. Use the upper branch.<br>
+                   $LHL = \lim_{h \to 0} f(2 - h) = \lim_{h \to 0} [2(2 - h) + 3] = 2(2 - 0) + 3 = 7$.<br>
+                3. <strong>RHL:</strong> $\lim_{x \to 2^+} f(x)$. Use the lower branch ($x > 2$).<br>
+                   $RHL = \lim_{h \to 0} f(2 + h) = \lim_{h \to 0} [2(2 + h) - 3] = 2(2 + 0) - 3 = 4 - 3 = 1$.<br>
+                4. Since $LHL \neq RHL$ ($7 \neq 1$), the limit does not exist.<br>
+                Therefore, $f(x)$ is <strong>discontinuous</strong> at $x = 2$.
+            </div>
+        </div>
+
+        <h2>2. Algebra of Continuous Functions</h2>
+        <p>If $f(x)$ and $g(x)$ are two continuous functions at a real number $c$, then:</p>
+        <ul>
+            <li>$f \pm g$ is continuous at $x = c$.</li>
+            <li>$f \cdot g$ is continuous at $x = c$.</li>
+            <li>$c \cdot f$ (scalar multiple) is continuous at $x = c$.</li>
+            <li>$f/g$ is continuous at $x = c$, <strong>provided $g(c) \neq 0$</strong>.</li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">Continuity of Composite Functions</span>
+            If a function $g$ is continuous at a point $c$, and another function $f$ is continuous at the point $g(c)$, then their composite function $(f \circ g)(x) = f(g(x))$ is purely continuous at $c$.<br><br>
+            <em>Standard Continuous Functions (Always continuous in their domains):</em> All Polynomials, Rational functions (where denom $\neq 0$), $\sin x$, $\cos x$, $e^x$, $\log x$, and $|x|$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2</span>
+            <strong>Question:</strong> Prove that the function $F(x) = \sin(|x|)$ is a continuous function.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Let us define two functions: $g(x) = |x|$ and $h(x) = \sin x$.<br>
+                1. We know that the modulus function $g(x) = |x|$ is continuous for all real numbers.<br>
+                2. We also know that the trigonometric sine function $h(x) = \sin x$ is continuous for all real numbers.<br>
+                3. Let us find their composition $(h \circ g)(x)$:<br>
+                   $(h \circ g)(x) = h(g(x)) = h(|x|) = \sin(|x|) = F(x)$.<br>
+                4. According to the theorem of composite functions, since $g(x)$ and $h(x)$ are continuous everywhere, their composition $F(x) = \sin(|x|)$ must also be <strong>continuous for all real numbers</strong>.
+            </div>
+        </div>
+
+        <h2>3. Differentiability (Derivability)</h2>
+        <p>Differentiability geometrically means that the graph of the function has a unique, non-vertical tangent at that point. It implies "smoothness"—no sharp corners, kinks, or breaks.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Definition at a Point</span>
+            A function $f(x)$ is differentiable at $x = c$ if the derivative $f'(c)$ exists finitely:<br>
+            <strong>$$f'(c) = \lim_{h \to 0} \frac{f(c+h) - f(c)}{h}$$</strong>
+            For this limit to exist, the Left Hand Derivative (LHD) must perfectly equal the Right Hand Derivative (RHD).<br><br>
+            <strong>LHD:</strong> $\lim_{h \to 0^-} \frac{f(c-h) - f(c)}{-h}$<br>
+            <strong>RHD:</strong> $\lim_{h \to 0^+} \frac{f(c+h) - f(c)}{h}$
+        </div>
+
+        <h3>Relation between Continuity and Differentiability</h3>
+        <p><strong>Theorem:</strong> If a function is differentiable at a point, it is necessarily continuous at that point. However, the converse is NOT true. Every continuous function is not necessarily differentiable.</p>
+        
+        <div class="graph-container">
+            <h4 style="text-align: center; color: var(--accent-purple); margin-top: 0;">The Classic Counter-Example: f(x) = |x|</h4>
+            <p style="font-size: 0.9rem; text-align: center;">The graph can be drawn without lifting the pen (Continuous at x=0). But it has a sharp corner at x=0, so no unique tangent can be drawn (Not Differentiable at x=0).</p>
+            <canvas id="modulusChart"></canvas>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3</span>
+            <strong>Question:</strong> Prove mathematically that $f(x) = |x - 1|$ is continuous but not differentiable at $x = 1$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>1. Continuity at $x=1$:</strong><br>
+                $f(1) = |1 - 1| = 0$.<br>
+                $LHL = \lim_{h \to 0} f(1-h) = \lim_{h \to 0} |(1-h)-1| = \lim_{h \to 0} |-h| = 0$.<br>
+                $RHL = \lim_{h \to 0} f(1+h) = \lim_{h \to 0} |(1+h)-1| = \lim_{h \to 0} |h| = 0$.<br>
+                Since $LHL = RHL = f(1)$, $f(x)$ is continuous at $x=1$.<br><br>
+                
+                <strong>2. Differentiability at $x=1$:</strong><br>
+                $LHD = \lim_{h \to 0} \frac{f(1-h) - f(1)}{-h} = \lim_{h \to 0} \frac{|(1-h)-1| - 0}{-h} = \lim_{h \to 0} \frac{|-h|}{-h} = \lim_{h \to 0} \frac{h}{-h} = \mathbf{-1}$.<br>
+                $RHD = \lim_{h \to 0} \frac{f(1+h) - f(1)}{h} = \lim_{h \to 0} \frac{|(1+h)-1| - 0}{h} = \lim_{h \to 0} \frac{|h|}{h} = \lim_{h \to 0} \frac{h}{h} = \mathbf{1}$.<br>
+                Since $LHD \neq RHD$ ($-1 \neq 1$), $f(x)$ is <strong>not differentiable</strong> at $x=1$.
+            </div>
+        </div>
+
+        <h2>4. Rules of Differentiation (Chain Rule & Composite Functions)</h2>
+
+        <div class="green-box">
+            <span class="box-label">The Chain Rule (Crucial Concept)</span>
+            The Chain Rule is used to differentiate composite functions ("functions inside functions").<br>
+            If $y$ is a function of $u$ ($y = f(u)$) and $u$ is a function of $x$ ($u = g(x)$), then:<br>
+            <strong>$$\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$$</strong>
+            You differentiate the "outside" function first, leaving the inside untouched, and then multiply by the derivative of the "inside" function.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4</span>
+            <strong>Question:</strong> Differentiate $y = \sin(\cos(x^2))$ with respect to $x$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                This is a 3-layer composite function: $\sin(u)$, where $u = \cos(v)$, and $v = x^2$.<br>
+                We apply the Chain Rule from outside to inside:<br>
+                1. Derivative of outer $\sin(\dots)$ is $\cos(\dots)$.<br>
+                   $\frac{d}{dx}[\sin(\cos(x^2))] = \cos(\cos(x^2)) \cdot \frac{d}{dx}[\cos(x^2)]$<br>
+                2. Derivative of middle $\cos(\dots)$ is $-\sin(\dots)$.<br>
+                   $= \cos(\cos(x^2)) \cdot [-\sin(x^2)] \cdot \frac{d}{dx}[x^2]$<br>
+                3. Derivative of inner $x^2$ is $2x$.<br>
+                   $= \cos(\cos(x^2)) \cdot [-\sin(x^2)] \cdot (2x)$<br>
+                <strong>Final Answer:</strong> $\frac{dy}{dx} = \mathbf{-2x \sin(x^2) \cos(\cos(x^2))}$.
+            </div>
+        </div>
+
+        <h2>5. Differentiation of Implicit Functions</h2>
+        <p><strong>Definition:</strong> When a relationship between $x$ and $y$ is expressed in a way that it is difficult or impossible to isolate $y$ on one side (e.g., $x^3 + y^3 = 3axy$), it is an implicit function.</p>
+        
+        <p><strong>Method:</strong> Differentiate both sides of the equation with respect to $x$. When differentiating any term containing $y$, you MUST apply the chain rule by multiplying with $\frac{dy}{dx}$. Finally, collect all $\frac{dy}{dx}$ terms on one side and solve for it.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5</span>
+            <strong>Question:</strong> Find $\frac{dy}{dx}$ if $x^3 + x^2y + xy^2 + y^3 = 81$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Differentiate both sides with respect to $x$. Use the Product Rule $(uv)' = u'v + uv'$ for the middle terms.<br>
+                $\frac{d}{dx}(x^3) + \frac{d}{dx}(x^2y) + \frac{d}{dx}(xy^2) + \frac{d}{dx}(y^3) = \frac{d}{dx}(81)$<br>
+                $3x^2 + \left[x^2 \frac{dy}{dx} + y(2x)\right] + \left[x(2y\frac{dy}{dx}) + y^2(1)\right] + 3y^2\frac{dy}{dx} = 0$<br>
+                Rearrange and group all $\frac{dy}{dx}$ terms together:<br>
+                $x^2\frac{dy}{dx} + 2xy\frac{dy}{dx} + 3y^2\frac{dy}{dx} = -3x^2 - 2xy - y^2$<br>
+                Factor out $\frac{dy}{dx}$:<br>
+                $\frac{dy}{dx} (x^2 + 2xy + 3y^2) = -(3x^2 + 2xy + y^2)$<br>
+                <strong>$$\frac{dy}{dx} = \frac{-(3x^2 + 2xy + y^2)}{x^2 + 2xy + 3y^2}$$</strong>
+            </div>
+        </div>
+
+        <h2>6. Derivatives of Inverse Trigonometric Functions</h2>
+        
+        <div class="blue-box">
+            <span class="box-label">Formula List (Must Memorize)</span>
+            - $\frac{d}{dx}(\sin^{-1} x) = \frac{1}{\sqrt{1-x^2}}$<br>
+            - $\frac{d}{dx}(\cos^{-1} x) = -\frac{1}{\sqrt{1-x^2}}$<br>
+            - $\frac{d}{dx}(\tan^{-1} x) = \frac{1}{1+x^2}$<br>
+            - $\frac{d}{dx}(\cot^{-1} x) = -\frac{1}{1+x^2}$<br>
+            - $\frac{d}{dx}(\sec^{-1} x) = \frac{1}{|x|\sqrt{x^2-1}}$<br>
+            - $\frac{d}{dx}(\csc^{-1} x) = -\frac{1}{|x|\sqrt{x^2-1}}$
+        </div>
+
+        <p><strong>Simplification using Trigonometric Substitution:</strong> Differentiating a complex inverse trigonometric function directly using the chain rule becomes a nightmare. Instead, use the substitutions from Chapter 2 (ITF) to simplify the function <em>before</em> differentiating.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6</span>
+            <strong>Question:</strong> Differentiate $y = \tan^{-1}\left(\frac{\sin x}{1 + \cos x}\right)$ with respect to $x$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Do NOT use the chain rule directly. Simplify the inside expression first using half-angle formulas.<br>
+                We know: $\sin x = 2\sin(x/2)\cos(x/2)$ and $1 + \cos x = 2\cos^2(x/2)$.<br>
+                Substitute these in:<br>
+                $y = \tan^{-1}\left( \frac{2\sin(x/2)\cos(x/2)}{2\cos^2(x/2)} \right)$<br>
+                Cancel 2 and one $\cos(x/2)$:<br>
+                $y = \tan^{-1}\left( \frac{\sin(x/2)}{\cos(x/2)} \right)$<br>
+                $y = \tan^{-1}(\tan(x/2))$<br>
+                Using self-adjusting property (assuming principal branch): $y = \frac{x}{2}$.<br>
+                Now, differentiate with respect to $x$:<br>
+                $\frac{dy}{dx} = \frac{d}{dx}(\frac{x}{2}) = \mathbf{\frac{1}{2}}$.
+            </div>
+        </div>
+
+        <h2>7. Exponential and Logarithmic Functions</h2>
+        
+        <p><strong>Standard Derivatives:</strong><br>
+        - $\frac{d}{dx}(e^x) = e^x$<br>
+        - $\frac{d}{dx}(a^x) = a^x \ln a$<br>
+        - $\frac{d}{dx}(\ln x) = \frac{1}{x}$</p>
+
+        <div class="green-box">
+            <span class="box-label">Logarithmic Differentiation (Important Board Topic)</span>
+            This powerful method is used strictly in two scenarios:<br>
+            1. Functions of the form <strong>Variable raised to a Variable</strong> (e.g., $y = x^{\sin x}$ or $y = (\sin x)^x$). *Warning: You CANNOT use $d/dx(x^n) = nx^{n-1}$ here!*<br>
+            2. When a function is the product or quotient of many complex terms (e.g., $y = \sqrt{\frac{(x-1)(x-2)}{(x-3)(x-4)}}$).<br><br>
+            <strong>Method:</strong><br>
+            Step 1: Take natural logarithm ($\ln$ or $\log_e$) on both sides.<br>
+            Step 2: Use log properties ($\ln(a^b) = b\ln a, \ln(ab) = \ln a + \ln b, \ln(a/b) = \ln a - \ln b$) to completely expand and simplify.<br>
+            Step 3: Differentiate implicitly with respect to $x$. (Remember $\frac{d}{dx}(\ln y) = \frac{1}{y}\frac{dy}{dx}$).<br>
+            Step 4: Multiply the $y$ back to the right side and substitute the original function for $y$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7</span>
+            <strong>Question:</strong> Differentiate $y = x^x$ with respect to $x$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                This is of the form $(\text{variable})^{\text{variable}}$. We MUST use logarithmic differentiation.<br>
+                1. Take natural log on both sides:<br>
+                   $\ln y = \ln(x^x)$<br>
+                2. Apply property $\ln(a^b) = b\ln a$:<br>
+                   $\ln y = x \ln x$<br>
+                3. Differentiate implicitly w.r.t $x$. Use Product Rule on RHS:<br>
+                   $\frac{1}{y} \frac{dy}{dx} = x \cdot \frac{d}{dx}(\ln x) + \ln x \cdot \frac{d}{dx}(x)$<br>
+                   $\frac{1}{y} \frac{dy}{dx} = x \cdot (\frac{1}{x}) + \ln x \cdot (1)$<br>
+                   $\frac{1}{y} \frac{dy}{dx} = 1 + \ln x$<br>
+                4. Multiply $y$ to the RHS:<br>
+                   $\frac{dy}{dx} = y (1 + \ln x)$<br>
+                5. Substitute back $y = x^x$:<br>
+                   <strong>$$\frac{dy}{dx} = x^x (1 + \ln x)$$</strong>
+            </div>
+        </div>
+
+        <h2>8. Derivatives of Functions in Parametric Forms</h2>
+        <p><strong>Definition:</strong> Sometimes, the relationship between $x$ and $y$ is expressed via a third, independent variable called a parameter (e.g., $t$ or $\theta$). For example, the parametric equations of a circle are $x = r \cos\theta, y = r \sin\theta$.</p>
+
+        <p><strong>Formula:</strong> We differentiate both $x$ and $y$ separately with respect to the parameter, and then divide them.<br>
+        <strong>$$\frac{dy}{dx} = \frac{dy/dt}{dx/dt}$$</strong></p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8</span>
+            <strong>Question:</strong> Find $\frac{dy}{dx}$ if $x = a(\theta - \sin\theta)$ and $y = a(1 + \cos\theta)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Differentiate $x$ w.r.t $\theta$:<br>
+                   $\frac{dx}{d\theta} = a \frac{d}{d\theta}(\theta - \sin\theta) = a(1 - \cos\theta)$.<br>
+                2. Differentiate $y$ w.r.t $\theta$:<br>
+                   $\frac{dy}{d\theta} = a \frac{d}{d\theta}(1 + \cos\theta) = a(0 - \sin\theta) = -a\sin\theta$.<br>
+                3. Apply parametric formula:<br>
+                   $\frac{dy}{dx} = \frac{dy/d\theta}{dx/d\theta} = \frac{-a\sin\theta}{a(1 - \cos\theta)} = \frac{-\sin\theta}{1 - \cos\theta}$.<br>
+                4. Simplify using half-angle formulas ($\sin\theta = 2\sin(\theta/2)\cos(\theta/2)$ and $1-\cos\theta = 2\sin^2(\theta/2)$):<br>
+                   $\frac{dy}{dx} = \frac{-2\sin(\theta/2)\cos(\theta/2)}{2\sin^2(\theta/2)} = \frac{-\cos(\theta/2)}{\sin(\theta/2)} = \mathbf{-\cot(\theta/2)}$.
+            </div>
+        </div>
+
+        <h2>9. Second Order Derivative</h2>
+        <p><strong>Definition:</strong> Differentiating the first derivative ($dy/dx$) again with respect to $x$. It is denoted as $\frac{d^2y}{dx^2}$ or $y''$ or $f''(x)$ or $y_2$.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Trap: Second Derivative in Parametric Form</span>
+            A very common mistake is assuming that $\frac{d^2y}{dx^2} = \frac{d^2y/dt^2}{d^2x/dt^2}$. <strong>THIS IS COMPLETELY WRONG!</strong><br><br>
+            The correct method: You must first find $\frac{dy}{dx}$ as a function of $t$. Then differentiate it with respect to $x$. Because it is a function of $t$, you MUST apply the chain rule and multiply by $\frac{dt}{dx}$ at the very end.<br>
+            <strong>$$\frac{d^2y}{dx^2} = \frac{d}{dt}\left(\frac{dy}{dx}\right) \cdot \frac{dt}{dx}$$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 9 ("Prove That" Type)</span>
+            <strong>Question:</strong> If $y = A\sin x + B\cos x$, then prove that $\frac{d^2y}{dx^2} + y = 0$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Given: $y = A\sin x + B\cos x$.<br>
+                2. Differentiate once w.r.t $x$ to get the first derivative:<br>
+                   $\frac{dy}{dx} = A\cos x + B(-\sin x) = A\cos x - B\sin x$.<br>
+                3. Differentiate again w.r.t $x$ to get the second derivative:<br>
+                   $\frac{d^2y}{dx^2} = \frac{d}{dx}(A\cos x - B\sin x)$<br>
+                   $\frac{d^2y}{dx^2} = A(-\sin x) - B(\cos x)$<br>
+                4. Factor out the negative sign:<br>
+                   $\frac{d^2y}{dx^2} = -(A\sin x + B\cos x)$<br>
+                5. Notice that the term in the parenthesis is precisely our original function $y$. Substitute $y$ back in:<br>
+                   $\frac{d^2y}{dx^2} = -y$<br>
+                6. Rearrange the equation:<br>
+                   <strong>$$\frac{d^2y}{dx^2} + y = 0$$</strong> (Proved).
+            </div>
+        </div>
+
+        <h2>10. Mean Value Theorems (RD Sharma / RS Aggarwal Focus)</h2>
+        <p><em>Note: These theorems link the average rate of change to the instantaneous rate of change. They are the theoretical underpinning of Calculus.</em></p>
+
+        <h3>A. Rolle's Theorem</h3>
+        <p>If a function $f(x)$ satisfies the following three conditions:
+        <br>1. It is <strong>continuous</strong> in the closed interval $[a, b]$.
+        <br>2. It is <strong>differentiable</strong> in the open interval $(a, b)$.
+        <br>3. <strong>$f(a) = f(b)$</strong> (The function returns to the same height).
+        <br>Then, there exists <em>at least one</em> point $c \in (a, b)$ such that <strong>$f'(c) = 0$</strong>.</p>
+        <p><strong>Geometric Interpretation:</strong> If a smooth, continuous curve starts and ends at the same y-value, it must have turned around at least once. At that turning point (peak or valley), the tangent line is perfectly horizontal (slope = 0).</p>
+
+        <h3>B. Lagrange’s Mean Value Theorem (LMVT)</h3>
+        <p>If a function $f(x)$ satisfies the following two conditions:
+        <br>1. It is <strong>continuous</strong> in the closed interval $[a, b]$.
+        <br>2. It is <strong>differentiable</strong> in the open interval $(a, b)$.
+        <br>Then, there exists <em>at least one</em> point $c \in (a, b)$ such that:
+        <strong>$$f'(c) = \frac{f(b) - f(a)}{b - a}$$</strong></p>
+        <p><strong>Geometric Interpretation:</strong> There is at least one point on the smooth curve where the tangent line is perfectly parallel to the secant line (chord) connecting the start point $(a, f(a))$ and end point $(b, f(b))$. Rolle's theorem is just a special case of LMVT where the chord is perfectly horizontal.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 10</span>
+            <strong>Question:</strong> Verify Rolle's Theorem for the function $f(x) = x^2 - 4x + 3$ in the interval $[1, 3]$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>Step 1: Check conditions.</strong><br>
+                1. $f(x) = x^2 - 4x + 3$ is a polynomial function. We know polynomials are continuous everywhere. So, it is continuous in $[1, 3]$.<br>
+                2. Polynomials are differentiable everywhere. So, it is differentiable in $(1, 3)$.<br>
+                3. Check $f(a) = f(b)$:<br>
+                   $f(1) = 1^2 - 4(1) + 3 = 1 - 4 + 3 = 0$.<br>
+                   $f(3) = 3^2 - 4(3) + 3 = 9 - 12 + 3 = 0$.<br>
+                   Since $f(1) = f(3)$, all three conditions of Rolle's theorem are strictly satisfied.<br><br>
+                <strong>Step 2: Find $c$.</strong><br>
+                According to the theorem, there must be a $c \in (1, 3)$ where $f'(c) = 0$.<br>
+                1. Differentiate $f(x)$: $f'(x) = 2x - 4$.<br>
+                2. Set $f'(c) = 0 \implies 2c - 4 = 0$.<br>
+                3. Solve for $c$: $2c = 4 \implies \mathbf{c = 2}$.<br>
+                4. Check if $c$ lies in the interval: Yes, $2 \in (1, 3)$.<br>
+                Hence, Rolle's Theorem is verified.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS FOR CHARTS & TOGGLE -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            renderCharts();
+        }
+
+        let modulusChart;
+
+        function renderCharts() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#aaaaaa' : '#666666';
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'x', color: textColor} },
+                    y: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'f(x) = |x|', color: textColor} }
+                }
+            };
+
+            // f(x) = |x|
+            const ctx = document.getElementById('modulusChart').getContext('2d');
+            if (modulusChart) modulusChart.destroy();
+            let xVals = [], yVals = [];
+            for (let x = -5; x <= 5; x += 0.5) {
+                xVals.push(x.toFixed(1));
+                yVals.push(Math.abs(x));
+            }
+            modulusChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xVals,
+                    datasets: [{
+                        data: yVals,
+                        borderColor: '#d81b60', /* Pink */
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0 /* 0 tension means perfectly straight lines, creating the sharp point */
+                    }]
+                },
+                options: commonOptions
+            });
+        }
+
+        window.onload = renderCharts;
+    </script>
+</body>
+</html>

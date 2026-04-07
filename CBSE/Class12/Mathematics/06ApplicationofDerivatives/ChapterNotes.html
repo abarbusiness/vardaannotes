@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Application of Derivatives - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering dynamic Mathematical Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Graph Containers */
+        .graph-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--paper-bg);
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 6: Application of Derivatives (AOD)</h1>
+
+        <p><em>Dear Class 12 Student! You have mastered how to calculate a derivative ($dy/dx$); now it's time to use it in the real world. AOD is where pure calculus meets physics and geometry. We will use derivatives to track moving shadows, design the largest possible boxes out of minimal cardboard (Optimization), and find the exact peaks and valleys of curves (Maxima & Minima). The 5/6 mark word problems here are Board guarantees. Let's maximize our score!</em></p>
+
+        <h2>1. Rate of Change of Quantities</h2>
+        <p><strong>Concept:</strong> If a quantity $y$ varies with another quantity $x$ according to some rule $y = f(x)$, then $\frac{dy}{dx}$ represents the <strong>instantaneous rate of change</strong> of $y$ with respect to $x$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Related Rates & Chain Rule</span>
+            Often, two or more variables (like volume and radius) change with respect to a common third variable, usually time ($t$). To connect their rates, we heavily utilize the Chain Rule:<br>
+            <strong>$$\frac{dy}{dt} = \frac{dy}{dx} \cdot \frac{dx}{dt}$$</strong>
+            <br>
+            <strong>Sign Convention:</strong><br>
+            - If $\frac{dy}{dt} > 0$, the quantity $y$ is strictly <strong>increasing</strong> with time.<br>
+            - If $\frac{dy}{dt} < 0$, the quantity $y$ is strictly <strong>decreasing</strong> with time.
+        </div>
+
+        <h3>Marginal Cost and Marginal Revenue</h3>
+        <p>In commerce and economics, the term "Marginal" simply translates to "Derivative of".</p>
+        <ul>
+            <li><strong>Marginal Cost (MC):</strong> The instantaneous rate of change of the total cost $C(x)$ with respect to the number of items produced $x$. $\quad \mathbf{MC = \frac{d(C(x))}{dx}}$</li>
+            <li><strong>Marginal Revenue (MR):</strong> The instantaneous rate of change of total revenue $R(x)$ with respect to the number of items sold $x$. $\quad \mathbf{MR = \frac{d(R(x))}{dx}}$</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Related Rates</span>
+            <strong>Question:</strong> The volume of a spherical balloon is increasing at the rate of $20 \text{ cm}^3/\text{sec}$. Find the rate of change of its surface area at the instant when its radius is $8 \text{ cm}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Let $V$ be volume, $S$ be surface area, and $r$ be radius. We are given $\frac{dV}{dt} = +20 \text{ cm}^3/\text{s}$. We need to find $\frac{dS}{dt}$ when $r=8$.<br>
+                2. Volume formula: $V = \frac{4}{3}\pi r^3$. Differentiate with respect to $t$ using the chain rule:<br>
+                   $\frac{dV}{dt} = \frac{d}{dr}(\frac{4}{3}\pi r^3) \cdot \frac{dr}{dt} = 4\pi r^2 \frac{dr}{dt}$<br>
+                3. Substitute known values to find $\frac{dr}{dt}$:<br>
+                   $20 = 4\pi (8)^2 \frac{dr}{dt} \implies 20 = 256\pi \frac{dr}{dt} \implies \frac{dr}{dt} = \frac{20}{256\pi} = \frac{5}{64\pi} \text{ cm/s}$.<br>
+                4. Surface Area formula: $S = 4\pi r^2$. Differentiate with respect to $t$:<br>
+                   $\frac{dS}{dt} = 8\pi r \frac{dr}{dt}$<br>
+                5. Substitute $r=8$ and the $\frac{dr}{dt}$ we just found:<br>
+                   $\frac{dS}{dt} = 8\pi(8) \times \left(\frac{5}{64\pi}\right) = 64\pi \times \frac{5}{64\pi} = \mathbf{5 \text{ cm}^2/\text{sec}}$.
+            </div>
+        </div>
+
+        <h2>2. Increasing and Decreasing Functions (Monotonicity)</h2>
+
+        <h3>Definitions on an Interval $(a, b)$</h3>
+        <ul>
+            <li><strong>Strictly Increasing:</strong> If $x_1 < x_2 \implies f(x_1) < f(x_2)$. (The graph goes purely up).</li>
+            <li><strong>Increasing (Non-decreasing):</strong> If $x_1 < x_2 \implies f(x_1) \le f(x_2)$. (The graph can go up or stay perfectly flat, but never drops).</li>
+            <li><strong>Strictly Decreasing:</strong> If $x_1 < x_2 \implies f(x_1) > f(x_2)$. (The graph goes purely down).</li>
+            <li><strong>Decreasing (Non-increasing):</strong> If $x_1 < x_2 \implies f(x_1) \ge f(x_2)$.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">First Derivative Test for Monotonicity</span>
+            Instead of checking values manually, we check the slope of the tangent ($f'(x)$).<br>
+            1. If $\mathbf{f'(x) > 0}$ for all $x \in (a, b)$, then $f$ is <strong>Strictly Increasing</strong>.<br>
+            2. If $\mathbf{f'(x) < 0}$ for all $x \in (a, b)$, then $f$ is <strong>Strictly Decreasing</strong>.<br>
+            3. If $f'(x) = 0$ for all $x \in (a, b)$, then $f$ is a constant function.<br><br>
+            <em>R.D. Sharma Note:</em> If $f'(x) \ge 0$ but $f'(x) = 0$ only at a few discrete, isolated points (not a whole interval), the function is still considered <strong>strictly</strong> increasing. (e.g., $f(x) = x^3$ has $f'(0) = 0$, but is strictly increasing on $\mathbb{R}$).
+        </div>
+
+        <h3>Algorithm to Find Intervals of Monotonicity</h3>
+        <p>1. Find $f'(x)$.<br>
+        2. Set $f'(x) = 0$ and solve for $x$ to find the <strong>critical points</strong>.<br>
+        3. Plot these critical points on a number line. They will divide the domain into distinct sub-intervals.<br>
+        4. Test the sign of $f'(x)$ in each sub-interval using a test point or the <strong>Wavy Curve Method</strong>.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Wavy Curve Application</span>
+            <strong>Question:</strong> Find the intervals in which the function $f(x) = 2x^3 - 3x^2 - 36x + 7$ is strictly increasing or strictly decreasing.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Differentiate: $f'(x) = 6x^2 - 6x - 36$.<br>
+                2. Factorize: $f'(x) = 6(x^2 - x - 6) = 6(x - 3)(x + 2)$.<br>
+                3. Set $f'(x) = 0$ to get critical points: $x = 3$ and $x = -2$.<br>
+                4. The number line is divided into three intervals: $(-\infty, -2)$, $(-2, 3)$, and $(3, \infty)$.<br>
+                5. Check signs of $f'(x)$ (Wavy curve from right to left starts positive since leading coeff is $+6$):<br>
+                   - In $(3, \infty)$, test $x=4$: $f'(4) = 6(+)(+) = +ve$.<br>
+                   - In $(-2, 3)$, test $x=0$: $f'(0) = 6(-)(+) = -ve$.<br>
+                   - In $(-\infty, -2)$, test $x=-3$: $f'(-3) = 6(-)(-) = +ve$.<br>
+                6. <strong>Conclusion:</strong><br>
+                   - $f(x)$ is strictly increasing in $\mathbf{(-\infty, -2) \cup (3, \infty)}$.<br>
+                   - $f(x)$ is strictly decreasing in $\mathbf{(-2, 3)}$.
+            </div>
+        </div>
+
+        <h2>3. Tangents and Normals (Geometry of Derivatives)</h2>
+        <p>A tangent is a line that just touches the curve at a point. A normal is a line perfectly perpendicular to the tangent at that same point of contact.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Slopes and Equations</span>
+            Let a curve be given by $y = f(x)$, and let $P(x_1, y_1)$ be a point ON the curve.<br>
+            <strong>Slope of Tangent ($m_T$):</strong> The value of the derivative evaluated exactly at point P.<br>
+            <strong>$$m_T = \left( \frac{dy}{dx} \right)_{(x_1, y_1)}$$</strong><br>
+            <strong>Slope of Normal ($m_N$):</strong> Since normal $\perp$ tangent, $m_T \times m_N = -1$.<br>
+            <strong>$$m_N = \frac{-1}{\left( \frac{dy}{dx} \right)_{(x_1, y_1)}} = -\left( \frac{dx}{dy} \right)_{(x_1, y_1)}$$</strong><br><br>
+            <strong>Equation of Tangent:</strong> $y - y_1 = m_T(x - x_1)$<br>
+            <strong>Equation of Normal:</strong> $y - y_1 = m_N(x - x_1)$
+        </div>
+
+        <h3>Special Cases</h3>
+        <ul>
+            <li>If the tangent is perfectly <strong>parallel to the x-axis</strong> (horizontal), its slope is 0. $\implies \mathbf{dy/dx = 0}$.</li>
+            <li>If the tangent is perfectly <strong>parallel to the y-axis</strong> (vertical), its slope is undefined ($\infty$). It is perpendicular to the x-axis. $\implies \mathbf{dx/dy = 0}$.</li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">R.D. Sharma Focus: Angle of Intersection of Two Curves</span>
+            The angle of intersection between two curves is defined as the angle between their tangents at their point of intersection.<br>
+            <strong>Algorithm:</strong><br>
+            1. Solve the two equations simultaneously to find the point(s) of intersection $(x_1, y_1)$.<br>
+            2. Find the slope of the tangent to curve 1 ($m_1$) and curve 2 ($m_2$) at that point.<br>
+            3. Use the angle formula: <strong>$$\tan \theta = \left| \frac{m_1 - m_2}{1 + m_1 m_2} \right|$$</strong><br>
+            <strong>Orthogonal Curves:</strong> Two curves are said to cut orthogonally (at right angles, $\theta = 90^\circ$) if the product of their tangent slopes is $-1$. $\implies \mathbf{m_1 m_2 = -1}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Orthogonal Curves</span>
+            <strong>Question:</strong> Prove that the curves $x = y^2$ and $xy = k$ cut at right angles if $8k^2 = 1$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Find Point of Intersection:</strong> Substitute $x = y^2$ into $xy = k \implies (y^2)y = k \implies y^3 = k \implies y = k^{1/3}$.<br>
+                   Then $x = (k^{1/3})^2 = k^{2/3}$. The point is $(k^{2/3}, k^{1/3})$.<br><br>
+                2. <strong>Find $m_1$ (Curve 1):</strong> $x = y^2$. Differentiating w.r.t $x$: $1 = 2y \frac{dy}{dx} \implies m_1 = \frac{1}{2y}$.<br>
+                   At point, $m_1 = \frac{1}{2k^{1/3}}$.<br><br>
+                3. <strong>Find $m_2$ (Curve 2):</strong> $xy = k$. Differentiating: $1 \cdot y + x \frac{dy}{dx} = 0 \implies m_2 = \frac{-y}{x}$.<br>
+                   At point, $m_2 = \frac{-k^{1/3}}{k^{2/3}} = -k^{-1/3} = \frac{-1}{k^{1/3}}$.<br><br>
+                4. <strong>Apply Orthogonal Condition:</strong> For right angles, $m_1 m_2 = -1$.<br>
+                   $\left( \frac{1}{2k^{1/3}} \right) \left( \frac{-1}{k^{1/3}} \right) = -1$<br>
+                   $\frac{-1}{2k^{2/3}} = -1 \implies 2k^{2/3} = 1$<br>
+                   Cube both sides: $(2k^{2/3})^3 = 1^3 \implies 8k^2 = 1$. (Hence Proved).
+            </div>
+        </div>
+
+        <h2>4. Approximations and Differentials</h2>
+        <p><em>Note: While sometimes rationalized in recent NCERT editions, this concept is highly fundamental for competitive physics and error analysis in mathematics.</em></p>
+
+        <p>We use the derivative (which is the limit of $\Delta y / \Delta x$) to approximate small changes. If $\Delta x$ is a very small change in $x$, then the corresponding change in $y$ ($\Delta y$) can be approximated by the differential $dy$.</p>
+        <p><strong>Differential Equation:</strong> $dy = f'(x) dx \approx f'(x) \Delta x$.</p>
+        
+        <div class="green-box">
+            <span class="box-label">Approximation Formula</span>
+            <strong>$$f(x + \Delta x) \approx f(x) + f'(x) \Delta x$$</strong>
+            Where $x$ is a "nice" number we know the function value for, and $\Delta x$ is the small deviation.
+            <br><br>
+            <strong>Error Types:</strong><br>
+            - Absolute Error in $x$: $\Delta x$<br>
+            - Relative Error in $x$: $\frac{\Delta x}{x}$<br>
+            - Percentage Error in $x$: $\frac{\Delta x}{x} \times 100$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Approximation</span>
+            <strong>Question:</strong> Use differentials to approximate the value of $\sqrt{36.6}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Identify the function: $f(x) = \sqrt{x}$. We need to find $f(36.6)$.<br>
+                2. Choose a "nice" $x$ close to 36.6 where the square root is perfectly known: Let $x = 36$.<br>
+                3. The deviation is $\Delta x = 36.6 - 36 = 0.6$.<br>
+                4. Find the derivative: $f'(x) = \frac{d}{dx}(\sqrt{x}) = \frac{1}{2\sqrt{x}}$.<br>
+                5. Apply the approximation formula: $f(x + \Delta x) \approx f(x) + f'(x) \Delta x$<br>
+                   $\sqrt{36.6} \approx \sqrt{36} + \left(\frac{1}{2\sqrt{36}}\right) \times (0.6)$<br>
+                   $\sqrt{36.6} \approx 6 + \left(\frac{1}{2 \times 6}\right) \times 0.6 = 6 + \frac{0.6}{12} = 6 + 0.05$<br>
+                6. Final Answer: <strong>$\approx 6.05$</strong>.
+            </div>
+        </div>
+
+        <h2>5. Maxima and Minima</h2>
+        <p>This is the core of Optimization. We use derivatives to find the peaks (maxima) and valleys (minima) of a curve.</p>
+
+        <div class="graph-container">
+            <h4 style="text-align: center; color: var(--accent-purple); margin-top: 0;">Local Maxima and Minima</h4>
+            <p style="font-size: 0.9rem; text-align: center;">Graph of $f(x) = x^3 - 3x$. Notice the horizontal tangents ($f'(x)=0$) at the peak ($x=-1$) and the valley ($x=1$).</p>
+            <canvas id="maxminChart"></canvas>
+        </div>
+
+        <h3>Definitions</h3>
+        <ul>
+            <li><strong>Local Maximum:</strong> A point $c$ where $f(c) \ge f(x)$ for all $x$ in a small neighborhood/open interval around $c$. (A peak).</li>
+            <li><strong>Local Minimum:</strong> A point $c$ where $f(c) \le f(x)$ for all $x$ in a small open interval around $c$. (A valley).</li>
+            <li><strong>Critical / Stationary Points:</strong> Points where $f'(x) = 0$ (horizontal tangent) or where $f'(x)$ is totally undefined (sharp corners). <em>Extreme values can ONLY occur at critical points or at the endpoints of a closed domain.</em></li>
+        </ul>
+
+        <h3>A. First Derivative Test</h3>
+        <p>Examine the sign of $f'(x)$ slightly to the left and right of a critical point $c$:</p>
+        <ul>
+            <li>If $f'(x)$ changes sign from <strong>$+$ to $-$</strong> as $x$ increases through $c$, it's a <strong>Local Maxima</strong>. (Curve goes up, flattens, then goes down).</li>
+            <li>If $f'(x)$ changes sign from <strong>$-$ to $+$</strong> as $x$ increases through $c$, it's a <strong>Local Minima</strong>. (Curve goes down, flattens, then goes up).</li>
+            <li>If $f'(x)$ does NOT change sign (e.g., $+$ to $+$), it is a <strong>Point of Inflection</strong> (neither max nor min).</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">B. Second Derivative Test (Preferred for Boards)</span>
+            This test is much faster algebraically than the First Derivative Test.<br>
+            1. Find $f'(x)$ and set it to $0$ to get all critical roots $c_1, c_2, \dots$<br>
+            2. Find the second derivative $f''(x)$.<br>
+            3. Evaluate $f''(x)$ at each critical point $c$:<br>
+               - If <strong>$f''(c) < 0$</strong> (Negative, concave down like a frown) $\implies$ <strong>Local Maximum</strong> at $c$.<br>
+               - If <strong>$f''(c) > 0$</strong> (Positive, concave up like a smile) $\implies$ <strong>Local Minimum</strong> at $c$.<br>
+               - If $f''(c) = 0$, the Second Derivative Test FAILS. You MUST go back and use the First Derivative Test.
+        </div>
+
+        <h3>C. Absolute (Global) Maxima and Minima in a Closed Interval $[a, b]$</h3>
+        <p>A function on a closed interval will always have an absolute highest and lowest point. They can occur at critical points inside, OR right at the boundary endpoints.</p>
+        <p><strong>Algorithm:</strong><br>
+        1. Find all critical points $c_1, c_2 \dots$ inside the open interval $(a, b)$.<br>
+        2. Evaluate the original function $f(x)$ at all these critical points: $f(c_1), f(c_2) \dots$<br>
+        3. Evaluate the original function at the endpoints: $f(a)$ and $f(b)$.<br>
+        4. Compare all these values. The absolute largest is the Global Maximum, the absolute smallest is the Global Minimum.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Absolute Extrema</span>
+            <strong>Question:</strong> Find the absolute maximum and absolute minimum values of a function $f(x) = 2x^3 - 15x^2 + 36x + 1$ on the interval $[1, 5]$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Differentiate: $f'(x) = 6x^2 - 30x + 36$.<br>
+                2. Set to zero to find critical points: $6(x^2 - 5x + 6) = 0 \implies 6(x-2)(x-3) = 0$.<br>
+                   Critical points are $x = 2$ and $x = 3$. Both lie in the interval $[1, 5]$.<br>
+                3. Evaluate $f(x)$ at critical points AND endpoints ($x=1, 2, 3, 5$):<br>
+                   - $f(1) = 2(1)^3 - 15(1)^2 + 36(1) + 1 = 2 - 15 + 36 + 1 = 24$.<br>
+                   - $f(2) = 2(8) - 15(4) + 36(2) + 1 = 16 - 60 + 72 + 1 = 29$.<br>
+                   - $f(3) = 2(27) - 15(9) + 36(3) + 1 = 54 - 135 + 108 + 1 = 28$.<br>
+                   - $f(5) = 2(125) - 15(25) + 36(5) + 1 = 250 - 375 + 180 + 1 = 56$.<br>
+                4. Compare the values: $\{24, 29, 28, 56\}$.<br>
+                   <strong>Absolute Maximum = 56</strong> (occurring at $x=5$).<br>
+                   <strong>Absolute Minimum = 24</strong> (occurring at $x=1$).
+            </div>
+        </div>
+
+        <h2>6. Applied Optimization (Word Problems - 5/6 Mark Guarantee)</h2>
+        <p>This is the most critical section for Board exams. You will be asked to maximize a volume, minimize a surface area, or optimize costs based on given geometrical constraints.</p>
+
+        <div class="green-box">
+            <span class="box-label">Algorithm for Optimization "Show That" Problems</span>
+            <strong>Step 1:</strong> Draw a figure. Identify all variables (e.g., radius $r$, height $h$).<br>
+            <strong>Step 2:</strong> Identify the specific quantity that is GIVEN as constant (e.g., "given a fixed surface area S"). Write its mathematical equation. Treat this quantity as a constant $k$.<br>
+            <strong>Step 3:</strong> Identify the quantity to be Maximized/Minimized (e.g., "Volume is maximum"). Write its formula (e.g., $V = \pi r^2 h$).<br>
+            <strong>Step 4: Reduce to ONE variable.</strong> The formula in Step 3 usually has two variables ($r, h$). Use the constant equation from Step 2 to express one variable in terms of the other, and substitute it into the formula so it only has one independent variable.<br>
+            <strong>Step 5:</strong> Differentiate this single-variable function and set it to $0$ to find the critical point relation.<br>
+            <strong>Step 6:</strong> Prove it is a Max/Min by finding the second derivative. Show that it is $<0$ for Maxima, or $>0$ for Minima.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Classic Board Question</span>
+            <strong>Question:</strong> Show that of all the rectangles inscribed in a given fixed circle, the square has the maximum area.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Draw & Define:</strong> Let a rectangle of length $x$ and breadth $y$ be inscribed in a circle of fixed radius $R$.<br>
+                2. <strong>Given Constant:</strong> The radius $R$ is fixed. By Pythagoras theorem in the circle, the diagonal of the rectangle is the diameter: $x^2 + y^2 = (2R)^2 = 4R^2$.<br>
+                3. <strong>To Maximize:</strong> Area $A = xy$.<br>
+                   <em>Trick: Maximizing $A$ is the same as maximizing $A^2$. This avoids nasty square roots!</em><br>
+                   Let $Z = A^2 = x^2 y^2$.<br>
+                4. <strong>Reduce to one variable:</strong> From step 2, $y^2 = 4R^2 - x^2$.<br>
+                   Substitute into $Z$: $Z = x^2 (4R^2 - x^2) = 4R^2 x^2 - x^4$. Now $Z$ is purely a function of $x$.<br>
+                5. <strong>First Derivative:</strong> Differentiate w.r.t $x$ (treating $R$ as constant):<br>
+                   $\frac{dZ}{dx} = 4R^2(2x) - 4x^3 = 8R^2 x - 4x^3$.<br>
+                   Set $\frac{dZ}{dx} = 0 \implies 4x(2R^2 - x^2) = 0$. Since length $x \neq 0$, $x^2 = 2R^2 \implies x = R\sqrt{2}$.<br>
+                6. <strong>Second Derivative Test:</strong><br>
+                   $\frac{d^2Z}{dx^2} = 8R^2 - 12x^2$.<br>
+                   At $x^2 = 2R^2$, $\frac{d^2Z}{dx^2} = 8R^2 - 12(2R^2) = -16R^2$.<br>
+                   Since $-16R^2$ is strictly negative ($<0$), the area is <strong>Maximum</strong> at $x = R\sqrt{2}$.<br>
+                7. <strong>Final Conclusion:</strong> If $x^2 = 2R^2$, find $y^2$:<br>
+                   $y^2 = 4R^2 - x^2 = 4R^2 - 2R^2 = 2R^2 \implies y = R\sqrt{2}$.<br>
+                   Since length $x$ exactly equals breadth $y$ ($x = y = R\sqrt{2}$), the rectangle of maximum area is a <strong>Square</strong>. (Proved).
+            </div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Main Transition: Shortest Distance</span>
+            A powerful shortcut for competitive exams:<br>
+            The shortest distance between a point and a curve, or between two non-intersecting curves, <strong>always lies along their common normal</strong>. Therefore, at the point of closest approach, the tangent to the curve must be perfectly parallel to the given line (or the tangent of the other curve).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: JEE Shortest Distance</span>
+            <strong>Question:</strong> Find the coordinates of a point on the parabola $y = x^2$ which is at the shortest distance from the straight line $y = x - 2$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. The given line is $y = x - 2$, which has a slope $m_{line} = 1$.<br>
+                2. According to the shortest distance principle, the tangent to the parabola at the closest point $(x_1, y_1)$ must be parallel to this line.<br>
+                3. Therefore, slope of tangent to parabola $m_T$ must equal $m_{line}$.<br>
+                   $m_T = 1$.<br>
+                4. Find the derivative of the parabola $y = x^2$:<br>
+                   $\frac{dy}{dx} = 2x$.<br>
+                5. Equate slope to derivative: $2x_1 = 1 \implies \mathbf{x_1 = \frac{1}{2}}$.<br>
+                6. Find the corresponding $y$ coordinate on the parabola:<br>
+                   $y_1 = (x_1)^2 = (\frac{1}{2})^2 = \mathbf{\frac{1}{4}}$.<br>
+                7. The closest point on the parabola is <strong>$(\frac{1}{2}, \frac{1}{4})$</strong>.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS FOR CHARTS & TOGGLE -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            renderCharts();
+        }
+
+        let maxminChart;
+
+        function renderCharts() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#aaaaaa' : '#666666';
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: true, labels: { color: textColor } }
+                },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'x', color: textColor} },
+                    y: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'f(x)', color: textColor} }
+                }
+            };
+
+            // f(x) = x^3 - 3x
+            const ctx = document.getElementById('maxminChart').getContext('2d');
+            if (maxminChart) maxminChart.destroy();
+            let xVals = [], yVals = [];
+            let maxTangentX = [], maxTangentY = [];
+            let minTangentX = [], minTangentY = [];
+
+            for (let x = -2.5; x <= 2.5; x += 0.1) {
+                xVals.push(x.toFixed(1));
+                yVals.push(Math.pow(x, 3) - 3*x);
+                
+                // Max tangent y = 2 around x = -1
+                if(x >= -1.8 && x <= -0.2) {
+                    maxTangentX.push(x.toFixed(1));
+                    maxTangentY.push(2);
+                } else {
+                    maxTangentX.push(null);
+                    maxTangentY.push(null);
+                }
+
+                // Min tangent y = -2 around x = 1
+                if(x >= 0.2 && x <= 1.8) {
+                    minTangentX.push(x.toFixed(1));
+                    minTangentY.push(-2);
+                } else {
+                    minTangentX.push(null);
+                    minTangentY.push(null);
+                }
+            }
+
+            maxminChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xVals,
+                    datasets: [
+                        {
+                            label: 'f(x) = x³ - 3x',
+                            data: yVals,
+                            borderColor: '#1e88e5', /* Blue */
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Local Max (f\'=0)',
+                            data: maxTangentY,
+                            borderColor: '#d81b60', /* Pink */
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            spanGaps: false
+                        },
+                        {
+                            label: 'Local Min (f\'=0)',
+                            data: minTangentY,
+                            borderColor: '#43a047', /* Green */
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            spanGaps: false
+                        }
+                    ]
+                },
+                options: commonOptions
+            });
+        }
+
+        window.onload = renderCharts;
+    </script>
+</body>
+</html>

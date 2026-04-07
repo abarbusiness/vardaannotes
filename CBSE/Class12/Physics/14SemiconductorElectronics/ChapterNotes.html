@@ -3,150 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 14: Semiconductor Electronics - Vardaan Learning Institute</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Semiconductor Electronics - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            --paper-color: #ffffff;
-            --ink-color: #2c3e50;
-            --highlight-yellow: #fff9c4;
-            --highlight-blue: #e3f2fd;
-            --accent-red: #c62828;
-            --accent-blue: #1565c0;
-            --accent-purple: #7b1fa2;
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
             --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
 
+        /* --- DARK MODE VARIABLES --- */
         html.dark-mode {
-            --paper-color: #000000;
-            --ink-color: #e0e0e0;
-            --paper-bg: #000000;
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0 }
-        body { background-color: var(--paper-bg); color: var(--ink-color); font-family: 'Outfit', sans-serif; line-height: 1.7; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: background-color 0.3s ease; }
-        
-        .paper-sheet { width: 210mm; max-width: 100%; min-height: 297mm; background-color: var(--paper-color); padding: 20mm; box-sizing: border-box; position: relative; transition: background-color 0.3s ease; }
-        
-        .header-institute { margin-bottom: 20px; color: #555; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ddd; padding-bottom: 10px; text-align: center; }
-        .header-title { margin-top: 5px; margin-bottom: 15px; color: var(--accent-blue); font-size: 2.2rem; font-weight: 800; text-align: center; }
-        .header-subtitle { text-align: center; font-size: 1em; color: #555; font-weight: 500; margin-bottom: 40px; font-style: italic; }
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-        h2 { color: var(--accent-blue); border-bottom: 3px solid var(--accent-blue); padding-bottom: 5px; margin-top: 50px; font-size: 1.8rem; font-weight: 600; }
-        h3 { color: var(--accent-red); margin-top: 35px; font-size: 1.4rem; border-left: 5px solid var(--accent-red); padding-left: 10px; display: block; font-weight: 600; }
-        
-        p, li { margin-bottom: 15px; }
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
         ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
 
-        .definition-box { border: 2px solid #4a148c; background-color: rgba(123, 31, 162, 0.05); padding: 20px; margin: 25px 0; border-radius: 8px; }
-        .rule-box { border: 2px solid #fbc02d; background-color: rgba(251, 192, 45, 0.1); border-radius: 8px; padding: 20px; margin: 25px 0; }
-        .derivation-box { border: 3px solid #333; border-radius: 10px; background-color: transparent; padding: 25px; margin: 30px 0; position: relative; }
-        .derivation-box::after { content: "DERIVATION"; position: absolute; top: -15px; right: 20px; background: #333; color: #fff; padding: 4px 12px; font-size: 0.85em; font-weight: bold; border-radius: 4px; }
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
         
-        .formula-box { border: 2px solid #e65100; background-color: rgba(230, 81, 0, 0.05); padding: 20px; margin: 30px 0; border-radius: 8px; text-align: center; }
-        .formula-box::before { content: "📝 FORMULA"; font-weight: bold; display: block; margin-bottom: 12px; color: #e65100; border-bottom: 1px dashed #e65100; padding-bottom: 5px; }
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid var(--toggle-border); padding: 10px; text-align: left; }
+        th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
 
-        .visual-container { display: flex; justify-content: center; margin: 30px 0; align-items: center; width: 100%; }
-        .visual-container img { max-width: 100%; transition: filter 0.3s ease; border: none !important; box-shadow: none !important; }
-        html.dark-mode .visual-container img { filter: invert(1); }
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
 
-        .theme-toggle { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .icon-sun { display: none; }
-        html.dark-mode .icon-sun { display: block; }
-        html.dark-mode .icon-moon { display: none; }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        .watermark-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 9999; opacity: 0.1; }
-        .watermark-image { width: 600px; max-width: 80%; }
-
-        @media print { .theme-toggle { display: none; } .paper-sheet { width: 100%; padding: 0; } body { background-color: white; } }
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
     </style>
 </head>
 <body>
-    <div class="watermark-overlay"><img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image"></div>
-    
-    <button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark-mode')">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
     </button>
 
     <div class="paper-sheet">
-        <h1 class="header-institute">VARDAAN LEARNING INSTITUTE</h1>
-        <h2 class="header-title">Chapter 14: Semiconductor Electronics</h2>
-        <p class="header-subtitle">CBSE Class 12 Physics • Comprehensive Notes</p>
-
-        <div class="rule-box">
-            <p><strong>Chapter Overview</strong></p>
-            <p>This chapter bridges standard physics with modern electronic technology. It covers energy bands, p-n junctions, diodes, and their application as rectifiers.</p>
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Physics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
         </div>
 
-        <h2>14.1 Energy Bands in Solids</h2>
-        <p>Inside a crystal, the discrete energy levels of individual atoms split into continuous bands of energy due to the interaction between neighboring atoms.</p>
-        <ul>
-            <li><strong>Valence Band (VB):</strong> The band occupied by valence electrons. It is almost full.</li>
-            <li><strong>Conduction Band (CB):</strong> The band above the valence band. If an electron reaches this band, it becomes free to conduct electricity.</li>
-            <li><strong>Energy Gap ($E_g$):</strong> The forbidden gap between VB and CB.</li>
-        </ul>
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 14: Semiconductor Electronics</h1>
 
-        <div class="visual-container">
-            <img src="Images/energy_band_diagram.jpg" alt="Energy Bands in Insulators, Semiconductors, and Conductors" onerror="this.src='https://placehold.co/600x400/png?text=Energy+Band+Diagram'">
+        <p><em>Dear Class 12 Student! Welcome to the foundation of the modern digital age. Without semiconductors, there would be no computers, smartphones, or internet. This chapter shifts away from traditional conductors (like copper) and introduces materials whose conductivity can be miraculously controlled. For Boards, master the Rectifier circuits and p-n junction formation. For JEE Mains, Logic Gates and Zener Diodes are absolute must-dos. Let's wire it up!</em></p>
+
+        <h2>1. Classification of Materials based on Energy Bands</h2>
+        <p>In an isolated atom, electrons have discrete energy levels. However, in a solid crystal, atoms are packed closely together. The outer electron orbits overlap and interact, causing the discrete energy levels to split into millions of closely spaced levels forming continuous <strong>Energy Bands</strong>.</p>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Three vertical panels showing Energy Band Diagrams. Panel 1 (Conductor): Valence Band (VB) and Conduction Band (CB) completely overlapping, no gap. Panel 2 (Insulator): Lower VB is completely full (shaded), huge empty gap Eg > 3eV, upper CB is completely empty. Panel 3 (Semiconductor): Lower VB is almost full, narrow energy gap Eg < 3eV, upper CB has a few electrons. Clean educational vector graphic, white background."
         </div>
 
-        <h3>Classification Based on Conductivity:</h3>
+        <h3>Energy Band Theory Terminology</h3>
         <ul>
-            <li><strong>Conductors:</strong> CB and VB overlap ($E_g \approx 0$). Plenty of free electrons available.</li>
-            <li><strong>Insulators:</strong> Large band gap ($E_g > 3 \text{ eV}$). No electrons in Conduction Band.</li>
-            <li><strong>Semiconductors:</strong> Small band gap ($E_g < 3 \text{ eV}$, e.g., Silicon $\approx 1.1 \text{ eV}$, Germanium $\approx 0.74 \text{ eV}$).</li>
+            <li><strong>Valence Band (VB):</strong> The energy band containing the valence (outermost) electrons. It is completely or partially filled, but never empty.</li>
+            <li><strong>Conduction Band (CB):</strong> The energy band just above the valence band. Electrons here are free to move and conduct electricity. It can be empty or partially filled.</li>
+            <li><strong>Forbidden Energy Gap ($E_g$):</strong> The energy gap between the top of the VB and the bottom of the CB. No electron can exist in this gap.</li>
         </ul>
 
-        <h2>14.2 Intrinsic and Extrinsic Semiconductors</h2>
+        <h3>Classification</h3>
+        <ol>
+            <li><strong>Conductors (Metals):</strong> The VB and CB overlap. There is no forbidden gap ($E_g \approx 0$). Plenty of free electrons are available for conduction even at absolute zero.</li>
+            <li><strong>Insulators:</strong> Very large energy gap ($E_g > 3 \text{ eV}$). The VB is completely full, and the CB is completely empty. Electrons cannot jump the gap. (e.g., Diamond $E_g \approx 5.4 \text{ eV}$).</li>
+            <li><strong>Semiconductors:</strong> Small energy gap ($E_g < 3 \text{ eV}$). At absolute zero ($0\text{ K}$), the VB is full and the CB is empty, so they behave as perfect insulators. At room temperature ($300\text{ K}$), thermal energy excites a few electrons to jump across the gap into the CB, allowing slight conductivity. 
+            <br><em>Examples: Silicon ($E_g \approx 1.1 \text{ eV}$), Germanium ($E_g \approx 0.72 \text{ eV}$).</em></li>
+        </ol>
+
+        <h2>2. Intrinsic Semiconductors</h2>
+        <p>Pure semiconductors, free from any impurities, are called intrinsic semiconductors (e.g., pure Silicon or pure Germanium crystals).</p>
+        
         <div class="blue-box">
-            <p><strong>Intrinsic:</strong> Pure semiconductor without any impurities. Number of free electrons ($n_e$) equals number of holes ($n_h$).</p>
-            <p><strong>Extrinsic:</strong> Reached by adding a small amount of impurity to an intrinsic semiconductor (Doping).</p>
+            <span class="box-label">Concept of Holes</span>
+            When thermal energy breaks a covalent bond in a Si crystal, an electron jumps to the Conduction Band, becoming a free electron. It leaves behind a vacancy in the Valence Band. This vacancy behaves as an effective positive charge and is called a <strong>Hole</strong>.<br>
+            - Electrons move in the CB.<br>
+            - Holes move in the VB (by adjacent valence electrons jumping into the vacancy).
         </div>
 
-        <h3>Types of Extrinsic Semiconductors:</h3>
-        <ol>
-            <li><strong>n-type:</strong> Doped with <strong>Pentavalent</strong> impurities (e.g., P, As, Sb). Each impurity atom donates an electron. $n_e \gg n_h$.</li>
-            <li><strong>p-type:</strong> Doped with <strong>Trivalent</strong> impurities (e.g., Al, B, In). Each impurity atom creates a hole (absence of electron). $n_h \gg n_e$.</li>
-        </ol>
+        <p><strong>Charge Carrier Density:</strong> In an intrinsic semiconductor, every free electron creates exactly one hole. Thus, the number density of electrons ($n_e$) strictly equals the number density of holes ($n_h$).<br>
+        <strong>$$n_e = n_h = n_i$$</strong> (where $n_i$ is the intrinsic carrier concentration).</p>
+        
+        <p><strong>Total Current:</strong> When an electric field is applied, electrons drift opposite to the field, and holes drift in the direction of the field. The total current is the sum of both:<br>
+        <strong>$$I = I_e + I_h$$</strong></p>
 
-        <h2>14.3 p-n Junction Formation</h2>
-        <p>When a p-type and n-type material are joined, a <strong>p-n junction</strong> is formed. Two main processes occur:</p>
+        <h2>3. Extrinsic Semiconductors</h2>
+        <p>The conductivity of intrinsic semiconductors at room temperature is extremely low. To make them useful for devices, we intentionally add tiny amounts of desirable impurities (about 1 part per million). This process is called <strong>Doping</strong>, and the resulting material is an <strong>Extrinsic Semiconductor</strong>.</p>
+
+        <h3>A. n-type Semiconductor (Negative Type)</h3>
         <ul>
-            <li><strong>Diffusion:</strong> Holes from p-side and electrons from n-side cross the junction.</li>
-            <li><strong>Drift:</strong> An internal electric field pulls minority carriers across the junction.</li>
+            <li><strong>Dopant:</strong> Pentavalent impurities (atoms with 5 valence electrons like Phosphorus, Arsenic, Antimony).</li>
+            <li><strong>Mechanism:</strong> Four valence electrons form covalent bonds with surrounding Si atoms. The fifth electron is loosely bound and easily jumps to the CB at room temperature. The impurity atom becomes a positive fixed ion.</li>
+            <li><strong>Energy Band:</strong> A new "Donor Energy Level" is created just below the Conduction Band ($E_g \approx 0.01 \text{ eV}$), making it extremely easy for electrons to jump up.</li>
+            <li><strong>Majority Carriers:</strong> Electrons. <strong>Minority Carriers:</strong> Holes. ($n_e \gg n_h$).</li>
         </ul>
-        <p>The region near the junction with no free charge carriers is called the <strong>Depletion Region</strong>. The potential difference across this region is the <strong>Barrier Potential ($V_B$)</strong>.</p>
 
-        <h2>14.4 Semiconductor Diode</h2>
-        <p>A diode is a two-terminal p-n junction device. It allows current to flow in one direction but blocks it in the other.</p>
+        <h3>B. p-type Semiconductor (Positive Type)</h3>
+        <ul>
+            <li><strong>Dopant:</strong> Trivalent impurities (atoms with 3 valence electrons like Boron, Aluminum, Indium).</li>
+            <li><strong>Mechanism:</strong> The 3 electrons form bonds with Si atoms, leaving one bond incomplete (a hole). The impurity atom readily accepts an electron from a neighboring Si atom, becoming a negative fixed ion and creating a movable hole in the lattice.</li>
+            <li><strong>Energy Band:</strong> A new "Acceptor Energy Level" is created just above the Valence Band, making it easy for VB electrons to jump up and leave holes behind.</li>
+            <li><strong>Majority Carriers:</strong> Holes. <strong>Minority Carriers:</strong> Electrons. ($n_h \gg n_e$).</li>
+        </ul>
 
-        <h3>Biasing of a Diode:</h3>
+        <div class="green-box">
+            <span class="box-label">Mass Action Law</span>
+            Under thermal equilibrium, the product of the concentration of electrons and holes is constant and equals the square of the intrinsic carrier concentration, regardless of the doping level:
+            <strong>$$n_e \times n_h = n_i^2$$</strong>
+            <em>(Used heavily in numericals to find the minority carrier concentration).</em>
+        </div>
+
+        <h2>4. p-n Junction Formation (Crucial for Boards)</h2>
+        <p>When a p-type semiconductor is suitably joined to an n-type semiconductor, the contact surface is called a <strong>p-n junction</strong>. The formation involves two vital processes:</p>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Diagram of a p-n junction. Left side is p-type (showing negative acceptor ions and free positive holes). Right side is n-type (showing positive donor ions and free negative electrons). In the middle junction, show the Depletion Region: a zone with ONLY fixed negative ions on the p-side and fixed positive ions on the n-side, with NO free mobile carriers. Draw a built-in Electric Field vector 'E' pointing from the n-side to the p-side across the depletion region. Label Barrier Potential V0. Clean textbook style."
+        </div>
+
         <ol>
-            <li><strong>Forward Bias:</strong> p-side connected to positive terminal, n-side to negative. Depletion layer width <strong>decreases</strong>. Current flows easily.</li>
-            <li><strong>Reverse Bias:</strong> p-side connected to negative, n-side to positive. Depletion layer width <strong>increases</strong>. Very little (leakage) current flows.</li>
+            <li><strong>Diffusion:</strong> Due to a massive concentration gradient, majority holes from the p-side diffuse to the n-side, and majority electrons from the n-side diffuse to the p-side. This generates a <em>Diffusion Current</em> (from p to n).</li>
+            <li><strong>Depletion Region:</strong> As electrons cross from n to p, they leave behind un-neutralized, immobile positive donor ions near the junction. Similarly, holes moving from p to n leave behind immobile negative acceptor ions. This creates a space-charge region on either side of the junction completely devoid of free mobile charge carriers, known as the <strong>Depletion Region</strong> (thickness $\approx 1 \text{ \mu m}$).</li>
+            <li><strong>Barrier Potential ($V_0$) & Drift:</strong> The accumulated positive and negative ions create a strong built-in electric field (from n to p). This field sweeps minority carriers across the junction, causing a <em>Drift Current</em> (from n to p). More importantly, this fictitious battery setup acts as a barrier, preventing any further diffusion of majority carriers. The junction settles into equilibrium when Diffusion Current = Drift Current.
+            <br><em>Values: $V_0 \approx 0.7\text{V}$ for Silicon, $V_0 \approx 0.3\text{V}$ for Germanium.</em></li>
         </ol>
 
-        <div class="visual-container">
-            <img src="Images/diode_iv_characteristics.jpg" alt="V-I Characteristics of a p-n junction diode" onerror="this.src='https://placehold.co/600x400/png?text=Diode+V-I+Characteristics'">
+        <h2>5. Semiconductor Diode and V-I Characteristics</h2>
+        <p>A p-n junction provided with metallic contacts at the ends for external connection is a semiconductor diode. Its symbol is an arrow (representing the p-side/anode, pointing in the direction of conventional current) and a vertical line (n-side/cathode).</p>
+
+        <h3>A. Forward Biasing</h3>
+        <ul>
+            <li><strong>Connection:</strong> Positive terminal of battery connected to p-side, negative terminal to n-side.</li>
+            <li><strong>Effect:</strong> The applied voltage opposes the barrier potential. The depletion width <strong>decreases</strong>, and the effective barrier height is reduced.</li>
+            <li><strong>Current:</strong> Majority carriers easily cross the junction. Current increases exponentially and is measured in <strong>milliamperes (mA)</strong>.</li>
+            <li><strong>Cut-in / Knee Voltage:</strong> The forward voltage at which the current starts to increase rapidly ($\sim 0.7\text{V}$ for Si).</li>
+        </ul>
+
+        <h3>B. Reverse Biasing</h3>
+        <ul>
+            <li><strong>Connection:</strong> Negative terminal of battery connected to p-side, positive terminal to n-side.</li>
+            <li><strong>Effect:</strong> The applied voltage aids the barrier potential. The depletion width <strong>increases</strong>, presenting a huge resistance. Majority carriers are blocked.</li>
+            <li><strong>Current:</strong> A minuscule current flows due to minority carriers being swept across the junction by the electric field. It is practically voltage-independent and is called <strong>Reverse Saturation Current</strong>, measured in <strong>microamperes ($\mu A$)</strong>.</li>
+            <li><strong>Breakdown Voltage ($V_{br}$):</strong> If reverse voltage is made very high, covalent bonds in the depletion region shatter, generating massive amounts of electron-hole pairs, leading to a sharp, potentially destructive spike in reverse current.</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Dynamic Resistance</span>
+            Because the V-I characteristic of a diode is non-linear (it doesn't obey Ohm's Law), we define Dynamic Resistance ($r_d$) for a small change in voltage:
+            <strong>$$r_d = \frac{\Delta V}{\Delta I}$$</strong>
         </div>
 
-        <h2>14.5 Diode as a Rectifier</h2>
-        <div class="derivation-box">
-            <p>Rectification is the process of converting Alternating Current (AC) into Direct Current (DC).</p>
-            <p><strong>Half-wave Rectifier:</strong> Uses one diode. Only one half of the AC cycle is converted to DC.</p>
-            <p><strong>Full-wave Rectifier:</strong> Uses two diodes (with center-tap transformer) or a bridge circuit. Both halves of the AC cycle are converted to DC.</p>
+        <h2>6. Application of Diode as a Rectifier (5-Mark Board Favorite)</h2>
+        <p><strong>Rectification</strong> is the process of converting an alternating current/voltage (AC) into a direct current/voltage (DC). A diode is perfect for this because it only allows current to flow in one direction (during forward bias).</p>
+
+        <h3>A. Half-Wave Rectifier</h3>
+        <p><strong>Circuit:</strong> Uses a step-down transformer, a single diode ($D_1$), and a load resistance ($R_L$) in series.</p>
+        <p><strong>Working:</strong> 
+        <br>- During the positive half-cycle of the AC input, the diode is forward-biased and conducts current through $R_L$.
+        <br>- During the negative half-cycle, the diode is reverse-biased and blocks the current. Output is zero.
+        <br><strong>Output:</strong> Pulsating DC. Output frequency equals input frequency ($f_{out} = f_{in}$). Maximum theoretical efficiency is $\approx 40.6\%$.</p>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Circuit diagram of a Full-Wave Center-Tap Rectifier. A transformer with primary AC input. The secondary coil is center-tapped (grounded). The top of the secondary connects to Diode D1. The bottom connects to Diode D2. The outputs of both diodes join together and pass through a Load Resistor (RL) back to the center tap. Next to it, draw the Input waveform (continuous sine wave) and Output waveform (all positive continuous humps, no gaps). White background."
         </div>
 
-        <div class="rule-box">
-            <p><strong>Final Tip:</strong> For numericals, remember the <strong>Mass Action Law</strong> for semiconductors: $n_e \times n_h = n_i^2$, where $n_i$ is the intrinsic carrier concentration.</p>
+        <h3>B. Full-Wave Rectifier (Center-Tap)</h3>
+        <p><strong>Circuit:</strong> Uses a center-tapped transformer, two diodes ($D_1$ and $D_2$), and a load resistance ($R_L$).</p>
+        <p><strong>Working:</strong>
+        <br>- During the positive half-cycle, the top end of the secondary is positive. Diode $D_1$ is forward-biased and conducts, while $D_2$ is reverse-biased. Current flows through $R_L$.
+        <br>- During the negative half-cycle, the bottom end of the secondary becomes positive. Diode $D_2$ is forward-biased and conducts, while $D_1$ is reverse-biased. Current flows through $R_L$ in the <strong>exact same direction</strong> as before.
+        <br><strong>Output:</strong> Continuous pulsating DC. Output frequency is double the input frequency ($f_{out} = 2f_{in}$). Maximum theoretical efficiency is vastly improved to $\approx 81.2\%$.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Filter Circuits (Conceptual)</span>
+            The output of a rectifier is unidirectional but heavily pulsating (it has an AC ripple). To get steady, pure DC, we use Filter circuits. The most common is a <strong>Capacitor Filter</strong> connected in parallel with the load ($R_L$). The capacitor charges up to the peak voltage and then slowly discharges through the load when the diode voltage drops, keeping the output voltage highly stable and smoothing out the ripple.
         </div>
 
+        <h2>7. Special Purpose p-n Junction Diodes (JEE Main Focus)</h2>
+        <p><em>Note: Heavily rationalized in recent CBSE syllabi, but critical for competitive exams.</em></p>
+
+        <h3>A. Zener Diode</h3>
+        <p>A specially designed, heavily doped p-n junction diode intended to operate strictly in the <strong>reverse breakdown region</strong> continuously without suffering damage.</p>
+        <p><strong>Application - Zener as a Voltage Regulator:</strong>
+        If the input DC voltage fluctuates, a Zener diode connected in reverse bias parallel to the load will enter breakdown. Once in breakdown, the voltage across the Zener remains absolutely constant (Zener Voltage, $V_Z$), even if the reverse current changes drastically. Any excess current is safely bypassed through the Zener, ensuring the load receives a perfectly regulated, constant voltage $V_Z$.</p>
+
+        <h3>B. Optoelectronic Devices</h3>
+        <ul>
+            <li><strong>Photodiode:</strong> Operated in <strong>Reverse Bias</strong>. Used to detect optical signals. When light with energy $h\nu > E_g$ falls on the junction, it creates electron-hole pairs, causing a measurable change in the reverse saturation current. Reverse bias is used because the fractional change in minority carrier current is much more noticeable than in majority carrier current.</li>
+            <li><strong>Light Emitting Diode (LED):</strong> Operated in <strong>Forward Bias</strong>. When forward-biased, electrons and holes recombine at the junction, releasing their excess energy as photons (light). 
+            <br><em>Advantages over traditional incandescent bulbs:</em> Very low operating voltage, fast action (no warm-up time), incredibly long life, and rugged solid-state reliability.</li>
+            <li><strong>Solar Cell:</strong> An <strong>unbiased</strong> large-area p-n junction. When sunlight hits it, electron-hole pairs are generated. The built-in depletion field sweeps electrons to the n-side and holes to the p-side, creating a Photo-EMF. It acts as a battery. Its V-I characteristic curve is drawn in the fourth quadrant (because it supplies current rather than drawing it).</li>
+        </ul>
+
+        <h2>8. Logic Gates (Strictly JEE Main)</h2>
+        <p>Digital electronics operate on discrete binary states: High (1) and Low (0). A logic gate is a digital circuit that follows a specific logical relationship between input and output voltages.</p>
+
+        <h3>A. Basic Logic Gates</h3>
+        <ul>
+            <li><strong>NOT Gate (Inverter):</strong> Has 1 input and 1 output. It simply inverts the input.
+            <br>Boolean Expression: <strong>$Y = \overline{A}$</strong>. (If $A=0, Y=1$. If $A=1, Y=0$).</li>
+            <li><strong>OR Gate (Addition):</strong> Has 2 or more inputs and 1 output. Output is 1 if <em>any</em> input is 1.
+            <br>Boolean Expression: <strong>$Y = A + B$</strong>. (Output is 0 only if both $A=0$ and $B=0$).</li>
+            <li><strong>AND Gate (Multiplication):</strong> Has 2 or more inputs and 1 output. Output is 1 ONLY if <em>all</em> inputs are 1.
+            <br>Boolean Expression: <strong>$Y = A \cdot B$</strong>.</li>
+        </ul>
+
+        <h3>B. Universal Logic Gates</h3>
+        <p>NAND and NOR gates are called Universal Gates because any basic gate (AND, OR, NOT), and consequently any complex digital circuit, can be built using solely NAND gates or solely NOR gates.</p>
+        <ul>
+            <li><strong>NAND Gate (NOT-AND):</strong> An AND gate followed by a NOT gate. Output is 0 only when both inputs are 1.
+            <br>Boolean Expression: <strong>$Y = \overline{A \cdot B}$</strong>.</li>
+            <li><strong>NOR Gate (NOT-OR):</strong> An OR gate followed by a NOT gate. Output is 1 only when both inputs are 0.
+            <br>Boolean Expression: <strong>$Y = \overline{A + B}$</strong>.</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> A pure Silicon crystal at $300\text{ K}$ has equal electron and hole concentrations of $1.5 \times 10^{16} \text{ m}^{-3}$. It is then doped with Indium such that the hole concentration becomes $4.5 \times 10^{22} \text{ m}^{-3}$. Calculate the new electron concentration and identify the type of semiconductor formed.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Given Intrinsic concentration $n_i = 1.5 \times 10^{16} \text{ m}^{-3}$.<br>
+                2. After doping, new hole concentration $n_h = 4.5 \times 10^{22} \text{ m}^{-3}$.<br>
+                3. Apply the Mass Action Law: $n_e \times n_h = n_i^2$.<br>
+                4. $n_e = \frac{n_i^2}{n_h} = \frac{(1.5 \times 10^{16})^2}{4.5 \times 10^{22}} = \frac{2.25 \times 10^{32}}{4.5 \times 10^{22}} = \mathbf{0.5 \times 10^{10} \text{ m}^{-3}}$.<br>
+                5. Since $n_h \gg n_e$ (and Indium is trivalent), the resulting crystal is a <strong>p-type semiconductor</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2 (Logic Gates)</span>
+            <strong>Question:</strong> Write the truth table for a 2-input NAND gate. If the two inputs of this NAND gate are shorted (connected together), what basic gate does it act like?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>NAND Truth Table ($Y = \overline{A \cdot B}$):</strong><br>
+                   - A=0, B=0 $\implies Y = \overline{0 \cdot 0} = \overline{0} = \mathbf{1}$<br>
+                   - A=0, B=1 $\implies Y = \overline{0 \cdot 1} = \overline{0} = \mathbf{1}$<br>
+                   - A=1, B=0 $\implies Y = \overline{1 \cdot 0} = \overline{0} = \mathbf{1}$<br>
+                   - A=1, B=1 $\implies Y = \overline{1 \cdot 1} = \overline{1} = \mathbf{0}$<br><br>
+                2. If inputs are shorted, then $A = B$. Let's call the single input $A$.<br>
+                3. The Boolean expression becomes $Y = \overline{A \cdot A}$.<br>
+                4. Since $A \cdot A = A$ (by Boolean algebra), then $Y = \overline{A}$.<br>
+                5. This is the exact logic equation for a <strong>NOT Gate</strong>.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
         <div class="branding-footer">
-            <p>Created by Team Vardaan ❤️ | Powered by Vardaan Comet</p>
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
         </div>
+
     </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 </html>

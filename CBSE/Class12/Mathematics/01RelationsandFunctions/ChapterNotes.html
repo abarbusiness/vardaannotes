@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Relations and Functions - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering dynamic Mathematical Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Graph Containers */
+        .graph-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--paper-bg);
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 1: Relations and Functions</h1>
+
+        <p><em>Dear Class 12 Student! Welcome to the bedrock of Calculus. This chapter connects the discrete sets of Class 11 to the continuous mappings you will differentiate and integrate later. It is highly abstract and logic-driven. For Boards, focus heavily on proving Equivalence Relations and Bijective Functions. For JEE Mains/Advanced, the R.D. Sharma techniques for counting functions and piece-wise composition are absolute lifesavers. Let's map it out!</em></p>
+
+        <h2>1. Fundamentals and Review (Class 11 Linkage)</h2>
+        
+        <p><strong>Cartesian Product ($A \times B$):</strong> The set of all ordered pairs $(a, b)$ where $a \in A$ and $b \in B$.<br>
+        If $n(A) = p$ and $n(B) = q$, then $n(A \times B) = p \times q$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Relation Basics</span>
+            A <strong>Relation $R$</strong> from a non-empty set $A$ to a non-empty set $B$ is defined as any subset of the Cartesian product $A \times B$.<br>
+            <strong>$$ R \subseteq A \times B $$</strong>
+            <ul>
+                <li><strong>Domain:</strong> The set of all first elements of the ordered pairs in $R$.</li>
+                <li><strong>Range:</strong> The set of all second elements of the ordered pairs in $R$.</li>
+                <li><strong>Co-domain:</strong> The entire set $B$. Note that $\text{Range} \subseteq \text{Co-domain}$.</li>
+            </ul>
+            <strong>Total Number of Relations:</strong> Since a relation is a subset of $A \times B$, the total possible relations from $A$ to $B$ is the number of subsets of $A \times B$, which is <strong>$2^{pq}$</strong>.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1</span>
+            <strong>Question:</strong> Let $A = \{1, 2, 3\}$ and $B = \{a, b\}$. Find the total number of possible relations from $A$ to $B$. Also, if $R = \{(1, a), (2, b), (3, a)\}$, write its Domain and Range.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. $n(A) = 3$ and $n(B) = 2$.<br>
+                2. Number of elements in $A \times B = 3 \times 2 = 6$.<br>
+                3. Total number of relations $= 2^{n(A \times B)} = 2^6 = \mathbf{64}$.<br>
+                4. For $R = \{(1, a), (2, b), (3, a)\}$:<br>
+                   - <strong>Domain</strong> $= \{x : (x, y) \in R\} = \mathbf{\{1, 2, 3\}}$.<br>
+                   - <strong>Range</strong> $= \{y : (x, y) \in R\} = \mathbf{\{a, b\}}$.
+            </div>
+        </div>
+
+        <h2>2. Types of Relations (Core Board Topic)</h2>
+        <p>A relation defined strictly on a single set $A$ is a subset of $A \times A$.</p>
+
+        <ul>
+            <li><strong>Empty / Void Relation:</strong> $R = \phi$. No element of $A$ is related to any element of $A$.</li>
+            <li><strong>Universal Relation:</strong> $R = A \times A$. Every element of $A$ is related to every element of $A$.</li>
+            <li><strong>Identity Relation ($I_A$):</strong> $R = \{(a, a) : a \in A\}$. Every element is related to itself <em>and only itself</em>.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">The Big Three: Reflexive, Symmetric, Transitive</span>
+            Let $R$ be a relation on set $A$.<br><br>
+            <strong>1. Reflexive Relation:</strong><br>
+            $(a, a) \in R$ for <strong>every</strong> $a \in A$.<br>
+            <em>Difference from Identity:</em> An identity relation allows ONLY $(a,a)$. A reflexive relation MUST have $(a,a)$ for all elements, but it can also have other pairs like $(a,b)$.<br><br>
+            
+            <strong>2. Symmetric Relation:</strong><br>
+            If $(a, b) \in R$, then $(b, a) \in R$ for all $a, b \in A$.<br><br>
+            
+            <strong>3. Transitive Relation:</strong><br>
+            If $(a, b) \in R$ and $(b, c) \in R$, then it <strong>must</strong> be true that $(a, c) \in R$ for all $a, b, c \in A$.
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">R.D. Sharma Focus: Crucial Transitive Exception & Anti-Symmetry</span>
+            <strong>The Vacuous Truth of Transitivity:</strong> If you find a pair $(a, b) \in R$, but there is absolutely NO pair starting with $b$ (i.e., no $(b, c) \in R$), then the condition for transitivity is not violated. Therefore, the relation is <strong>still considered Transitive</strong>!<br><br>
+            <strong>Anti-Symmetric Relation (Important for JEE):</strong><br>
+            If $(a, b) \in R$ and $(b, a) \in R$, this implies $a = b$. <br>
+            (i.e., $a \le b$ and $b \le a \implies a=b$. This defines partial order relations).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2</span>
+            <strong>Question:</strong> Check whether the relation $R$ defined in the set $A = \{1, 2, 3, 4, 5, 6\}$ as $R = \{(a, b) : b = a + 1\}$ is reflexive, symmetric, or transitive.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                First, write $R$ in roster form: $R = \{(1, 2), (2, 3), (3, 4), (4, 5), (5, 6)\}$.<br>
+                1. <strong>Reflexive:</strong> Since $(1, 1), (2, 2)$, etc., are not in $R$, it is <strong>not reflexive</strong>.<br>
+                2. <strong>Symmetric:</strong> We see $(1, 2) \in R$. However, $(2, 1) \notin R$. So, it is <strong>not symmetric</strong>.<br>
+                3. <strong>Transitive:</strong> We see $(1, 2) \in R$ and $(2, 3) \in R$. For it to be transitive, $(1, 3)$ must belong to $R$. But $(1, 3) \notin R$. So, it is <strong>not transitive</strong>.
+            </div>
+        </div>
+
+        <h2>3. Equivalence Relations and Classes</h2>
+
+        <div class="blue-box">
+            <span class="box-label">Equivalence Relation</span>
+            A relation $R$ on a set $A$ is an <strong>Equivalence Relation</strong> if and only if it is simultaneously:
+            <br>1. Reflexive
+            <br>2. Symmetric
+            <br>3. Transitive
+        </div>
+
+        <h3>Equivalence Classes and Partitions</h3>
+        <p>If $R$ is an equivalence relation on set $A$, it divides the set $A$ into mutually disjoint subsets called <strong>Equivalence Classes</strong>. The equivalence class of an element '$a$', denoted by $[a]$ or $\bar{a}$, is the set of all elements in $A$ that are related to '$a$'.</p>
+        <p><strong>Properties of Equivalence Classes:</strong><br>
+        1. All elements of a single equivalence class $[a]$ are related to each other.<br>
+        2. No element of class $[a]$ is related to any element of class $[b]$.<br>
+        3. Two equivalence classes are either perfectly identical or completely disjoint ($[a] = [b]$ or $[a] \cap [b] = \phi$).<br>
+        4. The union of all equivalence classes forms the entire universal set $A$ (This is called a <strong>Partition of a Set</strong>).</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Congruence Modulo $n$ (R.D. Sharma & JEE Focus)</span>
+            <strong>Definition:</strong> Let $n$ be a positive integer. Two integers $a$ and $b$ are said to be congruent modulo $n$, written as:<br>
+            <strong>$$ a \equiv b \pmod n $$</strong>
+            If and only if $n$ perfectly divides $(a - b)$. (i.e., $a - b = k \cdot n$ for some integer $k$).<br>
+            <em>Theorem: Congruence modulo $n$ is always an equivalence relation on the set of Integers ($\mathbb{Z}$).</em>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3</span>
+            <strong>Question:</strong> Show that the relation $R$ in the set of integers $\mathbb{Z}$ given by $R = \{(a, b) : 2 \text{ divides } (a - b)\}$ is an equivalence relation. Also find the equivalence class $[0]$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Reflexive:</strong> Let $a \in \mathbb{Z}$. $(a - a) = 0$. Since $2$ divides $0$, $(a, a) \in R$. Hence, Reflexive.<br>
+                2. <strong>Symmetric:</strong> Let $(a, b) \in R \implies 2 \text{ divides } (a - b) \implies (a - b) = 2k$. <br>
+                   Then $(b - a) = -2k = 2(-k)$. Since $-k$ is an integer, $2 \text{ divides } (b - a) \implies (b, a) \in R$. Hence, Symmetric.<br>
+                3. <strong>Transitive:</strong> Let $(a, b) \in R$ and $(b, c) \in R$. <br>
+                   This means $(a - b) = 2m$ and $(b - c) = 2n$.<br>
+                   Adding them: $(a - b) + (b - c) = 2m + 2n \implies (a - c) = 2(m + n)$.<br>
+                   Since $(m+n)$ is an integer, $2 \text{ divides } (a - c) \implies (a, c) \in R$. Hence, Transitive.<br>
+                Because $R$ is reflexive, symmetric, and transitive, it is an <strong>Equivalence Relation</strong>.<br><br>
+                <strong>Equivalence Class $[0]$:</strong> The set of all integers related to $0$.<br>
+                $[0] = \{x \in \mathbb{Z} : (x, 0) \in R\} = \{x \in \mathbb{Z} : 2 \text{ divides } (x - 0)\} = \{x \in \mathbb{Z} : x \text{ is an even integer}\}$.<br>
+                <strong>$[0] = \{\dots, -4, -2, 0, 2, 4, \dots\}$</strong>
+            </div>
+        </div>
+
+        <h2>4. Types of Functions (Mapping)</h2>
+        <p><strong>Definition:</strong> A relation $f$ from set $A$ to set $B$ is a function if every element of set $A$ has <strong>one and only one</strong> image in set $B$.</p>
+
+        <h3>1. One-One Function (Injective Mapping)</h3>
+        <p>A function $f: A \rightarrow B$ is one-one if distinct elements of $A$ have distinct images in $B$. No two elements in the domain can point to the same element in the codomain.</p>
+        
+        <div class="green-box">
+            <span class="box-label">Algorithms to Prove One-One (Crucial)</span>
+            <strong>Algebraic Method (Standard Board approach):</strong><br>
+            Step 1: Let $x_1, x_2 \in A$ (Domain).<br>
+            Step 2: Assume $f(x_1) = f(x_2)$.<br>
+            Step 3: Solve the equation. If it strictly implies <strong>$x_1 = x_2$</strong>, the function is One-One.<br><br>
+            
+            <strong>Calculus Method (JEE/R.D. Sharma approach):</strong><br>
+            If a continuous function is strictly increasing ($f'(x) > 0$) or strictly decreasing ($f'(x) < 0$) throughout its entire domain, it is perfectly One-One.
+        </div>
+
+        <div class="graph-container">
+            <h4 style="text-align: center; color: var(--accent-purple);">Graphical Test: Horizontal Line Test</h4>
+            <p style="font-size: 0.9rem; text-align: center;">If any horizontal line intersects the graph at more than one point, the function is <strong>Many-One</strong>. If it intersects at most once, it is <strong>One-One</strong>.</p>
+            <canvas id="oneOneChart"></canvas>
+        </div>
+
+        <h3>2. Onto Function (Surjective Mapping)</h3>
+        <p>A function $f: A \rightarrow B$ is onto if every element in the co-domain $B$ has at least one pre-image in the domain $A$. No element in set $B$ is left unmapped.</p>
+        <p><strong>Key Condition:</strong> A function is surjective if and only if <strong>Range = Co-domain</strong>.</p>
+
+        <div class="green-box">
+            <span class="box-label">Algorithm to Prove Onto (Boards)</span>
+            Step 1: Let $y$ be an arbitrary element in the co-domain $B$.<br>
+            Step 2: Set $f(x) = y$.<br>
+            Step 3: Solve for $x$ in terms of $y$ to get $x = g(y)$.<br>
+            Step 4: Check if for every possible value of $y \in B$, the corresponding $x$ exists in domain $A$. If yes, it is Onto.
+        </div>
+
+        <ul>
+            <li><strong>Many-One Function:</strong> Two or more elements in $A$ have the same image in $B$. (Not injective).</li>
+            <li><strong>Into Function:</strong> There is at least one element in co-domain $B$ that has no pre-image. (Range $\subset$ Co-domain).</li>
+            <li><strong>Bijective Function:</strong> A function that is both One-One (Injective) AND Onto (Surjective).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4</span>
+            <strong>Question:</strong> Show that the function $f: \mathbb{R} \rightarrow \mathbb{R}$ defined by $f(x) = 3x + 4$ is bijective.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>1. Checking Injectivity (One-One):</strong><br>
+                Let $x_1, x_2 \in \mathbb{R}$. Assume $f(x_1) = f(x_2)$.<br>
+                $3x_1 + 4 = 3x_2 + 4 \implies 3x_1 = 3x_2 \implies x_1 = x_2$.<br>
+                Since $f(x_1) = f(x_2)$ implies $x_1 = x_2$, $f(x)$ is <strong>One-One</strong>.<br><br>
+                <strong>2. Checking Surjectivity (Onto):</strong><br>
+                Let $y \in \mathbb{R}$ (co-domain). Set $f(x) = y$.<br>
+                $3x + 4 = y \implies 3x = y - 4 \implies x = \frac{y - 4}{3}$.<br>
+                Since $y$ is a real number, $\frac{y - 4}{3}$ is also a real number. Thus, for every $y \in \mathbb{R}$, there exists an $x \in \mathbb{R}$ (domain) such that $f(x) = y$.<br>
+                Hence, $f(x)$ is <strong>Onto</strong>.<br><br>
+                Since $f(x)$ is both one-one and onto, it is a <strong>Bijective function</strong>.
+            </div>
+        </div>
+
+        <h2>5. Counting Functions (R.D. Sharma / JEE Focus)</h2>
+        <p>Let set $A$ have $m$ elements ($n(A) = m$) and set $B$ have $n$ elements ($n(B) = n$).</p>
+
+        <div class="blue-box">
+            <span class="box-label">Important Combinatorics Formulas</span>
+            <strong>1. Total number of functions:</strong> $n^m$<br><br>
+            <strong>2. Total number of One-One (Injective) functions:</strong><br>
+            If $n \ge m$: $^nP_m = \frac{n!}{(n-m)!}$<br>
+            If $n < m$: $0$ (Pigeonhole principle: You can't map 5 pigeons to 3 holes without doubling up).<br><br>
+            
+            <strong>3. Total number of Onto (Surjective) functions:</strong><br>
+            If $n > m$: $0$<br>
+            If $n \le m$: This uses the inclusion-exclusion principle (Memorize for JEE!):<br>
+            <strong>$$ \sum_{r=1}^{n} (-1)^{n-r} \, ^nC_r \, r^m $$</strong><br>
+            <em>(For the common case where $n=2$, the formula simplifies beautifully to $2^m - 2$).</em><br><br>
+
+            <strong>4. Total number of Bijective functions:</strong><br>
+            If $m \neq n$: $0$<br>
+            If $m = n$: $n!$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5</span>
+            <strong>Question:</strong> Let $A = \{1, 2, 3, 4, 5\}$ and $B = \{x, y\}$. Calculate the total number of functions, the total number of one-one functions, and the total number of onto functions from $A$ to $B$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Here $m = n(A) = 5$ and $n = n(B) = 2$.<br>
+                1. <strong>Total functions</strong> $= n^m = 2^5 = \mathbf{32}$.<br>
+                2. <strong>One-One functions:</strong> Since $n(B) < n(A)$ (i.e., $2 < 5$), it is impossible to map 5 distinct elements to 2 distinct images without sharing. Number of one-one functions $= \mathbf{0}$.<br>
+                3. <strong>Onto functions:</strong> Since $n = 2$, we can use the simplified formula $2^m - 2$.<br>
+                   Number of onto functions $= 2^5 - 2 = 32 - 2 = \mathbf{30}$.
+            </div>
+        </div>
+
+        <h2>6. Composition of Functions</h2>
+        <p><strong>Definition:</strong> Let $f: A \rightarrow B$ and $g: B \rightarrow C$ be two functions. Then the composition of $f$ and $g$, denoted by $g \circ f$, is defined as the function $g \circ f: A \rightarrow C$ given by:
+        <strong>$$ (g \circ f)(x) = g(f(x)) \quad \forall x \in A $$</strong></p>
+
+        <div class="yellow-box">
+            <span class="box-label">Domain Constraints & Properties</span>
+            - The composite function $g \circ f$ is ONLY defined if the <strong>Range of $f \subseteq$ Domain of $g$</strong>.<br>
+            - <strong>Non-commutative:</strong> In general, $f \circ g \neq g \circ f$.<br>
+            - <strong>Associative:</strong> $h \circ (g \circ f) = (h \circ g) \circ f$.<br>
+            - The composition of two bijections is universally a bijection.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6</span>
+            <strong>Question:</strong> If $f: \mathbb{R} \rightarrow \mathbb{R}$ is defined by $f(x) = x^2 - 3x + 2$, find $f(f(x))$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                We need to find $f(f(x))$. This means we replace every '$x$' in the formula of $f(x)$ with the entire function '$f(x)$'.<br>
+                $f(f(x)) = (f(x))^2 - 3(f(x)) + 2$<br>
+                Substitute $f(x) = x^2 - 3x + 2$:<br>
+                $f(f(x)) = (x^2 - 3x + 2)^2 - 3(x^2 - 3x + 2) + 2$<br>
+                Expanding the square $(a+b+c)^2 = a^2+b^2+c^2+2ab+2bc+2ca$:<br>
+                $= (x^4 + 9x^2 + 4 - 6x^3 - 12x + 4x^2) - 3x^2 + 9x - 6 + 2$<br>
+                $= x^4 - 6x^3 + 13x^2 - 12x + 4 - 3x^2 + 9x - 4$<br>
+                Grouping like terms:<br>
+                <strong>$= x^4 - 6x^3 + 10x^2 - 3x$</strong>
+            </div>
+        </div>
+
+        <h2>7. Invertible Functions</h2>
+        <p>A function $f: A \rightarrow B$ is said to be invertible if there exists a function $g: B \rightarrow A$ such that $g \circ f = I_A$ and $f \circ g = I_B$. The function $g$ is called the inverse of $f$ and is denoted by $f^{-1}$.</p>
+
+        <div class="green-box">
+            <span class="box-label">Condition and Algorithm for Inverse</span>
+            <strong>Condition:</strong> A function is invertible <strong>if and only if it is a bijective function</strong> (both One-One and Onto).<br><br>
+            <strong>Algorithm to Find $f^{-1}(x)$ (Board Method):</strong><br>
+            Step 1: Prove $f(x)$ is bijective (One-One and Onto).<br>
+            Step 2: Put $f(x) = y$.<br>
+            Step 3: Solve the algebraic equation to express $x$ entirely in terms of $y$.<br>
+            Step 4: Replace $x$ with $f^{-1}(y)$. Then, replace $y$ with $x$ to get $f^{-1}(x)$.
+        </div>
+
+        <div class="graph-container">
+            <h4 style="text-align: center; color: var(--accent-purple);">Symmetry of Inverse Functions</h4>
+            <p style="font-size: 0.9rem; text-align: center;">The graph of a function $f(x)$ and its inverse $f^{-1}(x)$ are perfect <strong>mirror images</strong> of each other with respect to the line $y = x$. (e.g., $y=e^x$ and $y=\ln(x)$).</p>
+            <canvas id="inverseChart"></canvas>
+        </div>
+
+        <p><strong>Properties of Inverse Functions:</strong></p>
+        <ul>
+            <li>$(f^{-1})^{-1} = f$.</li>
+            <li><strong>Reversal Rule:</strong> $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$.</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7</span>
+            <strong>Question:</strong> Consider $f: \mathbb{R}_+ \rightarrow [4, \infty)$ given by $f(x) = x^2 + 4$. Show that $f$ is invertible and find the inverse of $f$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>1. Checking Bijectivity:</strong><br>
+                - <em>One-One:</em> Let $f(x_1) = f(x_2) \implies x_1^2 + 4 = x_2^2 + 4 \implies x_1^2 = x_2^2$. Since domain is strictly $\mathbb{R}_+$ (positive reals), $x_1 = x_2$. It is One-One.<br>
+                - <em>Onto:</em> Let $y \in [4, \infty)$. $y = x^2 + 4 \implies x^2 = y - 4 \implies x = \sqrt{y - 4}$. Since $y \ge 4$, $y - 4 \ge 0$, so $x$ is real and positive. Thus $x \in \mathbb{R}_+$. It is Onto.<br>
+                Since $f$ is bijective, it is <strong>invertible</strong>.<br><br>
+                <strong>2. Finding Inverse:</strong><br>
+                From the Onto step, we expressed $x$ in terms of $y$:<br>
+                $x = \sqrt{y - 4}$<br>
+                Replace $x$ with $f^{-1}(y)$: $\quad f^{-1}(y) = \sqrt{y - 4}$<br>
+                Replace $y$ with $x$: $\quad \mathbf{f^{-1}(x) = \sqrt{x - 4}}$.
+            </div>
+        </div>
+
+        <h2>8. Binary Operations (R.S. Aggarwal & R.D. Sharma Specific)</h2>
+        <p><em>Note: This topic is often rationalized in recent NCERT editions but forms a crucial foundational concept for higher abstract algebra.</em></p>
+
+        <p><strong>Definition:</strong> A binary operation $*$ on a non-empty set $A$ is a function $*: A \times A \rightarrow A$. It essentially combines two elements of a set to produce another element of the <em>same set</em> (Closure Property).</p>
+
+        <ul>
+            <li><strong>Commutative:</strong> A binary operation $*$ is commutative if $a * b = b * a$ for all $a, b \in A$.</li>
+            <li><strong>Associative:</strong> A binary operation $*$ is associative if $(a * b) * c = a * (b * c)$ for all $a, b, c \in A$.</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Identity and Inverse Elements</span>
+            <strong>Identity Element ($e$):</strong> An element $e \in A$ is the identity for $*$ if:<br>
+            <strong>$$ a * e = e * a = a \quad \forall a \in A $$</strong>
+            (e.g., $0$ is the identity for addition on $\mathbb{R}$; $1$ is the identity for multiplication).<br><br>
+            
+            <strong>Inverse of an Element ($a^{-1}$):</strong> Given an element $a \in A$, an element $b \in A$ is the inverse of $a$ if:<br>
+            <strong>$$ a * b = b * a = e $$</strong>
+            (where $e$ is the identity element). We write $b = a^{-1}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8</span>
+            <strong>Question:</strong> Let $*$ be a binary operation on $\mathbb{Q}$ (Rational numbers) defined by $a * b = \frac{ab}{2}$. <br>
+            (i) Show that $*$ is commutative and associative.<br>
+            (ii) Find the identity element for $*$.<br>
+            (iii) Find the inverse of a general element $a \in \mathbb{Q}$ ($a \neq 0$).
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>(i) Commutativity & Associativity:</strong><br>
+                - Commutative: $a * b = \frac{ab}{2} = \frac{ba}{2} = b * a$. Hence, Commutative.<br>
+                - Associative: $(a * b) * c = (\frac{ab}{2}) * c = \frac{(\frac{ab}{2})c}{2} = \frac{abc}{4}$.<br>
+                  And $a * (b * c) = a * (\frac{bc}{2}) = \frac{a(\frac{bc}{2})}{2} = \frac{abc}{4}$. Since LHS = RHS, it is Associative.<br><br>
+                  
+                <strong>(ii) Identity Element ($e$):</strong><br>
+                We need $a * e = a$.<br>
+                $\implies \frac{ae}{2} = a \implies ae = 2a$. Since $a \neq 0$, $e = \mathbf{2}$.<br>
+                (Check: $2 \in \mathbb{Q}$, so the identity element is 2).<br><br>
+                
+                <strong>(iii) Inverse of $a$ ($b$):</strong><br>
+                We need $a * b = e \implies a * b = 2$.<br>
+                $\implies \frac{ab}{2} = 2 \implies ab = 4 \implies b = \mathbf{\frac{4}{a}}$.<br>
+                The inverse of $a$ is $\frac{4}{a}$ (defined for all $a \neq 0$).
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS FOR CHARTS & TOGGLE -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            // Re-render charts to update grid colors based on theme if needed
+            renderCharts();
+        }
+
+        // Variable to hold chart instances to destroy them before re-rendering
+        let chart1, chart2;
+
+        function renderCharts() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#aaaaaa' : '#666666';
+
+            // Common Options
+            const commonOptions = {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: textColor } }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: textColor }
+                    },
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: { color: textColor }
+                    }
+                }
+            };
+
+            // Chart 1: Horizontal Line Test
+            const ctx1 = document.getElementById('oneOneChart').getContext('2d');
+            if (chart1) chart1.destroy();
+            
+            // Generate data for Parabola (y=x^2) and Cubic (y=x^3)
+            let xVals = [];
+            let yParabola = [];
+            let yCubic = [];
+            let yHoriz = [];
+            for (let x = -3; x <= 3; x += 0.2) {
+                xVals.push(x.toFixed(1));
+                yParabola.push(x * x);
+                yCubic.push((x * x * x)/3); // scaled down for visual fit
+                yHoriz.push(4); // Horizontal test line
+            }
+
+            chart1 = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: xVals,
+                    datasets: [
+                        {
+                            label: 'Many-One: y = x²',
+                            data: yParabola,
+                            borderColor: '#d81b60', /* Pink */
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'One-One: y = x³',
+                            data: yCubic,
+                            borderColor: '#1e88e5', /* Blue */
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Horizontal Test Line (y=4)',
+                            data: yHoriz,
+                            borderColor: '#43a047', /* Green */
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: commonOptions
+            });
+
+            // Chart 2: Inverse Function Symmetry
+            const ctx2 = document.getElementById('inverseChart').getContext('2d');
+            if (chart2) chart2.destroy();
+            
+            let xVals2 = [];
+            let yExp = [];
+            let yLog = [];
+            let yLine = [];
+            
+            for (let x = -2; x <= 5; x += 0.2) {
+                xVals2.push(x.toFixed(1));
+                yExp.push(Math.exp(x));
+                yLog.push(x > 0 ? Math.log(x) : null); // ln(x) only for x>0
+                yLine.push(x); // y = x
+            }
+
+            chart2 = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: xVals2,
+                    datasets: [
+                        {
+                            label: 'f(x) = e^x',
+                            data: yExp,
+                            borderColor: '#d81b60',
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'f⁻¹(x) = ln(x)',
+                            data: yLog,
+                            borderColor: '#1e88e5',
+                            tension: 0.4,
+                            pointRadius: 0,
+                            spanGaps: true
+                        },
+                        {
+                            label: 'Mirror Line: y = x',
+                            data: yLine,
+                            borderColor: '#7e57c2', /* Purple */
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { ...commonOptions.scales.x, min: -2, max: 5 },
+                        y: { ...commonOptions.scales.y, min: -2, max: 5 }
+                    }
+                }
+            });
+        }
+
+        // Render charts initially
+        window.onload = renderCharts;
+    </script>
+</body>
+</html>

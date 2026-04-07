@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Integrals - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.95rem; }
+        th, td { border: 1px solid var(--toggle-border); padding: 12px; text-align: left; }
+        th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 7: Integrals</h1>
+
+        <p><em>Dear Class 12 Student! Welcome to the heart of Integral Calculus. If differentiation is breaking a function into infinitesimal pieces to find its rate, integration is summing those pieces back together to find the whole (like the area under a curve). This chapter is massive and heavily weighted in both Boards and JEE. Mastering the standard forms, ILATE rule, and Definite Integral properties is an absolute must. Let's integrate!</em></p>
+
+        <h2>1. Introduction: Integration as an Inverse Process of Differentiation</h2>
+        <p>Integration is the reverse process of differentiation. If we know the derivative of a function, integration allows us to find the original function (called the <strong>primitive</strong> or <strong>anti-derivative</strong>).</p>
+
+        <div class="blue-box">
+            <span class="box-label">Definition and Constant of Integration</span>
+            If $\frac{d}{dx}[F(x)] = f(x)$, then the integral of $f(x)$ with respect to $x$ is:<br>
+            <strong>$$ \int f(x) dx = F(x) + C $$</strong>
+            Here, <strong>$C$</strong> is the <strong>Constant of Integration</strong>. <br>
+            <em>Why add $C$?</em> The derivative of any constant is zero (e.g., $\frac{d}{dx}(x^2) = 2x$, but $\frac{d}{dx}(x^2 + 5) = 2x$ as well). Therefore, an indefinite integral does not give a single, unique function, but rather a <strong>family of parallel curves</strong> shifted vertically by $C$.
+        </div>
+
+        <h3>Basic Properties of Indefinite Integrals</h3>
+        <ul>
+            <li>$\int [f(x) \pm g(x)] dx = \int f(x) dx \pm \int g(x) dx$</li>
+            <li>$\int k \cdot f(x) dx = k \int f(x) dx$ (where $k$ is a constant)</li>
+        </ul>
+
+        <h3>Standard Anti-Derivatives (Must Memorize)</h3>
+        <table>
+            <tr>
+                <th>Function $f(x)$</th>
+                <th>Integral $\int f(x) dx$</th>
+            </tr>
+            <tr><td>$x^n \ (n \neq -1)$</td><td>$\frac{x^{n+1}}{n+1} + C$</td></tr>
+            <tr><td>$\frac{1}{x}$</td><td>$\log|x| + C$</td></tr>
+            <tr><td>$e^x$</td><td>$e^x + C$</td></tr>
+            <tr><td>$a^x$</td><td>$\frac{a^x}{\log a} + C$</td></tr>
+            <tr><td>$\sin x$</td><td>$-\cos x + C$</td></tr>
+            <tr><td>$\cos x$</td><td>$\sin x + C$</td></tr>
+            <tr><td>$\sec^2 x$</td><td>$\tan x + C$</td></tr>
+            <tr><td>$\csc^2 x$</td><td>$-\cot x + C$</td></tr>
+            <tr><td>$\sec x \tan x$</td><td>$\sec x + C$</td></tr>
+            <tr><td>$\csc x \cot x$</td><td>$-\csc x + C$</td></tr>
+            <tr><td>$\frac{1}{\sqrt{1-x^2}}$</td><td>$\sin^{-1} x + C$ or $-\cos^{-1} x + C$</td></tr>
+            <tr><td>$\frac{1}{1+x^2}$</td><td>$\tan^{-1} x + C$ or $-\cot^{-1} x + C$</td></tr>
+        </table>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Basic Integration</span>
+            <strong>Question:</strong> Evaluate $\int \left( \sqrt{x} + \frac{1}{\sqrt{x}} \right)^2 dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Expand the square using $(a+b)^2 = a^2 + b^2 + 2ab$:<br>
+                   $\left( x^{1/2} + x^{-1/2} \right)^2 = (x^{1/2})^2 + (x^{-1/2})^2 + 2(x^{1/2})(x^{-1/2})$<br>
+                   $= x + \frac{1}{x} + 2(1) = x + \frac{1}{x} + 2$.<br>
+                2. Now, integrate term by term:<br>
+                   $\int \left( x + \frac{1}{x} + 2 \right) dx = \int x \, dx + \int \frac{1}{x} dx + \int 2 \, dx$<br>
+                3. Apply standard formulas:<br>
+                   $= \frac{x^2}{2} + \log|x| + 2x + C$.
+            </div>
+        </div>
+
+        <h2>2. Methods of Integration: 1. Integration by Substitution</h2>
+        <p>When the integral is not in a standard form, we can often transform it by substituting a complex part of the integrand with a new variable (usually $t$). The goal is to find a function inside the integral whose exact derivative is also present in the integral.</p>
+
+        <div class="green-box">
+            <span class="box-label">The Substitution Algorithm</span>
+            If $I = \int f(g(x)) \cdot g'(x) dx$:<br>
+            1. Let $g(x) = t$.<br>
+            2. Differentiate both sides with respect to $x$: $g'(x) = \frac{dt}{dx} \implies \mathbf{g'(x) dx = dt}$.<br>
+            3. Substitute this back to entirely eliminate $x$: $I = \int f(t) dt$.<br>
+            4. Integrate with respect to $t$, then substitute $g(x)$ back in for $t$.
+        </div>
+
+        <h3>Standard Integrals Derived via Substitution</h3>
+        <p>The standard derivatives of basic trig functions don't yield $\tan x, \cot x$, etc. We derive their integrals via substitution.</p>
+        <ul>
+            <li>$\int \tan x \, dx = \int \frac{\sin x}{\cos x} dx \xrightarrow{\cos x = t} \mathbf{-\log|\cos x| + C = \log|\sec x| + C}$</li>
+            <li>$\int \cot x \, dx = \int \frac{\cos x}{\sin x} dx \xrightarrow{\sin x = t} \mathbf{\log|\sin x| + C}$</li>
+            <li>$\int \sec x \, dx = \mathbf{\log|\sec x + \tan x| + C} = \log|\tan(\frac{\pi}{4} + \frac{x}{2})| + C$</li>
+            <li>$\int \csc x \, dx = \mathbf{\log|\csc x - \cot x| + C} = \log|\tan(\frac{x}{2})| + C$</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Substitution Method</span>
+            <strong>Question:</strong> Evaluate $\int \frac{e^{\tan^{-1} x}}{1 + x^2} dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. We notice that the derivative of $\tan^{-1} x$ is exactly $\frac{1}{1 + x^2}$.<br>
+                2. Let $t = \tan^{-1} x$.<br>
+                3. Differentiating both sides: $dt = \frac{1}{1 + x^2} dx$.<br>
+                4. Substitute this into the integral:<br>
+                   $\int e^t \, dt$<br>
+                5. Integrate w.r.t $t$: $= e^t + C$.<br>
+                6. Replace $t$ with $x$: $\mathbf{e^{\tan^{-1} x} + C}$.
+            </div>
+        </div>
+
+        <h2>3. Integration using Trigonometric Identities</h2>
+        <p>We cannot directly integrate higher powers of $\sin$ or $\cos$ (like $\sin^2 x$ or $\cos^3 x$), nor can we easily integrate products like $\sin(3x)\cos(4x)$. We must use Class 11 Trigonometric Identities to break them down into linear, standard forms.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Key Identities to Memorize</span>
+            <strong>Power Reduction (Crucial for $\int \sin^2 x$ and $\int \cos^2 x$):</strong><br>
+            - $\sin^2 x = \frac{1 - \cos 2x}{2}$<br>
+            - $\cos^2 x = \frac{1 + \cos 2x}{2}$<br>
+            - $\sin^3 x = \frac{3\sin x - \sin 3x}{4}$<br>
+            - $\cos^3 x = \frac{3\cos x + \cos 3x}{4}$<br><br>
+            <strong>Product to Sum/Difference:</strong><br>
+            - $2\sin A \cos B = \sin(A+B) + \sin(A-B)$<br>
+            - $2\cos A \sin B = \sin(A+B) - \sin(A-B)$<br>
+            - $2\cos A \cos B = \cos(A+B) + \cos(A-B)$<br>
+            - $2\sin A \sin B = \cos(A-B) - \cos(A+B)$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Trigonometric Identities</span>
+            <strong>Question:</strong> Evaluate $\int \sin(3x) \cos(4x) dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. This is a product of sine and cosine. Multiply and divide by 2 to use the formula $2\sin A \cos B$.<br>
+                   $I = \frac{1}{2} \int 2\sin(3x)\cos(4x) dx$<br>
+                2. Use identity $2\sin A \cos B = \sin(A+B) + \sin(A-B)$. Here $A=3x, B=4x$.<br>
+                   $= \frac{1}{2} \int [\sin(3x+4x) + \sin(3x-4x)] dx$<br>
+                   $= \frac{1}{2} \int [\sin(7x) + \sin(-x)] dx$<br>
+                3. Since $\sin(-x) = -\sin(x)$:<br>
+                   $= \frac{1}{2} \int (\sin 7x - \sin x) dx$<br>
+                4. Integrate:<br>
+                   $= \frac{1}{2} \left[ \frac{-\cos 7x}{7} - (-\cos x) \right] + C$<br>
+                   $= \mathbf{-\frac{\cos 7x}{14} + \frac{\cos x}{2} + C}$.
+            </div>
+        </div>
+
+        <h2>4. Integrals of Some Particular Functions (The "9 Standard Formulas")</h2>
+        <p>These formulas are the backbone of quadratic integration. <strong>Memorize them perfectly.</strong></p>
+
+        <div class="blue-box">
+            <span class="box-label">Group 1: Without Square Roots</span>
+            1. $\int \frac{dx}{x^2 - a^2} = \mathbf{\frac{1}{2a} \log \left| \frac{x-a}{x+a} \right| + C}$<br>
+            2. $\int \frac{dx}{a^2 - x^2} = \mathbf{\frac{1}{2a} \log \left| \frac{a+x}{a-x} \right| + C}$<br>
+            3. $\int \frac{dx}{x^2 + a^2} = \mathbf{\frac{1}{a} \tan^{-1} \left(\frac{x}{a}\right) + C}$
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Group 2: With Square Roots in Denominator</span>
+            4. $\int \frac{dx}{\sqrt{x^2 - a^2}} = \mathbf{\log |x + \sqrt{x^2 - a^2}| + C}$<br>
+            5. $\int \frac{dx}{\sqrt{x^2 + a^2}} = \mathbf{\log |x + \sqrt{x^2 + a^2}| + C}$<br>
+            6. $\int \frac{dx}{\sqrt{a^2 - x^2}} = \mathbf{\sin^{-1} \left(\frac{x}{a}\right) + C}$
+        </div>
+
+        <h3>Application to Quadratic Forms</h3>
+        <p><strong>Type 1: Pure Quadratic Denominator</strong> $\int \frac{dx}{ax^2+bx+c}$ or $\int \frac{dx}{\sqrt{ax^2+bx+c}}$<br>
+        <em>Method:</em> Make the coefficient of $x^2$ unity. Then, <strong>Complete the Square</strong> by adding and subtracting $(\frac{\text{coeff of } x}{2})^2$. This converts the denominator into one of the 6 standard forms above.</p>
+
+        <p><strong>Type 2: Linear / Quadratic Denominator</strong> $\int \frac{px+q}{ax^2+bx+c} dx$ or $\int \frac{px+q}{\sqrt{ax^2+bx+c}} dx$<br>
+        <em>Method:</em> Express the numerator as a multiple of the derivative of the quadratic expression inside the denominator, plus a constant.<br>
+        <strong>$$ \text{Numerator } (px+q) = A \cdot \frac{d}{dx}(\text{Denominator Quadratic}) + B $$</strong>
+        Find $A$ and $B$ by equating coefficients. Split the integral into two: the first part is easily solved by substituting the denominator as $t$, and the second part becomes a Type 1 (completing the square) integral.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Completing the Square</span>
+            <strong>Question:</strong> Evaluate $\int \frac{dx}{x^2 - 6x + 13}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. This is a Type 1 integral. We must complete the square for $x^2 - 6x + 13$.<br>
+                2. Coefficient of $x$ is $-6$. Half of it is $-3$. Square of that is $9$.<br>
+                3. Add and subtract $9$: $x^2 - 6x + 9 - 9 + 13$<br>
+                   $= (x - 3)^2 + 4$<br>
+                   $= (x - 3)^2 + 2^2$<br>
+                4. The integral becomes: $\int \frac{dx}{(x-3)^2 + 2^2}$.<br>
+                5. This matches the standard form $\int \frac{dx}{X^2 + a^2} = \frac{1}{a}\tan^{-1}(\frac{X}{a})$. Here $X = x-3$ and $a = 2$.<br>
+                6. Result: $\mathbf{\frac{1}{2} \tan^{-1} \left(\frac{x-3}{2}\right) + C}$.
+            </div>
+        </div>
+
+        <h2>5. Integration by Partial Fractions</h2>
+        <p>This method is used to integrate <strong>Proper Rational Functions</strong> of the form $\frac{P(x)}{Q(x)}$ where the degree of $P(x)$ is strictly less than the degree of $Q(x)$. 
+        <br><em>Note: If it is improper (degree of numerator $\ge$ degree of denominator), you MUST perform long polynomial division first to get a polynomial + a proper rational function.</em></p>
+
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <th>Form of the Rational Function</th>
+                <th>Form of the Partial Fraction</th>
+            </tr>
+            <tr>
+                <td><strong>Linear, Non-Repeated:</strong> $\frac{px+q}{(x-a)(x-b)}$</td>
+                <td>$\frac{A}{x-a} + \frac{B}{x-b}$</td>
+            </tr>
+            <tr>
+                <td><strong>Linear, Repeated:</strong> $\frac{px^2+qx+r}{(x-a)^2(x-b)}$</td>
+                <td>$\frac{A}{x-a} + \frac{B}{(x-a)^2} + \frac{C}{x-b}$</td>
+            </tr>
+            <tr>
+                <td><strong>Quadratic, Irreducible:</strong> $\frac{px^2+qx+r}{(x-a)(x^2+bx+c)}$</td>
+                <td>$\frac{A}{x-a} + \frac{Bx+C}{x^2+bx+c}$</td>
+            </tr>
+        </table>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Partial Fractions</span>
+            <strong>Question:</strong> Evaluate $\int \frac{x}{(x-1)(x-2)} dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. This is a proper fraction with linear non-repeated factors.<br>
+                2. Let $\frac{x}{(x-1)(x-2)} = \frac{A}{x-1} + \frac{B}{x-2}$.<br>
+                3. Multiply entirely by $(x-1)(x-2)$:<br>
+                   $x = A(x-2) + B(x-1)$<br>
+                4. To find $A$, put $x = 1$: $1 = A(1-2) + B(0) \implies 1 = -A \implies \mathbf{A = -1}$.<br>
+                5. To find $B$, put $x = 2$: $2 = A(0) + B(2-1) \implies 2 = B \implies \mathbf{B = 2}$.<br>
+                6. Rewrite the integral:<br>
+                   $I = \int \left( \frac{-1}{x-1} + \frac{2}{x-2} \right) dx$<br>
+                7. Integrate using $\int \frac{1}{x} dx = \log|x|$:<br>
+                   $I = \mathbf{-\log|x-1| + 2\log|x-2| + C}$.<br>
+                   (Can be simplified using log properties to $\log\frac{(x-2)^2}{|x-1|} + C$).
+            </div>
+        </div>
+
+        <h2>6. Integration by Parts</h2>
+        <p>Used when the integrand is the product of two different types of functions (e.g., $x \sin x$ or $e^x \log x$). It is the integral equivalent of the Product Rule in differentiation.</p>
+
+        <div class="blue-box">
+            <span class="box-label">The Formula and ILATE Rule</span>
+            Let $u$ be the first function and $v$ be the second function.<br>
+            <strong>$$ \int (u \cdot v) dx = u \int v \, dx - \int \left( \frac{du}{dx} \int v \, dx \right) dx $$</strong>
+            <em>"First function times integral of second MINUS integral of (derivative of first times integral of second)."</em><br><br>
+            
+            <strong>How to choose the First Function ($u$)?</strong> Use the <strong>ILATE</strong> rule. The function that appears first in the word ILATE should be chosen as $u$.<br>
+            <strong>I</strong> - Inverse Trigonometric (e.g., $\sin^{-1}x$)<br>
+            <strong>L</strong> - Logarithmic (e.g., $\log x$)<br>
+            <strong>A</strong> - Algebraic (e.g., $x, x^2, 1$)<br>
+            <strong>T</strong> - Trigonometric (e.g., $\sin x, \sec^2 x$)<br>
+            <strong>E</strong> - Exponential (e.g., $e^x, 2^x$)
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: By Parts</span>
+            <strong>Question:</strong> Evaluate $\int x \log x \, dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. We have an Algebraic function ($x$) and a Logarithmic function ($\log x$).<br>
+                2. According to ILATE, Logarithmic (L) comes before Algebraic (A). So, $u = \log x$ and $v = x$.<br>
+                3. Apply formula: $\int u v \, dx = u \int v \, dx - \int (u' \int v \, dx) dx$<br>
+                   $= \log x \int x \, dx - \int \left( \frac{d}{dx}(\log x) \cdot \int x \, dx \right) dx$<br>
+                   $= (\log x) \left(\frac{x^2}{2}\right) - \int \left( \frac{1}{x} \cdot \frac{x^2}{2} \right) dx$<br>
+                   $= \frac{x^2}{2}\log x - \int \frac{x}{2} dx$<br>
+                   $= \frac{x^2}{2}\log x - \frac{1}{2}\left(\frac{x^2}{2}\right) + C$<br>
+                   $= \mathbf{\frac{x^2}{2}\log x - \frac{x^2}{4} + C}$.
+            </div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Special Sub-types (Board & JEE Favorites)</span>
+            <strong>1. The exponential cancellation form:</strong><br>
+            <strong>$$ \int e^x [f(x) + f'(x)] dx = e^x f(x) + C $$</strong>
+            If you see an $e^x$ multiplying a bracket, immediately try to manipulate the terms inside the bracket into a function and its exact derivative.<br><br>
+            
+            <strong>2. The algebraic cancellation form (JEE Trick):</strong><br>
+            <strong>$$ \int [x f'(x) + f(x)] dx = x f(x) + C $$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: Special Form</span>
+            <strong>Question:</strong> Evaluate $\int e^x \left( \frac{1}{x} - \frac{1}{x^2} \right) dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Observe the structure. It involves $e^x$ multiplying a sum.<br>
+                2. Let $f(x) = \frac{1}{x}$.<br>
+                3. Then, the derivative $f'(x) = \frac{d}{dx}(x^{-1}) = -x^{-2} = -\frac{1}{x^2}$.<br>
+                4. The integral is exactly in the form $\int e^x [f(x) + f'(x)] dx$.<br>
+                5. Using the special property, the answer is $e^x f(x) + C$.<br>
+                6. Answer: $\mathbf{\frac{e^x}{x} + C}$.
+            </div>
+        </div>
+
+        <h2>7. Integrals of Some Special Types (3 Standard Forms in Numerator)</h2>
+        <p>These are the massive formulas for square roots residing in the numerator. They are usually derived using Integration by Parts (taking $1$ as the second function).</p>
+
+        <div class="green-box">
+            <span class="box-label">Group 3: Square Roots in Numerator</span>
+            7. $\int \sqrt{a^2 - x^2} dx = \mathbf{\frac{x}{2}\sqrt{a^2 - x^2} + \frac{a^2}{2}\sin^{-1}\left(\frac{x}{a}\right) + C}$<br>
+            8. $\int \sqrt{x^2 - a^2} dx = \mathbf{\frac{x}{2}\sqrt{x^2 - a^2} - \frac{a^2}{2}\log|x + \sqrt{x^2 - a^2}| + C}$<br>
+            9. $\int \sqrt{x^2 + a^2} dx = \mathbf{\frac{x}{2}\sqrt{x^2 + a^2} + \frac{a^2}{2}\log|x + \sqrt{x^2 + a^2}| + C}$<br><br>
+            <em>Memorization Hint:</em> Every formula starts with $\frac{x}{2}(\text{Same Root})$. The second part is $\pm\frac{a^2}{2}$ multiplied by the corresponding denominator formula (formulas 4, 5, 6). The sign of $a^2$ matches the sign inside the root.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Numerator Roots</span>
+            <strong>Question:</strong> Evaluate $\int \sqrt{4 - x^2} dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. This matches the form $\int \sqrt{a^2 - x^2} dx$ where $a^2 = 4 \implies a = 2$.<br>
+                2. Apply Formula 7 directly:<br>
+                   $= \frac{x}{2}\sqrt{a^2 - x^2} + \frac{a^2}{2}\sin^{-1}\left(\frac{x}{a}\right) + C$<br>
+                   $= \mathbf{\frac{x}{2}\sqrt{4 - x^2} + 2\sin^{-1}\left(\frac{x}{2}\right) + C}$.
+            </div>
+        </div>
+
+        <h2>8. Definite Integrals</h2>
+        <p>While an indefinite integral gives a family of functions, a <strong>Definite Integral</strong> gives a unique numerical value. Geometrically, it represents the exact algebraic area bounded by the curve $y = f(x)$, the x-axis, and the vertical lines $x=a$ and $x=b$.</p>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Geometric representation of a Definite Integral. A coordinate axis with a smooth positive curve $y = f(x)$. Two vertical dashed lines drop from the curve to the x-axis at $x=a$ and $x=b$. The area enclosed between the curve, the x-axis, and the two vertical lines is shaded softly. A label in the middle of the shaded region says $\int_a^b f(x) dx$. White background."
+        </div>
+
+        <h3>Fundamental Theorem of Calculus</h3>
+        <ul>
+            <li><strong>First Theorem:</strong> Let $A(x) = \int_a^x f(t) dt$. Then $A'(x) = f(x)$. (Proves differentiation and integration are inverses).</li>
+            <li><strong>Second Theorem (The Evaluation Theorem):</strong> If $F(x)$ is the anti-derivative of a continuous function $f(x)$, then:<br>
+            <strong>$$ \int_a^b f(x) dx = [F(x)]_a^b = F(b) - F(a) $$</strong></li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">CRUCIAL RULE: Changing Limits during Substitution</span>
+            When evaluating a definite integral by the method of substitution, if you change the variable (e.g., from $x$ to $t$), you <strong>MUST simultaneously change the upper and lower limits of integration</strong> to match the new variable $t$. Otherwise, your calculation will be completely wrong.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 9: Definite Substitution</span>
+            <strong>Question:</strong> Evaluate $\int_0^1 \frac{\tan^{-1} x}{1 + x^2} dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Let $t = \tan^{-1} x \implies dt = \frac{1}{1 + x^2} dx$.<br>
+                2. <strong>Change Limits!</strong><br>
+                   - Lower limit: when $x = 0$, $t = \tan^{-1}(0) = 0$.<br>
+                   - Upper limit: when $x = 1$, $t = \tan^{-1}(1) = \pi/4$.<br>
+                3. Rewrite the entire integral in terms of $t$:<br>
+                   $I = \int_0^{\pi/4} t \, dt$<br>
+                4. Integrate:<br>
+                   $I = \left[ \frac{t^2}{2} \right]_0^{\pi/4}$<br>
+                5. Evaluate upper limit minus lower limit:<br>
+                   $I = \frac{1}{2} \left[ (\pi/4)^2 - (0)^2 \right] = \frac{1}{2} \left[ \frac{\pi^2}{16} \right] = \mathbf{\frac{\pi^2}{32}}$.
+            </div>
+        </div>
+
+        <h2>9. Properties of Definite Integrals (Most Heavily Tested)</h2>
+        <p>These properties allow us to evaluate incredibly complex definite integrals where finding the anti-derivative $F(x)$ is virtually impossible. R.D. Sharma and JEE focus 80% of their definite integral questions here.</p>
+
+        <div class="blue-box">
+            <span class="box-label">The Basic Properties</span>
+            - <strong>$P_0$ (Dummy Variable):</strong> $\int_a^b f(x) dx = \int_a^b f(t) dt$. The variable name doesn't matter.<br>
+            - <strong>$P_1$ (Limit Reversal):</strong> $\int_a^b f(x) dx = -\int_b^a f(x) dx$. Swapping limits flips the sign.<br>
+            - <strong>$P_2$ (Splitting):</strong> $\int_a^b f(x) dx = \int_a^c f(x) dx + \int_c^b f(x) dx$ (where $a < c < b$).<br>
+              <em>Crucial for integrating piecewise functions, Modulus functions $|x|$, and Greatest Integer Functions $[x]$, as you must split the integral at the points where the function changes its definition.</em>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">The "King's Rule" Properties ($P_3$ & $P_4$)</span>
+            These are the most frequently used properties in the entire chapter.<br>
+            - <strong>$P_3$ (King's Rule):</strong> <strong>$$ \int_a^b f(x) dx = \int_a^b f(a + b - x) dx $$</strong><br>
+            - <strong>$P_4$ (Special Case):</strong> If $a = 0$, the rule becomes: <strong>$$ \int_0^a f(x) dx = \int_0^a f(a - x) dx $$</strong><br>
+            <em>Algorithm:</em> Let original integral be $I$. Apply King's Rule to get a new equation for $I$. Add the two equations together ($2I = \dots$). The complex numerator usually perfectly cancels the denominator!
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 10: King's Rule</span>
+            <strong>Question:</strong> Evaluate $\int_0^{\pi/2} \frac{\sqrt{\sin x}}{\sqrt{\sin x} + \sqrt{\cos x}} dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Let $I = \int_0^{\pi/2} \frac{\sqrt{\sin x}}{\sqrt{\sin x} + \sqrt{\cos x}} dx \quad \text{--- (Eq 1)}$<br>
+                2. Apply $P_4$ (King's Rule from 0 to $a$): Replace every $x$ with $(\pi/2 - x)$.<br>
+                   $I = \int_0^{\pi/2} \frac{\sqrt{\sin(\pi/2 - x)}}{\sqrt{\sin(\pi/2 - x)} + \sqrt{\cos(\pi/2 - x)}} dx$<br>
+                3. Use $\sin(90-x) = \cos x$ and $\cos(90-x) = \sin x$:<br>
+                   $I = \int_0^{\pi/2} \frac{\sqrt{\cos x}}{\sqrt{\cos x} + \sqrt{\sin x}} dx \quad \text{--- (Eq 2)}$<br>
+                4. Add Eq 1 and Eq 2 ($I + I$):<br>
+                   $2I = \int_0^{\pi/2} \frac{\sqrt{\sin x} + \sqrt{\cos x}}{\sqrt{\sin x} + \sqrt{\cos x}} dx$<br>
+                5. The massive fraction cancels out completely to $1$!<br>
+                   $2I = \int_0^{\pi/2} 1 \, dx = [x]_0^{\pi/2} = (\pi/2 - 0) = \pi/2$<br>
+                6. Final Answer: $I = \mathbf{\frac{\pi}{4}}$.
+            </div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Even/Odd, Queen's Rule, and Periodic Functions</span>
+            - <strong>$P_5$ (Even/Odd Rule):</strong> For symmetric limits $\int_{-a}^a f(x) dx$:<br>
+              $= \mathbf{2 \int_0^a f(x) dx}$ if $f(x)$ is an <strong>Even Function</strong> (i.e., $f(-x) = f(x)$, like $\cos x, x^2$).<br>
+              $= \mathbf{0}$ if $f(x)$ is an <strong>Odd Function</strong> (i.e., $f(-x) = -f(x)$, like $\sin x, x^3$).<br><br>
+            
+            - <strong>$P_6$ (The "Queen's Rule"):</strong> For limits $\int_0^{2a} f(x) dx$:<br>
+              $= \mathbf{2 \int_0^a f(x) dx}$ if $f(2a - x) = f(x)$.<br>
+              $= \mathbf{0}$ if $f(2a - x) = -f(x)$.<br><br>
+
+            - <strong>$P_7$ (Periodic Functions - JEE specific):</strong> If $f(x)$ is a periodic function with a fundamental period $T$ (meaning $f(x+T) = f(x)$), then spanning over $n$ full periods:<br>
+              <strong>$$ \int_0^{nT} f(x) dx = n \int_0^T f(x) dx $$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 11: Even/Odd Property</span>
+            <strong>Question:</strong> Evaluate $\int_{-1}^1 \sin^5 x \cos^4 x \, dx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Notice the symmetric limits from $-1$ to $1$. This is a massive hint to test for Even/Odd nature using $P_5$.<br>
+                2. Let $f(x) = \sin^5 x \cos^4 x$.<br>
+                3. Check $f(-x)$:<br>
+                   $f(-x) = (\sin(-x))^5 (\cos(-x))^4$<br>
+                   We know $\sin(-x) = -\sin x$ and $\cos(-x) = \cos x$.<br>
+                   $f(-x) = (-\sin x)^5 (\cos x)^4 = -\sin^5 x \cos^4 x$.<br>
+                4. Since $f(-x) = -f(x)$, the function is purely an <strong>Odd Function</strong>.<br>
+                5. By Property $P_5$, the integral of any odd function over symmetric limits $[-a, a]$ is strictly zero.<br>
+                6. Answer: <strong>$0$</strong>. (No integration required!).
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

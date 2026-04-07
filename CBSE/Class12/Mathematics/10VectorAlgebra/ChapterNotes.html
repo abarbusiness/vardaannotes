@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Vector Algebra - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering dynamic Mathematical Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Graph Containers */
+        .graph-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            background: var(--paper-bg);
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 10: Vector Algebra</h1>
+
+        <p><em>Dear Class 12 Student! Welcome to the three-dimensional world of Vector Algebra. This chapter is the critical foundation not only for 3D Geometry in Mathematics but also for Mechanics and Electromagnetism in Physics. We will move beyond simple magnitudes and introduce "Direction". For the Boards, Direction Cosines and Cross/Dot products are heavily weighted. For JEE, the Scalar and Vector Triple Products are the ultimate deciders. Let's direct our focus!</em></p>
+
+        <h2>1. Basic Concepts</h2>
+        
+        <ul>
+            <li><strong>Scalars:</strong> Physical quantities that have only magnitude (e.g., Mass, Volume, Temperature, Speed, Distance).</li>
+            <li><strong>Vectors:</strong> Physical quantities that have both magnitude and a specific direction, and obey the laws of vector addition (e.g., Displacement, Velocity, Force, Acceleration).</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Representation and Position Vector</span>
+            <strong>Representation:</strong> A vector is graphically represented by a directed line segment with an arrow. Denoted as $\vec{AB}$ (tail at A, head at B) or simply $\vec{a}$.<br>
+            <strong>Magnitude (Length):</strong> The length of the line segment represents the magnitude, denoted by $|\vec{a}|$ or $a$. It is always a non-negative real number.<br><br>
+            
+            <strong>Position Vector:</strong> If $O(0,0,0)$ is the origin, the position of any point $P(x, y, z)$ in 3D space is given by the position vector $\vec{r} = \vec{OP}$.<br>
+            <strong>$$\vec{r} = x\hat{i} + y\hat{j} + z\hat{k}$$</strong>
+            Where $\hat{i}, \hat{j}, \hat{k}$ are orthogonal unit vectors along the x, y, and z axes respectively.<br>
+            <strong>Magnitude of $\vec{r}$:</strong> $\quad |\vec{r}| = \sqrt{x^2 + y^2 + z^2}$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Magnitude</span>
+            <strong>Question:</strong> Find the magnitude of the vector $\vec{a} = 2\hat{i} - 3\hat{j} + 6\hat{k}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                The magnitude of $\vec{a} = x\hat{i} + y\hat{j} + z\hat{k}$ is given by $\sqrt{x^2 + y^2 + z^2}$.<br>
+                $|\vec{a}| = \sqrt{(2)^2 + (-3)^2 + (6)^2}$<br>
+                $|\vec{a}| = \sqrt{4 + 9 + 36} = \sqrt{49} = \mathbf{7 \text{ units}}$.
+            </div>
+        </div>
+
+        <h2>2. Direction Cosines and Direction Ratios (Crucial Foundation)</h2>
+        <p>This is the most important concept linking Vector Algebra to 3D Geometry.</p>
+
+        <ul>
+            <li><strong>Direction Angles ($\alpha, \beta, \gamma$):</strong> The angles made by the position vector $\vec{r}$ with the positive directions of the x, y, and z-axes respectively.</li>
+            <li><strong>Direction Cosines ($l, m, n$):</strong> The cosine values of the direction angles.<br>
+            $l = \cos\alpha, \quad m = \cos\beta, \quad n = \cos\gamma$.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Fundamental Relations</span>
+            <strong>1. The Magic Identity:</strong> The sum of the squares of the direction cosines of any line/vector is always exactly 1.<br>
+            <strong>$$l^2 + m^2 + n^2 = 1$$</strong><br>
+            <strong>2. Direction Ratios ($a, b, c$):</strong> Any three numbers that are directly proportional to the direction cosines are called direction ratios. <br>
+            $a = \lambda l, \quad b = \lambda m, \quad c = \lambda n$.<br>
+            <em>Note: Unlike DCs, the sum of squares of DRs is generally NOT 1 ($a^2 + b^2 + c^2 \neq 1$).</em><br><br>
+            <strong>3. Converting DRs to DCs:</strong> If $a, b, c$ are direction ratios of a vector, its direction cosines are:<br>
+            <strong>$$l = \frac{a}{\sqrt{a^2+b^2+c^2}}, \quad m = \frac{b}{\sqrt{a^2+b^2+c^2}}, \quad n = \frac{c}{\sqrt{a^2+b^2+c^2}}$$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Direction Cosines</span>
+            <strong>Question:</strong> Find the direction cosines of the vector $\vec{r} = \hat{i} + 2\hat{j} + 3\hat{k}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. The scalar components are the Direction Ratios (DRs): $a = 1, b = 2, c = 3$.<br>
+                2. Calculate the magnitude of the vector:<br>
+                   $\sqrt{a^2 + b^2 + c^2} = \sqrt{1^2 + 2^2 + 3^2} = \sqrt{1 + 4 + 9} = \sqrt{14}$.<br>
+                3. Divide each DR by the magnitude to get the Direction Cosines (DCs):<br>
+                   $l = \frac{1}{\sqrt{14}}, \quad m = \frac{2}{\sqrt{14}}, \quad n = \frac{3}{\sqrt{14}}$.<br>
+                <strong>Answer:</strong> The DCs are $\left( \frac{1}{\sqrt{14}}, \frac{2}{\sqrt{14}}, \frac{3}{\sqrt{14}} \right)$.
+            </div>
+        </div>
+
+        <h2>3. Types of Vectors</h2>
+        <ul>
+            <li><strong>Zero (Null) Vector ($\vec{0}$):</strong> A vector whose initial and terminal points coincide. It has zero magnitude and an arbitrary (undefined) direction.</li>
+            <li><strong>Unit Vector ($\hat{a}$):</strong> A vector whose magnitude is exactly 1 unit. It is primarily used to specify a pure direction. Formula: $\mathbf{\hat{a} = \frac{\vec{a}}{|\vec{a}|}}$.</li>
+            <li><strong>Co-initial Vectors:</strong> Two or more vectors starting from the exact same initial point.</li>
+            <li><strong>Collinear (Parallel) Vectors:</strong> Vectors that are parallel to the same line, irrespective of their magnitudes or directions. <br>
+            <em>Condition:</em> $\vec{a}$ and $\vec{b}$ are collinear if $\mathbf{\vec{a} = \lambda \vec{b}}$ (where $\lambda$ is a non-zero scalar).</li>
+            <li><strong>Equal Vectors:</strong> Two vectors having the exact same magnitude AND the exact same direction.</li>
+            <li><strong>Negative of a Vector:</strong> A vector with the same magnitude but perfectly opposite direction. ($\vec{BA} = -\vec{AB}$).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Unit Vector</span>
+            <strong>Question:</strong> Find a unit vector in the direction of $\vec{a} = 3\hat{i} - 4\hat{j}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Find the magnitude: $|\vec{a}| = \sqrt{3^2 + (-4)^2} = \sqrt{9 + 16} = \sqrt{25} = 5$.<br>
+                2. Use the unit vector formula: $\hat{a} = \frac{\vec{a}}{|\vec{a}|}$.<br>
+                3. $\hat{a} = \frac{3\hat{i} - 4\hat{j}}{5} = \mathbf{\frac{3}{5}\hat{i} - \frac{4}{5}\hat{j}}$.
+            </div>
+        </div>
+
+        <h2>4. Algebra of Vectors</h2>
+
+        <div class="graph-container">
+            <h4 style="text-align: center; color: var(--accent-purple); margin-top: 0;">Triangle Law of Vector Addition</h4>
+            <p style="font-size: 0.9rem; text-align: center;">If two vectors are represented by two sides of a triangle in continuous sequence (head-to-tail), their sum (resultant) is represented by the third side taken in the opposite order (tail-to-head).</p>
+            <canvas id="vectorAdditionChart"></canvas>
+        </div>
+
+        <h3>A. Vector Addition & Scalar Multiplication</h3>
+        <ul>
+            <li><strong>Parallelogram Law:</strong> If two vectors act simultaneously at a point and are represented by adjacent sides of a parallelogram, their sum is the diagonal passing through that same point.</li>
+            <li><strong>Properties of Addition:</strong> Commutative ($\vec{a} + \vec{b} = \vec{b} + \vec{a}$) and Associative ($(\vec{a}+\vec{b})+\vec{c} = \vec{a}+(\vec{b}+\vec{c})$).</li>
+            <li><strong>Multiplication by a Scalar:</strong> Multiplying $\vec{a}$ by a scalar $\lambda$ yields a vector $\lambda\vec{a}$ whose magnitude is $|\lambda|$ times $|\vec{a}|$. If $\lambda$ is negative, the direction reverses.</li>
+        </ul>
+
+        <h3>B. Vector Joining Two Points</h3>
+        <p>If point $P_1$ has coordinates $(x_1, y_1, z_1)$ and $P_2$ has coordinates $(x_2, y_2, z_2)$, then the vector drawn from $P_1$ to $P_2$ is:</p>
+        <strong>$$\vec{P_1 P_2} = (x_2 - x_1)\hat{i} + (y_2 - y_1)\hat{j} + (z_2 - z_1)\hat{k}$$</strong>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Vector Joining Points</span>
+            <strong>Question:</strong> Find the vector joining the points $P(2, 3, 0)$ and $Q(-1, -2, -4)$ directed from $P$ to $Q$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. The vector is $\vec{PQ}$. We subtract coordinates of Initial point ($P$) from Terminal point ($Q$).<br>
+                2. $\vec{PQ} = (x_Q - x_P)\hat{i} + (y_Q - y_P)\hat{j} + (z_Q - z_P)\hat{k}$<br>
+                3. $\vec{PQ} = (-1 - 2)\hat{i} + (-2 - 3)\hat{j} + (-4 - 0)\hat{k}$<br>
+                4. $\vec{PQ} = \mathbf{-3\hat{i} - 5\hat{j} - 4\hat{k}}$.
+            </div>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">C. Section Formula</span>
+            Let $\vec{a}$ and $\vec{b}$ be the position vectors of points $A$ and $B$. The position vector $\vec{r}$ of a point $R$ dividing the line segment $AB$ in the ratio $m : n$ is:<br><br>
+            <strong>Internal Division:</strong> $\quad \mathbf{\vec{r} = \frac{m\vec{b} + n\vec{a}}{m + n}}$<br><br>
+            <strong>External Division:</strong> $\quad \mathbf{\vec{r} = \frac{m\vec{b} - n\vec{a}}{m - n}}$<br><br>
+            <strong>Midpoint Formula:</strong> (Special case where $m = n = 1$)<br>
+            $\quad \mathbf{\vec{r} = \frac{\vec{a} + \vec{b}}{2}}$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Section Formula</span>
+            <strong>Question:</strong> Find the position vector of a point $R$ which divides the line joining two points $P$ and $Q$ whose position vectors are $\hat{i} + 2\hat{j} - \hat{k}$ and $-\hat{i} + \hat{j} + \hat{k}$ respectively, in the ratio $2:1$ internally.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Given $\vec{a} = \hat{i} + 2\hat{j} - \hat{k}$ (for P), $\vec{b} = -\hat{i} + \hat{j} + \hat{k}$ (for Q). Ratio $m=2, n=1$.<br>
+                2. Internal division formula: $\vec{r} = \frac{m\vec{b} + n\vec{a}}{m + n}$.<br>
+                3. $\vec{r} = \frac{2(-\hat{i} + \hat{j} + \hat{k}) + 1(\hat{i} + 2\hat{j} - \hat{k})}{2 + 1}$<br>
+                4. $\vec{r} = \frac{-2\hat{i} + 2\hat{j} + 2\hat{k} + \hat{i} + 2\hat{j} - \hat{k}}{3}$<br>
+                5. $\vec{r} = \mathbf{\frac{-\hat{i} + 4\hat{j} + \hat{k}}{3}}$.
+            </div>
+        </div>
+
+        <h2>5. Scalar (Dot) Product of Two Vectors</h2>
+
+        <div class="yellow-box">
+            <span class="box-label">Definition and Properties</span>
+            The scalar product of two non-zero vectors $\vec{a}$ and $\vec{b}$ is defined as:<br>
+            <strong>$$\vec{a} \cdot \vec{b} = |\vec{a}| |\vec{b}| \cos\theta$$</strong>
+            Where $\theta$ is the angle between them ($0 \le \theta \le \pi$). The final result is a purely real number (SCALAR).<br><br>
+            <strong>Key Properties:</strong><br>
+            - Commutative: $\vec{a} \cdot \vec{b} = \vec{b} \cdot \vec{a}$.<br>
+            - Distributive: $\vec{a} \cdot (\vec{b} + \vec{c}) = \vec{a} \cdot \vec{b} + \vec{a} \cdot \vec{c}$.<br>
+            - Self Dot Product: $\mathbf{\vec{a} \cdot \vec{a} = |\vec{a}|^2}$.<br>
+            - Orthogonal Unit Vectors: $\hat{i}\cdot\hat{i} = \hat{j}\cdot\hat{j} = \hat{k}\cdot\hat{k} = 1$ because $\cos(0^\circ) = 1$.<br>
+            - Cross-axis Dot Product: $\hat{i}\cdot\hat{j} = \hat{j}\cdot\hat{k} = \hat{k}\cdot\hat{i} = 0$ because $\cos(90^\circ) = 0$.<br>
+            - <strong>Component Form:</strong> $\vec{a} \cdot \vec{b} = (a_1\hat{i} + a_2\hat{j} + a_3\hat{k}) \cdot (b_1\hat{i} + b_2\hat{j} + b_3\hat{k}) = \mathbf{a_1 b_1 + a_2 b_2 + a_3 b_3}$.
+        </div>
+
+        <p><strong>Crucial Condition:</strong> Two non-zero vectors are <strong>Perpendicular (Orthogonal)</strong> if and only if their dot product is zero ($\mathbf{\vec{a} \cdot \vec{b} = 0}$).</p>
+        <p><strong>Angle between Vectors:</strong> $\mathbf{\cos\theta = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|}}$.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Angle Calculation</span>
+            <strong>Question:</strong> Find the angle between the vectors $\vec{a} = \hat{i} + \hat{j} - \hat{k}$ and $\vec{b} = \hat{i} - \hat{j} + \hat{k}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Find the dot product: $\vec{a} \cdot \vec{b} = (1)(1) + (1)(-1) + (-1)(1) = 1 - 1 - 1 = -1$.<br>
+                2. Find magnitude of $\vec{a}$: $|\vec{a}| = \sqrt{1^2 + 1^2 + (-1)^2} = \sqrt{3}$.<br>
+                3. Find magnitude of $\vec{b}$: $|\vec{b}| = \sqrt{1^2 + (-1)^2 + 1^2} = \sqrt{3}$.<br>
+                4. Use cosine formula: $\cos\theta = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|} = \frac{-1}{\sqrt{3} \cdot \sqrt{3}} = -\frac{1}{3}$.<br>
+                5. Angle $\theta = \mathbf{\cos^{-1}\left(-\frac{1}{3}\right)}$.
+            </div>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Projection of a Vector (High Board Priority)</span>
+            The projection of vector $\vec{a}$ onto vector $\vec{b}$ is the "shadow" cast by $\vec{a}$ along the line of $\vec{b}$.<br><br>
+            <strong>1. Scalar Projection of $\vec{a}$ on $\vec{b}$:</strong><br>
+            This is just the length of the shadow. Formula: $\mathbf{\frac{\vec{a} \cdot \vec{b}}{|\vec{b}|}}$ (or simply $\vec{a} \cdot \hat{b}$).<br><br>
+            <strong>2. Vector Projection of $\vec{a}$ on $\vec{b}$:</strong><br>
+            This gives the shadow both magnitude and direction along $\vec{b}$. Formula: $\mathbf{\left( \frac{\vec{a} \cdot \vec{b}}{|\vec{b}|^2} \right) \vec{b}}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: Scalar Projection</span>
+            <strong>Question:</strong> Find the projection of the vector $\vec{a} = 2\hat{i} + 3\hat{j} + 2\hat{k}$ on the vector $\vec{b} = \hat{i} + 2\hat{j} + \hat{k}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Projection formula is $\frac{\vec{a} \cdot \vec{b}}{|\vec{b}|}$.<br>
+                2. Find dot product $\vec{a} \cdot \vec{b} = (2)(1) + (3)(2) + (2)(1) = 2 + 6 + 2 = 10$.<br>
+                3. Find magnitude of $\vec{b}$: $|\vec{b}| = \sqrt{1^2 + 2^2 + 1^2} = \sqrt{1 + 4 + 1} = \sqrt{6}$.<br>
+                4. Projection $= \mathbf{\frac{10}{\sqrt{6}}}$. (Can be rationalized to $\frac{5\sqrt{6}}{3}$).
+            </div>
+        </div>
+
+        <h2>6. Vector (Cross) Product of Two Vectors</h2>
+
+        <div class="blue-box">
+            <span class="box-label">Definition and Properties</span>
+            The cross product of two non-zero vectors $\vec{a}$ and $\vec{b}$ produces a new <strong>VECTOR</strong> that is perfectly perpendicular (orthogonal) to both $\vec{a}$ and $\vec{b}$.<br>
+            <strong>$$\vec{a} \times \vec{b} = |\vec{a}| |\vec{b}| \sin\theta \, \hat{n}$$</strong>
+            Where $\hat{n}$ is a unit vector perpendicular to the plane containing $\vec{a}$ and $\vec{b}$, determined by the <strong>Right-Hand Thumb Rule</strong>.<br><br>
+            <strong>Key Properties:</strong><br>
+            - <strong>Non-commutative:</strong> $\vec{a} \times \vec{b} = -(\vec{b} \times \vec{a})$. Reversing the order flips the direction of the resultant vector.<br>
+            - <strong>Self Cross Product:</strong> $\mathbf{\vec{a} \times \vec{a} = \vec{0}}$ (because $\sin(0^\circ) = 0$).<br>
+            - <strong>Collinear Condition:</strong> Two non-zero vectors are parallel/collinear if and only if $\mathbf{\vec{a} \times \vec{b} = \vec{0}}$.<br>
+            - Orthogonal Unit Vectors: $\hat{i}\times\hat{i} = \hat{j}\times\hat{j} = \hat{k}\times\hat{k} = \vec{0}$.<br>
+            - Cyclic Order: $\hat{i}\times\hat{j} = \hat{k}$, $\quad \hat{j}\times\hat{k} = \hat{i}$, $\quad \hat{k}\times\hat{i} = \hat{j}$. (Reverse order yields negative, e.g., $\hat{j}\times\hat{i} = -\hat{k}$).
+        </div>
+
+        <p><strong>Component Form (Determinant Method):</strong> To calculate the cross product easily without doing 9 separate multiplications, use a determinant:<br>
+        <strong>$$\vec{a} \times \vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ a_1 & a_2 & a_3 \\ b_1 & b_2 & b_3 \end{vmatrix}$$</strong></p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Cross Product</span>
+            <strong>Question:</strong> Find a unit vector perpendicular to both vectors $\vec{a} = 2\hat{i} + \hat{j} + \hat{k}$ and $\vec{b} = \hat{i} - \hat{j} + 2\hat{k}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. A vector perpendicular to both is their cross product $\vec{c} = \vec{a} \times \vec{b}$.<br>
+                2. Calculate $\vec{a} \times \vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 2 & 1 & 1 \\ 1 & -1 & 2 \end{vmatrix}$.<br>
+                   $= \hat{i}(2 - (-1)) - \hat{j}(4 - 1) + \hat{k}(-2 - 1)$<br>
+                   $= \hat{i}(3) - \hat{j}(3) + \hat{k}(-3) = 3\hat{i} - 3\hat{j} - 3\hat{k}$.<br>
+                3. We need a <em>unit</em> vector. So we must divide $\vec{c}$ by its magnitude.<br>
+                   $|\vec{c}| = \sqrt{3^2 + (-3)^2 + (-3)^2} = \sqrt{9 + 9 + 9} = \sqrt{27} = 3\sqrt{3}$.<br>
+                4. Unit vector $\hat{n} = \frac{\vec{c}}{|\vec{c}|} = \frac{3\hat{i} - 3\hat{j} - 3\hat{k}}{3\sqrt{3}} = \mathbf{\frac{1}{\sqrt{3}}\hat{i} - \frac{1}{\sqrt{3}}\hat{j} - \frac{1}{\sqrt{3}}\hat{k}}$.<br>
+                <em>(Note: Multiplying this answer by -1 also gives a valid opposite-facing unit vector).</em>
+            </div>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Geometrical Applications of Cross Product (High Priority)</span>
+            The magnitude of the cross product gives us areas of basic geometric shapes:<br><br>
+            <strong>1. Area of a Parallelogram:</strong><br>
+            - If adjacent sides are given by vectors $\vec{a}$ and $\vec{b}$: $\mathbf{\text{Area} = |\vec{a} \times \vec{b}|}$.<br>
+            - If diagonals are given by vectors $\vec{d_1}$ and $\vec{d_2}$: $\mathbf{\text{Area} = \frac{1}{2} |\vec{d_1} \times \vec{d_2}|}$.<br><br>
+            <strong>2. Area of a Triangle:</strong><br>
+            - If adjacent sides are given by vectors $\vec{a}$ and $\vec{b}$: $\mathbf{\text{Area} = \frac{1}{2} |\vec{a} \times \vec{b}|}$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 9: Area of Triangle</span>
+            <strong>Question:</strong> Find the area of a triangle having vertices $A(1, 1, 1)$, $B(1, 2, 3)$, and $C(2, 3, 1)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. First, find two adjacent side vectors, say $\vec{AB}$ and $\vec{AC}$.<br>
+                   $\vec{AB} = (1-1)\hat{i} + (2-1)\hat{j} + (3-1)\hat{k} = 0\hat{i} + 1\hat{j} + 2\hat{k}$.<br>
+                   $\vec{AC} = (2-1)\hat{i} + (3-1)\hat{j} + (1-1)\hat{k} = 1\hat{i} + 2\hat{j} + 0\hat{k}$.<br>
+                2. Find their cross product $\vec{AB} \times \vec{AC}$:<br>
+                   $\vec{AB} \times \vec{AC} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 0 & 1 & 2 \\ 1 & 2 & 0 \end{vmatrix} = \hat{i}(0 - 4) - \hat{j}(0 - 2) + \hat{k}(0 - 1) = -4\hat{i} + 2\hat{j} - \hat{k}$.<br>
+                3. Find the magnitude of the cross product:<br>
+                   $|\vec{AB} \times \vec{AC}| = \sqrt{(-4)^2 + 2^2 + (-1)^2} = \sqrt{16 + 4 + 1} = \sqrt{21}$.<br>
+                4. Area of Triangle $= \frac{1}{2} |\vec{AB} \times \vec{AC}| = \mathbf{\frac{\sqrt{21}}{2} \text{ sq. units}}$.
+            </div>
+        </div>
+
+        <h2>7. Scalar Triple Product (R.D. Sharma / JEE Focus)</h2>
+        <p><em>Note: While often rationalized in basic NCERT exams, the Scalar Triple Product (STP) is an absolute non-negotiable requirement for JEE Mains and Advanced.</em></p>
+
+        <p><strong>Definition:</strong> The dot product of one vector with the cross product of two other vectors is called the scalar triple product. It is denoted by a box notation.<br>
+        <strong>$$[\vec{a} \, \vec{b} \, \vec{c}] = \vec{a} \cdot (\vec{b} \times \vec{c})$$</strong>
+        The final result is a purely real number (SCALAR).</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Calculation and Geometry of STP</span>
+            <strong>Component Form (Determinant Method):</strong> Instead of doing a cross product and then a dot product, simply evaluate a $3 \times 3$ determinant formed by the coefficients of the three vectors.<br>
+            <strong>$$[\vec{a} \, \vec{b} \, \vec{c}] = \begin{vmatrix} a_1 & a_2 & a_3 \\ b_1 & b_2 & b_3 \\ c_1 & c_2 & c_3 \end{vmatrix}$$</strong><br><br>
+            <strong>Geometrical Interpretation:</strong> The absolute value of the scalar triple product represents the <strong>Volume of a Parallelepiped</strong> whose three adjacent edges are represented by the vectors $\vec{a}, \vec{b}, \text{ and } \vec{c}$.<br>
+            $\text{Volume} = |[\vec{a} \, \vec{b} \, \vec{c}]|$.
+        </div>
+
+        <p><strong>Crucial Coplanarity Condition:</strong> Three non-zero vectors $\vec{a}, \vec{b}, \text{ and } \vec{c}$ lie in the exact same plane (i.e., they are coplanar) IF AND ONLY IF their scalar triple product is exactly zero. (Because a flat plane has zero volume!).<br>
+        <strong>$$[\vec{a} \, \vec{b} \, \vec{c}] = 0 \iff \text{Vectors are Coplanar.}$$</strong></p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 10: Coplanarity via STP</span>
+            <strong>Question:</strong> Show that the vectors $\vec{a} = \hat{i} - 2\hat{j} + 3\hat{k}$, $\vec{b} = -2\hat{i} + 3\hat{j} - 4\hat{k}$, and $\vec{c} = \hat{i} - 3\hat{j} + 5\hat{k}$ are coplanar.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Three vectors are coplanar if their Scalar Triple Product is zero.<br>
+                $[\vec{a} \, \vec{b} \, \vec{c}] = \begin{vmatrix} 1 & -2 & 3 \\ -2 & 3 & -4 \\ 1 & -3 & 5 \end{vmatrix}$<br>
+                Expanding along Row 1:<br>
+                $= 1(15 - 12) - (-2)(-10 - (-4)) + 3(6 - 3)$<br>
+                $= 1(3) + 2(-10 + 4) + 3(3)$<br>
+                $= 3 + 2(-6) + 9$<br>
+                $= 3 - 12 + 9 = 12 - 12 = \mathbf{0}$.<br>
+                Since the STP is zero, the three given vectors are perfectly coplanar.
+            </div>
+        </div>
+
+        <h2>8. Vector Triple Product (Strictly JEE Advanced)</h2>
+        <p><strong>Definition:</strong> The cross product of a vector with the cross product of two other vectors. It results in a new VECTOR.<br>
+        $\vec{a} \times (\vec{b} \times \vec{c})$.<br>
+        <em>Geometrically:</em> The resulting vector is coplanar with vectors $\vec{b}$ and $\vec{c}$, and is perfectly perpendicular to vector $\vec{a}$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">The BAC - CAB Rule</span>
+            Expanding a vector triple product using a determinant is tedious. Use the fundamental BAC-CAB expansion formula:<br>
+            <strong>$$\vec{a} \times (\vec{b} \times \vec{c}) = (\vec{a} \cdot \vec{c})\vec{b} - (\vec{a} \cdot \vec{b})\vec{c}$$</strong>
+            <em>Note: The terms in parentheses are scalar dot products, which then multiply the vectors outside.</em>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 11: VTP Expansion</span>
+            <strong>Question:</strong> Simplify the expression $\hat{i} \times (\hat{j} \times \hat{k}) + \hat{j} \times (\hat{k} \times \hat{i}) + \hat{k} \times (\hat{i} \times \hat{j})$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                We can solve this rapidly using the cyclic properties of the cross product.<br>
+                1. First term: $\hat{j} \times \hat{k} = \hat{i}$. So, $\hat{i} \times (\hat{j} \times \hat{k}) = \hat{i} \times \hat{i} = \vec{0}$.<br>
+                2. Second term: $\hat{k} \times \hat{i} = \hat{j}$. So, $\hat{j} \times (\hat{k} \times \hat{i}) = \hat{j} \times \hat{j} = \vec{0}$.<br>
+                3. Third term: $\hat{i} \times \hat{j} = \hat{k}$. So, $\hat{k} \times (\hat{i} \times \hat{j}) = \hat{k} \times \hat{k} = \vec{0}$.<br>
+                Adding them all together: $\vec{0} + \vec{0} + \vec{0} = \mathbf{\vec{0}}$.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS FOR CHARTS & TOGGLE -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            renderCharts();
+        }
+
+        let vectorAdditionChart;
+
+        function renderCharts() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#aaaaaa' : '#666666';
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: true, labels: { color: textColor } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'X', color: textColor}, min: -1, max: 6 },
+                    y: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'Y', color: textColor}, min: -1, max: 6 }
+                }
+            };
+
+            // Triangle Law Visualization
+            const ctx = document.getElementById('vectorAdditionChart').getContext('2d');
+            if (vectorAdditionChart) vectorAdditionChart.destroy();
+            
+            vectorAdditionChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Vector a (3i + j)',
+                            data: [{x: 0, y: 0}, {x: 3, y: 1}],
+                            borderColor: '#1e88e5', /* Blue */
+                            backgroundColor: '#1e88e5',
+                            borderWidth: 3,
+                            showLine: true,
+                            pointRadius: 4,
+                            pointStyle: ['circle', 'triangle'] // Tries to make an arrowhead
+                        },
+                        {
+                            label: 'Vector b (i + 3j)',
+                            data: [{x: 3, y: 1}, {x: 4, y: 4}],
+                            borderColor: '#43a047', /* Green */
+                            backgroundColor: '#43a047',
+                            borderWidth: 3,
+                            showLine: true,
+                            pointRadius: 4,
+                            pointStyle: ['circle', 'triangle']
+                        },
+                        {
+                            label: 'Resultant (a + b) = 4i + 4j',
+                            data: [{x: 0, y: 0}, {x: 4, y: 4}],
+                            borderColor: '#d81b60', /* Pink */
+                            backgroundColor: '#d81b60',
+                            borderWidth: 3,
+                            borderDash: [5, 5],
+                            showLine: true,
+                            pointRadius: 5,
+                            pointStyle: ['circle', 'triangle']
+                        }
+                    ]
+                },
+                options: commonOptions
+            });
+        }
+
+        window.onload = renderCharts;
+    </script>
+</body>
+</html>

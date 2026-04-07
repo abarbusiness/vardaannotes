@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Differential Equations - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering dynamic Mathematical Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* Graph Containers */
+        .graph-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--paper-bg);
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 9: Differential Equations</h1>
+
+        <p><em>Dear Class 12 Student! If derivatives represent the "rate of change", then Differential Equations represent the laws of nature themselves. From predicting population growth to calculating how fast a cup of coffee cools down, everything is modeled using DEs. For the Boards, identifying the Order & Degree, and solving Linear Differential Equations (LDE) are absolute 5-mark guarantees. For JEE, equations reducible to variable separable and orthogonal trajectories are game-changers. Let's solve!</em></p>
+
+        <h2>1. Introduction, Order, and Degree (1-Mark Board Guarantee)</h2>
+        <p><strong>Differential Equation (DE):</strong> An equation that involves independent variables (e.g., $x$), dependent variables (e.g., $y$), and the derivatives of the dependent variables with respect to the independent variables (e.g., $\frac{dy}{dx}, y', y''$).</p>
+
+        <div class="blue-box">
+            <span class="box-label">Order and Degree</span>
+            <strong>Order of a DE:</strong> The order of the <em>highest order derivative</em> appearing in the equation. (The order is ALWAYS uniquely defined).<br><br>
+            
+            <strong>Degree of a DE:</strong> The highest power (positive integer only) raised to the highest order derivative, <em>provided</em> the differential equation is a polynomial equation in its derivatives.<br><br>
+            
+            <strong>Crucial Rule for Degree:</strong> The DE must be completely free from radicals (roots) and fractional powers concerning the derivatives. You must mathematically clear them before finding the degree.<br><br>
+            
+            <strong>When is Degree "Not Defined"?</strong> If a derivative is forever trapped inside a transcendental function (e.g., $\sin(\frac{dy}{dx})$, $e^{y'}$, or $\log(y'')$), the equation cannot be written as a polynomial of derivatives. In such cases, the degree is strictly <strong>Not Defined</strong>.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Order & Degree</span>
+            <strong>Question:</strong> Find the order and degree of the following differential equations:<br>
+            (i) $\left( \frac{d^2y}{dx^2} \right)^3 + \left( \frac{dy}{dx} \right)^4 + y = 0$<br>
+            (ii) $y'' + (y')^2 + \sin(y') = 0$<br>
+            (iii) $\left[ 1 + \left(\frac{dy}{dx}\right)^2 \right]^{3/2} = k \frac{d^2y}{dx^2}$
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>(i)</strong> The highest derivative is $\frac{d^2y}{dx^2}$ (2nd order). The power raised to this highest derivative is 3. <br>
+                $\implies$ <strong>Order = 2, Degree = 3</strong>.<br><br>
+                
+                <strong>(ii)</strong> The highest derivative is $y''$ (2nd order). However, $y'$ is trapped inside the sine function ($\sin(y')$). It is not a polynomial equation in derivatives.<br>
+                $\implies$ <strong>Order = 2, Degree = Not Defined</strong>.<br><br>
+                
+                <strong>(iii)</strong> We must remove the fractional power ($3/2$) by squaring both sides:<br>
+                $\left[ 1 + \left(\frac{dy}{dx}\right)^2 \right]^3 = k^2 \left( \frac{d^2y}{dx^2} \right)^2$<br>
+                The highest derivative is $\frac{d^2y}{dx^2}$ (2nd order). Its power is 2.<br>
+                $\implies$ <strong>Order = 2, Degree = 2</strong>.
+            </div>
+        </div>
+
+        <h2>2. General and Particular Solutions</h2>
+        <p>Unlike normal algebraic equations where solutions are numbers, the solution to a Differential Equation is a <strong>Function</strong> (a curve).</p>
+        
+        <div class="graph-container">
+            <h4 style="text-align: center; color: var(--accent-purple); margin-top: 0;">Family of Curves (General Solution)</h4>
+            <p style="font-size: 0.9rem; text-align: center;">The General Solution $y = C e^x$ represents an infinite family of curves. A Particular Solution (e.g., $y = 2e^x$) picks exactly one specific curve from this family based on a given boundary condition.</p>
+            <canvas id="familyOfCurvesChart"></canvas>
+        </div>
+
+        <ul>
+            <li><strong>General Solution:</strong> A solution that contains exactly as many arbitrary constants (e.g., $A, B, C$) as the <em>order</em> of the differential equation. Geometrically, it represents a <em>family of curves</em>.</li>
+            <li><strong>Particular Solution:</strong> A solution obtained from the general solution by giving specific numerical values to the arbitrary constants. These values are found by plugging in given initial boundary conditions (e.g., "$y=1$ when $x=0$"). It represents one specific curve.</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Verifying a Solution</span>
+            <strong>Question:</strong> Verify that $y = A \sin x + B \cos x$ is a general solution to the differential equation $\frac{d^2y}{dx^2} + y = 0$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Given: $y = A \sin x + B \cos x$.<br>
+                2. Differentiate w.r.t $x$:<br>
+                   $\frac{dy}{dx} = A \cos x - B \sin x$.<br>
+                3. Differentiate again w.r.t $x$ to find the 2nd order derivative:<br>
+                   $\frac{d^2y}{dx^2} = \frac{d}{dx}(A \cos x - B \sin x) = A(-\sin x) - B(\cos x)$.<br>
+                   $\frac{d^2y}{dx^2} = -(A \sin x + B \cos x)$.<br>
+                4. Substitute the expression for $y$ back into the RHS:<br>
+                   $\frac{d^2y}{dx^2} = -y \implies \mathbf{\frac{d^2y}{dx^2} + y = 0}$.<br>
+                5. Since it satisfies the DE perfectly, it is indeed a solution. Because it has two arbitrary constants ($A, B$) for a 2nd order DE, it is the <strong>General Solution</strong>.
+            </div>
+        </div>
+
+        <h2>3. Formation of a Differential Equation</h2>
+        <p><em>Note: Sometimes rationalized in recent NCERT syllabi, but absolutely essential for setting up R.D. Sharma word problems.</em></p>
+
+        <p><strong>Concept:</strong> If you are given a geometric equation representing a family of curves with $n$ arbitrary constants, your goal is to form a differential equation that is completely <em>free</em> of those arbitrary constants.</p>
+
+        <div class="green-box">
+            <span class="box-label">Algorithm for Formation</span>
+            1. <strong>Count:</strong> Count the number of arbitrary constants ($n$) in the given equation.<br>
+            2. <strong>Differentiate:</strong> Differentiate the given equation exactly $n$ times to obtain $n$ new derivative equations.<br>
+            3. <strong>Eliminate:</strong> Use algebraic manipulation among the original equation and the $n$ differentiated equations to permanently eliminate all arbitrary constants.<br>
+            4. The resulting equation is the required DE. (Its order will be exactly $n$).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Formation</span>
+            <strong>Question:</strong> Form the differential equation representing the family of circles having their center at the origin.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. The general equation of a family of circles centered at the origin is: $x^2 + y^2 = r^2$.<br>
+                2. Here, there is only <strong>one</strong> arbitrary constant ($r$). So, we will differentiate exactly <strong>once</strong>.<br>
+                3. Differentiate w.r.t $x$:<br>
+                   $2x + 2y \frac{dy}{dx} = 0$<br>
+                4. Divide by 2 to simplify:<br>
+                   $x + y \frac{dy}{dx} = 0 \implies \mathbf{x + y y' = 0}$.<br>
+                5. The arbitrary constant $r$ has been naturally eliminated. This is the required Differential Equation.
+            </div>
+        </div>
+
+        <h2>4. Methods of Solving First Order, First Degree DEs</h2>
+        <p>This is the core of the chapter. Every question you encounter must be categorized into one of three methods before solving.</p>
+
+        <h3>Method A: Variable Separable Form</h3>
+        <p>If the equation can be algebraically manipulated so that all $x$ terms and $dx$ are on one side, and all $y$ terms and $dy$ are on the other.</p>
+        <p><strong>Form:</strong> $f(x) dx = g(y) dy$<br>
+        <strong>Algorithm:</strong> Separate the variables, then simply integrate both sides: $\int f(x) dx = \int g(y) dy + C$.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Standard Variable Separable</span>
+            <strong>Question:</strong> Solve the differential equation $\frac{dy}{dx} = e^{x-y} + x^2 e^{-y}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Use exponent rules to expand: $\frac{dy}{dx} = e^x \cdot e^{-y} + x^2 \cdot e^{-y}$.<br>
+                2. Factor out $e^{-y}$ on the RHS: $\frac{dy}{dx} = e^{-y} (e^x + x^2)$.<br>
+                3. Separate variables (move $y$ terms to left, $x$ to right):<br>
+                   $\frac{dy}{e^{-y}} = (e^x + x^2) dx \implies e^y dy = (e^x + x^2) dx$.<br>
+                4. Integrate both sides:<br>
+                   $\int e^y dy = \int (e^x + x^2) dx$<br>
+                5. <strong>$e^y = e^x + \frac{x^3}{3} + C$</strong> (General Solution).
+            </div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">R.D. Sharma / JEE Focus: Equations Reducible to Variable Separable</span>
+            When you see a linear expression of $x$ and $y$ trapped inside a function, e.g., $\frac{dy}{dx} = f(ax + by + c)$.<br>
+            <strong>Algorithm:</strong><br>
+            1. Substitute the trapped expression: Let $ax + by + c = t$.<br>
+            2. Differentiate w.r.t $x$: $a + b \frac{dy}{dx} = \frac{dt}{dx} \implies \frac{dy}{dx} = \frac{1}{b} \left( \frac{dt}{dx} - a \right)$.<br>
+            3. Substitute back into the DE. It will now be purely Variable Separable in terms of $t$ and $x$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Reducible to Variable Separable</span>
+            <strong>Question:</strong> Solve the differential equation $\frac{dy}{dx} = (x+y)^2$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. We cannot separate $x$ and $y$ algebraically because they are squared together. Let $x + y = t$.<br>
+                2. Differentiate w.r.t $x$: $1 + \frac{dy}{dx} = \frac{dt}{dx} \implies \frac{dy}{dx} = \frac{dt}{dx} - 1$.<br>
+                3. Substitute into original DE:<br>
+                   $\frac{dt}{dx} - 1 = t^2 \implies \frac{dt}{dx} = t^2 + 1$.<br>
+                4. Now it is Variable Separable! Separate $t$ and $x$:<br>
+                   $\frac{dt}{t^2 + 1} = dx$.<br>
+                5. Integrate both sides:<br>
+                   $\int \frac{dt}{t^2 + 1} = \int dx \implies \tan^{-1}(t) = x + C$.<br>
+                6. Replace $t$ with $x+y$:<br>
+                   <strong>$\tan^{-1}(x+y) = x + C$</strong>.
+            </div>
+        </div>
+
+        <h3>Method B: Homogeneous Differential Equations</h3>
+        <p><strong>Homogeneous Function:</strong> A function $F(x, y)$ is homogeneous of degree $n$ if substituting $x \rightarrow \lambda x$ and $y \rightarrow \lambda y$ yields $F(\lambda x, \lambda y) = \lambda^n F(x, y)$. Simply put, every term has the exact same total algebraic degree.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Algorithm: Homogeneous DE</span>
+            <strong>Form 1:</strong> $\frac{dy}{dx} = \frac{f(x,y)}{g(x,y)}$ (where $f$ and $g$ are homogeneous of same degree).<br>
+            1. Substitute <strong>$y = vx$</strong>.<br>
+            2. Differentiate using product rule: <strong>$\frac{dy}{dx} = v + x \frac{dv}{dx}$</strong>.<br>
+            3. Substitute these into the DE. The variable $x$ will magically cancel out from the RHS fraction.<br>
+            4. The equation reduces to Variable Separable form in terms of $v$ and $x$. Integrate.<br>
+            5. Final step: Replace $v$ with $y/x$.<br><br>
+            <strong>Form 2 (Special Case):</strong> If the equation has terms like $x/y$ or $e^{x/y}$, isolate $\frac{dx}{dy}$.<br>
+            Substitute <strong>$x = vy \implies \frac{dx}{dy} = v + y \frac{dv}{dy}$</strong>.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Homogeneous DE</span>
+            <strong>Question:</strong> Solve $(x^2 + y^2)dx - 2xy \, dy = 0$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Isolate $dy/dx$: $\frac{dy}{dx} = \frac{x^2 + y^2}{2xy}$. (Every term is degree 2. It is homogeneous).<br>
+                2. Put $y = vx \implies \frac{dy}{dx} = v + x \frac{dv}{dx}$.<br>
+                3. Substitute: $v + x \frac{dv}{dx} = \frac{x^2 + (vx)^2}{2x(vx)} = \frac{x^2(1 + v^2)}{2x^2 v} = \frac{1 + v^2}{2v}$.<br>
+                4. Isolate $x \frac{dv}{dx}$ term:<br>
+                   $x \frac{dv}{dx} = \frac{1 + v^2}{2v} - v = \frac{1 + v^2 - 2v^2}{2v} = \frac{1 - v^2}{2v}$.<br>
+                5. Separate variables:<br>
+                   $\frac{2v}{1 - v^2} dv = \frac{dx}{x}$.<br>
+                6. Integrate both sides. Let $1 - v^2 = t \implies -2v dv = dt$.<br>
+                   $\int \frac{-dt}{t} = \int \frac{dx}{x} \implies -\log|1 - v^2| = \log|x| + C$.<br>
+                7. Put $v = y/x$:<br>
+                   $-\log|1 - \frac{y^2}{x^2}| = \log|x| + C \implies \log|x| + \log|\frac{x^2 - y^2}{x^2}| = -C = \log K$.<br>
+                   $\log\left| x \cdot \frac{x^2 - y^2}{x^2} \right| = \log K \implies \mathbf{\frac{x^2 - y^2}{x} = K \implies x^2 - y^2 = Kx}$.
+            </div>
+        </div>
+
+        <h3>Method C: Linear Differential Equations (LDE) - High Board Priority</h3>
+        
+        <div class="green-box">
+            <span class="box-label">Algorithm: Type 1 LDE</span>
+            <strong>Standard Form:</strong> $\frac{dy}{dx} + P y = Q$<br>
+            <em>Condition:</em> $P$ and $Q$ must be functions of $x$ only, or constants.<br>
+            1. Find the Integrating Factor (I.F.): <strong>$I.F. = e^{\int P \, dx}$</strong>.<br>
+            2. Write the direct solution formula:<br>
+            <strong>$$ y \times (I.F.) = \int (Q \times I.F.) \, dx + C $$</strong>
+            3. Integrate the RHS to finish.<br><br>
+            <strong>Type 2 (Reverse):</strong> $\frac{dx}{dy} + P_1 x = Q_1$ (Use when there's a single $x$ term but multiple complex $y$ terms).<br>
+            $I.F. = e^{\int P_1 \, dy}$. Solution: $x \times (I.F.) = \int (Q_1 \times I.F.) \, dy + C$.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: Standard LDE</span>
+            <strong>Question:</strong> Solve the DE: $x \frac{dy}{dx} + 2y = x^2 \quad (x \neq 0)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Make the coefficient of $dy/dx$ unity by dividing entirely by $x$:<br>
+                   $\frac{dy}{dx} + \frac{2}{x} y = x$.<br>
+                2. Compare with $\frac{dy}{dx} + Py = Q$. Here $P = \frac{2}{x}$ and $Q = x$.<br>
+                3. Find Integrating Factor (I.F.):<br>
+                   $I.F. = e^{\int P dx} = e^{\int \frac{2}{x} dx} = e^{2\log x} = e^{\log(x^2)} = \mathbf{x^2}$.<br>
+                4. Write the solution formula:<br>
+                   $y \times (I.F.) = \int (Q \times I.F.) \, dx + C$<br>
+                   $y \cdot x^2 = \int (x \cdot x^2) \, dx + C$<br>
+                   $y x^2 = \int x^3 \, dx + C$<br>
+                5. Integrate: $y x^2 = \frac{x^4}{4} + C \implies \mathbf{y = \frac{x^2}{4} + cx^{-2}}$.
+            </div>
+        </div>
+
+        <h2>5. Equations Reducible to Linear Form (Bernoulli's Equation)</h2>
+        <p><em>Note: Strictly R.D. Sharma / JEE Mains Level. Very highly tested in competitive exams.</em></p>
+
+        <p><strong>Form:</strong> $\frac{dy}{dx} + P y = Q y^n$ (where $n \neq 0, 1$).</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Algorithm: Bernoulli's Equation</span>
+            1. Divide the entire equation by $y^n$ to get: $y^{-n} \frac{dy}{dx} + P y^{1-n} = Q$.<br>
+            2. Substitute the middle term: Let $y^{1-n} = t$.<br>
+            3. Differentiate w.r.t $x$: $(1-n) y^{-n} \frac{dy}{dx} = \frac{dt}{dx} \implies y^{-n} \frac{dy}{dx} = \frac{1}{1-n} \frac{dt}{dx}$.<br>
+            4. Substitute back to convert the DE into a standard LDE in terms of $t$ and $x$:<br>
+               $\frac{1}{1-n} \frac{dt}{dx} + P t = Q \implies \mathbf{\frac{dt}{dx} + (1-n)P \cdot t = (1-n)Q}$.<br>
+            5. Solve as a standard LDE and replace $t$ at the end.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Bernoulli's Equation</span>
+            <strong>Question:</strong> Solve the DE: $\frac{dy}{dx} + \frac{y}{x} = y^2$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. This is a Bernoulli equation with $n=2$. Divide by $y^2$:<br>
+                   $y^{-2} \frac{dy}{dx} + \frac{1}{x} y^{-1} = 1$<br>
+                2. Let $y^{-1} = t$. Differentiating w.r.t $x$: $-y^{-2} \frac{dy}{dx} = \frac{dt}{dx} \implies y^{-2} \frac{dy}{dx} = -\frac{dt}{dx}$.<br>
+                3. Substitute into the equation:<br>
+                   $-\frac{dt}{dx} + \frac{1}{x} t = 1 \implies \frac{dt}{dx} - \frac{1}{x} t = -1$.<br>
+                4. This is a standard LDE where $P = -1/x$ and $Q = -1$.<br>
+                   $I.F. = e^{\int -1/x dx} = e^{-\log x} = e^{\log(x^{-1})} = \mathbf{x^{-1} = 1/x}$.<br>
+                5. Solution: $t \times (I.F.) = \int (Q \times I.F.) dx + C$<br>
+                   $t \cdot \frac{1}{x} = \int -1 \cdot \frac{1}{x} dx + C \implies \frac{t}{x} = -\log|x| + C$.<br>
+                6. Replace $t = 1/y$:<br>
+                   $\frac{1}{xy} = -\log|x| + C \implies \mathbf{1 = xy(C - \log|x|)}$.
+            </div>
+        </div>
+
+        <h2>6. Applications of Differential Equations (Word Problems)</h2>
+
+        <h3>A. Population Growth / Radioactive Decay</h3>
+        <p>The rate of change of population is directly proportional to the current population.</p>
+        <p>$\frac{dP}{dt} \propto P \implies \frac{dP}{dt} = kP$ (Variable Separable form).<br>
+        Integrating yields: $P = P_0 e^{kt}$.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 9: Population Growth</span>
+            <strong>Question:</strong> In a bank, principal increases continuously at the rate of 5% per year. Find the time required for Rs 1000 to double itself. (Given $\ln 2 = 0.693$).
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Let $P$ be the principal at time $t$. The rate of change is 5% of $P$.<br>
+                   $\frac{dP}{dt} = \frac{5}{100} P = 0.05 P$.<br>
+                2. Separate variables: $\frac{dP}{P} = 0.05 dt$.<br>
+                3. Integrate: $\int \frac{dP}{P} = \int 0.05 dt \implies \ln P = 0.05t + C$.<br>
+                4. At $t=0, P=1000 \implies \ln(1000) = C$.<br>
+                   Equation is: $\ln P = 0.05t + \ln 1000 \implies \ln(P/1000) = 0.05t$.<br>
+                5. To double, $P = 2000$. Find $t$:<br>
+                   $\ln(2000/1000) = 0.05t \implies \ln 2 = 0.05t \implies 0.693 = 0.05t$.<br>
+                   $t = \frac{0.693}{0.05} = \frac{69.3}{5} = \mathbf{13.86 \text{ years}}$.
+            </div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">JEE Advanced Focus: Orthogonal Trajectories</span>
+            <strong>Concept:</strong> Find a family of curves that intersects a given family of curves perfectly at right angles.<br>
+            <strong>Algorithm:</strong><br>
+            1. Differentiate the given family to form its DE, eliminating arbitrary constants. (Let this DE be $dy/dx = f(x,y)$).<br>
+            2. Since the required family cuts orthogonally, $m_1 m_2 = -1$. <br>
+            <strong>Crucial Step:</strong> Replace $\frac{dy}{dx}$ with $\mathbf{-\frac{dx}{dy}}$ in the DE.<br>
+            3. Solve this new Differential Equation using standard methods. The solution is the family of orthogonal trajectories.
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 10: Orthogonal Trajectories</span>
+            <strong>Question:</strong> Find the orthogonal trajectories of the family of parabolas $y^2 = cx$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Form DE:</strong> Differentiate $y^2 = cx$ w.r.t $x$: $2y \frac{dy}{dx} = c$.<br>
+                   Eliminate $c$ using the original equation $c = y^2/x$:<br>
+                   $2y \frac{dy}{dx} = \frac{y^2}{x} \implies 2x \frac{dy}{dx} = y$. (This is the DE of the parabolas).<br>
+                2. <strong>Orthogonal Swap:</strong> Replace $\frac{dy}{dx}$ with $-\frac{dx}{dy}$ to get the DE of the trajectories.<br>
+                   $2x \left( -\frac{dx}{dy} \right) = y \implies -2x dx = y dy$.<br>
+                3. <strong>Solve new DE:</strong> Integrate both sides.<br>
+                   $\int y dy = \int -2x dx \implies \frac{y^2}{2} = -x^2 + k$.<br>
+                   Multiply by 2: $y^2 = -2x^2 + 2k \implies \mathbf{2x^2 + y^2 = K}$.<br>
+                4. Conclusion: The orthogonal trajectories form a family of <strong>Ellipses</strong>.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS FOR CHARTS & TOGGLE -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            renderCharts();
+        }
+
+        let curvesChart;
+
+        function renderCharts() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#aaaaaa' : '#666666';
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: true, labels: { color: textColor } }
+                },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'x', color: textColor} },
+                    y: { grid: { color: gridColor }, ticks: { color: textColor }, title: {display: true, text: 'y', color: textColor} }
+                }
+            };
+
+            // Family of curves: y = C e^x
+            const ctx = document.getElementById('familyOfCurvesChart').getContext('2d');
+            if (curvesChart) curvesChart.destroy();
+            
+            let xVals = [];
+            let yC1 = [], yC2 = [], yCneg1 = [], yCneg2 = [];
+            
+            for (let x = -2; x <= 2; x += 0.1) {
+                xVals.push(x.toFixed(1));
+                yC1.push(1 * Math.exp(x));    // C=1
+                yC2.push(2 * Math.exp(x));    // C=2
+                yCneg1.push(-1 * Math.exp(x));// C=-1
+                yCneg2.push(-2 * Math.exp(x));// C=-2
+            }
+
+            curvesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xVals,
+                    datasets: [
+                        {
+                            label: 'C = 1',
+                            data: yC1,
+                            borderColor: '#1e88e5', /* Blue */
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'C = 2',
+                            data: yC2,
+                            borderColor: '#43a047', /* Green */
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'C = -1',
+                            data: yCneg1,
+                            borderColor: '#d81b60', /* Pink */
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'C = -2',
+                            data: yCneg2,
+                            borderColor: '#fbc02d', /* Yellow */
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { ...commonOptions.scales.x, min: -2, max: 2 },
+                        y: { ...commonOptions.scales.y, min: -10, max: 10 }
+                    }
+                }
+            });
+        }
+
+        window.onload = renderCharts;
+    </script>
+</body>
+</html>

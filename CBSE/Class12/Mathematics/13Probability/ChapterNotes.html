@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Probability - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
+        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
+        strong { color: var(--pink-border); }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- PRACTICE PROBLEM STYLING --- */
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
+        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+        
+        /* Utility for AI Prompt Boxes */
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; color: var(--text-main); }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Mathematics • Comprehensive Chapter Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Chapter 13: Probability</h1>
+
+        <p><em>Dear Class 12 Student! Probability in Class 12 takes a massive leap from the simple coin tosses of Class 11. We are no longer just finding the chance of an event; we are dealing with events that happen sequentially, dependently, and conditionally. Bayes' Theorem is one of the most famous and highly weighted 5/6-mark questions in Board exams. Furthermore, the Binomial Distribution forms the cornerstone of statistics in JEE. Master the logic, and the math will follow naturally!</em></p>
+
+        <h2>1. Review of Class 11 Basics</h2>
+        <p>Before diving into advanced probability, let's brush up on the foundational axioms.</p>
+        
+        <ul>
+            <li><strong>Sample Space ($S$):</strong> The set of all possible outcomes of a random experiment.</li>
+            <li><strong>Mutually Exclusive Events:</strong> Events that cannot occur simultaneously. Their intersection is empty. $\mathbf{P(A \cap B) = 0}$.</li>
+            <li><strong>Exhaustive Events:</strong> A set of events whose union perfectly forms the entire sample space. $\mathbf{A \cup B \cup C = S}$.</li>
+            <li><strong>Axiomatic Approach:</strong> The probability of an event $E$ is given by $P(E) = \frac{n(E)}{n(S)}$.</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Crucial Formulas</span>
+            <strong>1. Addition Theorem:</strong> For any two events $A$ and $B$:<br>
+            <strong>$$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$</strong>
+            <em>(Note: If A and B are mutually exclusive, $P(A \cap B) = 0$, so $P(A \cup B) = P(A) + P(B)$).</em><br><br>
+            
+            <strong>2. De Morgan's Laws in Probability:</strong><br>
+            Probability of "neither A nor B":<br>
+            <strong>$$P(A' \cap B') = P((A \cup B)') = 1 - P(A \cup B)$$</strong>
+            Probability of "not A or not B":<br>
+            <strong>$$P(A' \cup B') = P((A \cap B)') = 1 - P(A \cap B)$$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 1: Basic Formulas</span>
+            <strong>Question:</strong> Given $P(A) = 0.5$, $P(B) = 0.6$, and $P(A \cup B) = 0.8$. Find $P(A \cap B)$ and $P(\text{neither A nor B})$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Find $P(A \cap B)$:</strong><br>
+                   Using the Addition Theorem: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$.<br>
+                   $0.8 = 0.5 + 0.6 - P(A \cap B) \implies 0.8 = 1.1 - P(A \cap B)$.<br>
+                   $P(A \cap B) = 1.1 - 0.8 = \mathbf{0.3}$.<br>
+                2. <strong>Find $P(\text{neither A nor B})$:</strong><br>
+                   This is $P(A' \cap B')$. Using De Morgan's Law:<br>
+                   $P(A' \cap B') = 1 - P(A \cup B)$.<br>
+                   $P(A' \cap B') = 1 - 0.8 = \mathbf{0.2}$.
+            </div>
+        </div>
+
+        <h2>2. Conditional Probability</h2>
+        <p><strong>Concept:</strong> In real life, the probability of an event can change if we possess extra information. The probability of an event $E$ occurring, given that another event $F$ has <em>already occurred</em> (or is known to be true), is called the Conditional Probability of $E$ given $F$.</p>
+
+        <div class="green-box">
+            <span class="box-label">Conditional Probability Formula</span>
+            <strong>$$P(E|F) = \frac{P(E \cap F)}{P(F)} \quad \text{provided } P(F) \neq 0$$</strong>
+            <em>Read as: "Probability of E given F". The sample space restricts from the entire set S down to just the set F.</em>
+        </div>
+
+        <h3>Properties of Conditional Probability</h3>
+        <ul>
+            <li>$P(S|F) = P(F|F) = 1$</li>
+            <li>If $A$ and $B$ are any two events and $F$ has already occurred: <br>
+                $P((A \cup B)|F) = P(A|F) + P(B|F) - P((A \cap B)|F)$</li>
+            <li>$P(E'|F) = 1 - P(E|F)$</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 2: Conditional Probability</span>
+            <strong>Question:</strong> A family has two children. What is the probability that both the children are boys given that at least one of them is a boy?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Sample Space for two children:</strong> $S = \{BB, BG, GB, GG\}$. So, $n(S) = 4$.<br>
+                2. Let $E$ be the event "both children are boys".<br>
+                   $E = \{BB\} \implies P(E) = 1/4$.<br>
+                3. Let $F$ be the event "at least one child is a boy" (This is our 'given' condition).<br>
+                   $F = \{BB, BG, GB\} \implies P(F) = 3/4$.<br>
+                4. Find the intersection $E \cap F$ (both are boys AND at least one is a boy):<br>
+                   $E \cap F = \{BB\} \implies P(E \cap F) = 1/4$.<br>
+                5. Apply Conditional Probability Formula:<br>
+                   $P(E|F) = \frac{P(E \cap F)}{P(F)} = \frac{1/4}{3/4} = \mathbf{\frac{1}{3}}$.
+            </div>
+        </div>
+
+        <h2>3. Multiplication Theorem on Probability</h2>
+        <p>The conditional probability formula can be rearranged to find the probability of the <em>simultaneous occurrence</em> (intersection) of two or more events sequentially.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Multiplication Theorem Formulas</span>
+            From $P(E|F) = \frac{P(E \cap F)}{P(F)}$, we cross-multiply to get:<br>
+            <strong>$$P(E \cap F) = P(F) \cdot P(E|F)$$</strong>
+            Similarly, if E happens first:<br>
+            <strong>$$P(E \cap F) = P(E) \cdot P(F|E)$$</strong><br>
+            <strong>Extension to Three Events:</strong><br>
+            $$P(A \cap B \cap C) = P(A) \cdot P(B|A) \cdot P(C|(A \cap B))$$
+        </div>
+
+        <p><strong>With vs. Without Replacement:</strong><br>
+        - If an item is drawn from a bag and <strong>replaced</strong>, the probabilities for the second draw remain unchanged. The events are independent.<br>
+        - If it is drawn <strong>without replacement</strong>, the total number of items decreases, altering the sample space for the next draw. The events are dependent, and we MUST use the Multiplication Theorem.</p>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 3: Without Replacement</span>
+            <strong>Question:</strong> An urn contains 10 black and 5 white balls. Two balls are drawn from the urn one after the other without replacement. What is the probability that both drawn balls are black?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Total balls initially $= 15$.<br>
+                2. Let $E$ be the event "first ball is black".<br>
+                   $P(E) = \frac{10}{15} = \frac{2}{3}$.<br>
+                3. Let $F$ be the event "second ball is black". Since the first black ball was NOT replaced, there are now $9$ black balls left out of $14$ total balls.<br>
+                   The probability of the second ball being black, given the first was black, is $P(F|E) = \frac{9}{14}$.<br>
+                4. We need the probability of both being black: $P(E \cap F)$.<br>
+                   $P(E \cap F) = P(E) \cdot P(F|E) = \frac{2}{3} \times \frac{9}{14} = \frac{18}{42} = \mathbf{\frac{3}{7}}$.
+            </div>
+        </div>
+
+        <h2>4. Independent Events</h2>
+        <p><strong>Definition:</strong> Two events $E$ and $F$ are said to be independent if the occurrence or non-occurrence of one event has absolutely no effect on the probability of the occurrence of the other event.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Mathematical Condition for Independence (Must-Know)</span>
+            If $E$ and $F$ are independent, then $P(E|F)$ simply equals $P(E)$. Substituting this into the Multiplication Theorem gives the universal test for independence:<br>
+            <strong>$$P(E \cap F) = P(E) \cdot P(F)$$</strong>
+            If this equation holds true, the events are independent. If it does not hold, they are dependent.
+        </div>
+
+        <h3>Important Deductions from Independence</h3>
+        <ul>
+            <li>If $A$ and $B$ are independent, then $P(A|B) = P(A)$ and $P(B|A) = P(B)$.</li>
+            <li>If $A$ and $B$ are independent, then the following pairs are ALSO perfectly independent:
+                <br>1. $A'$ and $B'$
+                <br>2. $A$ and $B'$
+                <br>3. $A'$ and $B$
+            </li>
+            <li><strong>Crucial Distinction:</strong> Students often confuse "Mutually Exclusive" with "Independent".<br>
+                - <em>Mutually Exclusive</em> means they cannot happen together: $P(A \cap B) = \mathbf{0}$.<br>
+                - <em>Independent</em> means they don't affect each other: $P(A \cap B) = \mathbf{P(A) \cdot P(B)}$.<br>
+                (Note: Two events with non-zero probabilities can NEVER be both mutually exclusive and independent!).</li>
+        </ul>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 4: Proving Independence</span>
+            <strong>Question:</strong> A die is thrown. Let A be the event "the number appearing is a multiple of 3" and B be the event "the number appearing is even". Are the events A and B independent?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Sample space $S = \{1, 2, 3, 4, 5, 6\}$.<br>
+                2. Event A (multiple of 3): $A = \{3, 6\} \implies P(A) = 2/6 = 1/3$.<br>
+                3. Event B (even number): $B = \{2, 4, 6\} \implies P(B) = 3/6 = 1/2$.<br>
+                4. Intersection $A \cap B$ (multiple of 3 AND even): $A \cap B = \{6\} \implies P(A \cap B) = 1/6$.<br>
+                5. Check the condition for independence: $P(A) \cdot P(B) = (1/3) \times (1/2) = 1/6$.<br>
+                6. Since $P(A \cap B) = P(A) \cdot P(B) = 1/6$, the events A and B are strictly <strong>Independent</strong>.
+            </div>
+        </div>
+
+        <h2>5. Theorem of Total Probability</h2>
+        
+        <p>Before understanding Total Probability, we must understand the concept of a <strong>Partition of a Sample Space</strong>.</p>
+        <ul>
+            <li>A set of events $E_1, E_2, \dots, E_n$ represents a partition of the sample space $S$ if:
+                <br>1. They are pairwise mutually exclusive ($E_i \cap E_j = \phi$ for any $i \neq j$).
+                <br>2. They are collectively exhaustive ($E_1 \cup E_2 \cup \dots \cup E_n = S$).
+                <br>3. They all have non-zero probabilities ($P(E_i) > 0$).
+            </li>
+        </ul>
+
+        <div class="ai-prompt-box">
+            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
+            <em>AI Prompt:</em> "Venn diagram depicting the Theorem of Total Probability. A large rectangular box represents the Sample Space S. The box is divided into four mutually exclusive, vertical non-overlapping sections labeled E1, E2, E3, E4 (representing the partition). A large oval shape labeled 'Event A' lies across the middle of the box, overlapping all four sections E1 through E4. Clean, educational textbook style, white background."
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Theorem Statement & Formula</span>
+            Let an event $A$ be associated with a sample space containing a partition $E_1, E_2, \dots, E_n$. Event A can occur simultaneously with any of these partitions. The <strong>Total Probability of A</strong> is the sum of the probabilities of these mutually exclusive intersections:<br>
+            <strong>$$P(A) = P(E_1)P(A|E_1) + P(E_2)P(A|E_2) + \dots + P(E_n)P(A|E_n)$$</strong>
+            <strong>$$P(A) = \sum_{j=1}^{n} P(E_j)P(A|E_j)$$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 5: Total Probability</span>
+            <strong>Question:</strong> Bag I contains 3 red and 4 black balls. Bag II contains 5 red and 6 black balls. One bag is selected at random and a ball is drawn from it. What is the probability that the drawn ball is red?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Identify Partitions (The choice of bags):</strong><br>
+                   Let $E_1$ = Event of choosing Bag I, $E_2$ = Event of choosing Bag II.<br>
+                   Since bags are chosen at random, $P(E_1) = 1/2$ and $P(E_2) = 1/2$.<br>
+                2. <strong>Identify Event A:</strong> Let $A$ = Event that the drawn ball is Red.<br>
+                3. <strong>Find Conditional Probabilities:</strong><br>
+                   $P(A|E_1)$ = Probability of drawing red from Bag I = $3/7$.<br>
+                   $P(A|E_2)$ = Probability of drawing red from Bag II = $5/11$.<br>
+                4. <strong>Apply Total Probability Theorem:</strong><br>
+                   $P(A) = P(E_1)P(A|E_1) + P(E_2)P(A|E_2)$<br>
+                   $P(A) = \left( \frac{1}{2} \times \frac{3}{7} \right) + \left( \frac{1}{2} \times \frac{5}{11} \right)$<br>
+                   $P(A) = \frac{3}{14} + \frac{5}{22}$<br>
+                   LCM of 14 and 22 is 154.<br>
+                   $P(A) = \frac{33 + 35}{154} = \frac{68}{154} = \mathbf{\frac{34}{77}}$.
+            </div>
+        </div>
+
+        <h2>6. Bayes' Theorem (5/6-Mark Board Guarantee)</h2>
+        <p><strong>Concept:</strong> Bayes' Theorem calculates <strong>Reverse or Posterior Probability</strong>. In the Total Probability theorem, we calculated the chance of an event A happening. In Bayes' Theorem, event A has <em>already happened</em>, and we are asked to find the probability that it originated from a specific specific "cause" or partition $E_i$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Bayes' Formula</span>
+            If $E_1, E_2, \dots, E_n$ form a partition of the sample space, and A is an event that has occurred:<br>
+            <strong>$$P(E_i|A) = \frac{P(E_i) \cdot P(A|E_i)}{\sum_{j=1}^{n} P(E_j) \cdot P(A|E_j)}$$</strong>
+            <em>(In plain English: The probability of a specific branch divided by the Total Probability of all branches).</em>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Steps to Solve Bayes' Word Problems</span>
+            1. <strong>Identify the Partitions ($E_1, E_2 \dots$):</strong> What are the initial distinct choices/causes? (e.g., Choosing Bag 1 or Bag 2, Machine A, B, or C). State their prior probabilities $P(E_1), P(E_2)$.<br>
+            2. <strong>Identify Event A:</strong> What is the common final event that is stated as "is known to have happened" or "is found to be"? (e.g., "A defective item is found").<br>
+            3. <strong>Find Conditionals:</strong> Calculate $P(A|E_1), P(A|E_2)$, etc.<br>
+            4. <strong>Apply Formula:</strong> Set up Bayes' fraction to find the required reverse probability (e.g., $P(E_1|A)$).
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 6: Classic Bayes' Problem</span>
+            <strong>Question:</strong> A factory has two machines A and B. Machine A produces 60% of the items and Machine B produces 40%. 2% of the items produced by Machine A are defective, and 1% produced by Machine B are defective. If an item is drawn at random and is found to be defective, what is the probability that it was produced by Machine B?
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. <strong>Partitions:</strong> Let $E_1$ = Item produced by A, $E_2$ = Item produced by B.<br>
+                   $P(E_1) = 60/100 = 0.6$, $\quad P(E_2) = 40/100 = 0.4$.<br>
+                2. <strong>Event A:</strong> Let $A$ = The item drawn is defective.<br>
+                3. <strong>Conditionals:</strong><br>
+                   $P(A|E_1)$ = Defective given it's from A = $2\% = 0.02$.<br>
+                   $P(A|E_2)$ = Defective given it's from B = $1\% = 0.01$.<br>
+                4. <strong>Apply Bayes' Theorem:</strong> We need the probability it came from Machine B given it is defective, i.e., $P(E_2|A)$.<br>
+                   $P(E_2|A) = \frac{P(E_2)P(A|E_2)}{P(E_1)P(A|E_1) + P(E_2)P(A|E_2)}$<br>
+                   $P(E_2|A) = \frac{0.4 \times 0.01}{(0.6 \times 0.02) + (0.4 \times 0.01)}$<br>
+                   $P(E_2|A) = \frac{0.004}{0.012 + 0.004} = \frac{0.004}{0.016} = \frac{4}{16} = \mathbf{\frac{1}{4} = 0.25}$.
+            </div>
+        </div>
+
+        <h2>7. Random Variables and Probability Distributions</h2>
+        <ul>
+            <li><strong>Random Variable ($X$):</strong> A real-valued function whose domain is the sample space of a random experiment. It assigns a numerical value to each possible outcome (e.g., Let X be the "number of heads" in 3 coin tosses. X can take values 0, 1, 2, or 3).</li>
+            <li><strong>Probability Distribution:</strong> A systematic table listing all possible values of the random variable $X$ ($x_1, x_2, \dots, x_n$) alongside their corresponding probabilities ($p_1, p_2, \dots, p_n$).</li>
+            <li><strong>Strict Conditions for a Valid Distribution:</strong><br>
+                1. Every probability must be non-negative: $p_i \ge 0$.<br>
+                2. The sum of all probabilities MUST equal exactly 1: <strong>$\sum_{i=1}^{n} p_i = 1$</strong>.
+            </li>
+        </ul>
+
+        <h2>8. Mean and Variance of a Random Variable</h2>
+
+        <div class="green-box">
+            <span class="box-label">Formulas for Mean and Variance</span>
+            <strong>Mean / Expected Value ($\mu$ or $E(X)$):</strong> The weighted average of all possible values. It tells us what to expect on average over many trials.<br>
+            <strong>$$\mu = E(X) = \sum_{i=1}^{n} x_i p_i$$</strong><br>
+            <strong>Variance ($\sigma^2$ or $Var(X)$):</strong> Measures the spread or dispersion of the random variable around the mean.<br>
+            Formula 1: $\sigma^2 = \sum_{i=1}^{n} (x_i - \mu)^2 p_i$<br>
+            <strong>Formula 2 (Easier for calculation):</strong> $\sigma^2 = E(X^2) - [E(X)]^2$<br>
+            Where $E(X^2) = \sum_{i=1}^{n} x_i^2 p_i$.<br><br>
+            <strong>Standard Deviation ($\sigma$):</strong> The square root of the variance.<br>
+            <strong>$$\sigma = \sqrt{Var(X)}$$</strong>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 7: Mean and Variance</span>
+            <strong>Question:</strong> Two coins are tossed simultaneously. Let X denote the number of heads. Find the probability distribution of X, its mean, and variance.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Sample space $S = \{HH, HT, TH, TT\}$. $n(S) = 4$.<br>
+                2. $X$ can take values 0 (no heads), 1 (one head), or 2 (two heads).<br>
+                   - $P(X=0) = P(\{TT\}) = 1/4$<br>
+                   - $P(X=1) = P(\{HT, TH\}) = 2/4 = 1/2$<br>
+                   - $P(X=2) = P(\{HH\}) = 1/4$<br>
+                   (Check: $1/4 + 1/2 + 1/4 = 1$. The distribution is valid).<br><br>
+                3. <strong>Calculate Mean $E(X)$:</strong><br>
+                   $E(X) = \sum x_i p_i = (0 \times \frac{1}{4}) + (1 \times \frac{1}{2}) + (2 \times \frac{1}{4}) = 0 + \frac{1}{2} + \frac{1}{2} = \mathbf{1}$.<br><br>
+                4. <strong>Calculate Variance:</strong><br>
+                   First find $E(X^2) = \sum x_i^2 p_i = (0^2 \times \frac{1}{4}) + (1^2 \times \frac{1}{2}) + (2^2 \times \frac{1}{4}) = 0 + \frac{1}{2} + 1 = 1.5 = 3/2$.<br>
+                   Variance $Var(X) = E(X^2) - [E(X)]^2 = \frac{3}{2} - (1)^2 = \frac{3}{2} - 1 = \mathbf{0.5 \text{ or } \frac{1}{2}}$.
+            </div>
+        </div>
+
+        <h2>9. Bernoulli Trials and Binomial Distribution</h2>
+        <p><em>Note: While often rationalized in recent NCERT syllabi, the Binomial Distribution is absolutely essential for JEE, R.D. Sharma problems, and competitive exams.</em></p>
+
+        <p><strong>Bernoulli Trials:</strong> A random experiment is a Bernoulli trial if it satisfies these conditions:<br>
+        1. There is a finite number of trials.<br>
+        2. The trials are independent.<br>
+        3. Each trial has exactly two outcomes: Success ($S$) or Failure ($F$).<br>
+        4. The probability of success ($p$) remains strictly constant in each trial. Probability of failure is $q = 1 - p$.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Binomial Distribution Formula</span>
+            The probability of getting exactly $r$ successes in $n$ Bernoulli trials is given by the Binomial Distribution formula:<br>
+            <strong>$$P(X = r) = {^nC_r} \cdot p^r \cdot q^{n-r}$$</strong>
+            Where ${^nC_r} = \frac{n!}{r!(n-r)!}$ is the binomial coefficient.<br><br>
+            <strong>Mean and Variance of Binomial Distribution:</strong><br>
+            - Mean ($\mu$) = $\mathbf{np}$<br>
+            - Variance ($\sigma^2$) = $\mathbf{npq}$<br>
+            - Standard Deviation ($\sigma$) = $\mathbf{\sqrt{npq}}$
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Practice Problem 8: Binomial Probability</span>
+            <strong>Question:</strong> A fair die is thrown 5 times. Getting a '6' is considered a success. Find the probability of getting exactly 3 successes. Also, find the mean and variance of this distribution.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Let success be getting a 6. Probability of success $p = 1/6$.<br>
+                2. Probability of failure $q = 1 - p = 1 - 1/6 = 5/6$.<br>
+                3. Total number of trials $n = 5$. We want $r = 3$ successes.<br>
+                4. <strong>Apply Binomial Formula:</strong><br>
+                   $P(X = 3) = {^5C_3} \cdot (1/6)^3 \cdot (5/6)^{5-3}$<br>
+                   $= {^5C_3} \cdot (1/6)^3 \cdot (5/6)^2$<br>
+                   We know ${^5C_3} = \frac{5!}{3!2!} = 10$.<br>
+                   $P(X = 3) = 10 \times \frac{1}{216} \times \frac{25}{36} = \frac{250}{7776} = \mathbf{\frac{125}{3888}}$.<br><br>
+                5. <strong>Mean ($\mu$):</strong> $np = 5 \times (1/6) = \mathbf{5/6}$.<br>
+                6. <strong>Variance ($\sigma^2$):</strong> $npq = 5 \times (1/6) \times (5/6) = \mathbf{25/36}$.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
