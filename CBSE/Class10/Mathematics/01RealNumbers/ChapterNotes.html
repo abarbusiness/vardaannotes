@@ -1,6 +1,5 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,6 +51,9 @@
             --pink-border: #d81b60;
 
             --red-border: #d32f2f;
+
+            /* Compatibility token for existing subtitle in this file */
+            --meta-text: #555;
         }
 
         /* --- GLOBAL RESET & TYPOGRAPHY --- */
@@ -60,12 +62,6 @@
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
-        }
-
-        html,
-        body {
-            overflow-x: hidden;
-            width: 100%;
         }
 
         body {
@@ -78,6 +74,12 @@
         }
 
         /* --- DARK MODE (FILTER INVERSION) --- */
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         html {
             transition: filter 0.3s ease;
         }
@@ -105,11 +107,9 @@
             max-width: 80%;
             height: auto;
             opacity: 0.05;
-            /* Light Mode Default */
             transition: opacity 0.3s ease;
         }
 
-        /* Dark Mode Override for Watermark */
         html.dark-mode .watermark-image {
             opacity: 0.08 !important;
         }
@@ -117,17 +117,14 @@
         /* --- PAPER SHEET LAYOUT --- */
         .paper-sheet {
             background-color: var(--paper-bg);
-            /* seamless paper: no shadow, no border */
             box-shadow: none;
             border: none;
             width: 210mm;
-            /* A4 Width */
             max-width: 100%;
             margin: 0 auto;
             padding: 20mm;
             position: relative;
             z-index: 10;
-            /* Above watermark */
         }
 
         @media screen and (max-width: 800px) {
@@ -156,7 +153,6 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        /* Double Inversion for Toggle Button */
         html.dark-mode .theme-toggle {
             filter: invert(1) hue-rotate(180deg);
             background: #e0e0e0;
@@ -170,7 +166,6 @@
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        /* Light Mode State */
         .icon-moon {
             opacity: 1;
             transform: scale(1) rotate(0deg);
@@ -181,7 +176,6 @@
             transform: scale(0.5) rotate(-90deg);
         }
 
-        /* Dark Mode State */
         html.dark-mode .icon-moon {
             opacity: 0;
             transform: scale(0.5) rotate(90deg);
@@ -191,7 +185,6 @@
             opacity: 1;
             transform: scale(1) rotate(0deg);
         }
-
 
         /* --- CONTENT STYLING --- */
         h1 {
@@ -232,11 +225,11 @@
 
         li {
             margin-bottom: 0.5rem;
+            color: #333;
         }
 
         /* --- SPECIAL COMPONENTS --- */
 
-        /* Formula Box */
         .formula-box {
             border: 2px solid #000;
             box-shadow: 4px 4px 0px #000;
@@ -259,7 +252,6 @@
             text-transform: uppercase;
         }
 
-        /* Master Tip */
         .master-tip {
             border: 2px dashed var(--red-border);
             background-color: #fffaf0;
@@ -277,7 +269,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Concept Blocks */
         .concept-green {
             background-color: var(--green-bg);
             border-left: 4px solid var(--green-border);
@@ -294,176 +285,813 @@
             border-radius: 0 8px 8px 0;
         }
 
-        .concept-pink {
+        .reaction-type {
             background-color: var(--pink-bg);
             border-left: 4px solid var(--pink-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #555;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* Compatibility mappings for existing Real Numbers content blocks */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border-left: 4px solid var(--blue-border);
             padding: 1rem;
             margin-bottom: 1rem;
             border-radius: 0 8px 8px 0;
         }
 
-        /* Placeholder Images (No Border) */
-        .placeholder-image {
-            width: 100%;
-            padding: 3rem;
-            margin: 2rem 0;
-            background-color: #f5f5f5;
-            color: #888;
+        .green-box {
+            background-color: var(--green-bg);
+            border-left: 4px solid var(--green-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border-left: 4px solid var(--yellow-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .example-block,
+        .qa-block {
+            padding: 1rem 1rem 1rem 1.1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 12px 12px 0;
+            border-left: 6px solid;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+        }
+
+        .example-block {
+            background: linear-gradient(135deg, #f5faff 0%, #ecf6ff 100%);
+            border-left-color: #1e88e5;
+        }
+
+        .example-block:nth-of-type(3n) {
+            background: linear-gradient(135deg, #f3fff5 0%, #e8f5e9 100%);
+            border-left-color: #43a047;
+        }
+
+        .example-block:nth-of-type(4n) {
+            background: linear-gradient(135deg, #fff7f9 0%, #fce4ec 100%);
+            border-left-color: #d81b60;
+        }
+
+        .qa-block {
+            background: linear-gradient(135deg, #fffef5 0%, #fff9e6 100%);
+            border: 1px solid #ffe08a;
+            border-left-color: #f9a825;
+            position: relative;
+            padding-top: 1.15rem;
+        }
+
+        .qa-block::before {
+            content: "Practice";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            font-size: 0.7rem;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            background: #f9a825;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 10px;
             font-weight: 600;
+        }
+
+        .qa-block em {
+            display: inline-block;
+            margin-top: 0.45rem;
+            background: #e3f2fd;
+            color: #0d47a1;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        h3 {
+            border-left: 4px solid var(--pink-border);
+            padding-left: 10px;
+        }
+
+        .math-block {
+            display: block;
             text-align: center;
-            font-style: italic;
-            border-radius: 4px;
+            margin: 1rem 0;
         }
 
-        /* Table Styling for Conditions */
-        .condition-table {
-            width: 100%;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
-            overflow-x: auto;
-            /* Enable horizontal scroll */
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            /* Hide scrollbar Firefox */
-            -ms-overflow-style: none;
-            /* Hide scrollbar IE/Edge */
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .condition-table::-webkit-scrollbar {
+        .box-label,
+        .branding-header,
+        .branding-footer {
             display: none;
-            /* Hide scrollbar WebKit */
         }
 
-        .condition-table table {
-            width: 100%;
-            min-width: 600px;
-            /* Force scroll on small screens */
-            border-collapse: collapse;
+        /* --- MATHJAX MOBILE FIX --- */
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
         }
 
-        .condition-table th,
-        .condition-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
+        /* --- PRINT OPTIMIZATION --- */
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+        
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 10 Mathematics - Chapter 1 Notes</div>
+            <div class="contact-info">
+                <span>vardaanlearning.com</span>
+                <span>9508841336</span>
+            </div>
+        </div>
+
+        <h1>CHAPTER 1 - REAL NUMBERS</h1>
+        <p style="text-align: center; color: var(--meta-text); letter-spacing: 2px;"><strong>STRICTLY BASED ON CBSE RATIONALISED SYLLABUS</strong><br>Reference: NCERT + R.D. Sharma + R.S. Aggarwal</p>
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: INTRODUCTION TO REAL NUMBERS    -->
+        <!-- ========================================== -->
+        <h2>SECTION 1: INTRODUCTION TO REAL NUMBERS</h2>
+
+        <h3>1.1 Number System Classification</h3>
+        <p>Before studying the theorems of Class 10, we must perfectly understand the hierarchy of the number system. Think of the number system as boxes fitting inside larger boxes:</p>
+        <span class="math-block">$$ \mathbb{N} \subset \mathbb{W} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R} $$</span>
+        
+        <ul>
+            <li><strong>Natural Numbers ($\mathbb{N}$):</strong> The counting numbers starting from $1$. <br>Example: $\{1, 2, 3, 4, \dots\}$</li>
+            <li><strong>Whole Numbers ($\mathbb{W}$):</strong> Natural numbers plus zero. <br>Example: $\{0, 1, 2, 3, \dots\}$</li>
+            <li><strong>Integers ($\mathbb{Z}$):</strong> All positive and negative whole numbers. <br>Example: $\{\dots, -3, -2, -1, 0, 1, 2, 3, \dots\}$</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Definition</span>
+            <strong>Rational Numbers ($\mathbb{Q}$):</strong> Numbers that can be expressed in the form $\frac{p}{q}$, where $p$ and $q$ are integers and $q \neq 0$.
+            <br><br><strong>Key Property:</strong> Their decimal expansions are either <em>terminating</em> (like $0.5$) or <em>non-terminating but repeating</em> (like $0.333\dots$).
+            <br><strong>Examples:</strong> $\frac{1}{2}, \frac{-5}{7}, 4$ (since $4 = \frac{4}{1}$), $0, \sqrt{25}$.
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Definition</span>
+            <strong>Irrational Numbers:</strong> Numbers that <strong>cannot</strong> be expressed in the form $\frac{p}{q}$.
+            <br><br><strong>Key Property:</strong> Their decimal expansions are strictly <em>non-terminating and non-repeating</em>.
+            <br><strong>Examples:</strong> $\sqrt{2}, \sqrt{3}, \pi, 0.101101110\dots$
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <strong>What are Real Numbers ($\mathbb{R}$)?</strong><br>
+            A Real Number is any number that can be plotted on the number line. It is the complete collection of <strong>all Rational AND Irrational numbers</strong> together. Every real number is either rational OR irrational (it can never be both).
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: EUCLID'S DIVISION ALGORITHM     -->
+        <!-- ========================================== -->
+        <h2>SECTION 2: EUCLID'S DIVISION ALGORITHM</h2>
+        
+        <h3>2.1 Euclid's Division Algorithm - Step by Step Method</h3>
+        <p><strong>Definition:</strong> An algorithm is a series of well-defined steps. Euclid's Division Algorithm is a technique to compute the Highest Common Factor (HCF) of two given positive integers, say $a$ and $b$ (where $a > b$).</p>
+        
+        <div class="blue-box">
+            <span class="box-label">Algorithm Steps</span>
+            <strong>Step 1:</strong> Divide $a$ by $b$ and write it in the form $a = bq + r$, where $0 \leq r < b$.<br>
+            <strong>Step 2:</strong> If $r = 0$, then $b$ is the HCF of $a$ and $b$.<br>
+            <strong>Step 3:</strong> If $r \neq 0$, repeat the division step for $b$ (the old divisor) and $r$ (the new remainder).<br>
+            <strong>Step 4:</strong> Continue the process till the remainder is zero. The divisor at this final stage will be the required HCF.
+        </div>
+
+        <h3>2.2 Finding HCF Using Euclid's Division Algorithm</h3>
+        
+        <div class="example-block">
+            <strong>Example 1: Find the HCF of 135 and 225.</strong><br>
+            <em>Solution:</em> Since $225 > 135$, we apply repeated division steps:
+            <br>Step 1: $225 = 135 \times 1 + 90$ (Since remainder $90 \neq 0$, divide $135$ by $90$)
+            <br>Step 2: $135 = 90 \times 1 + 45$ (Since remainder $45 \neq 0$, divide $90$ by $45$)
+            <br>Step 3: $90 = 45 \times 2 + 0$
+            <br>The remainder has now become zero. The divisor at this stage is $45$.
+            <br><strong>Therefore, HCF(135, 225) = 45.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Example 2: Find the HCF of 867 and 255.</strong><br>
+            <em>Solution:</em> Since $867 > 255$, apply repeated division:
+            <br>Step 1: $867 = 255 \times 3 + 102$ ($r \neq 0$)
+            <br>Step 2: $255 = 102 \times 2 + 51$ ($r \neq 0$)
+            <br>Step 3: $102 = 51 \times 2 + 0$
+            <br>The remainder is zero. The last divisor is $51$.
+            <br><strong>Therefore, HCF(867, 255) = 51.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Example 3: Find the HCF of 4052 and 12576. (NCERT Example)</strong><br>
+            <em>Solution:</em> Since $12576 > 4052$:
+            <br>Step 1: $12576 = 4052 \times 3 + 420$
+            <br>Step 2: $4052 = 420 \times 9 + 272$
+            <br>Step 3: $420 = 272 \times 1 + 148$
+            <br>Step 4: $272 = 148 \times 1 + 124$
+            <br>Step 5: $148 = 124 \times 1 + 24$
+            <br>Step 6: $124 = 24 \times 5 + 4$
+            <br>Step 7: $24 = 4 \times 6 + 0$
+            <br><strong>Therefore, HCF(4052, 12576) = 4.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Example 4: Find the HCF of 196 and 38220.</strong><br>
+            <em>Solution:</em> Since $38220 > 196$:
+            <br>Step 1: $38220 = 196 \times 195 + 0$
+            <br>The remainder is zero in the very first step!
+            <br><strong>Therefore, HCF(196, 38220) = 196.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Example 5: Find the HCF of 510 and 92.</strong><br>
+            <em>Solution:</em> Since $510 > 92$:
+            <br>Step 1: $510 = 92 \times 5 + 50$
+            <br>Step 2: $92 = 50 \times 1 + 42$
+            <br>Step 3: $50 = 42 \times 1 + 8$
+            <br>Step 4: $42 = 8 \times 5 + 2$
+            <br>Step 5: $8 = 2 \times 4 + 0$
+            <br><strong>Therefore, HCF(510, 92) = 2.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Example 6 (Three Numbers): Find the HCF of 441, 567 and 693.</strong><br>
+            <em>Solution:</em> To find HCF of 3 numbers, first find the HCF of any two numbers, then find the HCF of that result and the third number. Let's pick $441$ and $567$.
+            <br>Step 1: $567 = 441 \times 1 + 126$
+            <br>Step 2: $441 = 126 \times 3 + 63$
+            <br>Step 3: $126 = 63 \times 2 + 0$ $\implies$ HCF(441, 567) = $63$.
+            <br>Now, find HCF of $63$ and the third number $693$:
+            <br>Step 4: $693 = 63 \times 11 + 0$
+            <br>Since remainder is zero, the HCF is $63$.
+            <br><strong>Therefore, HCF(441, 567, 693) = 63.</strong>
+        </div>
+
+        <h3>2.3 Word Problems on HCF Using Euclid's Algorithm</h3>
+        <p><strong>Examiner's Tip:</strong> In word problems, whenever you are asked to find the "maximum capacity", "longest rod", "maximum number of groups", or divide things into the "largest equal size", you must calculate the HCF.</p>
+
+        <div class="example-block">
+            <strong>Word Problem 1: The Sweet Seller</strong><br>
+            A sweet seller has $420$ kaju barfis and $130$ badam barfis. She wants to stack them in such a way that each stack has the same number, and they take up the least area of the tray. What is the maximum number of barfis that can be placed in each stack?<br>
+            <em>Solution:</em> To minimize the area, we need to maximize the number of barfis in each stack. So, we need to find HCF(420, 130).
+            <br>$420 = 130 \times 3 + 30$
+            <br>$130 = 30 \times 4 + 10$
+            <br>$30 = 10 \times 3 + 0$
+            <br>The HCF is 10. <strong>Therefore, the sweet seller can make stacks of 10 for both kinds of barfi.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Word Problem 2: Army Contingent</strong><br>
+            An army contingent of $616$ members is to march behind an army band of $32$ members in a parade. The two groups are to march in the same number of columns. What is the maximum number of columns in which they can march?<br>
+            <em>Solution:</em> We must find HCF(616, 32).
+            <br>$616 = 32 \times 19 + 8$
+            <br>$32 = 8 \times 4 + 0$
+            <br>The HCF is $8$. <strong>Therefore, they can march in a maximum of 8 columns.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Word Problem 3: Remainders Problem</strong><br>
+            Find the largest number which divides $70$ and $125$, leaving remainders $5$ and $8$ respectively.<br>
+            <em>Solution:</em> Since the number leaves remainders $5$ and $8$, the numbers that are <em>exactly</em> divisible are:
+            <br>$70 - 5 = 65$
+            <br>$125 - 8 = 117$
+            <br>Now, find HCF(117, 65).
+            <br>$117 = 65 \times 1 + 52$
+            <br>$65 = 52 \times 1 + 13$
+            <br>$52 = 13 \times 4 + 0$
+            <br><strong>The largest number is 13.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Word Problem 4: Tiling the Floor</strong><br>
+            The length and breadth of a room are $8 \text{m } 25 \text{cm}$ and $6 \text{m } 75 \text{cm}$ respectively. Find the length of the longest measuring rod that can measure the dimensions of the room exactly.<br>
+            <em>Solution:</em> Convert everything to cm.
+            <br>Length $= 825$ cm. Breadth $= 675$ cm.
+            <br>We need the HCF of $825$ and $675$.
+            <br>$825 = 675 \times 1 + 150$
+            <br>$675 = 150 \times 4 + 75$
+            <br>$150 = 75 \times 2 + 0$
+            <br><strong>The longest rod is 75 cm long.</strong>
+        </div>
+
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: FUNDAMENTAL THEOREM OF ARITHMETIC -->
+        <!-- ========================================== -->
+        <h2>SECTION 3: FUNDAMENTAL THEOREM OF ARITHMETIC</h2>
+
+        <h3>3.1 Statement of Fundamental Theorem of Arithmetic</h3>
+        <div class="blue-box">
+            <span class="box-label">Theorem</span>
+            <strong>Statement:</strong> Every composite number can be expressed (factorised) as a product of prime numbers, and this factorisation is <strong>unique</strong>, apart from the order in which the prime factors occur.
+        </div>
+        <p><strong>Explanation:</strong> This means that if you break down a number into primes, there is only one specific set of prime numbers that multiplies to give that number. For example, $30 = 2 \times 3 \times 5$. Whether you write it as $5 \times 3 \times 2$ or $3 \times 2 \times 5$, the set of primes $\{2, 3, 5\}$ is unique to $30$.<br>
+        <em>Quick Revision:</em> <strong>Prime Numbers</strong> only have two factors: $1$ and themselves ($2, 3, 5, 7, 11\dots$). <strong>Composite Numbers</strong> have more than two factors ($4, 6, 8, 9\dots$). Note: $1$ is neither prime nor composite.</p>
+
+        <h3>3.2 Prime Factorisation</h3>
+        <p>You can find prime factors using the <strong>Factor Tree Method</strong> or the standard <strong>Division Method</strong> (ladder method).</p>
+
+        <div class="example-block">
+            <strong>Examples of Prime Factorisation:</strong>
+            <ul>
+                <li><strong>140:</strong> $140 = 2 \times 70 = 2 \times 2 \times 35 = 2 \times 2 \times 5 \times 7 \implies \mathbf{2^2 \times 5 \times 7}$</li>
+                <li><strong>156:</strong> $156 = 2 \times 78 = 2 \times 2 \times 39 = 2 \times 2 \times 3 \times 13 \implies \mathbf{2^2 \times 3 \times 13}$</li>
+                <li><strong>3825:</strong> (Ends in 5, divisible by 5) $3825 = 5 \times 765 = 5 \times 5 \times 153 = 5 \times 5 \times 3 \times 51 = 5 \times 5 \times 3 \times 3 \times 17 \implies \mathbf{3^2 \times 5^2 \times 17}$</li>
+                <li><strong>5005:</strong> $5005 = 5 \times 1001 = 5 \times 7 \times 143 = 5 \times 7 \times 11 \times 13 \implies \mathbf{5 \times 7 \times 11 \times 13}$</li>
+                <li><strong>7429:</strong> (A tricky one, test larger primes) $7429 = 17 \times 437 = 17 \times 19 \times 23 \implies \mathbf{17 \times 19 \times 23}$</li>
+            </ul>
+        </div>
+
+        <h3>3.3 HCF by Prime Factorisation Method</h3>
+        <div class="green-box">
+            <span class="box-label">Rule</span>
+            <strong>HCF Rule:</strong> The HCF is the product of the <strong>SMALLEST powers</strong> of each <strong>COMMON</strong> prime factor present in the numbers.
+        </div>
+
+        <div class="example-block">
+            <strong>Examples (HCF):</strong><br>
+            <strong>1. Find HCF(6, 20):</strong> $6 = 2^1 \times 3^1$. $20 = 2^2 \times 5^1$. Common factor is 2. Smallest power is 1. <strong>HCF = 2.</strong><br>
+            <strong>2. Find HCF(96, 404):</strong> $96 = 2^5 \times 3^1$. $404 = 2^2 \times 101$. Common factor is 2. Smallest power is 2. <strong>HCF = $2^2$ = 4.</strong><br>
+            <strong>3. Find HCF(26, 91):</strong> $26 = 2 \times 13$. $91 = 7 \times 13$. Common factor is 13. <strong>HCF = 13.</strong><br>
+            <strong>4. Find HCF(12, 15, 21):</strong> $12 = 2^2 \times 3$. $15 = 3 \times 5$. $21 = 3 \times 7$. The only common prime factor is 3. <strong>HCF = 3.</strong><br>
+            <strong>5. Find HCF(8, 9, 25):</strong> $8=2^3$. $9=3^2$. $25=5^2$. There are NO common prime factors. Thus, the only common factor is 1. <strong>HCF = 1.</strong>
+        </div>
+
+        <h3>3.4 LCM by Prime Factorisation Method</h3>
+        <div class="yellow-box">
+            <span class="box-label">Rule</span>
+            <strong>LCM Rule:</strong> The LCM is the product of the <strong>GREATEST powers</strong> of <strong>ALL</strong> prime factors involved in the numbers. (Take every prime number you see, with its highest power).
+        </div>
+
+        <div class="example-block">
+            <strong>Examples (LCM):</strong><br>
+            <strong>1. Find LCM(6, 20):</strong> $6 = 2^1 \times 3^1$. $20 = 2^2 \times 5^1$. All primes: 2, 3, 5. Greatest powers: $2^2, 3^1, 5^1$. <strong>LCM = $4 \times 3 \times 5$ = 60.</strong><br>
+            <strong>2. Find LCM(96, 404):</strong> $96 = 2^5 \times 3^1$. $404 = 2^2 \times 101$. Greatest powers: $2^5, 3^1, 101^1$. <strong>LCM = $32 \times 3 \times 101$ = 9696.</strong><br>
+            <strong>3. Find LCM(26, 91):</strong> $26 = 2 \times 13$. $91 = 7 \times 13$. <strong>LCM = $2 \times 7 \times 13$ = 182.</strong><br>
+            <strong>4. Find LCM(12, 15, 21):</strong> $12 = 2^2 \times 3$. $15 = 3 \times 5$. $21 = 3 \times 7$. <strong>LCM = $2^2 \times 3 \times 5 \times 7$ = 420.</strong><br>
+            <strong>5. Find LCM(8, 9, 25):</strong> $8=2^3$. $9=3^2$. $25=5^2$. <strong>LCM = $2^3 \times 3^2 \times 5^2 = 8 \times 9 \times 25$ = 1800.</strong>
+        </div>
+
+        <h3>3.5 Relationship: HCF x LCM = Product of Two Numbers</h3>
+        <div class="blue-box">
+            <span class="box-label">Formula</span>
+            For any <strong>TWO positive integers</strong> $a$ and $b$:<br>
+            <span class="math-block">$$ \text{HCF}(a, b) \times \text{LCM}(a, b) = a \times b $$</span>
+            <strong>CRITICAL WARNING:</strong> This formula works strictly for TWO numbers only. It is <strong>FALSE</strong> for three numbers. $HCF(p,q,r) \times LCM(p,q,r) \neq p \times q \times r$.
+        </div>
+
+        <div class="example-block">
+            <strong>Example 1: Verify the formula for 26 and 91.</strong><br>
+            We found $HCF = 13$, $LCM = 182$.<br>
+            LHS: $HCF \times LCM = 13 \times 182 = 2366$.<br>
+            RHS: $a \times b = 26 \times 91 = 2366$.<br>
+            LHS = RHS. Verified.
+        </div>
+        <div class="example-block">
+            <strong>Example 2: Given that $HCF(306, 657) = 9$, find $LCM(306, 657)$.</strong><br>
+            We know: $LCM \times HCF = a \times b$<br>
+            $LCM \times 9 = 306 \times 657$<br>
+            $LCM = \frac{306 \times 657}{9} = 34 \times 657 = \mathbf{22338}$.
+        </div>
+        <div class="example-block">
+            <strong>Example 3: The LCM of two numbers is 182 and their HCF is 13. If one of the numbers is 26, find the other.</strong><br>
+            $HCF \times LCM = a \times b \implies 13 \times 182 = 26 \times b \implies b = \frac{13 \times 182}{26} = \frac{182}{2} = \mathbf{91}$.
+        </div>
+        <div class="example-block">
+            <strong>Example 4: Can two numbers have 16 as their HCF and 380 as their LCM?</strong><br>
+            <em>Reasoning:</em> A crucial property is that the HCF must always be a perfect factor of the LCM. Let's check if 380 is perfectly divisible by 16.<br>
+            $380 / 16 = 23.75$ (Not perfectly divisible).<br>
+            <strong>No, they cannot</strong>, because HCF must be a factor of LCM.
+        </div>
+        <div class="example-block">
+            <strong>Example 5: The product of two numbers is 3200 and their LCM is 400. Find their HCF.</strong><br>
+            $HCF = \frac{\text{Product}}{LCM} = \frac{3200}{400} = \mathbf{8}$.
+        </div>
+
+        <h3>3.6 Word Problems on HCF and LCM</h3>
+        <p><strong>Examiner's Tip:</strong> Use <strong>LCM</strong> when events repeat over time (meeting points, ringing bells) or when you need a number "divisible by" others. Use <strong>HCF</strong> when dividing items into identical maximum groups.</p>
+
+        <div class="example-block">
+            <strong>Problem 1 (Circular Track - LCM):</strong> There is a circular path around a sports field. Sonia takes 18 minutes to drive one round, while Ravi takes 12 minutes. Suppose they both start at the same point and at the same time, and go in the same direction. After how many minutes will they meet again at the starting point?<br>
+            <em>Solution:</em> They will meet again after a time which is a multiple of both 18 and 12. We need the LCM(18, 12).<br>
+            $18 = 2 \times 3^2$, $12 = 2^2 \times 3$<br>
+            $LCM = 2^2 \times 3^2 = 4 \times 9 = 36$.<br>
+            <strong>Answer: They will meet again after 36 minutes.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Problem 2 (Bells Ringing - LCM):</strong> Six bells commence tolling together and toll at intervals of 2, 4, 6, 8, 10 and 12 seconds respectively. In 30 minutes, how many times do they toll together?<br>
+            <em>Solution:</em> Find LCM of 2, 4, 6, 8, 10, 12.<br>
+            $LCM = 120$ seconds = $2$ minutes.<br>
+            So, they toll together every 2 minutes.<br>
+            In 30 minutes, they will toll $30/2 = 15$ times. <strong>BUT we must add 1</strong> because they tolled together at the very start ($0$th minute).<br>
+            <strong>Answer: 15 + 1 = 16 times.</strong>
+        </div>
+
+        <div class="example-block">
+            <strong>Problem 3 (Smallest Number + Remainder - LCM):</strong> Find the smallest number which when divided by 28 and 32 leaves remainders 8 and 12 respectively.<br>
+            <em>Solution:</em> Notice the difference between divisors and remainders: $28 - 8 = 20$ and $32 - 12 = 20$. The difference is constant (20).<br>
+            Required number = $LCM(28, 32) - (\text{Constant Difference})$.<br>
+            $LCM(28, 32)$: $28=2^2 \times 7$, $32=2^5$. $LCM = 2^5 \times 7 = 32 \times 7 = 224$.<br>
+            Number = $224 - 20 = \mathbf{204}$.
+        </div>
+
+        <div class="example-block">
+            <strong>Problem 4 (Distributing Items - HCF):</strong> Three sets of English, Hindi and Mathematics books have to be stacked such that all books are stored topic-wise and the height of each stack is the same. The number of books are 96, 240 and 336. Find the maximum height of the stack (number of books).<br>
+            <em>Solution:</em> We need equal stacks of maximum size. Find HCF(96, 240, 336).<br>
+            $96 = 2^5 \times 3$<br>
+            $240 = 2^4 \times 3 \times 5$<br>
+            $336 = 2^4 \times 3 \times 7$<br>
+            $HCF = 2^4 \times 3 = 16 \times 3 = \mathbf{48 \text{ books per stack}}$.
+        </div>
+        
+        <div class="example-block">
+            <strong>Problem 5 (Morning Walk - LCM):</strong> Three persons step off together for a morning walk. Their steps measure 80 cm, 85 cm and 90 cm respectively. What is the minimum distance each should walk so that all can cover the same distance in complete steps?<br>
+            <em>Solution:</em> Minimum distance = LCM of 80, 85, 90.<br>
+            $80 = 2^4 \times 5$<br>
+            $85 = 5 \times 17$<br>
+            $90 = 2 \times 3^2 \times 5$<br>
+            $LCM = 2^4 \times 3^2 \times 5 \times 17 = 16 \times 9 \times 5 \times 17 = \mathbf{12240 \text{ cm (or 122.4 m)}}$.
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 4: IRRATIONAL NUMBERS - PROOFS     -->
+        <!-- ========================================== -->
+        <h2>SECTION 4: IRRATIONAL NUMBERS - PROOFS</h2>
+
+        <h3>4.1 What is an Irrational Number (Detailed)</h3>
+        <p>An irrational number cannot be written as a simple fraction $\frac{p}{q}$. On a number line, they occupy positions between rational numbers, but their exact decimal value goes on forever without repeating. 
+        <br><strong>Algebra of Irrational Numbers:</strong>
+        <ul>
+            <li>Rational + Irrational = <strong>Irrational</strong> (e.g., $2 + \sqrt{3}$)</li>
+            <li>Rational - Irrational = <strong>Irrational</strong> (e.g., $5 - \sqrt{2}$)</li>
+            <li>Non-zero Rational $\times$ Irrational = <strong>Irrational</strong> (e.g., $3\sqrt{5}$)</li>
+            <li>Irrational + Irrational = Can be rational OR irrational (e.g., $(2+\sqrt{3}) + (2-\sqrt{3}) = 4$ Rational)</li>
+            <li>Irrational $\times$ Irrational = Can be rational OR irrational (e.g., $\sqrt{2} \times \sqrt{2} = 2$ Rational)</li>
+        </ul>
+        </p>
+
+        <h3>4.2 Method of Contradiction</h3>
+        <p>This is the standard proof technique required in boards. It works like this:
+        <br>1. Assume the exact opposite of what you want to prove (Assume the number is Rational).
+        <br>2. Express it as $\frac{a}{b}$ where $a$ and $b$ are co-prime integers.
+        <br>3. Perform mathematical operations that lead to a logical impossibility (a contradiction).
+        <br>4. Conclude that the original assumption was wrong, therefore the number is Irrational.</p>
+        
+        <div class="yellow-box">
+            <span class="box-label">Key Theorem</span>
+            Let $p$ be a prime number. If $p$ divides $a^2$, then $p$ divides $a$, where $a$ is a positive integer. (You do not need to prove this theorem, just state it during your $\sqrt{2}$ proof).
+        </div>
+
+        <h3>4.3 Proof that $\sqrt{2}$ is Irrational (Very Important)</h3>
+        <div class="example-block">
+            <strong>Q: Prove that $\sqrt{2}$ is irrational.</strong><br>
+            <strong>Proof:</strong><br>
+            <strong>Step 1:</strong> Let us assume, to the contrary, that $\sqrt{2}$ is a rational number.<br>
+            Then, there exist two co-prime integers $a$ and $b$ ($b \neq 0$) such that:<br>
+            $\sqrt{2} = \frac{a}{b}$<br><br>
+            <strong>Step 2:</strong> Squaring both sides, we get:<br>
+            $2 = \frac{a^2}{b^2}$<br>
+            $\implies 2b^2 = a^2 \quad \text{--- (Equation 1)}$<br><br>
+            <strong>Step 3:</strong> From Eq 1, it is clear that 2 divides $a^2$.<br>
+            By the theorem (if a prime $p$ divides $a^2$, then $p$ divides $a$), it follows that <strong>2 divides $a$</strong>.<br><br>
+            <strong>Step 4:</strong> Since 2 divides $a$, we can write $a$ as:<br>
+            $a = 2c$ (for some integer $c$).<br>
+            Substituting $a = 2c$ in Equation 1:<br>
+            $2b^2 = (2c)^2$<br>
+            $2b^2 = 4c^2$<br>
+            $\implies b^2 = 2c^2$<br><br>
+            <strong>Step 5:</strong> This means that 2 divides $b^2$, and consequently, <strong>2 divides $b$</strong>.<br><br>
+            <strong>Step 6:</strong> From Step 3 and Step 5, we conclude that both $a$ and $b$ have 2 as a common factor.<br>
+            But this contradicts our initial assumption that $a$ and $b$ are co-prime (having no common factor other than 1).<br>
+            This contradiction has arisen because of our incorrect assumption that $\sqrt{2}$ is rational.<br>
+            <strong>Conclusion:</strong> Hence, $\sqrt{2}$ is an irrational number.
+        </div>
+
+        <h3>4.4 Proof that $\sqrt{3}$ is Irrational</h3>
+        <div class="example-block">
+            <strong>Q: Prove that $\sqrt{3}$ is irrational.</strong><br>
+            <strong>Proof:</strong><br>
+            Assume $\sqrt{3} = \frac{a}{b}$ where $a, b$ are co-prime integers, $b \neq 0$.<br>
+            Squaring both sides: $3 = \frac{a^2}{b^2} \implies 3b^2 = a^2$.<br>
+            Thus, 3 divides $a^2$, which implies <strong>3 divides $a$</strong>.<br>
+            Let $a = 3c$ for some integer $c$. Substitute this back:<br>
+            $3b^2 = (3c)^2 \implies 3b^2 = 9c^2 \implies b^2 = 3c^2$.<br>
+            Thus, 3 divides $b^2$, which implies <strong>3 divides $b$</strong>.<br>
+            Therefore, $a$ and $b$ have at least 3 as a common factor, contradicting the fact they are co-prime.<br>
+            <strong>Hence, $\sqrt{3}$ is irrational.</strong>
+        </div>
+
+        <h3>4.5 Proof that $\sqrt{5}$ is Irrational</h3>
+        <div class="example-block">
+            <strong>Q: Prove that $\sqrt{5}$ is irrational.</strong><br>
+            <strong>Proof:</strong><br>
+            Assume $\sqrt{5} = \frac{a}{b}$ where $a, b$ are co-prime integers, $b \neq 0$.<br>
+            Squaring both sides: $5 = \frac{a^2}{b^2} \implies 5b^2 = a^2$.<br>
+            Thus, 5 divides $a^2$, implying <strong>5 divides $a$</strong>.<br>
+            Let $a = 5c$. Substitute this back:<br>
+            $5b^2 = (5c)^2 \implies 5b^2 = 25c^2 \implies b^2 = 5c^2$.<br>
+            Thus, 5 divides $b^2$, implying <strong>5 divides $b$</strong>.<br>
+            $a$ and $b$ have 5 as a common factor, contradicting they are co-prime.<br>
+            <strong>Hence, $\sqrt{5}$ is irrational.</strong>
+        </div>
+
+        <h3>4.6 Proofs for Combinations of Irrationals</h3>
+        <p>For these, you must isolate the root part. Assume the basic root ($\sqrt{2}, \sqrt{3}, \sqrt{5}$) is already proven irrational unless stated otherwise.</p>
+
+        <div class="example-block">
+            <strong>1. Prove $2\sqrt{3}$ is irrational.</strong><br>
+            Assume $2\sqrt{3} = \frac{a}{b}$ (where $a, b$ are co-prime, $b \neq 0$).<br>
+            Isolate the root: $\sqrt{3} = \frac{a}{2b}$.<br>
+            Since $a, b$ are integers, $\frac{a}{2b}$ is a rational number. This implies $\sqrt{3}$ is rational.<br>
+            But this contradicts the fact that $\sqrt{3}$ is irrational.<br>
+            Therefore, our assumption is wrong. $2\sqrt{3}$ is irrational.
+        </div>
+
+        <div class="example-block">
+            <strong>2. Prove $3 + 2\sqrt{5}$ is irrational.</strong><br>
+            Assume $3 + 2\sqrt{5} = \frac{a}{b}$.<br>
+            $2\sqrt{5} = \frac{a}{b} - 3 \implies 2\sqrt{5} = \frac{a - 3b}{b} \implies \sqrt{5} = \frac{a - 3b}{2b}$.<br>
+            Since $a, b$ are integers, $\frac{a - 3b}{2b}$ is rational. So $\sqrt{5}$ is rational.<br>
+            This contradicts the fact that $\sqrt{5}$ is irrational. Hence proved.
+        </div>
+
+        <div class="example-block">
+            <strong>3. Prove $5 - \sqrt{3}$ is irrational.</strong><br>
+            Assume $5 - \sqrt{3} = \frac{a}{b}$.<br>
+            Rearranging: $5 - \frac{a}{b} = \sqrt{3} \implies \sqrt{3} = \frac{5b - a}{b}$.<br>
+            Since $a, b$ are integers, $\frac{5b - a}{b}$ is rational. So $\sqrt{3}$ is rational.<br>
+            Contradiction. Hence $5 - \sqrt{3}$ is irrational.
+        </div>
+
+        <div class="example-block">
+            <strong>4. Prove $\frac{1}{\sqrt{2}}$ is irrational.</strong><br>
+            Assume $\frac{1}{\sqrt{2}} = \frac{a}{b}$.<br>
+            Invert both sides: $\sqrt{2} = \frac{b}{a}$.<br>
+            Since $a, b$ are integers, $\frac{b}{a}$ is rational. So $\sqrt{2}$ is rational.<br>
+            Contradiction. Hence $\frac{1}{\sqrt{2}}$ is irrational.
+        </div>
+
+        <div class="example-block">
+            <strong>5. Prove $\sqrt{2} + \sqrt{3}$ is irrational. (High Difficulty)</strong><br>
+            Assume $\sqrt{2} + \sqrt{3} = \frac{a}{b}$.<br>
+            Isolate one root: $\sqrt{3} = \frac{a}{b} - \sqrt{2}$.<br>
+            Squaring both sides:<br>
+            $3 = \left(\frac{a}{b}\right)^2 + (\sqrt{2})^2 - 2\left(\frac{a}{b}\right)\sqrt{2}$<br>
+            $3 = \frac{a^2}{b^2} + 2 - \frac{2a}{b}\sqrt{2}$<br>
+            Rearrange to isolate $\sqrt{2}$:<br>
+            $\frac{2a}{b}\sqrt{2} = \frac{a^2}{b^2} + 2 - 3 \implies \frac{2a}{b}\sqrt{2} = \frac{a^2 - b^2}{b^2}$<br>
+            $\sqrt{2} = \frac{b(a^2 - b^2)}{2ab^2} \implies \sqrt{2} = \frac{a^2 - b^2}{2ab}$<br>
+            Since $a,b$ are integers, the RHS is rational. Thus $\sqrt{2}$ is rational.<br>
+            Contradiction! Hence $\sqrt{2} + \sqrt{3}$ is irrational.
+        </div>
+        
+        <p><em>(Follow the exact same isolation logic for $3\sqrt{2}, 5\sqrt{3}, \sqrt{5}-\sqrt{3}, 2-3\sqrt{5}, 7\sqrt{5}, \sqrt{2}+3$. The template is universally applicable.)</em></p>
+
+
+        <!-- ========================================== -->
+        <!-- SECTION 5: DECIMAL EXPANSIONS              -->
+        <!-- ========================================== -->
+        <h2>SECTION 5: DECIMAL EXPANSIONS OF RATIONAL NUMBERS</h2>
+
+        <h3>5.1 Types of Decimal Expansions</h3>
+        <ul>
+            <li><strong>Terminating:</strong> The division ends after finite decimal places. e.g., $\frac{1}{2} = 0.5$, $\frac{7}{8} = 0.875$.</li>
+            <li><strong>Non-Terminating Repeating:</strong> The division never ends, but a block of digits repeats. e.g., $\frac{1}{3} = 0.333\dots$, $\frac{1}{7} = 0.142857142857\dots$</li>
+        </ul>
+
+        <h3>5.2 Theorem for Terminating Decimals</h3>
+        <div class="blue-box">
+            <span class="box-label">Theorem</span>
+            Let $x = \frac{p}{q}$ be a rational number, such that $p$ and $q$ are co-prime (lowest terms). Then $x$ has a decimal expansion which <strong>terminates</strong> if and only if the prime factorisation of the denominator $q$ is of the form <strong>$2^n \times 5^m$</strong>, where $n, m$ are non-negative integers.
+        </div>
+        <p><em>Explanation:</em> If the denominator contains ONLY 2s, ONLY 5s, or BOTH 2s and 5s, it terminates. If ANY other prime number (like 3, 7, 11) is present in the denominator, it will be Non-Terminating Repeating.</p>
+
+        <h3>5.4 Without Actual Division - Determine Nature of Decimal</h3>
+        <div class="example-block">
+            <strong>Problem 1: $\frac{13}{3125}$</strong><br>
+            Denominator $q = 3125 = 5 \times 5 \times 5 \times 5 \times 5 = 5^5$.<br>
+            Since $q$ is of the form $2^0 \times 5^5$, the decimal expansion is <strong>Terminating</strong>.
+        </div>
+        <div class="example-block">
+            <strong>Problem 2: $\frac{17}{8}$</strong><br>
+            Denominator $q = 8 = 2^3$. Form is $2^3 \times 5^0$. <strong>Terminating</strong>.
+        </div>
+        <div class="example-block">
+            <strong>Problem 3: $\frac{64}{455}$</strong><br>
+            Denominator $q = 455 = 5 \times 7 \times 13$.<br>
+            Since $q$ has prime factors 7 and 13 (other than 2 and 5), the expansion is <strong>Non-Terminating Repeating</strong>.
+        </div>
+        <div class="example-block">
+            <strong>Problem 4: $\frac{77}{210}$</strong><br>
+            <em>Common Mistake Check:</em> Simplify fraction FIRST! $\frac{77}{210} = \frac{11}{30}$.<br>
+            Denominator $q = 30 = 2 \times 3 \times 5$.<br>
+            Because of the prime factor 3, it is <strong>Non-Terminating Repeating</strong>.
+        </div>
+        <div class="example-block">
+            <strong>Problem 5: $\frac{129}{2^2 \times 5^7 \times 7^5}$</strong><br>
+            Denominator clearly contains $7^5$. It is <strong>Non-Terminating Repeating</strong>.
+        </div>
+
+        <h3>5.5 Number of Decimal Places in Terminating Decimals</h3>
+        <p>If $q = 2^n \times 5^m$, the number of decimal places before it terminates is the <strong>maximum of $n$ and $m$</strong>.</p>
+        <div class="example-block">
+            <strong>Q: After how many places will $\frac{43}{2^4 \times 5^3}$ terminate?</strong><br>
+            Max power between 4 and 3 is 4. It terminates after <strong>4 decimal places</strong>.
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 6: IMPORTANT THEOREMS - SUMMARY    -->
+        <!-- ========================================== -->
+        <h2>SECTION 6: IMPORTANT THEOREMS - SUMMARY</h2>
+        <ul>
+            <li><strong>Fundamental Theorem of Arithmetic:</strong> Every composite number can be uniquely expressed as a product of primes, ignoring order.</li>
+            <li><strong>HCF $\times$ LCM relation:</strong> $HCF(a,b) \times LCM(a,b) = a \times b$.</li>
+            <li><strong>Rational Decimal Theorem:</strong> $\frac{p}{q}$ (lowest terms) terminates if $q=2^n5^m$; otherwise, it is non-terminating repeating.</li>
+            <li><strong>Irrationality Base Theorem:</strong> If prime $p$ divides $a^2$, then $p$ divides $a$.</li>
+        </ul>
+
+        <!-- ========================================== -->
+        <!-- SECTION 7: PRACTICE QUESTION BANK          -->
+        <!-- ========================================== -->
+        <h2>SECTION 7: PRACTICE QUESTION BANK</h2>
+
+        <h3>7.1 Multiple Choice Questions (1 Mark)</h3>
+        <div class="qa-block">
+            <strong>1. The HCF of 96 and 404 is:</strong><br>
+            (A) 2 &nbsp;&nbsp; (B) 3 &nbsp;&nbsp; (C) 4 &nbsp;&nbsp; (D) 9696<br>
+            <em>Answer: (C) 4</em>
+        </div>
+        <div class="qa-block">
+            <strong>2. If two positive integers $A$ and $B$ can be written as $A = x^3y^2$ and $B = xy^3$ ($x,y$ are primes), then LCM(A,B) is:</strong><br>
+            (A) $xy$ &nbsp;&nbsp; (B) $xy^2$ &nbsp;&nbsp; (C) $x^3y^3$ &nbsp;&nbsp; (D) $x^2y^2$<br>
+            <em>Answer: (C) $x^3y^3$ (Take highest powers)</em>
+        </div>
+        <div class="qa-block">
+            <strong>3. Which of the following is a non-terminating repeating decimal?</strong><br>
+            (A) $\frac{13}{3125}$ &nbsp;&nbsp; (B) $\frac{17}{8}$ &nbsp;&nbsp; (C) $\frac{64}{455}$ &nbsp;&nbsp; (D) $\frac{15}{1600}$<br>
+            <em>Answer: (C) $\frac{64}{455}$ (Denominator has factors 7 and 13)</em>
+        </div>
+        <div class="qa-block">
+            <strong>4. The product of a non-zero rational and an irrational number is:</strong><br>
+            (A) always rational &nbsp;&nbsp; (B) always irrational &nbsp;&nbsp; (C) rational or irrational &nbsp;&nbsp; (D) one<br>
+            <em>Answer: (B) always irrational</em>
+        </div>
+
+        <h3>7.2 Very Short Answer (2 Marks)</h3>
+        <div class="qa-block">
+            <strong>Q1. Given that HCF(252, 594) = 18, find LCM(252, 594).</strong><br>
+            <em>Sol:</em> $LCM = (252 \times 594) / 18 = 8316$.
+        </div>
+        <div class="qa-block">
+            <strong>Q2. Check whether $6^n$ can end with the digit 0 for any natural number $n$.</strong><br>
+            <em>Sol:</em> $6^n = (2 \times 3)^n = 2^n \times 3^n$. For a number to end with 0, its prime factorization must contain both 2 and 5. Since 5 is missing, it can never end with 0.
+        </div>
+
+        <h3>7.3 Short Answer (3 Marks)</h3>
+        <div class="qa-block">
+            <strong>Q1. Prove that $2 + 5\sqrt{3}$ is an irrational number, given that $\sqrt{3}$ is irrational.</strong><br>
+            <em>Sol:</em> Assume $2 + 5\sqrt{3} = \frac{a}{b}$. Then $5\sqrt{3} = \frac{a}{b} - 2 = \frac{a-2b}{b} \implies \sqrt{3} = \frac{a-2b}{5b}$. Since $a,b$ are integers, the RHS is rational. This implies $\sqrt{3}$ is rational, contradicting the given fact. Hence, $2+5\sqrt{3}$ is irrational.
+        </div>
+        <div class="qa-block">
+            <strong>Q2. Use Euclid's division algorithm to find HCF of 10224 and 9648.</strong><br>
+            <em>Sol:</em> $10224 = 9648 \times 1 + 576$<br>
+            $9648 = 576 \times 16 + 432$<br>
+            $576 = 432 \times 1 + 144$<br>
+            $432 = 144 \times 3 + 0$. Remainder is zero, HCF is 144.
+        </div>
+
+        <h3>7.4 Assertion-Reason Questions</h3>
+        <p><em>Options: (A) Both true, R is correct explanation. (B) Both true, R is NOT correct explanation. (C) A is true, R is false. (D) A is false, R is true.</em></p>
+        <div class="qa-block">
+            <strong>Q1. Assertion (A):</strong> The HCF of two numbers is 5 and their product is 150. Their LCM is 30.<br>
+            <strong>Reason (R):</strong> For any two positive integers $a$ and $b$, $HCF(a,b) \times LCM(a,b) = a \times b$.<br>
+            <em>Answer: (A) Both are true and R perfectly explains A ($5 \times 30 = 150$).</em>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 8: QUICK REVISION SHEET            -->
+        <!-- ========================================== -->
+        <h2>SECTION 8: QUICK REVISION SHEET</h2>
+
+        <h3>8.1 Formulas & Concepts at a Glance</h3>
+        <ul>
+            <li>$HCF(a,b) \times LCM(a,b) = a \times b$</li>
+            <li>Terminating decimal $\iff q = 2^n \times 5^m$</li>
+            <li>Non-Terminating repeating decimal $\iff q$ has prime factors other than 2 or 5.</li>
+        </ul>
+
+        <h3>8.2 Common Mistakes to Avoid</h3>
+        <ul>
+            <li><strong>Applying the Formula to 3 numbers:</strong> Never use $LCM \times HCF = p \times q \times r$.</li>
+            <li><strong>Forgetting to simplify fractions:</strong> Before checking for terminating decimals, you MUST cut the fraction to its lowest terms. ($\frac{6}{15}$ looks non-terminating because of 15, but simplifies to $\frac{2}{5}$ which is terminating).</li>
+            <li><strong>Incomplete Proofs:</strong> In $\sqrt{2}$ proof, forgetting to state "a and b are co-prime" at the start will cost you marks, because the entire contradiction relies on that statement.</li>
+        </ul>
+
+        <h3>8.3 Examiner's Tips for Full Marks</h3>
+        <p>In word problems, explicitly state <em>why</em> you are choosing HCF or LCM. For example: "Since we need the maximum number of columns, we will find the Highest Common Factor (HCF) of 616 and 32." This guarantees full conceptual marks.</p>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+
+            if (html.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
         }
 
-        /* ... (existing styles) ... */
-
-        /* ... inside body ... */
-
-        <h2>1. Fundamental Definitions</h2><div class="condition-table"><table><tr><th>Type</th><th>Definition</th><th>Examples</th></tr><tr><td><strong>Rational ($\mathbb {
-                Q
-            }
-
-            $)</strong></td><td>Can be written as $p/q$,
-        $q \neq 0$. Terminating OR Non-terminating Repeating decimals.</td><td>$1/2$,
-        $0.75$,
-        $3.33...$,
-        $0$,
-        $-5$</td></tr><tr><td><strong>Irrational ($\mathbb {
-                Q
-            }
-
-            '$)</strong></td>
- <td>Cannot be written as $p/q$. Non-terminating Non-repeating decimals.</td> <td>$\sqrt {
-                2
-            }
-
-            $, $\pi$, $2.010010001...$</td> </tr> <tr> <td><strong>Prime</strong></td> <td>Has exactly 2 factors: 1 and itself.</td> <td>2, 3, 5, 7, 11, 13...</td> </tr> <tr> <td><strong>Composite</strong></td> <td>Has more than 2 factors.</td> <td>4, 6, 8, 9, 10, 15...</td> </tr> </table> </div> <div class="placeholder-image" > [AI IMAGE PROMPT: A vibrant, modern Venn diagram of the Real Number System. "Real Numbers" as the outer container, split into two main colored zones: "Rational"(Green) and "Irrational"(Red). Inside Rational, nested circles for "Integers" and "Natural Numbers" . Examples floating in each zone: 1/2, 5 in Rational; √2, π in Irrational. Dark background, glowing neon diagram lines.] </div> <div class="master-tip" > <span class="tip-header" >VAMPIRE NUMBERS?? NO !</span> Note: $1$ is NEITHER Prime NOR Composite. The smallest Prime number is 2 (also the only even prime). The smallest Composite number is 4. </div> <h2>2. Fundamental Theorem of Arithmetic</h2> <div class="concept-blue" > <p><strong>Theorem:</strong> Every composite number can be expressed (factorized) as a product of primes,
-            and this factorization is unique (apart from the order).</p> </div> <div class="placeholder-image" > [AI IMAGE PROMPT: A visually satisfying "Factor Tree" growing downwards for the number 140. Step-by-step branching: 140 -> (2, 70) -> (2, 35) -> (5, 7). The final prime factors (2, 2, 5, 7) glowing at the tips of the branches. Clean, minimalist infographic style, white background with soft blue connecting lines.] </div> <h3>Application 1: HCF and LCM Relation</h3> <p>For any two positive integers $a, b$: </p>
-            /* ... (keep existing) ... */
-            <h2>3. Word Problem Hacks (HCF vs LCM)</h2> <p>Students often unknowingly mix HCF and LCM. Use this "Vardaan Keyword Decoder":</p> <div class="condition-table" > <table> <tr> <th>Keyword / Scenario</th> <th>To Find</th> <th>Logic</th> </tr> <tr> <td>"Maximum", "Largest", "Highest", "Divide into groups" </td> <td><strong>HCF</strong></td> <td>We are "cutting details down" to find a common unit.</td> </tr> <tr> <td>"Minimum", "Smallest", "Least", "Meet again", "Bells toll" </td> <td><strong>LCM</strong></td> <td>We are "building up" to a future common point.</td> </tr> </table> </div> <div class="placeholder-image" > [AI IMAGE PROMPT: A split-screen comparison visual. LEFT side (HCF): A chef cutting equal large squares from a big sheet of cake (finding the largest common piece). RIGHT side (LCM): Two runners on a circular track starting together, with ghost trails showing multiple laps until they align again at the start line. Text labels: "HCF = Breaking Down", "LCM = Meeting Up" . High quality 3D render.] </div> <div class="concept-green" > <h3>Type 1: "Circular Track" or "Bells"(LCM)</h3>
-
-            /* ... (keep existing) ... */
-            <p><strong>Q: Sonia takes 18 mins, Ravi takes 12 mins to drive 1 round. Starting together, when will they meet again at start?</strong></p> <ul> <li>Sonia reaches start at: 18, 36, 54, 72...</li> <li>Ravi reaches start at: 12, 24, 36, 48...</li> <li>Common time must be multiple of both. We need the <strong>Least</strong> time.</li> <li>Calculated LCM(18, 12)=36 minutes.</li> </ul> </div> <div class="concept-blue" > <h3>Type 2: "Stacking Sweets/Books"(HCF)</h3> <p><strong>Q: 420 Kaju barfis and 130 Badam barfis. Stack them such that each stack has same number and take least area. Find number in each stack.</strong></p> <ul> <li>"Least area" means "Maximum height/number" in one stack.</li> <li>We need a common divisor of 420 and 130.</li> <li>Calculate HCF(420, 130)=10.</li> <li>So, 10 barfis per stack.</li> </ul> </div> <div class="concept-pink" > <h3>Type 3: "Remainders"(HCF - Remainder)</h3> <p><strong>Q: Find largest number which divides 70 and 125 leaving remainders 5 and 8 respectively.</strong> </p> <ul> <li>Number must perfectly divide $(70 - 5)=65$.</li> <li>Number must perfectly divide $(125 - 8)=117$.</li> <li>Find HCF(65, 117)=13.</li> </ul> </div> <h2>4. Revisiting Irrational Numbers (Proofs)</h2> <p><strong>Theorem:</strong> Let $p$ be a prime. If $p$ divides $a^2$, then $p$ divides $a$.</p> <div class="formula-box" > <div class="formula-pill" >CORE PROOF ($\sqrt {
-                    2
-                }
-
-                $)</div> <p><strong>Prove $\sqrt {
-                2
-            }
-
-            $ is irrational.</strong></p> <ol> <li>Assume $\sqrt {
-                2
-            }
-
-            =a/b$ ($a, b$ coprime).</li> <li>$2 =a^2/b^2 \Rightarrow a^2=2b^2 \Rightarrow 2$ divides $a^2 \Rightarrow 2$ divides $a$.</li> <li>Let $a =2c$. Then $(2c)^2=2b^2 \Rightarrow 4c^2=2b^2 \Rightarrow b^2=2c^2$.</li> <li>$2$ divides $b^2 \Rightarrow 2$ divides $b$.</li> <li>$a$ and $b$ have common factor 2. Contradiction ! (Assumed coprime).</li> <li>Hence, Assumption False. Irrational.</li> </ol> </div> <div class="concept-green" > <h3>Advanced: Prove $\sqrt {
-                2
-            }
-
-            + \sqrt {
-                3
-            }
-
-            $ is Irrational</h3> <p><em>(Often asked in RS Aggarwal/RD Sharma Level)</em></p> <ol> <li>Assume $x =\sqrt {
-                2
-            }
-
-            + \sqrt {
-                3
-            }
-
-            $ is rational.</li> <li>Squaring both sides: $x^2 =(\sqrt {
-                    2
-                }
-
-                + \sqrt {
-                    3
-
-                })^2=2 + 3 + 2\sqrt {
-                6
-            }
-
-            =5 + 2\sqrt {
-                6
-            }
-
-            $.</li> <li>Rearrange: $\frac {
-                x^2 - 5
-            }
-
-                {
-                2
-            }
-
-            =\sqrt {
-                6
-            }
-
-            $.</li> <li>LHS involves rational operations on rational $x$, so LHS is Rational.</li> <li>RHS is $\sqrt {
-                6
-            }
-
-            $ (Irrational).</li> <li>Rational $\neq$ Irrational. Contradiction !</li> <li>Hence, $\sqrt {
-                2
-            }
-
-            + \sqrt {
-                3
-            }
-
-            $ is Irrational.</li> </ol> </div> <h2>5. Competency & New Pattern Questions</h2> <div class="master-tip" > <span class="tip-header" >ASSERTION-REASON</span> <p><strong>Assertion (A):</strong> $\sqrt {
-                x
-            }
-
-            $ is an irrational number where $x$ is a prime number.</p> <p><strong>Reason (R):</strong> Square root of any prime number is an irrational number.</p> <p><strong>Analysis:</strong> Both A and R are True, and R is the correct explanation of A. (Option a).</p> </div> <div class="concept-blue" > <h3>Case Study: The Seminar Logic</h3> <p><strong>scenario:</strong> In a seminar, the number of participants in Hindi, English and Mathematics are 60, 84 and 108 respectively.</p> <p><strong>Q1:</strong> Find the minimum number of rooms required if in each room the same number of participants are to be seated and all of them being in the same subject.</p> <p><strong>Solution:</strong></p> <ul> <li>Total Participants=$60 + 84 + 108=252$.</li> <li>Participants per room=HCF(60, 84, 108)=12.</li> <li>Number of rooms=Total / Per Room=$252 / 12=21$ rooms.</li> </ul> </div> </div> < !-- SCRIPT FOR TOGGLE --> <script> function toggleTheme() {
-                const html=document.documentElement;
-                html.classList.toggle('dark-mode');
-
-                if (html.classList.contains('dark-mode')) {
-                    localStorage.setItem('theme', 'dark');
-                }
-
-                else {
-                    localStorage.setItem('theme', 'light');
-                }
-            }
-
-            if (localStorage.getItem('theme')==='dark') {
-                document.documentElement.classList.add('dark-mode');
-            }
-
-            </script> </body> </html>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>
