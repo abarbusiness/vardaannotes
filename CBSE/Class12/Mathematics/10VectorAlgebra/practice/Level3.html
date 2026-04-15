@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 3 - Red Theme) */
+            --primary-color: #b71c1c; 
+            --bg-color: #ffebee;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ef5350;   
+            --bg-color: #3b1a1a;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Level 3: Vector Algebra (Challenger Drill)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Challenger Drill: Advanced Vector Algebra</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">1.</span><div class="q-content">If $\vec{a}, \vec{b}, \vec{c}$ are three non-coplanar vectors, prove that $[\vec{a}+\vec{b} \quad \vec{b}+\vec{c} \quad \vec{c}+\vec{a}] = 2[\vec{a} \, \vec{b} \, \vec{c}]$.</div></div>
+            <div class="question-item"><span class="q-num">2.</span><div class="q-content">Prove Jacobi's Identity: $\vec{a} \times (\vec{b} \times \vec{c}) + \vec{b} \times (\vec{c} \times \vec{a}) + \vec{c} \times (\vec{a} \times \vec{b}) = \vec{0}$.</div></div>
+            <div class="question-item"><span class="q-num">3.</span><div class="q-content">Let $\vec{a}$ be a unit vector and $\vec{b}, \vec{c}$ be non-collinear unit vectors. If $\vec{a} \times (\vec{b} \times \vec{c}) = \frac{\vec{b} + \vec{c}}{\sqrt{2}}$, find the angle that $\vec{a}$ makes with $\vec{b}$ and $\vec{c}$.</div></div>
+            <div class="question-item"><span class="q-num">4.</span><div class="q-content">Solve the vector equation $\vec{x} + \vec{x} \times \vec{a} = \vec{b}$ for the unknown vector $\vec{x}$, in terms of vectors $\vec{a}$ and $\vec{b}$.</div></div>
+            <div class="question-item"><span class="q-num">5.</span><div class="q-content">Prove the identity: $[\vec{a}\times\vec{b} \quad \vec{b}\times\vec{c} \quad \vec{c}\times\vec{a}] = [\vec{a} \, \vec{b} \, \vec{c}]^2$.</div></div>
+            <div class="question-item"><span class="q-num">6.</span><div class="q-content">Let $\vec{a}, \vec{b}, \vec{c}$ be three non-zero vectors such that $\vec{c}$ is a unit vector perpendicular to both $\vec{a}$ and $\vec{b}$. If the angle between $\vec{a}$ and $\vec{b}$ is $\frac{\pi}{6}$, prove that $[\vec{a} \, \vec{b} \, \vec{c}]^2 = \frac{1}{4}|\vec{a}|^2|\vec{b}|^2$.</div></div>
+            <div class="question-item"><span class="q-num">7.</span><div class="q-content">Find a vector $\vec{v}$ of magnitude $\sqrt{8}$ which is coplanar with $\vec{a} = \hat{i} + \hat{j} + \hat{k}$ and $\vec{b} = \hat{i} - \hat{j} + \hat{k}$, and is orthogonal to $\vec{c} = \hat{i} + 2\hat{j} - \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">8.</span><div class="q-content">If $\vec{a}, \vec{b}, \vec{c}$ are mutually perpendicular vectors of equal magnitude, find the angle between $\vec{a}$ and the vector $(\vec{a} + \vec{b} + \vec{c})$.</div></div>
+            <div class="question-item"><span class="q-num">9.</span><div class="q-content">Using vector methods, prove that the altitudes of a triangle are concurrent (intersect at the orthocenter).</div></div>
+            <div class="question-item"><span class="q-num">10.</span><div class="q-content">Using vector methods, prove that the angle inscribed in a semicircle is a right angle.</div></div>
+            <div class="question-item"><span class="q-num">11.</span><div class="q-content">State and mathematically prove the Cauchy-Schwarz inequality for any two vectors $\vec{a}$ and $\vec{b}$: $|\vec{a} \cdot \vec{b}| \le |\vec{a}| |\vec{b}|$.</div></div>
+            <div class="question-item"><span class="q-num">12.</span><div class="q-content">If $\vec{a}, \vec{b}, \vec{c}$ are unit vectors satisfying $|\vec{a}-\vec{b}|^2 + |\vec{b}-\vec{c}|^2 + |\vec{c}-\vec{a}|^2 = 9$, prove that $\vec{a} + \vec{b} + \vec{c} = \vec{0}$.</div></div>
+            <div class="question-item"><span class="q-num">13.</span><div class="q-content">The volume of a tetrahedron with coterminous edges $\vec{a}, \vec{b}, \vec{c}$ is $V$. Prove that the volume of the tetrahedron with coterminous edges $\vec{a}+\vec{b}, \vec{b}+\vec{c}, \vec{c}+\vec{a}$ is $2V$.</div></div>
+            <div class="question-item"><span class="q-num">14.</span><div class="q-content">Given $\vec{a} = x\hat{i} + 12\hat{j} - \hat{k}$, $\vec{b} = 2\hat{i} + 2x\hat{j} + \hat{k}$, and $\vec{c} = \hat{i} + \hat{k}$. Find the value of $x$ for which the scalar triple product $[\vec{a} \, \vec{b} \, \vec{c}]$ is minimum.</div></div>
+            <div class="question-item"><span class="q-num">15.</span><div class="q-content">Let $\vec{a}$ and $\vec{b}$ be two unit vectors. If the vectors $\vec{c} = \vec{a} + 2\vec{b}$ and $\vec{d} = 5\vec{a} - 4\vec{b}$ are perpendicular to each other, find the angle between $\vec{a}$ and $\vec{b}$.</div></div>
+            <div class="question-item"><span class="q-num">16.</span><div class="q-content">Let $\vec{p}, \vec{q}, \vec{r}$ represent the reciprocal system of vectors to the non-coplanar vectors $\vec{a}, \vec{b}, \vec{c}$. Prove that $\vec{a} \cdot \vec{p} + \vec{b} \cdot \vec{q} + \vec{c} \cdot \vec{r} = 3$.</div></div>
+            <div class="question-item"><span class="q-num">17.</span><div class="q-content">Prove the identity: $(\vec{a} \times \vec{b}) \cdot (\vec{c} \times \vec{d}) = (\vec{a} \cdot \vec{c})(\vec{b} \cdot \vec{d}) - (\vec{a} \cdot \vec{d})(\vec{b} \cdot \vec{c})$.</div></div>
+            <div class="question-item"><span class="q-num">18.</span><div class="q-content">Let $\vec{a}, \vec{b}, \vec{c}$ be three vectors such that $\vec{a} \times \vec{b} = \vec{c}$ and $\vec{b} \times \vec{c} = \vec{a}$. Prove that $\vec{a}, \vec{b}, \vec{c}$ are mutually orthogonal, and find the magnitude of $\vec{b}$.</div></div>
+            <div class="question-item"><span class="q-num">19.</span><div class="q-content">If $\hat{a}$ and $\hat{b}$ are unit vectors inclined at an angle $\theta$, prove that $\sin\left(\frac{\theta}{2}\right) = \frac{1}{2}|\hat{a} - \hat{b}|$.</div></div>
+            <div class="question-item"><span class="q-num">20.</span><div class="q-content">Find the value of $y$ if the four points $A(1,1,1)$, $B(2,0,1)$, $C(1,2,0)$, and $D(3, y, 2)$ are coplanar.</div></div>
+            <div class="question-item"><span class="q-num">21.</span><div class="q-content">Prove the identity: $[\vec{a}-\vec{b} \quad \vec{b}-\vec{c} \quad \vec{c}-\vec{a}] = 0$.</div></div>
+            <div class="question-item"><span class="q-num">22.</span><div class="q-content">If the vectors $x\hat{i} - \hat{j} + \hat{k}$, $2\hat{i} + y\hat{j} - z\hat{k}$ and $3\hat{i} - \hat{j} + 2\hat{k}$ form an orthogonal basis in 3D space, find the values of $x, y,$ and $z$.</div></div>
+            <div class="question-item"><span class="q-num">23.</span><div class="q-content">Using vector methods, prove that the medians of a triangle are concurrent (intersect at the centroid) and divide each other in the ratio 2:1.</div></div>
+            <div class="question-item"><span class="q-num">24.</span><div class="q-content">The diagonals of a parallelogram are given by $\vec{d_1} = 3\hat{i} + \hat{j} - 2\hat{k}$ and $\vec{d_2} = \hat{i} - 3\hat{j} + 4\hat{k}$. Find the lengths of the adjacent sides of the parallelogram.</div></div>
+            <div class="question-item"><span class="q-num">25.</span><div class="q-content">A particle acted upon by constant forces $\vec{F_1} = 4\hat{i} + \hat{j} - 3\hat{k}$ and $\vec{F_2} = 3\hat{i} + \hat{j} - \hat{k}$ is displaced from the point $P(\hat{i} + 2\hat{j} + 3\hat{k})$ to the point $Q(5\hat{i} + 4\hat{j} + \hat{k})$. Find the total work done.</div></div>
+            <div class="question-item"><span class="q-num">26.</span><div class="q-content">Determine a unit vector perpendicular to the plane containing the vectors $\vec{a} = 2\hat{i} - 6\hat{j} - 3\hat{k}$ and $\vec{b} = 4\hat{i} + 3\hat{j} - \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">27.</span><div class="q-content">Prove that the area of a triangle with position vertices $\vec{a}, \vec{b}, \vec{c}$ is given by $\frac{1}{2} |\vec{a}\times\vec{b} + \vec{b}\times\vec{c} + \vec{c}\times\vec{a}|$.</div></div>
+            <div class="question-item"><span class="q-num">28.</span><div class="q-content">If $\vec{a}, \vec{b}, \vec{c}$ are coplanar vectors, prove mathematically that $\vec{a}\times\vec{b}$, $\vec{b}\times\vec{c}$, and $\vec{c}\times\vec{a}$ are also coplanar vectors.</div></div>
+            <div class="question-item"><span class="q-num">29.</span><div class="q-content">If $\vec{a} \times \vec{b} = \vec{c} \times \vec{d}$ and $\vec{a} \times \vec{c} = \vec{b} \times \vec{d}$, prove that the vector $(\vec{a}-\vec{d})$ is parallel to the vector $(\vec{b}-\vec{c})$, assuming $\vec{a} \neq \vec{d}$ and $\vec{b} \neq \vec{c}$.</div></div>
+            <div class="question-item"><span class="q-num">30.</span><div class="q-content">The volume of a parallelepiped formed by the vectors $\vec{a}\times\vec{b}, \vec{b}\times\vec{c}$, and $\vec{c}\times\vec{a}$ is $36$ cubic units. What is the volume of the parallelepiped formed by the vectors $\vec{a}, \vec{b}, \vec{c}$?</div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

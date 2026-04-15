@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 1 - Green Theme) */
+            --primary-color: #2e7d32; 
+            --bg-color: #e8f5e9;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #81c784;   
+            --bg-color: #1b2e20;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Level 1: Vector Algebra (Topic-Wise Drill)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 1: Magnitude, Types, and Algebra of Vectors</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">1.</span><div class="q-content">Find the magnitude of the vector $\vec{a} = 2\hat{i} - 3\hat{j} + 6\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">2.</span><div class="q-content">Find the magnitude of the vector $\vec{b} = \frac{1}{\sqrt{3}}\hat{i} + \frac{1}{\sqrt{3}}\hat{j} - \frac{1}{\sqrt{3}}\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">3.</span><div class="q-content">Find the unit vector in the direction of the vector $\vec{a} = \hat{i} + 2\hat{j} + 2\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">4.</span><div class="q-content">Find a vector of magnitude 5 in the direction of the vector $3\hat{i} - 4\hat{j}$.</div></div>
+            <div class="question-item"><span class="q-num">5.</span><div class="q-content">If $\vec{a} = 2\hat{i} + \hat{j} - \hat{k}$ and $\vec{b} = \hat{i} - \hat{j} + 2\hat{k}$, find the vector $\vec{a} + \vec{b}$.</div></div>
+            <div class="question-item"><span class="q-num">6.</span><div class="q-content">Find the vector $2\vec{a} - \vec{b}$ using the vectors from the previous question.</div></div>
+            <div class="question-item"><span class="q-num">7.</span><div class="q-content">If the position vectors of points $P$ and $Q$ are $\hat{i} + 2\hat{j} + 3\hat{k}$ and $4\hat{i} + 5\hat{j} + 6\hat{k}$ respectively, find the vector $\vec{PQ}$.</div></div>
+            <div class="question-item"><span class="q-num">8.</span><div class="q-content">Find the magnitude of the vector $\vec{PQ}$ calculated in the previous question.</div></div>
+            <div class="question-item"><span class="q-num">9.</span><div class="q-content">Are the vectors $\vec{a} = \hat{i} - 2\hat{j} + 3\hat{k}$ and $\vec{b} = -2\hat{i} + 4\hat{j} - 6\hat{k}$ collinear? Justify.</div></div>
+            <div class="question-item"><span class="q-num">10.</span><div class="q-content">Find the values of $x$ and $y$ so that the vectors $x\hat{i} + 3\hat{j}$ and $4\hat{i} + y\hat{j}$ are equal.</div></div>
+            <div class="question-item"><span class="q-num">11.</span><div class="q-content">Find the position vector of the midpoint of the line segment joining the points $(2,3,4)$ and $(4,1,-2)$.</div></div>
+            <div class="question-item"><span class="q-num">12.</span><div class="q-content">Show that the vectors $\vec{a} = \hat{i} + \hat{j}$ and $\vec{b} = 2\hat{i} + 2\hat{j}$ have the same direction.</div></div>
+            <div class="question-item"><span class="q-num">13.</span><div class="q-content">Find a vector in the direction of vector $\vec{a} = \hat{i} - 2\hat{j}$ that has a magnitude of 7 units.</div></div>
+            <div class="question-item"><span class="q-num">14.</span><div class="q-content">Find the unit vector in the direction of the sum of the vectors $\vec{a} = 2\hat{i} - \hat{j} + 2\hat{k}$ and $\vec{b} = -\hat{i} + \hat{j} + \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">15.</span><div class="q-content">If $\vec{a} = \hat{i} + \hat{j}$ and $\vec{b} = \hat{j} + \hat{k}$, what is the value of $|\vec{a} + \vec{b}|$?</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 2: Direction Cosines, Ratios, and Section Formula</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">16.</span><div class="q-content">Find the direction ratios of the vector $\vec{a} = \hat{i} - 2\hat{j} + 3\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">17.</span><div class="q-content">Find the direction cosines of the vector $\vec{a} = \hat{i} + 2\hat{j} + 2\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">18.</span><div class="q-content">If a line makes equal angles with the $x, y,$ and $z$ axes, find its direction cosines.</div></div>
+            <div class="question-item"><span class="q-num">19.</span><div class="q-content">Write the direction cosines of the x-axis.</div></div>
+            <div class="question-item"><span class="q-num">20.</span><div class="q-content">Write the direction cosines of the y-axis.</div></div>
+            <div class="question-item"><span class="q-num">21.</span><div class="q-content">Find the position vector of a point $R$ which divides the line joining two points $P(\hat{i} + 2\hat{j} - \hat{k})$ and $Q(-\hat{i} + \hat{j} + \hat{k})$ internally in the ratio 2:1.</div></div>
+            <div class="question-item"><span class="q-num">22.</span><div class="q-content">Find the position vector of a point $R$ which divides the line joining the same points externally in the ratio 2:1.</div></div>
+            <div class="question-item"><span class="q-num">23.</span><div class="q-content">Find the direction cosines of the vector joining the points $A(1, 2, -3)$ and $B(-1, -2, 1)$, directed from $A$ to $B$.</div></div>
+            <div class="question-item"><span class="q-num">24.</span><div class="q-content">If $l, m, n$ are the direction cosines of a vector and $l = \frac{1}{2}, m = \frac{1}{2}$, find the possible values of $n$.</div></div>
+            <div class="question-item"><span class="q-num">25.</span><div class="q-content">Can a vector have direction angles $45^\circ, 60^\circ, 120^\circ$?</div></div>
+            <div class="question-item"><span class="q-num">26.</span><div class="q-content">Find the position vector of the midpoint of $P(2\hat{i} - \hat{j} + 3\hat{k})$ and $Q(4\hat{i} + \hat{j} - \hat{k})$.</div></div>
+            <div class="question-item"><span class="q-num">27.</span><div class="q-content">What are the direction ratios of the line passing through the points $(2, -1, 3)$ and $(3, 1, 5)$?</div></div>
+            <div class="question-item"><span class="q-num">28.</span><div class="q-content">A vector $\vec{r}$ has a magnitude of 14 and direction ratios proportional to $2, 3, -6$. Find the direction cosines of $\vec{r}$.</div></div>
+            <div class="question-item"><span class="q-num">29.</span><div class="q-content">Hence, find the components of the vector $\vec{r}$ from the previous question.</div></div>
+            <div class="question-item"><span class="q-num">30.</span><div class="q-content">Is it possible for a non-zero line/vector to have direction ratios $0, 0, 0$?</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 3: Scalar (Dot) Product</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">31.</span><div class="q-content">Find $\vec{a} \cdot \vec{b}$ if $\vec{a} = 2\hat{i} + \hat{j} - 3\hat{k}$ and $\vec{b} = \hat{i} - 2\hat{j} + \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">32.</span><div class="q-content">Find the angle between the vectors $\vec{a} = \hat{i} + \hat{j} - \hat{k}$ and $\vec{b} = \hat{i} - \hat{j} + \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">33.</span><div class="q-content">Find the scalar projection of the vector $\vec{a} = 2\hat{i} + 3\hat{j} + 2\hat{k}$ on the vector $\vec{b} = \hat{i} + 2\hat{j} + \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">34.</span><div class="q-content">For what value of $\lambda$ are the vectors $\vec{a} = 2\hat{i} + \lambda\hat{j} + \hat{k}$ and $\vec{b} = \hat{i} - 2\hat{j} + 3\hat{k}$ perpendicular to each other?</div></div>
+            <div class="question-item"><span class="q-num">35.</span><div class="q-content">Evaluate $(\vec{a} + \vec{b}) \cdot (\vec{a} - \vec{b})$ given that $|\vec{a}| = 5$ and $|\vec{b}| = 3$.</div></div>
+            <div class="question-item"><span class="q-num">36.</span><div class="q-content">Find $|\vec{a} - \vec{b}|$ if $|\vec{a}| = 2$, $|\vec{b}| = 3$ and $\vec{a} \cdot \vec{b} = 4$.</div></div>
+            <div class="question-item"><span class="q-num">37.</span><div class="q-content">If $\vec{a}$ is a unit vector and $(\vec{x} - \vec{a}) \cdot (\vec{x} + \vec{a}) = 8$, find the magnitude of $\vec{x}$ ($|\vec{x}|$).</div></div>
+            <div class="question-item"><span class="q-num">38.</span><div class="q-content">Find the value of the expression: $\hat{i} \cdot (\hat{j} + \hat{k}) + \hat{j} \cdot (\hat{i} + \hat{k}) + \hat{k} \cdot (\hat{i} + \hat{j})$.</div></div>
+            <div class="question-item"><span class="q-num">39.</span><div class="q-content">Find the scalar projection of $\hat{i} - \hat{j}$ on $\hat{i} + \hat{j}$.</div></div>
+            <div class="question-item"><span class="q-num">40.</span><div class="q-content">Determine if the vectors $\hat{i} - 2\hat{j} + 5\hat{k}$ and $-2\hat{i} + 4\hat{j} + 2\hat{k}$ are orthogonal.</div></div>
+            <div class="question-item"><span class="q-num">41.</span><div class="q-content">If $\vec{a}$ and $\vec{b}$ are unit vectors and $\theta$ is the angle between them, find $\cos\theta$ if $\vec{a} \cdot \vec{b} = 1/2$.</div></div>
+            <div class="question-item"><span class="q-num">42.</span><div class="q-content">Write the vector projection of $\vec{a}$ on $\vec{b}$ in formula form (not scalar projection).</div></div>
+            <div class="question-item"><span class="q-num">43.</span><div class="q-content">If $\vec{a} \cdot \vec{a} = 0$, what can you say about the vector $\vec{a}$?</div></div>
+            <div class="question-item"><span class="q-num">44.</span><div class="q-content">Expand and evaluate $(3\vec{a} - 5\vec{b}) \cdot (2\vec{a} + 7\vec{b})$.</div></div>
+            <div class="question-item"><span class="q-num">45.</span><div class="q-content">Find the angle between the x-axis and the vector $\hat{i} + \hat{j} + \hat{k}$.</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 4: Vector (Cross) Product</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">46.</span><div class="q-content">Find the cross product $\vec{a} \times \vec{b}$ if $\vec{a} = 2\hat{i} + \hat{j} + 3\hat{k}$ and $\vec{b} = 3\hat{i} + 5\hat{j} - 2\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">47.</span><div class="q-content">Find the magnitude of $\vec{a} \times \vec{b}$ from the previous question.</div></div>
+            <div class="question-item"><span class="q-num">48.</span><div class="q-content">Find a unit vector perpendicular to both the vectors $\vec{a} = \hat{i} + \hat{j}$ and $\vec{b} = \hat{j} + \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">49.</span><div class="q-content">Find the area of a parallelogram whose adjacent sides are determined by the vectors $\vec{a} = \hat{i} - \hat{j} + 3\hat{k}$ and $\vec{b} = 2\hat{i} - 7\hat{j} + \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">50.</span><div class="q-content">Find the area of a triangle having vertices at points $A(1, 1, 1), B(1, 2, 3)$, and $C(2, 3, 1)$.</div></div>
+            <div class="question-item"><span class="q-num">51.</span><div class="q-content">For what values of $p$ and $q$ are the vectors $2\hat{i} + 3\hat{j} - \hat{k}$ and $p\hat{i} + q\hat{j} - 3\hat{k}$ parallel?</div></div>
+            <div class="question-item"><span class="q-num">52.</span><div class="q-content">Evaluate the expression: $\hat{i} \times (\hat{j} + \hat{k}) + \hat{j} \times (\hat{k} + \hat{i}) + \hat{k} \times (\hat{i} + \hat{j})$.</div></div>
+            <div class="question-item"><span class="q-num">53.</span><div class="q-content">If $|\vec{a}| = 2$, $|\vec{b}| = 5$ and $|\vec{a} \times \vec{b}| = 8$, find the value of $\vec{a} \cdot \vec{b}$.</div></div>
+            <div class="question-item"><span class="q-num">54.</span><div class="q-content">Find the area of the parallelogram whose diagonals are given by $\vec{d_1} = 3\hat{i} + \hat{j} - 2\hat{k}$ and $\vec{d_2} = \hat{i} - 3\hat{j} + 4\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">55.</span><div class="q-content">Compute the cross product: $(\hat{i} - \hat{j}) \times (\hat{i} + \hat{j})$.</div></div>
+            <div class="question-item"><span class="q-num">56.</span><div class="q-content">Let $\vec{a}, \vec{b}$ be two non-zero vectors. If $\vec{a} \times \vec{b} = \vec{0}$, what is the angle between them?</div></div>
+            <div class="question-item"><span class="q-num">57.</span><div class="q-content">Calculate the cross product of $\vec{a} = 3\hat{i} - 4\hat{j}$ and $\vec{b} = -2\hat{i} + 3\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">58.</span><div class="q-content">Prove using distributive properties that $(\vec{a} - \vec{b}) \times (\vec{a} + \vec{b}) = 2(\vec{a} \times \vec{b})$.</div></div>
+            <div class="question-item"><span class="q-num">59.</span><div class="q-content">What is the value of the cross product of a vector with itself, i.e., $\vec{a} \times \vec{a}$?</div></div>
+            <div class="question-item"><span class="q-num">60.</span><div class="q-content">If $\vec{a} = 2\hat{i} + 3\hat{j}$, find the unit vector parallel to the z-axis that is perpendicular to $\vec{a}$.</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 5: Scalar and Vector Triple Products</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">61.</span><div class="q-content">Find the scalar triple product $[\vec{a} \, \vec{b} \, \vec{c}]$ if $\vec{a} = \hat{i} - 2\hat{j} + 3\hat{k}$, $\vec{b} = 2\hat{i} + \hat{j} - \hat{k}$, and $\vec{c} = \hat{j} + \hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">62.</span><div class="q-content">Determine if the vectors $\vec{a} = \hat{i} + 3\hat{j} + \hat{k}$, $\vec{b} = 2\hat{i} - \hat{j} - \hat{k}$, and $\vec{c} = 7\hat{j} + 3\hat{k}$ are coplanar.</div></div>
+            <div class="question-item"><span class="q-num">63.</span><div class="q-content">Find the volume of a parallelepiped whose coterminous edges are $\vec{a} = 2\hat{i} + 3\hat{j} + 4\hat{k}$, $\vec{b} = \hat{i} + 2\hat{j} - \hat{k}$, and $\vec{c} = 3\hat{i} - \hat{j} + 2\hat{k}$.</div></div>
+            <div class="question-item"><span class="q-num">64.</span><div class="q-content">Find the value of $\lambda$ if the vectors $\hat{i} - \hat{j} + \hat{k}$, $3\hat{i} + \hat{j} + 2\hat{k}$, and $\hat{i} + \lambda\hat{j} - 3\hat{k}$ are coplanar.</div></div>
+            <div class="question-item"><span class="q-num">65.</span><div class="q-content">Evaluate the sum: $[\hat{i} \, \hat{j} \, \hat{k}] + [\hat{j} \, \hat{k} \, \hat{i}] + [\hat{k} \, \hat{i} \, \hat{j}]$.</div></div>
+            <div class="question-item"><span class="q-num">66.</span><div class="q-content">Verify conceptually that $\vec{a} \cdot (\vec{a} \times \vec{b}) = 0$.</div></div>
+            <div class="question-item"><span class="q-num">67.</span><div class="q-content">Use the BAC-CAB rule to expand $\hat{i} \times (\hat{j} \times \hat{i})$ and find its value.</div></div>
+            <div class="question-item"><span class="q-num">68.</span><div class="q-content">Find the value of $\hat{i} \cdot (\hat{j} \times \hat{k}) + \hat{j} \cdot (\hat{i} \times \hat{k}) + \hat{k} \cdot (\hat{i} \times \hat{j})$.</div></div>
+            <div class="question-item"><span class="q-num">69.</span><div class="q-content">If $[\vec{a} \, \vec{b} \, \vec{c}] = 5$, find the value of $[2\vec{a} \, 3\vec{b} \, 4\vec{c}]$.</div></div>
+            <div class="question-item"><span class="q-num">70.</span><div class="q-content">What is the value of $[\vec{a} + \vec{b} \quad \vec{b} + \vec{c} \quad \vec{c} + \vec{a}]$ in terms of $[\vec{a} \, \vec{b} \, \vec{c}]$?</div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Solutions</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 2 - Blue Theme) */
+            --primary-color: #1565c0; 
+            --bg-color: #e3f2fd;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #64b5f6;   
+            --bg-color: #1e2a38;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Solution Key: Level 2 (LPP Standard Drill)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 1: Formulation of Word Problems</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">1.</span><div class="q-content"><span class="ans-label">Ans:</span> Milling constraint: $2x + y \le 40$. Grinding constraint: $x + 2y \le 50$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">2.</span><div class="q-content"><span class="ans-label">Ans:</span> Vitamin A: $2x + y \ge 8$. Vitamin C: $x + 2y \ge 10$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">3.</span><div class="q-content"><span class="ans-label">Ans:</span> $x + y \le 250$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">4.</span><div class="q-content"><span class="ans-label">Ans:</span> $25000x + 40000y \le 7000000 \Rightarrow 5x + 8y \le 1400$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">5.</span><div class="q-content"><span class="ans-label">Ans:</span> Since depot A has 20 trucks total, the remaining trucks sent to E will be $20 - (x + y)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">6.</span><div class="q-content"><span class="ans-label">Ans:</span> Since factory C needs 15 trucks and $x$ come from A, depot B must send $15 - x$ trucks to factory C.</div></div>
+            <div class="question-item solution-item"><span class="q-num">7.</span><div class="q-content"><span class="ans-label">Ans:</span> Maximize $Z = 4500x + 5000y$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">8.</span><div class="q-content"><span class="ans-label">Ans:</span> $x \ge 0, y \ge 0, z \ge 0$.</div></div>
+        </div>
+
+        <div class="chapter-header">Section 2: Solving Bounded LPPs</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">9.</span><div class="q-content"><span class="ans-label">Ans:</span> Maximum value is $16$ at the point $(0, 4)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">10.</span><div class="q-content"><span class="ans-label">Ans:</span> Corner points: $(0,0)$, $(4,0)$, $(2,3)$, and $(0,4)$. Minimum value is $-12$ at $(4,0)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">11.</span><div class="q-content"><span class="ans-label">Ans:</span> Evaluating $Z$: $Z(0,0)=0$, $Z(4,0)=-12$, $Z(2,3)=6$, $Z(0,4)=16$. Maximum value is $16$ at $(0,4)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">12.</span><div class="q-content"><span class="ans-label">Ans:</span> Solving $5x+2y=10$ and $3x+5y=15$. Multiply eq1 by 5 and eq2 by 2: $25x+10y=50$ and $6x+10y=30$. Subtracting gives $19x = 20 \Rightarrow x = \frac{20}{19}$. Substitute $x$: $y = \frac{45}{19}$. The corner point is $(\frac{20}{19}, \frac{45}{19})$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">13.</span><div class="q-content"><span class="ans-label">Ans:</span> Corner points: $(0,0)$, $(30,0)$, $(20,30)$, and $(0,50)$. Max value is $120$ at $(30,0)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">14.</span><div class="q-content"><span class="ans-label">Ans:</span> $(0,0)$, $(3,0)$, $(3,4)$, and $(0,4)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">15.</span><div class="q-content"><span class="ans-label">Ans:</span> $Z(0,0)=0$, $Z(3,0)=6$, $Z(0,4)=20$, $Z(3,4)=26$. The maximum value is $26$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">16.</span><div class="q-content"><span class="ans-label">Ans:</span> Multiply $x+y=5$ by 2: $2x+2y=10$. Subtracting from $2x+3y=12$ gives $y=2$. Hence $x=3$. The point is $(3, 2)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">17.</span><div class="q-content"><span class="ans-label">Ans:</span> Corner points are $(10,0)$, $(60,0)$, $(0,20)$, and $(0,10)$. $Z(10,0)=30$, $Z(60,0)=180$, $Z(0,20)=180$, $Z(0,10)=90$. The maximum value is $180$ occurring at both $(60,0)$ and $(0,20)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">18.</span><div class="q-content"><span class="ans-label">Ans:</span> The minimum value is $30$ at the point $(10,0)$.</div></div>
+        </div>
+
+        <div class="chapter-header">Section 3: Solving Unbounded LPPs & Half-Plane Checks</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">19.</span><div class="q-content"><span class="ans-label">Ans:</span> Corner points of the triangle are $(4,3)$, $(0,5)$, and $(0,6)$. $Z(4,3) = 2300$, $Z(0,5) = 2500$, $Z(0,6) = 3000$. The minimum value is $2300$ at $(4,3)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">20.</span><div class="q-content"><span class="ans-label">Ans:</span> Intersection of $x+3y=3$ and $x+y=2$ is $(1.5, 0.5)$. Corner points are $(3,0)$, $(1.5, 0.5)$, and $(0,2)$. $Z(3,0)=9$, $Z(1.5, 0.5)=7$, $Z(0,2)=10$. The minimum value is $7$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">21.</span><div class="q-content"><span class="ans-label">Ans:</span> To confirm it's the minimum, we must graph the open half-plane $3x + 5y < 7$ as a dotted line.</div></div>
+            <div class="question-item solution-item"><span class="q-num">22.</span><div class="q-content"><span class="ans-label">Ans:</span> No. Since the dotted line $3x+5y < 7$ does not overlap with the feasible region, $7$ is the absolute minimum.</div></div>
+            <div class="question-item solution-item"><span class="q-num">23.</span><div class="q-content"><span class="ans-label">Ans:</span> The corner points are $(0,3)$ and $(6,0)$. $Z(0,3) = 6$ and $Z(6,0) = 6$. The minimum value is $6$ (which occurs at all points on the line segment joining them).</div></div>
+            <div class="question-item solution-item"><span class="q-num">24.</span><div class="q-content"><span class="ans-label">Ans:</span> No. The feasible region extends infinitely. The test $ -x + 2y > 1$ shares points with the feasible region, meaning $Z$ can increase indefinitely without bound.</div></div>
+            <div class="question-item solution-item"><span class="q-num">25.</span><div class="q-content"><span class="ans-label">Ans:</span> The maximum value does not exist because the objective function can be made infinitely large within the unbounded feasible region.</div></div>
+        </div>
+
+        <div class="chapter-header">Section 4: Special Cases & Multiple Optimal Solutions</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">26.</span><div class="q-content"><span class="ans-label">Ans:</span> $3p + 4q = 4p + 3q \Rightarrow p = q$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">27.</span><div class="q-content"><span class="ans-label">Ans:</span> There is no feasible region (the constraints contradict each other). Hence, no maximum value exists.</div></div>
+            <div class="question-item solution-item"><span class="q-num">28.</span><div class="q-content"><span class="ans-label">Ans:</span> Infinitely many optimal solutions (every point on the line segment joining $(0, 20)$ and $(15, 15)$ is optimal).</div></div>
+            <div class="question-item solution-item"><span class="q-num">29.</span><div class="q-content"><span class="ans-label">Ans:</span> It guarantees that both the absolute maximum and absolute minimum values of the objective function must exist, and they occur at the corner points (vertices) of the bounded region.</div></div>
+            <div class="question-item solution-item"><span class="q-num">30.</span><div class="q-content"><span class="ans-label">Ans:</span> No. The region required is $y \ge x+1$ AND $y \le x$. It is geometrically impossible for a value to be simultaneously strictly greater than $x+1$ and less than $x$. Therefore, the LPP has an infeasible solution.</div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

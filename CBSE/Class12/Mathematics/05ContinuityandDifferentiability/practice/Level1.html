@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 1 - Green Theme) */
+            --primary-color: #2e7d32; 
+            --bg-color: #e8f5e9;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #81c784;   
+            --bg-color: #1b2e20;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Level 1: Continuity & Differentiability (Topic-Wise Drill)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 1: Continuity & Algebra of Continuous Functions</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">1.</span><div class="q-content">State the mathematical condition for a function $f(x)$ to be continuous at a point $x = c$.</div></div>
+            <div class="question-item"><span class="q-num">2.</span><div class="q-content">True or False: Every polynomial function is continuous everywhere on the real line.</div></div>
+            <div class="question-item"><span class="q-num">3.</span><div class="q-content">Find the Left Hand Limit (LHL) and Right Hand Limit (RHL) of $f(x) = 2x+3$ at $x = 1$.</div></div>
+            <div class="question-item"><span class="q-num">4.</span><div class="q-content">Is the constant function $f(x) = k$ continuous at $x = 0$?</div></div>
+            <div class="question-item"><span class="q-num">5.</span><div class="q-content">If $f(x)$ and $g(x)$ are continuous at $x=c$, then what can you say about the continuity of $(f+g)(x)$ at $x=c$?</div></div>
+            <div class="question-item"><span class="q-num">6.</span><div class="q-content">At what point is the function $f(x) = \frac{1}{x-3}$ discontinuous?</div></div>
+            <div class="question-item"><span class="q-num">7.</span><div class="q-content">True or False: The modulus function $f(x) = |x|$ is continuous at $x=0$.</div></div>
+            <div class="question-item"><span class="q-num">8.</span><div class="q-content">Is the sine function, $f(x) = \sin x$, continuous everywhere?</div></div>
+            <div class="question-item"><span class="q-num">9.</span><div class="q-content">Identify the points of discontinuity for the Greatest Integer Function $f(x) = [x]$.</div></div>
+            <div class="question-item"><span class="q-num">10.</span><div class="q-content">If $g(x)$ is continuous at $c$ and $f(x)$ is continuous at $g(c)$, is the composition $f(g(x))$ continuous at $c$?</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 2: Differentiability & Basic Rules</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">11.</span><div class="q-content">State the relationship between continuity and differentiability. (Does differentiability imply continuity?)</div></div>
+            <div class="question-item"><span class="q-num">12.</span><div class="q-content">True or False: A continuous function is always differentiable.</div></div>
+            <div class="question-item"><span class="q-num">13.</span><div class="q-content">Is the function $f(x) = |x|$ differentiable at $x = 0$?</div></div>
+            <div class="question-item"><span class="q-num">14.</span><div class="q-content">What is the derivative of $x^n$ with respect to $x$ (Power Rule)?</div></div>
+            <div class="question-item"><span class="q-num">15.</span><div class="q-content">What is the derivative of any constant value $C$?</div></div>
+            <div class="question-item"><span class="q-num">16.</span><div class="q-content">Write the formula for the Product Rule: $\frac{d}{dx}[u(x)v(x)]$.</div></div>
+            <div class="question-item"><span class="q-num">17.</span><div class="q-content">Write the formula for the Quotient Rule: $\frac{d}{dx}\left[\frac{u(x)}{v(x)}\right]$.</div></div>
+            <div class="question-item"><span class="q-num">18.</span><div class="q-content">Find the derivative of $y = x^3 + 5x - 7$.</div></div>
+            <div class="question-item"><span class="q-num">19.</span><div class="q-content">Find the derivative of $y = x \cdot \sin x$.</div></div>
+            <div class="question-item"><span class="q-num">20.</span><div class="q-content">Find the derivative of $y = \frac{x}{\cos x}$.</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 3: Chain Rule & Implicit Differentiation</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">21.</span><div class="q-content">State the Chain Rule for differentiating a composite function $y = f(g(x))$.</div></div>
+            <div class="question-item"><span class="q-num">22.</span><div class="q-content">Find the derivative of $y = \sin(2x)$.</div></div>
+            <div class="question-item"><span class="q-num">23.</span><div class="q-content">Find the derivative of $y = \cos(x^2)$.</div></div>
+            <div class="question-item"><span class="q-num">24.</span><div class="q-content">Find the derivative of $y = (ax+b)^n$.</div></div>
+            <div class="question-item"><span class="q-num">25.</span><div class="q-content">Find the derivative of $y = \sqrt{x^2+1}$.</div></div>
+            <div class="question-item"><span class="q-num">26.</span><div class="q-content">What does it mean for an equation to be given implicitly?</div></div>
+            <div class="question-item"><span class="q-num">27.</span><div class="q-content">If $x + y = \pi$, find $\frac{dy}{dx}$.</div></div>
+            <div class="question-item"><span class="q-num">28.</span><div class="q-content">If $y - \sin y = x$, differentiate both sides with respect to $x$ to find $\frac{dy}{dx}$.</div></div>
+            <div class="question-item"><span class="q-num">29.</span><div class="q-content">Differentiate $y^2$ with respect to $x$.</div></div>
+            <div class="question-item"><span class="q-num">30.</span><div class="q-content">If $xy = c$, find $\frac{dy}{dx}$.</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 4: Derivatives of Inverse Trigonometric Functions</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">31.</span><div class="q-content">Write the formula for $\frac{d}{dx}(\sin^{-1}x)$.</div></div>
+            <div class="question-item"><span class="q-num">32.</span><div class="q-content">Write the formula for $\frac{d}{dx}(\cos^{-1}x)$.</div></div>
+            <div class="question-item"><span class="q-num">33.</span><div class="q-content">Write the formula for $\frac{d}{dx}(\tan^{-1}x)$.</div></div>
+            <div class="question-item"><span class="q-num">34.</span><div class="q-content">Write the formula for $\frac{d}{dx}(\sec^{-1}x)$.</div></div>
+            <div class="question-item"><span class="q-num">35.</span><div class="q-content">Write the formula for $\frac{d}{dx}(\cot^{-1}x)$.</div></div>
+            <div class="question-item"><span class="q-num">36.</span><div class="q-content">Find the derivative of $y = \sin^{-1}(2x)$.</div></div>
+            <div class="question-item"><span class="q-num">37.</span><div class="q-content">Find the derivative of $y = \tan^{-1}\left(\frac{x}{a}\right)$.</div></div>
+            <div class="question-item"><span class="q-num">38.</span><div class="q-content">Find the derivative of $y = \cos^{-1}(\sin x)$.</div></div>
+            <div class="question-item"><span class="q-num">39.</span><div class="q-content">What is the best trigonometric substitution for simplifying expressions with $\sqrt{1-x^2}$?</div></div>
+            <div class="question-item"><span class="q-num">40.</span><div class="q-content">What is the best trigonometric substitution for simplifying expressions with $1+x^2$?</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 5: Exponential & Logarithmic Differentiation</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">41.</span><div class="q-content">What is the derivative of the natural exponential function $e^x$?</div></div>
+            <div class="question-item"><span class="q-num">42.</span><div class="q-content">What is the derivative of $a^x$ (where $a > 0, a \neq 1$)?</div></div>
+            <div class="question-item"><span class="q-num">43.</span><div class="q-content">What is the derivative of the natural logarithm $\log_e x$ (or $\ln x$)?</div></div>
+            <div class="question-item"><span class="q-num">44.</span><div class="q-content">Find the derivative of $y = e^{3x}$.</div></div>
+            <div class="question-item"><span class="q-num">45.</span><div class="q-content">Find the derivative of $y = \log(\sin x)$.</div></div>
+            <div class="question-item"><span class="q-num">46.</span><div class="q-content">When is the method of "Logarithmic Differentiation" most useful?</div></div>
+            <div class="question-item"><span class="q-num">47.</span><div class="q-content">What is the first step in differentiating a function like $y = x^x$?</div></div>
+            <div class="question-item"><span class="q-num">48.</span><div class="q-content">Using logarithmic properties, expand $\log(u \cdot v \cdot w)$.</div></div>
+            <div class="question-item"><span class="q-num">49.</span><div class="q-content">Find $\frac{d}{dx}(x^x)$. (Standard Result)</div></div>
+            <div class="question-item"><span class="q-num">50.</span><div class="q-content">Simplify and find the derivative of $y = e^{\log_e x}$.</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 6: Parametric & Second Order Derivatives</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">51.</span><div class="q-content">If $x = f(t)$ and $y = g(t)$, state the formula to find $\frac{dy}{dx}$.</div></div>
+            <div class="question-item"><span class="q-num">52.</span><div class="q-content">If $x = 2at$ and $y = at^2$, find $\frac{dx}{dt}$ and $\frac{dy}{dt}$.</div></div>
+            <div class="question-item"><span class="q-num">53.</span><div class="q-content">Using the previous question's functions, find $\frac{dy}{dx}$.</div></div>
+            <div class="question-item"><span class="q-num">54.</span><div class="q-content">If $x = r\cos\theta$ and $y = r\sin\theta$, find $\frac{dy}{dx}$.</div></div>
+            <div class="question-item"><span class="q-num">55.</span><div class="q-content">What is the symbol and definition for the Second Order Derivative?</div></div>
+            <div class="question-item"><span class="q-num">56.</span><div class="q-content">Find the second order derivative ($\frac{d^2y}{dx^2}$) of $y = x^3$.</div></div>
+            <div class="question-item"><span class="q-num">57.</span><div class="q-content">Find the second order derivative of $y = \sin x$.</div></div>
+            <div class="question-item"><span class="q-num">58.</span><div class="q-content">Find the second order derivative of $y = e^{2x}$.</div></div>
+            <div class="question-item"><span class="q-num">59.</span><div class="q-content">True or False: $\frac{d^2y}{dx^2}$ is exactly the same as $\left(\frac{dy}{dx}\right)^2$.</div></div>
+            <div class="question-item"><span class="q-num">60.</span><div class="q-content">What is the second derivative of a linear function $y = mx + c$?</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 7: Mean Value Theorems</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">61.</span><div class="q-content">What are the three required conditions for Rolle's Theorem to be applicable on a function $f(x)$ in interval $[a, b]$?</div></div>
+            <div class="question-item"><span class="q-num">62.</span><div class="q-content">If the conditions of Rolle's Theorem are satisfied, what is the conclusion regarding $f'(c)$ for some $c \in (a, b)$?</div></div>
+            <div class="question-item"><span class="q-num">63.</span><div class="q-content">What are the two conditions for Lagrange's Mean Value Theorem (LMVT) to be applicable?</div></div>
+            <div class="question-item"><span class="q-num">64.</span><div class="q-content">State the formula representing the conclusion of LMVT.</div></div>
+            <div class="question-item"><span class="q-num">65.</span><div class="q-content">Geometrically, what does Rolle's Theorem imply about the tangent at point $c$?</div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Solutions</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Orangish Theme) */
+            --primary-color: #e65100; 
+            --bg-color: #fff3e0;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ffb74d;   
+            --bg-color: #3e2723;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; 
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); 
+            opacity: 0.05;     
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">SOLUTION KEY: Level 0 Drill (Relations and Functions)</div>
+            <div class="meta-info">
+                <span>Teacher/Staff Use Only</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 1: Review of Set Theory & Cartesian Products</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">1.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $A \times B = \{(1,a), (1,b), (2,a), (2,b)\}$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">2.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $3 \times 4 = 12$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">3.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> False (Unless $A = B$ or one is an empty set).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">4.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $x + 1 = 3 \implies x = 2$ and $y - 2 = 1 \implies y = 3$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">5.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $\{(2,1), (3,1), (3,2)\}$</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 2: Basics of Relations</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">6.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> A relation $R$ is a subset of the Cartesian product $A \times B$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">7.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Domain = $\{1, 2, 3\}$; Range = $\{2, 3, 4\}$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">8.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $n(A \times B) = 3 \times 2 = 6$. Total relations = $2^6 = 64$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">9.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Yes (It is called the Empty or Void Relation).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">10.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> The Universal Relation ($R = A \times A$).</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 3: Types of Relations & Equivalence</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">11.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $I_A = \{(1,1), (2,2), (3,3)\}$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">12.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $A$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">13.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Yes, because $(1,2) \in R \implies (2,1) \in R$ and vice versa.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">14.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Yes, because $(1,1), (2,2), \text{ and } (3,3)$ are all present in $R$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">15.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> False (An empty relation on a non-empty set is symmetric and transitive vacuously, but not reflexive).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">16.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Reflexive, Symmetric, and Transitive.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">17.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Yes, because $a - a = 0$, which is an even number.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">18.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Yes, if $a - b$ is even, then $-(a - b) = b - a$ is also even (Symmetric property).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">19.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> An Equivalence Class.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">20.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $[0] = \{\dots, -4, -2, 0, 2, 4, \dots\}$ (The set of all even integers).</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 4: Functions & Mappings</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">21.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Every element of set $A$ must have one and only one distinct image in set $B$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">22.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Co-domain.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">23.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> To determine if a function is one-one (injective). If any horizontal line intersects the graph more than once, it is many-one.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">24.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $x_1 = x_2$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">25.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Onto function (Surjective mapping).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">26.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Bijective function (or Bijection).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">27.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Many-one (e.g., $f(-2) = f(2) = 4$).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">28.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> One-one (Linear functions without bounds are injective).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">29.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> No, the range is $[-1, 1]$, which is not equal to the co-domain $\mathbb{R}$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">30.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> An Into function.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 5: Counting Functions</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">31.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $q^p$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">32.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $n! = 3! = 6$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">33.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Zero (0). You cannot map 4 distinct elements to 2 elements uniquely.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 6: Composition of Functions</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">34.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $f(g(x)) = f(2x) = (2x)^2 = 4x^2$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">35.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $g(f(x)) = g(x^2) = 2x^2$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">36.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> False (as proven by answers 34 and 35).</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">37.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Set $A$ to set $C$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">38.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $f(x+1) = (x+1) + 1 = x + 2$</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 7: Invertible Functions</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">39.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Bijective (One-one and Onto)</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">40.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Let $y = 2x + 3 \implies 2x = y - 3 \implies x = \frac{y - 3}{2}$. So, $f^{-1}(y) = \frac{y - 3}{2}$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">41.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> True.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">42.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $f^{-1} \circ g^{-1}$</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 8: Binary Operations</div>
+        <div class="questions-container">
+            <div class="question-item solution-item">
+                <span class="q-num">43.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $A \times A$ to set $A$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">44.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $b * a$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">45.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $a$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">46.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $2 + 3 + 1 = 6$</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">47.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> Yes, because $a+b+1 = b+a+1$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">48.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $3 + 4 = 7$. Remainder when $7$ is divided by $5$ is $2$. Answer is $2$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">49.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $4 \times 5 = 20$. Remainder when $20$ is divided by $6$ is $2$. Answer is $2$.</div>
+            </div>
+            <div class="question-item solution-item">
+                <span class="q-num">50.</span>
+                <div class="q-content"><span class="ans-label">Answer:</span> $\text{max}(5, 7) = 7$.</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

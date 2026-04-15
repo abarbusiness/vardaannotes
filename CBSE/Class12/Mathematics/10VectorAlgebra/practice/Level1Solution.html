@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Solutions</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 1 - Green Theme) */
+            --primary-color: #2e7d32; 
+            --bg-color: #e8f5e9;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #81c784;   
+            --bg-color: #1b2e20;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Solution Key: Level 1 (Vector Algebra)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 1: Magnitude, Types, and Algebra of Vectors</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">1.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{a}| = \sqrt{2^2 + (-3)^2 + 6^2} = \sqrt{4 + 9 + 36} = \sqrt{49} = 7$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">2.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{b}| = \sqrt{\frac{1}{3} + \frac{1}{3} + \frac{1}{3}} = \sqrt{1} = 1$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">3.</span><div class="q-content"><span class="ans-label">Ans:</span> $\hat{a} = \frac{\hat{i} + 2\hat{j} + 2\hat{k}}{\sqrt{1^2+2^2+2^2}} = \frac{1}{3}\hat{i} + \frac{2}{3}\hat{j} + \frac{2}{3}\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">4.</span><div class="q-content"><span class="ans-label">Ans:</span> Magnitude of given vector is $\sqrt{3^2 + (-4)^2} = 5$. The unit vector is $\frac{3\hat{i} - 4\hat{j}}{5}$. The required vector is $5 \times \left(\frac{3\hat{i} - 4\hat{j}}{5}\right) = 3\hat{i} - 4\hat{j}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">5.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a} + \vec{b} = (2+1)\hat{i} + (1-1)\hat{j} + (-1+2)\hat{k} = 3\hat{i} + 0\hat{j} + \hat{k} = 3\hat{i} + \hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">6.</span><div class="q-content"><span class="ans-label">Ans:</span> $2\vec{a} - \vec{b} = 2(2\hat{i} + \hat{j} - \hat{k}) - (\hat{i} - \hat{j} + 2\hat{k}) = 4\hat{i} + 2\hat{j} - 2\hat{k} - \hat{i} + \hat{j} - 2\hat{k} = 3\hat{i} + 3\hat{j} - 4\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">7.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{PQ} = \text{P.V. of } Q - \text{P.V. of } P = (4-1)\hat{i} + (5-2)\hat{j} + (6-3)\hat{k} = 3\hat{i} + 3\hat{j} + 3\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">8.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{PQ}| = \sqrt{3^2 + 3^2 + 3^2} = \sqrt{27} = 3\sqrt{3}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">9.</span><div class="q-content"><span class="ans-label">Ans:</span> Yes. <i>Reason: $\vec{b} = -2(\hat{i} - 2\hat{j} + 3\hat{k}) = -2\vec{a}$. Since $\vec{b} = \lambda\vec{a}$, they are collinear.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">10.</span><div class="q-content"><span class="ans-label">Ans:</span> $x = 4, y = 3$. <i>Reason: Compare corresponding components.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">11.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{m} = \frac{(2+4)}{2}\hat{i} + \frac{(3+1)}{2}\hat{j} + \frac{(4-2)}{2}\hat{k} = 3\hat{i} + 2\hat{j} + \hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">12.</span><div class="q-content"><span class="ans-label">Proof:</span> $\hat{a} = \frac{\hat{i}+\hat{j}}{\sqrt{2}}$. $\hat{b} = \frac{2\hat{i}+2\hat{j}}{\sqrt{8}} = \frac{2(\hat{i}+\hat{j})}{2\sqrt{2}} = \frac{\hat{i}+\hat{j}}{\sqrt{2}}$. Since $\hat{a} = \hat{b}$, they have the same direction.</div></div>
+            <div class="question-item solution-item"><span class="q-num">13.</span><div class="q-content"><span class="ans-label">Ans:</span> $7 \times \left(\frac{\hat{i} - 2\hat{j}}{\sqrt{5}}\right) = \frac{7}{\sqrt{5}}\hat{i} - \frac{14}{\sqrt{5}}\hat{j}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">14.</span><div class="q-content"><span class="ans-label">Ans:</span> Let $\vec{c} = \vec{a} + \vec{b} = \hat{i} + 0\hat{j} + 3\hat{k}$. Unit vector = $\frac{\hat{i} + 3\hat{k}}{\sqrt{1^2+3^2}} = \frac{1}{\sqrt{10}}\hat{i} + \frac{3}{\sqrt{10}}\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">15.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a} + \vec{b} = \hat{i} + 2\hat{j} + \hat{k}$. Magnitude = $\sqrt{1^2+2^2+1^2} = \sqrt{6}$.</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 2: Direction Cosines, Ratios, and Section Formula</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">16.</span><div class="q-content"><span class="ans-label">Ans:</span> Direction ratios are $1, -2, 3$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">17.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{a}| = 3$. Direction cosines are $\frac{1}{3}, \frac{2}{3}, \frac{2}{3}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">18.</span><div class="q-content"><span class="ans-label">Ans:</span> Let angle be $\alpha$. $l = m = n = \cos\alpha$. So $3\cos^2\alpha = 1 \Rightarrow \cos\alpha = \pm\frac{1}{\sqrt{3}}$. DCs are $\pm\frac{1}{\sqrt{3}}, \pm\frac{1}{\sqrt{3}}, \pm\frac{1}{\sqrt{3}}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">19.</span><div class="q-content"><span class="ans-label">Ans:</span> $1, 0, 0$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">20.</span><div class="q-content"><span class="ans-label">Ans:</span> $0, 1, 0$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">21.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{r} = \frac{2(-\hat{i}+\hat{j}+\hat{k}) + 1(\hat{i}+2\hat{j}-\hat{k})}{3} = \frac{-\hat{i} + 4\hat{j} + \hat{k}}{3}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">22.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{r} = \frac{2(-\hat{i}+\hat{j}+\hat{k}) - 1(\hat{i}+2\hat{j}-\hat{k})}{2-1} = -3\hat{i} + 3\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">23.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{AB} = -2\hat{i} - 4\hat{j} + 4\hat{k}$. $|\vec{AB}| = \sqrt{4+16+16} = 6$. DCs are $-\frac{2}{6}, -\frac{4}{6}, \frac{4}{6} = -\frac{1}{3}, -\frac{2}{3}, \frac{2}{3}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">24.</span><div class="q-content"><span class="ans-label">Ans:</span> $l^2+m^2+n^2=1 \Rightarrow \frac{1}{4} + \frac{1}{4} + n^2 = 1 \Rightarrow n^2 = \frac{1}{2} \Rightarrow n = \pm\frac{1}{\sqrt{2}}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">25.</span><div class="q-content"><span class="ans-label">Ans:</span> Yes. <i>Reason: $\cos^2 45^\circ + \cos^2 60^\circ + \cos^2 120^\circ = (\frac{1}{\sqrt{2}})^2 + (\frac{1}{2})^2 + (-\frac{1}{2})^2 = \frac{1}{2} + \frac{1}{4} + \frac{1}{4} = 1$. The sum is 1, so it is possible.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">26.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{(2+4)\hat{i} + (-1+1)\hat{j} + (3-1)\hat{k}}{2} = 3\hat{i} + 0\hat{j} + \hat{k} = 3\hat{i} + \hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">27.</span><div class="q-content"><span class="ans-label">Ans:</span> Direction ratios are $(3-2), (1 - (-1)), (5-3) = 1, 2, 2$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">28.</span><div class="q-content"><span class="ans-label">Ans:</span> Magnitude of DRs is $\sqrt{4+9+36} = 7$. DCs are $\frac{2}{7}, \frac{3}{7}, -\frac{6}{7}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">29.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{r} = 14 \times (\text{DCs}) = 14\left(\frac{2}{7}\hat{i} + \frac{3}{7}\hat{j} - \frac{6}{7}\hat{k}\right) = 4\hat{i} + 6\hat{j} - 12\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">30.</span><div class="q-content"><span class="ans-label">Ans:</span> No. <i>Reason: A line must have a definite direction, which requires at least one non-zero component.</i></div></div>
+        </div>
+
+        <div class="chapter-header">Topic 3: Scalar (Dot) Product</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">31.</span><div class="q-content"><span class="ans-label">Ans:</span> $(2)(1) + (1)(-2) + (-3)(1) = 2 - 2 - 3 = -3$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">32.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a}\cdot\vec{b} = 1 - 1 - 1 = -1$. $|\vec{a}| = \sqrt{3}, |\vec{b}| = \sqrt{3}$. $\cos\theta = \frac{-1}{\sqrt{3}\sqrt{3}} = -\frac{1}{3}$. So $\theta = \cos^{-1}\left(-\frac{1}{3}\right)$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">33.</span><div class="q-content"><span class="ans-label">Ans:</span> Projection = $\frac{\vec{a} \cdot \vec{b}}{|\vec{b}|} = \frac{2(1) + 3(2) + 2(1)}{\sqrt{1^2+2^2+1^2}} = \frac{10}{\sqrt{6}} = \frac{5\sqrt{6}}{3}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">34.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a}\cdot\vec{b} = 0 \Rightarrow 2(1) + \lambda(-2) + 1(3) = 0 \Rightarrow 5 - 2\lambda = 0 \Rightarrow \lambda = \frac{5}{2}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">35.</span><div class="q-content"><span class="ans-label">Ans:</span> $(\vec{a} + \vec{b}) \cdot (\vec{a} - \vec{b}) = |\vec{a}|^2 - |\vec{b}|^2 = 5^2 - 3^2 = 25 - 9 = 16$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">36.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{a}-\vec{b}|^2 = |\vec{a}|^2 + |\vec{b}|^2 - 2\vec{a}\cdot\vec{b} = 4 + 9 - 2(4) = 5$. Thus $|\vec{a}-\vec{b}| = \sqrt{5}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">37.</span><div class="q-content"><span class="ans-label">Ans:</span> $(\vec{x}-\vec{a})\cdot(\vec{x}+\vec{a}) = |\vec{x}|^2 - |\vec{a}|^2 = 8$. Since $|\vec{a}|=1$, $|\vec{x}|^2 - 1 = 8 \Rightarrow |\vec{x}|^2 = 9 \Rightarrow |\vec{x}| = 3$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">38.</span><div class="q-content"><span class="ans-label">Ans:</span> $(\hat{i}\cdot\hat{j} + \hat{i}\cdot\hat{k}) + (\hat{j}\cdot\hat{i} + \hat{j}\cdot\hat{k}) + (\hat{k}\cdot\hat{i} + \hat{k}\cdot\hat{j}) = (0+0) + (0+0) + (0+0) = 0$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">39.</span><div class="q-content"><span class="ans-label">Ans:</span> Projection = $\frac{(\hat{i}-\hat{j}) \cdot (\hat{i}+\hat{j})}{|\hat{i}+\hat{j}|} = \frac{1-1}{\sqrt{2}} = 0$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">40.</span><div class="q-content"><span class="ans-label">Ans:</span> Dot product = $(1)(-2) + (-2)(4) + (5)(2) = -2 - 8 + 10 = 0$. Yes, they are orthogonal.</div></div>
+            <div class="question-item solution-item"><span class="q-num">41.</span><div class="q-content"><span class="ans-label">Ans:</span> $\cos\theta = \frac{\vec{a}\cdot\vec{b}}{|\vec{a}||\vec{b}|} = \frac{1/2}{(1)(1)} = \frac{1}{2}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">42.</span><div class="q-content"><span class="ans-label">Ans:</span> $\left(\frac{\vec{a} \cdot \vec{b}}{|\vec{b}|^2}\right)\vec{b}$</div></div>
+            <div class="question-item solution-item"><span class="q-num">43.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{a}|^2 = 0$, so $\vec{a}$ is the zero vector ($\vec{0}$).</div></div>
+            <div class="question-item solution-item"><span class="q-num">44.</span><div class="q-content"><span class="ans-label">Ans:</span> $6|\vec{a}|^2 + 21(\vec{a}\cdot\vec{b}) - 10(\vec{b}\cdot\vec{a}) - 35|\vec{b}|^2 = 6|\vec{a}|^2 + 11\vec{a}\cdot\vec{b} - 35|\vec{b}|^2$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">45.</span><div class="q-content"><span class="ans-label">Ans:</span> Let $\vec{a} = \hat{i}$ and $\vec{b} = \hat{i}+\hat{j}+\hat{k}$. $\cos\theta = \frac{1(1)+0(1)+0(1)}{(1)(\sqrt{3})} = \frac{1}{\sqrt{3}}$. $\theta = \cos^{-1}\left(\frac{1}{\sqrt{3}}\right)$.</div></div>
+        </div>
+
+        <div class="chapter-header">Topic 4: Vector (Cross) Product</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">46.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a} \times \vec{b} = \hat{i}(-2 - 15) - \hat{j}(-4 - 9) + \hat{k}(10 - 3) = -17\hat{i} + 13\hat{j} + 7\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">47.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{a} \times \vec{b}| = \sqrt{(-17)^2 + 13^2 + 7^2} = \sqrt{289 + 169 + 49} = \sqrt{507}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">48.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a} \times \vec{b} = \hat{i}(1-0) - \hat{j}(1-0) + \hat{k}(0-1) = \hat{i} - \hat{j} - \hat{k}$. Mag = $\sqrt{3}$. Unit vector = $\pm \frac{\hat{i} - \hat{j} - \hat{k}}{\sqrt{3}}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">49.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a} \times \vec{b} = \hat{i}(-1+21) - \hat{j}(1-6) + \hat{k}(-7+2) = 20\hat{i} + 5\hat{j} - 5\hat{k}$. Area = $\sqrt{400+25+25} = \sqrt{450} = 15\sqrt{2}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">50.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{AB} = 0\hat{i} + \hat{j} + 2\hat{k}$, $\vec{AC} = \hat{i} + 2\hat{j} + 0\hat{k}$. $\vec{AB} \times \vec{AC} = -4\hat{i} + 2\hat{j} - \hat{k}$. Area = $\frac{1}{2}\sqrt{16+4+1} = \frac{\sqrt{21}}{2}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">51.</span><div class="q-content"><span class="ans-label">Ans:</span> For parallel vectors, ratios of components must be equal. $\frac{2}{p} = \frac{3}{q} = \frac{-1}{-3} \Rightarrow \frac{1}{3}$. So $p=6$ and $q=9$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">52.</span><div class="q-content"><span class="ans-label">Ans:</span> $(\hat{k} - \hat{j}) + (\hat{i} - \hat{k}) + (\hat{j} - \hat{i}) = \vec{0}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">53.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{a}\times\vec{b}| = ab\sin\theta = 8 \Rightarrow 10\sin\theta = 8 \Rightarrow \sin\theta = 4/5$. Then $\cos\theta = 3/5$ (or $-3/5$). $\vec{a}\cdot\vec{b} = ab\cos\theta = 10(3/5) = 6$ (or $-6$).</div></div>
+            <div class="question-item solution-item"><span class="q-num">54.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{d_1} \times \vec{d_2} = \hat{i}(4-6) - \hat{j}(12 - (-2)) + \hat{k}(-9-1) = -2\hat{i} - 14\hat{j} - 10\hat{k}$. Area = $\frac{1}{2}\sqrt{4 + 196 + 100} = \frac{1}{2}\sqrt{300} = \frac{10\sqrt{3}}{2} = 5\sqrt{3}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">55.</span><div class="q-content"><span class="ans-label">Ans:</span> $\hat{i}\times\hat{i} + \hat{i}\times\hat{j} - \hat{j}\times\hat{i} - \hat{j}\times\hat{j} = \vec{0} + \hat{k} - (-\hat{k}) - \vec{0} = 2\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">56.</span><div class="q-content"><span class="ans-label">Ans:</span> Since they are non-zero, $\sin\theta = 0$. So the angle $\theta$ is $0^\circ$ or $180^\circ$ (they are parallel).</div></div>
+            <div class="question-item solution-item"><span class="q-num">57.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{a} \times \vec{b} = \hat{i}(-12) - \hat{j}(9) + \hat{k}(-8) = -12\hat{i} - 9\hat{j} - 8\hat{k}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">58.</span><div class="q-content"><span class="ans-label">Proof:</span> $\vec{a}\times\vec{a} + \vec{a}\times\vec{b} - \vec{b}\times\vec{a} - \vec{b}\times\vec{b} = \vec{0} + \vec{a}\times\vec{b} - (-\vec{a}\times\vec{b}) - \vec{0} = 2(\vec{a}\times\vec{b})$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">59.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{0}$ (Zero vector, since angle between them is $0$).</div></div>
+            <div class="question-item solution-item"><span class="q-num">60.</span><div class="q-content"><span class="ans-label">Ans:</span> $\hat{k}$ and $-\hat{k}$. <i>(Since z-axis is mutually perpendicular to x and y axes).</i></div></div>
+        </div>
+
+        <div class="chapter-header">Topic 5: Scalar and Vector Triple Products</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">61.</span><div class="q-content"><span class="ans-label">Ans:</span> $1(1+1) - (-2)(2-0) + 3(2-0) = 2 + 4 + 6 = 12$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">62.</span><div class="q-content"><span class="ans-label">Ans:</span> STP = $1(-3+7) - 3(6-0) + 1(14-0) = 4 - 18 + 14 = 0$. Yes, they are coplanar.</div></div>
+            <div class="question-item solution-item"><span class="q-num">63.</span><div class="q-content"><span class="ans-label">Ans:</span> $2(4-1) - 3(2+3) + 4(-1-6) = 2(3) - 3(5) + 4(-7) = 6 - 15 - 28 = -37$. Volume = $|-37| = 37$ cubic units.</div></div>
+            <div class="question-item solution-item"><span class="q-num">64.</span><div class="q-content"><span class="ans-label">Ans:</span> STP = $1(-3-2\lambda) - (-1)(-9-2) + 1(3\lambda-1) = 0 \Rightarrow -3-2\lambda - 11 + 3\lambda - 1 = 0 \Rightarrow \lambda - 15 = 0 \Rightarrow \lambda = 15$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">65.</span><div class="q-content"><span class="ans-label">Ans:</span> $1 + 1 + 1 = 3$. <i>(Cyclic permutation preserves the value of STP).</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">66.</span><div class="q-content"><span class="ans-label">Proof:</span> $\vec{a} \times \vec{b}$ is a vector perpendicular to both $\vec{a}$ and $\vec{b}$. The dot product of two perpendicular vectors is always zero.</div></div>
+            <div class="question-item solution-item"><span class="q-num">67.</span><div class="q-content"><span class="ans-label">Ans:</span> $(\hat{i}\cdot\hat{i})\hat{j} - (\hat{i}\cdot\hat{j})\hat{i} = (1)\hat{j} - (0)\hat{i} = \hat{j}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">68.</span><div class="q-content"><span class="ans-label">Ans:</span> $\hat{i}\cdot\hat{i} + \hat{j}\cdot(-\hat{j}) + \hat{k}\cdot\hat{k} = 1 - 1 + 1 = 1$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">69.</span><div class="q-content"><span class="ans-label">Ans:</span> $(2\times 3\times 4)[\vec{a} \, \vec{b} \, \vec{c}] = 24(5) = 120$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">70.</span><div class="q-content"><span class="ans-label">Ans:</span> $2[\vec{a} \, \vec{b} \, \vec{c}]$. <i>(Standard expansion using distributive property of scalar triple product).</i></div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

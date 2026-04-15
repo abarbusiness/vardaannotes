@@ -1,0 +1,523 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 0: Orangish) */
+            --primary-color: #e65100; 
+            --bg-color: #fff3e0;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ffb74d;   
+            --bg-color: #2d1a11;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; 
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); 
+            opacity: 0.05;     
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 6: Application of Derivatives - Foundation Drill (Level 0)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <!-- Topic 6.1 -->
+        <div class="chapter-header">6.1 Rate of Change of Quantities</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">The rate of change of distance ($s$) with respect to time ($t$) is called _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">If $y = f(x)$, then the instantaneous rate of change of $y$ with respect to $x$ is denoted mathematically as _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">Find the expression for the rate of change of the area of a circle ($A = \pi r^2$) with respect to its radius $r$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">What is the derivative of the volume of a cube ($V = x^3$) with respect to its edge $x$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">If a circle's radius $r$ is increasing at $2\text{ cm/s}$, what is the value of $\frac{dr}{dt}$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">If the volume $V$ of a balloon is decreasing at $5\text{ cm}^3\text{/s}$, what is the value of $\frac{dV}{dt}$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">According to the chain rule for related rates, $\frac{dy}{dt} = \frac{dy}{dx} \times $ _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">Find the rate of change of the circumference of a circle ($C = 2\pi r$) with respect to $r$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">True or False: Instantaneous rate of change is measured using derivatives.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">If $y = 3x^2$, find the value of $\frac{dy}{dx}$ at $x = 2$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">If the side of a square is $a$, what is the expression for the rate of change of its perimeter $P$ with respect to $a$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">Write the formula for the surface area $S$ of a sphere in terms of its radius $r$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">Find the derivative of the surface area of a sphere ($S = 4\pi r^2$) with respect to $r$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">If $x$ and $y$ are related by the equation $y = x^2$, express $\frac{dy}{dt}$ in terms of $x$ and $\frac{dx}{dt}$.</div>
+            </div>
+        </div>
+
+        <!-- Topic 6.2 -->
+        <div class="chapter-header">6.2 Increasing and Decreasing Functions</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">A continuous function $f(x)$ is strictly increasing on an open interval if $f'(x)$ is _________________ than zero.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">16.</span>
+                <div class="q-content">A continuous function $f(x)$ is strictly decreasing on an open interval if $f'(x)$ is _________________ than zero.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">17.</span>
+                <div class="q-content">If $f'(x) \ge 0$ for all $x$ in an interval, the function is simply called _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">18.</span>
+                <div class="q-content">If $f'(x) \le 0$ for all $x$ in an interval, the function is simply called _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">19.</span>
+                <div class="q-content">Find $f'(x)$ for $f(x) = 5x + 3$. Is the function strictly increasing or decreasing?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">20.</span>
+                <div class="q-content">Find $f'(x)$ for $f(x) = -2x + 7$. Is the function strictly increasing or decreasing?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">21.</span>
+                <div class="q-content">The critical points (or stationary points) for finding intervals of monotonicity are found by setting $f'(x) =$ _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">22.</span>
+                <div class="q-content">True or False: The exponential function $f(x) = e^x$ is a strictly increasing function for all real numbers.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">23.</span>
+                <div class="q-content">What is the first derivative of $f(x) = \sin x$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">24.</span>
+                <div class="q-content">On the interval $(0, \pi/2)$, is the function $f(x) = \sin x$ strictly increasing or decreasing?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">25.</span>
+                <div class="q-content">Find the first derivative of $f(x) = x^2$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">26.</span>
+                <div class="q-content">For the interval $x > 0$, is the function $f(x) = x^2$ strictly increasing or strictly decreasing?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">27.</span>
+                <div class="q-content">What popular graphical method uses a number line with alternating plus/minus signs to determine intervals of increase/decrease?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">28.</span>
+                <div class="q-content">If $f'(x) = (x-1)(x-2)$, what are the critical points where $f'(x) = 0$?</div>
+            </div>
+        </div>
+
+        <!-- Topic 6.3 -->
+        <div class="chapter-header">6.3 Tangents and Normals</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">29.</span>
+                <div class="q-content">The slope of the tangent to the curve $y = f(x)$ at the point $(x_1, y_1)$ is denoted by the derivative value _________________ evaluated at that point.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">30.</span>
+                <div class="q-content">If $m_1$ is the slope of the tangent and $m_2$ is the slope of the normal, what is the relation between $m_1$ and $m_2$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">31.</span>
+                <div class="q-content">The slope of the normal to the curve $y = f(x)$ is given by $-1 / $ _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">32.</span>
+                <div class="q-content">Find the slope of the tangent to the curve $y = x^2$ at the point where $x = 1$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">33.</span>
+                <div class="q-content">Using the result from the previous question, find the slope of the normal to the curve $y = x^2$ at $x = 1$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">34.</span>
+                <div class="q-content">Write the point-slope form equation of a straight line passing through point $(x_1, y_1)$ with slope $m$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">35.</span>
+                <div class="q-content">Write the standard equation of the tangent to the curve $y=f(x)$ at the point $(x_0, y_0)$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">36.</span>
+                <div class="q-content">Write the standard equation of the normal to the curve $y=f(x)$ at the point $(x_0, y_0)$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">37.</span>
+                <div class="q-content">If a tangent line to a curve is parallel to the x-axis, its slope $\left(\frac{dy}{dx}\right)$ must be equal to _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">38.</span>
+                <div class="q-content">If a tangent line to a curve is parallel to the y-axis, the value of $\frac{dx}{dy}$ must be equal to _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">39.</span>
+                <div class="q-content">Find the slope of the tangent to the line $y = 3x - 5$ at any point.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">40.</span>
+                <div class="q-content">Two curves intersect orthogonally if the angle of intersection between their tangents at the point of contact is _________________ degrees.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">41.</span>
+                <div class="q-content">If two curves are orthogonal, the product of their tangent slopes $m_1 m_2$ equals _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">42.</span>
+                <div class="q-content">True or False: The normal to a curve is always perpendicular to the tangent at the point of contact.</div>
+            </div>
+        </div>
+
+        <!-- Topic 6.4 -->
+        <div class="chapter-header">6.4 Approximations and Differentials</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">43.</span>
+                <div class="q-content">The differential of $y$, denoted by $dy$, is defined as $dy = f'(x) \times $ _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">44.</span>
+                <div class="q-content">If $\Delta x$ is a small change in $x$, then the approximate change in $y$ (denoted by $\Delta y$) is calculated as $\Delta y \approx $ _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">45.</span>
+                <div class="q-content">The absolute error in a variable $x$ is typically denoted by the symbol _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">46.</span>
+                <div class="q-content">The relative error in a variable $x$ is given by the ratio _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">47.</span>
+                <div class="q-content">The percentage error in a variable $x$ is computed by multiplying the relative error by _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">48.</span>
+                <div class="q-content">Find the expression for the differential $dy$ for the function $y = x^3$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">49.</span>
+                <div class="q-content">Find the expression for the differential $dy$ for the function $y = \sqrt{x}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">50.</span>
+                <div class="q-content">If $y = x^2$, calculate the approximate value of $\Delta y$ when $x = 2$ and $\Delta x = 0.01$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">51.</span>
+                <div class="q-content">True or False: For linear functions, $\Delta y$ and $dy$ represent exactly the same numerical value.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">52.</span>
+                <div class="q-content">Complete the standard approximation formula: $f(x + \Delta x) \approx f(x) + $ _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">53.</span>
+                <div class="q-content">If the radius of a circle increases by a small amount $\Delta r$, write the formula for the approximate change in its area $\Delta A$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">54.</span>
+                <div class="q-content">What is the formula for the relative error in measuring the volume $V$ if the absolute error in measurement is $\Delta V$?</div>
+            </div>
+        </div>
+
+        <!-- Topic 6.5 -->
+        <div class="chapter-header">6.5 Maxima and Minima</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">55.</span>
+                <div class="q-content">An interior point $c$ in the domain of a function where $f'(c) = 0$ is called a _________________ point.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">56.</span>
+                <div class="q-content">By the First Derivative Test, if $f'(x)$ changes sign from positive to negative as $x$ increases through $c$, then $c$ is a point of local _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">57.</span>
+                <div class="q-content">By the First Derivative Test, if $f'(x)$ changes sign from negative to positive as $x$ increases through $c$, then $c$ is a point of local _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">58.</span>
+                <div class="q-content">If $f'(x)$ does not change sign as $x$ increases through $c$, then $c$ is neither a maxima nor minima. It is called a point of _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">59.</span>
+                <div class="q-content">In the Second Derivative Test, if $f'(c) = 0$ and $f''(c) < 0$, then the point $c$ is a point of local _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">60.</span>
+                <div class="q-content">In the Second Derivative Test, if $f'(c) = 0$ and $f''(c) > 0$, then the point $c$ is a point of local _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">61.</span>
+                <div class="q-content">If $f'(c) = 0$ and $f''(c) = 0$, we say that the Second Derivative Test _________________ (fails/succeeds).</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">62.</span>
+                <div class="q-content">Find the critical point for the quadratic function $f(x) = x^2 - 4x + 5$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">63.</span>
+                <div class="q-content">What is the value of the second derivative $f''(x)$ for the function $f(x) = x^2 - 4x + 5$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">64.</span>
+                <div class="q-content">Based on the previous two questions, does $f(x) = x^2 - 4x + 5$ have a local maximum or a local minimum at its critical point?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">65.</span>
+                <div class="q-content">Find the critical point for the function $f(x) = -x^2 + 6x$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">66.</span>
+                <div class="q-content">Does the function $f(x) = -x^2 + 6x$ have a local maximum or local minimum at its critical point?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">67.</span>
+                <div class="q-content">To find the absolute (global) maximum or minimum of a continuous function in a closed interval $[a, b]$, we must evaluate the function at all critical points and at the _________________ of the interval.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">68.</span>
+                <div class="q-content">True or False: A local maximum value of a function is always the absolute maximum value of the function in its entire domain.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">69.</span>
+                <div class="q-content">True or False: The absolute maximum and absolute minimum of a continuous function on a closed interval always exist.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">70.</span>
+                <div class="q-content">What is the value of the first derivative $f'(x)$ precisely at a stationary point?</div>
+            </div>
+        </div>
+
+        <!-- Topic 6.6 -->
+        <div class="chapter-header">6.6 Applied Optimization (Problem Setups)</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">71.</span>
+                <div class="q-content">If two numbers $x$ and $y$ sum to $10$, write $y$ in terms of $x$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">72.</span>
+                <div class="q-content">Using the previous question, write their product $P = xy$ as a function of the single variable $x$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">73.</span>
+                <div class="q-content">If the perimeter of a rectangle is fixed at $20\text{ cm}$, what is the sum of its length $x$ and width $y$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">74.</span>
+                <div class="q-content">Write the area $A$ of the rectangle in Q73 as a function of its length $x$ only.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">75.</span>
+                <div class="q-content">In optimization problems, the function that needs to be maximized or minimized is called the _________________ function.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">76.</span>
+                <div class="q-content">Write the formula for the volume $V$ of a rectangular box with a square base of side $x$ and a height $h$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">77.</span>
+                <div class="q-content">Write the formula for the total surface area $S$ of a closed cylindrical can with radius $r$ and height $h$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">78.</span>
+                <div class="q-content">Write the formula for the volume $V$ of a cylindrical can with radius $r$ and height $h$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">79.</span>
+                <div class="q-content">If a manufacturer wants to minimize the cost of material used to build a box, they need to formulate an equation to minimize the box's _________________ area.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">80.</span>
+                <div class="q-content">If a manufacturer wants a container to hold the maximum amount of liquid possible, they need to formulate an equation to maximize the container's _________________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">81.</span>
+                <div class="q-content">True or False: In applied optimization problems, we use the given constraints to reduce the objective function down to a single independent variable before differentiating.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">82.</span>
+                <div class="q-content">Once an objective function $f(x)$ is formed in terms of a single variable, what is the very first calculus step to find its maximum or minimum?</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

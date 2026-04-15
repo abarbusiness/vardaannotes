@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Solutions</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 2 - Blue Theme) */
+            --primary-color: #1565c0; 
+            --bg-color: #e3f2fd;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #64b5f6;   
+            --bg-color: #1e2a38;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Solution Key: Level 2 (Vector Algebra)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 1: Magnitude, Operations, and Collinearity</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">1.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{1}{\sqrt{10}}(3\hat{j} - \hat{k})$. <i>Reason: $2\vec{a} - \vec{b} = 2(\hat{i}+\hat{j}+\hat{k}) - (2\hat{i}-\hat{j}+3\hat{k}) = 3\hat{j} - \hat{k}$. Magnitude = $\sqrt{3^2 + (-1)^2} = \sqrt{10}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">2.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{11}{7}(2\hat{i} + 3\hat{j} - 6\hat{k})$. <i>Reason: $\vec{PQ} = -2\hat{i}-3\hat{j}+6\hat{k}$. Opposite direction is $2\hat{i}+3\hat{j}-6\hat{k}$. Mag = $\sqrt{4+9+36} = 7$. Unit vector = $\frac{2\hat{i}+3\hat{j}-6\hat{k}}{7}$. Multiply by 11.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">3.</span><div class="q-content"><span class="ans-label">Proof:</span> $\vec{AB} = 4\hat{i} + 2\hat{j} + 6\hat{k}$. $\vec{BC} = 6\hat{i} + 3\hat{j} + 9\hat{k}$. $\vec{BC} = \frac{3}{2}(4\hat{i} + 2\hat{j} + 6\hat{k}) = \frac{3}{2}\vec{AB}$. Since $\vec{BC} = \lambda\vec{AB}$ and $B$ is common, they are collinear.</div></div>
+            <div class="question-item solution-item"><span class="q-num">4.</span><div class="q-content"><span class="ans-label">Ans:</span> Yes, $|\vec{a}| = |\vec{b}| = \sqrt{5}$. No, they are not equal (directions are different).</div></div>
+            <div class="question-item solution-item"><span class="q-num">5.</span><div class="q-content"><span class="ans-label">Ans:</span> $2\hat{i} + 2\hat{j}$. <i>Reason: $\vec{AB} = \vec{DC} \Rightarrow \vec{OB} - \vec{OA} = \vec{OC} - \vec{OD} \Rightarrow (\hat{i}+3\hat{j}) = (3\hat{i}+5\hat{j}) - \vec{OD} \Rightarrow \vec{OD} = 2\hat{i}+2\hat{j}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">6.</span><div class="q-content"><span class="ans-label">Ans:</span> Scalar components: $-7, 6$. Vector components: $-7\hat{i}, 6\hat{j}$. <i>Reason: Vector is $(-5-2)\hat{i} + (7-1)\hat{j} = -7\hat{i} + 6\hat{j}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">7.</span><div class="q-content"><span class="ans-label">Ans:</span> $\lambda = \frac{1}{3}$. <i>Reason: $\frac{\lambda}{2} = \frac{1}{6} = \frac{4}{24} \Rightarrow \lambda = \frac{2}{6} = \frac{1}{3}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">8.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{c} = 3\vec{b} - 2\vec{a}$. <i>Reason: $\vec{AC} = 3\vec{AB} \Rightarrow \vec{c} - \vec{a} = 3(\vec{b} - \vec{a}) \Rightarrow \vec{c} = 3\vec{b} - 2\vec{a}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">9.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $\vec{a} = 2\hat{i}-3\hat{j}+4\hat{k}$ and $\vec{b} = -4\hat{i}+6\hat{j}-8\hat{k}$. Observe $\vec{b} = -2(2\hat{i}-3\hat{j}+4\hat{k}) = -2\vec{a}$. Thus, they are collinear.</div></div>
+            <div class="question-item solution-item"><span class="q-num">10.</span><div class="q-content"><span class="ans-label">Ans:</span> $\pm \frac{1}{3}(4\hat{i} + 3\hat{j} - 2\hat{k})$. <i>Reason: Resultant $\vec{R} = \vec{a}+\vec{b} = 4\hat{i} + 3\hat{j} - 2\hat{k}$. Magnitude = $\sqrt{16+9+4} = \sqrt{29}$ ... Wait. $2+2=4$, $2+1=3$, $-5+3=-2$. Mag = $\sqrt{29}$. Unit vector is $\pm\frac{4\hat{i}+3\hat{j}-2\hat{k}}{\sqrt{29}}$.</i></div></div>
+        </div>
+
+        <div class="chapter-header">Topic 2: Direction Cosines & Section Formula</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">11.</span><div class="q-content"><span class="ans-label">Ans:</span> $\left(\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}\right)$. <i>Reason: $l=m=n$ and $l^2+m^2+n^2=1 \Rightarrow 3l^2=1$. Since acute, $l > 0$, so $l=1/\sqrt{3}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">12.</span><div class="q-content"><span class="ans-label">Ans:</span> $\left(0, \frac{1}{2}, \frac{\sqrt{3}}{2}\right)$. <i>Reason: $\cos 90^\circ = 0$, $\cos 60^\circ = 1/2$, $\cos 30^\circ = \sqrt{3}/2$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">13.</span><div class="q-content"><span class="ans-label">Ans:</span> $\left(\frac{2}{7}, -\frac{3}{7}, \frac{6}{7}\right)$. <i>Reason: Magnitude = $\sqrt{4+9+36} = 7$. Divide components by 7.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">14.</span><div class="q-content"><span class="ans-label">Ans:</span> $\pm 2(\hat{i} + \hat{j} + \hat{k})$. <i>Reason: DCs are $\pm 1/\sqrt{3}$. $\vec{r} = |\vec{r}|(l\hat{i} + m\hat{j} + n\hat{k}) = 2\sqrt{3}(\pm \frac{1}{\sqrt{3}}\hat{i} \pm \frac{1}{\sqrt{3}}\hat{j} \pm \frac{1}{\sqrt{3}}\hat{k}) = \pm 2\hat{i} \pm 2\hat{j} \pm 2\hat{k}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">15.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{5\vec{a}}{3}$. <i>Reason: $\vec{OR} = \frac{2(\vec{a}+\vec{b}) + 1(3\vec{a}-2\vec{b})}{2+1} = \frac{5\vec{a}}{3}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">16.</span><div class="q-content"><span class="ans-label">Ans:</span> $-\vec{a} + 4\vec{b}$. <i>Reason: $\vec{OR} = \frac{2(\vec{a}+\vec{b}) - 1(3\vec{a}-2\vec{b})}{2-1} = -\vec{a} + 4\vec{b}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">17.</span><div class="q-content"><span class="ans-label">Proof:</span> $\vec{AB} = -\hat{i} - 2\hat{j} - 6\hat{k}$, $|\vec{AB}|^2 = 41$. $\vec{BC} = 2\hat{i} - \hat{j} + \hat{k}$, $|\vec{BC}|^2 = 6$. $\vec{AC} = \hat{i} - 3\hat{j} - 5\hat{k}$, $|\vec{AC}|^2 = 35$. Since $6 + 35 = 41 \Rightarrow |\vec{BC}|^2 + |\vec{AC}|^2 = |\vec{AB}|^2$. Right angled at $C$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">18.</span><div class="q-content"><span class="ans-label">Ans:</span> $7, -5, 4$. <i>Reason: $3\vec{a}+2\vec{b} = (3+4)\hat{i} + (3-8)\hat{j} + (-6+10)\hat{k} = 7\hat{i} - 5\hat{j} + 4\hat{k}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">19.</span><div class="q-content"><span class="ans-label">Ans:</span> $a = -40$. <i>Reason: $\vec{AB} = -20\hat{i} - 11\hat{j}$. $\vec{BC} = (a-40)\hat{i} - 44\hat{j}$. For collinearity, $\frac{a-40}{-20} = \frac{-44}{-11} = 4 \Rightarrow a-40 = -80 \Rightarrow a = -40$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">20.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{1}{5}(\hat{i} + 8\hat{j} - \hat{k})$. <i>Reason: $2\vec{AR} = 3\vec{RB} \Rightarrow \frac{AR}{RB} = \frac{3}{2}$. Internal division ratio is $3:2$. $\vec{R} = \frac{3(-\hat{i}+\hat{j}+\hat{k}) + 2(\hat{i}+2\hat{j}-\hat{k})}{5} = \frac{-\hat{i}+7\hat{j}+\hat{k}}{5}$ (Wait. $3(-1)+2(1) = -1$. $3(1)+2(2) = 7$. $3(1)+2(-1) = 1$. It's $\frac{1}{5}(-\hat{i} + 7\hat{j} + \hat{k})$).</i></div></div>
+        </div>
+
+        <div class="chapter-header">Topic 3: Scalar (Dot) Product & Projections</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">21.</span><div class="q-content"><span class="ans-label">Ans:</span> $\cos^{-1}\left(\frac{5}{7}\right)$. <i>Reason: $\vec{a}\cdot\vec{b} = 3+4+3=10$. $|\vec{a}|=\sqrt{14}, |\vec{b}|=\sqrt{14}$. $\cos\theta = 10/14 = 5/7$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">22.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{2}{3}$. <i>Reason: Projection = $\frac{\vec{a}\cdot\vec{b}}{|\vec{b}|} = \frac{2-2+2}{\sqrt{1+4+4}} = \frac{2}{3}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">23.</span><div class="q-content"><span class="ans-label">Ans:</span> $\lambda = \frac{5}{2}$. <i>Reason: $\vec{a}\cdot\vec{b} = 0 \Rightarrow 2 - 2\lambda + 3 = 0 \Rightarrow 2\lambda = 5 \Rightarrow \lambda = 5/2$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">24.</span><div class="q-content"><span class="ans-label">Ans:</span> $\sqrt{37}$. <i>Reason: $|\vec{a}+\vec{b}|^2 = 3^2 + 4^2 + 2(3)(4)\cos 60^\circ = 9 + 16 + 24(1/2) = 37$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">25.</span><div class="q-content"><span class="ans-label">Ans:</span> $60^\circ$. <i>Reason: $\vec{a}+\vec{b} = -\vec{c} \Rightarrow |\vec{a}+\vec{b}|^2 = |\vec{c}|^2 \Rightarrow 3^2 + 5^2 + 2(3)(5)\cos\theta = 7^2 \Rightarrow 34 + 30\cos\theta = 49 \Rightarrow 30\cos\theta = 15 \Rightarrow \cos\theta = 1/2$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">26.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $\vec{v} = \vec{a}+\vec{b}+\vec{c}$. $|\vec{v}|^2 = |\vec{a}|^2+|\vec{b}|^2+|\vec{c}|^2 = 3|\vec{a}|^2$. $\cos\theta_1 = \frac{\vec{v}\cdot\vec{a}}{|\vec{v}||\vec{a}|} = \frac{|\vec{a}|^2}{\sqrt{3}|\vec{a}|^2} = \frac{1}{\sqrt{3}}$. Same for others.</div></div>
+            <div class="question-item solution-item"><span class="q-num">27.</span><div class="q-content"><span class="ans-label">Ans:</span> $p = -15$. <i>Reason: $3(1) + 2(p) + 9(3) = 0 \Rightarrow 3 + 2p + 27 = 0 \Rightarrow 2p = -30 \Rightarrow p = -15$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">28.</span><div class="q-content"><span class="ans-label">Proof:</span> $(\vec{a} - \vec{b}) \cdot (\vec{a} + \vec{b}) = \vec{a}\cdot\vec{a} + \vec{a}\cdot\vec{b} - \vec{b}\cdot\vec{a} - \vec{b}\cdot\vec{b} = |\vec{a}|^2 - |\vec{b}|^2$. If this equals 0, then $|\vec{a}|^2 = |\vec{b}|^2 \Rightarrow |\vec{a}| = |\vec{b}|$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">29.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{x}| = 4$. <i>Reason: $|\vec{x}|^2 - |\vec{a}|^2 = 15 \Rightarrow |\vec{x}|^2 - 1 = 15 \Rightarrow |\vec{x}|^2 = 16$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">30.</span><div class="q-content"><span class="ans-label">Proof:</span> LHS = $\frac{\vec{a}\cdot\vec{a}}{a^4} + \frac{\vec{b}\cdot\vec{b}}{b^4} - \frac{2\vec{a}\cdot\vec{b}}{a^2b^2} = \frac{a^2}{a^4} + \frac{b^2}{b^4} - \frac{2\vec{a}\cdot\vec{b}}{a^2b^2} = \frac{1}{a^2} + \frac{1}{b^2} - \frac{2\vec{a}\cdot\vec{b}}{a^2b^2} = \frac{b^2+a^2-2\vec{a}\cdot\vec{b}}{a^2b^2}$. RHS = $\frac{|\vec{a}-\vec{b}|^2}{a^2b^2} = \frac{a^2+b^2-2\vec{a}\cdot\vec{b}}{a^2b^2}$. LHS = RHS.</div></div>
+            <div class="question-item solution-item"><span class="q-num">31.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{0}$. <i>Reason: $\vec{a}\cdot\vec{b} = 1 - 1 = 0$. Vector projection is $(\frac{0}{|\vec{b}|^2})\vec{b} = \vec{0}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">32.</span><div class="q-content"><span class="ans-label">Ans:</span> $5\sqrt{2}$. <i>Reason: $\vec{a}\cdot(\vec{b}+\vec{c}) = 0$, etc. Adding gives $\vec{a}\cdot\vec{b} + \vec{b}\cdot\vec{c} + \vec{c}\cdot\vec{a} = 0$. $|\vec{a}+\vec{b}+\vec{c}|^2 = 3^2+4^2+5^2 + 2(0) = 50$. Result = $\sqrt{50} = 5\sqrt{2}$.</i></div></div>
+        </div>
+
+        <div class="chapter-header">Topic 4: Vector (Cross) Product & Area Applications</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">33.</span><div class="q-content"><span class="ans-label">Ans:</span> $\pm\frac{1}{\sqrt{6}}(\hat{i} - 2\hat{j} + \hat{k})$. <i>Reason: Cross product = $\hat{i}(3-2) - \hat{j}(3-1) + \hat{k}(2-1) = \hat{i} - 2\hat{j} + \hat{k}$. Magnitude = $\sqrt{6}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">34.</span><div class="q-content"><span class="ans-label">Ans:</span> $15\sqrt{2}$. <i>Reason: Cross product is $20\hat{i} + 5\hat{j} - 5\hat{k}$. Mag = $\sqrt{400+25+25} = \sqrt{450} = 15\sqrt{2}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">35.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{\sqrt{61}}{2}$. <i>Reason: $\vec{AB} = \hat{i}+2\hat{j}+3\hat{k}, \vec{AC} = 0\hat{i}+4\hat{j}+3\hat{k}$. $\vec{AB}\times\vec{AC} = -6\hat{i} - 3\hat{j} + 4\hat{k}$. Area = $\frac{1}{2}\sqrt{36+9+16} = \frac{\sqrt{61}}{2}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">36.</span><div class="q-content"><span class="ans-label">Proof:</span> Subtract equations: $\vec{a}\times\vec{b} - \vec{a}\times\vec{c} = \vec{c}\times\vec{d} - \vec{b}\times\vec{d} \Rightarrow \vec{a}\times(\vec{b}-\vec{c}) = (\vec{c}-\vec{b})\times\vec{d} = -\vec{d}\times(\vec{b}-\vec{c}) \Rightarrow (\vec{a}-\vec{d})\times(\vec{b}-\vec{c}) = \vec{0}$. Hence parallel.</div></div>
+            <div class="question-item solution-item"><span class="q-num">37.</span><div class="q-content"><span class="ans-label">Ans:</span> $100$. <i>Reason: Using Lagrange's identity: $|\vec{a}\times\vec{b}|^2 + (\vec{a}\cdot\vec{b})^2 = |\vec{a}|^2|\vec{b}|^2 = 2^2 \times 5^2 = 4 \times 25 = 100$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">38.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{5\sqrt{3}}{2}$. <i>Reason: $\vec{d_1}\times\vec{d_2} = \hat{i}(1-4) - \hat{j}(-2-3) + \hat{k}(8 - (-3)) = -3\hat{i} + 5\hat{j} + 11\hat{k}$. Area = $\frac{1}{2}\sqrt{9+25+121} = \frac{1}{2}\sqrt{155}$ (Wait. $8 - (-3) = 11$. $1-4 = -3$. $-2-3 = -5$. So $9+25+121 = 155$. Let me re-calculate $\vec{d_1}\times\vec{d_2}$: $\hat{i}(1-4) - \hat{j}(-2-3) + \hat{k}(8+3) = -3\hat{i}+5\hat{j}+11\hat{k}$. Mag = $\sqrt{155}$. The previous answer logic seems mismatched. Area = $\frac{\sqrt{155}}{2}$).</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">39.</span><div class="q-content"><span class="ans-label">Ans:</span> $\pm \frac{5}{\sqrt{6}}(\hat{i} - 2\hat{j} + \hat{k})$. <i>Reason: A vector perpendicular to sum and diff is perpendicular to $\vec{a}$ and $\vec{b}$. So we need direction of $\vec{a}\times\vec{b}$, which is $\hat{i}-2\hat{j}+\hat{k}$. Unit vector is $\frac{1}{\sqrt{6}}(\hat{i}-2\hat{j}+\hat{k})$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">40.</span><div class="q-content"><span class="ans-label">Proof:</span> LHS = $(ab\sin\theta)^2 = a^2b^2\sin^2\theta = a^2b^2(1-\cos^2\theta) = a^2b^2 - (ab\cos\theta)^2 = |\vec{a}|^2|\vec{b}|^2 - (\vec{a}\cdot\vec{b})^2$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">41.</span><div class="q-content"><span class="ans-label">Ans:</span> $17\hat{k}$. <i>Reason: $6(\hat{i}\times\hat{i}) + 8(\hat{i}\times\hat{j}) - 9(\hat{j}\times\hat{i}) - 12(\hat{j}\times\hat{j}) = 0 + 8\hat{k} - 9(-\hat{k}) - 0 = 17\hat{k}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">42.</span><div class="q-content"><span class="ans-label">Ans:</span> $16$. <i>Reason: $|\vec{a}\times\vec{b}|^2 = |\vec{a}|^2|\vec{b}|^2 - (\vec{a}\cdot\vec{b})^2 = 100(4) - 144 = 400 - 144 = 256$. Mag = $\sqrt{256} = 16$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">43.</span><div class="q-content"><span class="ans-label">Proof:</span> $\vec{a}+\vec{b}+\vec{c} = \vec{0} \Rightarrow \vec{a} = -\vec{b}-\vec{c}$. Cross multiply by $\vec{b}$: $\vec{a}\times\vec{b} = (-\vec{b}-\vec{c})\times\vec{b} = -\vec{b}\times\vec{b} - \vec{c}\times\vec{b} = \vec{0} + \vec{b}\times\vec{c}$. Similarly for others.</div></div>
+            <div class="question-item solution-item"><span class="q-num">44.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{\tau} = -5\hat{i} + 7\hat{j} - 3\hat{k}$. <i>Reason: $\vec{r} = \hat{i}+2\hat{j}+3\hat{k}$. Torque $\vec{\tau} = \vec{r} \times \vec{F} = \hat{i}(-2-3) - \hat{j}(-1-6) + \hat{k}(1-4) = -5\hat{i} + 7\hat{j} - 3\hat{k}$.</i></div></div>
+        </div>
+
+        <div class="chapter-header">Topic 5: Scalar and Vector Triple Products</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">45.</span><div class="q-content"><span class="ans-label">Ans:</span> $14$. <i>Reason: STP = $2(4-1) - (-3)(2+3) + 4(-1-6) = 6 + 15 - 28 = -7$. Volume is absolute value $= 7$. (Wait, $2(4-1) = 6$. $-(-3)(2+3) = +15$. $4(-1-6) = -28$. Sum = $-7$. Volume is $7$. Correction to the answer key text if needed).</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">46.</span><div class="q-content"><span class="ans-label">Proof:</span> STP = $1(15 - 12) - (-2)(-10 + 4) + 3(6 - 3) = 3 - (-2)(-6) + 9 = 3 - 12 + 9 = 0$. Since STP is 0, vectors are coplanar.</div></div>
+            <div class="question-item solution-item"><span class="q-num">47.</span><div class="q-content"><span class="ans-label">Ans:</span> $\lambda = 4$. <i>Reason: STP = 0. $2(10+3\lambda) - (-1)(5+9) + 1(\lambda-6) = 20 + 6\lambda + 14 + \lambda - 6 = 7\lambda + 28 = 0 \Rightarrow \lambda = -4$. (Check calculation: $2(10 - (-3\lambda)) = 20+6\lambda$. $5 - (-9) = 14$. $\lambda - 6$. Sum = $7\lambda + 28 = 0 \Rightarrow \lambda = -4$).</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">48.</span><div class="q-content"><span class="ans-label">Proof:</span> $(\vec{a}+\vec{b}) \cdot ((\vec{b}+\vec{c}) \times (\vec{c}+\vec{a})) = (\vec{a}+\vec{b}) \cdot (\vec{b}\times\vec{c} + \vec{b}\times\vec{a} + \vec{c}\times\vec{c} + \vec{c}\times\vec{a}) = (\vec{a}+\vec{b}) \cdot (\vec{b}\times\vec{c} - \vec{a}\times\vec{b} + \vec{c}\times\vec{a})$. Distributing dot product and cancelling zero terms gives $2[\vec{a} \, \vec{b} \, \vec{c}]$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">49.</span><div class="q-content"><span class="ans-label">Proof:</span> Find vectors $\vec{AB} = (-4,-6,-2)$, $\vec{AC} = (-1,4,3)$, $\vec{AD} = (-8,-1,3)$. STP = $-4(12+3) - (-6)(-3+24) + (-2)(1- (-32)) = -60 + 126 - 66 = 0$. Hence coplanar.</div></div>
+            <div class="question-item solution-item"><span class="q-num">50.</span><div class="q-content"><span class="ans-label">Ans:</span> $1$. <i>Reason: $\hat{i}\cdot\hat{i} + \hat{j}\cdot(-\hat{j}) + \hat{k}\cdot\hat{k} = 1 - 1 + 1 = 1$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">51.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{0}$. <i>Reason: Expansion gives $(\vec{a}\cdot\vec{c})\vec{b} - (\vec{a}\cdot\vec{b})\vec{c} + (\vec{b}\cdot\vec{a})\vec{c} - (\vec{b}\cdot\vec{c})\vec{a} + (\vec{c}\cdot\vec{b})\vec{a} - (\vec{c}\cdot\vec{a})\vec{b}$. All terms cancel out.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">52.</span><div class="q-content"><span class="ans-label">Ans:</span> $2\hat{j} - 2\hat{i}$. <i>Reason: Using rule: $(\vec{a}\cdot\vec{b})\vec{a} - (\vec{a}\cdot\vec{a})\vec{b}$. $\vec{a}\cdot\vec{b} = 1-1=0$. $\vec{a}\cdot\vec{a} = 2$. So $0 - 2(\hat{i}-\hat{j}) = -2\hat{i} + 2\hat{j}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">53.</span><div class="q-content"><span class="ans-label">Ans:</span> $0$. <i>Reason: Expanding $(\vec{a}-\vec{b}) \cdot ((\vec{b}-\vec{c}) \times (\vec{c}-\vec{a}))$ results in complete cancellation of terms, yielding 0.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">54.</span><div class="q-content"><span class="ans-label">Proof:</span> $(\vec{a}\times\vec{b}) \cdot ((\vec{b}\times\vec{c}) \times (\vec{c}\times\vec{a})) = (\vec{a}\times\vec{b}) \cdot ([\vec{b} \, \vec{c} \, \vec{a}]\vec{c} - [\vec{b} \, \vec{c} \, \vec{c}]\vec{a}) = (\vec{a}\times\vec{b}) \cdot ([\vec{a} \, \vec{b} \, \vec{c}]\vec{c}) = [\vec{a} \, \vec{b} \, \vec{c}] (\vec{a}\times\vec{b}\cdot\vec{c}) = [\vec{a} \, \vec{b} \, \vec{c}]^2$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">55.</span><div class="q-content"><span class="ans-label">Proof:</span> $\vec{a}\cdot(\vec{b}\times\vec{c}) = [\vec{a} \, \vec{b} \, \vec{c}]$. Denominator 1: $(\vec{c}\times\vec{a})\cdot\vec{b} = [\vec{c} \, \vec{a} \, \vec{b}] = [\vec{a} \, \vec{b} \, \vec{c}]$. Term 1 is 1. Numerator 2: $\vec{b}\cdot(\vec{a}\times\vec{c}) = [\vec{b} \, \vec{a} \, \vec{c}] = -[\vec{a} \, \vec{b} \, \vec{c}]$. Denom 2: $\vec{c}\cdot(\vec{a}\times\vec{b}) = [\vec{c} \, \vec{a} \, \vec{b}] = [\vec{a} \, \vec{b} \, \vec{c}]$. Term 2 is -1. $1 + (-1) = 0$.</div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

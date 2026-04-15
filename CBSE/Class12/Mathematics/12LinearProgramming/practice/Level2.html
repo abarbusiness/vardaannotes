@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 2 - Blue Theme) */
+            --primary-color: #1565c0; 
+            --bg-color: #e3f2fd;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #64b5f6;   
+            --bg-color: #1e2a38;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Level 2: Linear Programming (Standard Drill)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section 1: Formulation of Word Problems</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">1.</span><div class="q-content">A firm manufactures two types of products A and B. Product A requires 2 hours of milling and 1 hour of grinding. Product B requires 1 hour of milling and 2 hours of grinding. The firm has 40 hours of milling and 50 hours of grinding available. Formulate the time constraints if $x$ units of A and $y$ units of B are produced.</div></div>
+            <div class="question-item"><span class="q-num">2.</span><div class="q-content">A dietitian wishes to mix two types of foods in such a way that vitamin contents of the mixture contain at least 8 units of vitamin A and 10 units of vitamin C. Food I contains 2 units/kg of vitamin A and 1 unit/kg of vitamin C. Food II contains 1 unit/kg of vitamin A and 2 units/kg of vitamin C. Formulate the constraints.</div></div>
+            <div class="question-item"><span class="q-num">3.</span><div class="q-content">A merchant plans to sell two types of computers: a desktop model and a portable model. He estimates that the total monthly demand of computers will not exceed 250 units. Formulate the demand constraint.</div></div>
+            <div class="question-item"><span class="q-num">4.</span><div class="q-content">In the computer business from Q3, the desktop costs ₹25,000 and the portable costs ₹40,000. If his maximum investment limit is ₹70,00,000 (70 Lakhs), formulate the investment constraint in its simplest form.</div></div>
+            <div class="question-item"><span class="q-num">5.</span><div class="q-content">A transport company has two depots A and B with 20 and 30 trucks respectively. Three factories C, D, and E need 15, 20, and 15 trucks respectively. If $x$ trucks are sent from A to C and $y$ trucks from A to D, formulate an expression for the number of trucks sent from A to E.</div></div>
+            <div class="question-item"><span class="q-num">6.</span><div class="q-content">Following the transportation problem in Q5, formulate an expression for the number of trucks sent from depot B to factory C.</div></div>
+            <div class="question-item"><span class="q-num">7.</span><div class="q-content">Formulate the objective function to maximize profit if a desktop (from Q3) yields a profit of ₹4500 and a portable yields a profit of ₹5000.</div></div>
+            <div class="question-item"><span class="q-num">8.</span><div class="q-content">Write the complete set of non-negativity constraints for a 3-variable Linear Programming Problem involving decision variables $x, y,$ and $z$.</div></div>
+        </div>
+
+        <div class="chapter-header">Section 2: Solving Bounded LPPs</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">9.</span><div class="q-content">Maximize $Z = 3x + 4y$ subject to the constraints $x + y \le 4, x \ge 0, y \ge 0$. Find the maximum value.</div></div>
+            <div class="question-item"><span class="q-num">10.</span><div class="q-content">Minimize $Z = -3x + 4y$ subject to $x + 2y \le 8$, $3x + 2y \le 12$, $x \ge 0, y \ge 0$. Find the minimum value.</div></div>
+            <div class="question-item"><span class="q-num">11.</span><div class="q-content">In the LPP from Question 10, find the maximum value of $Z$.</div></div>
+            <div class="question-item"><span class="q-num">12.</span><div class="q-content">Maximize $Z = 5x + 3y$ subject to $3x + 5y \le 15$, $5x + 2y \le 10$, $x \ge 0, y \ge 0$. Find the corner point formed by the intersection of the two inequalities.</div></div>
+            <div class="question-item"><span class="q-num">13.</span><div class="q-content">Solve the LPP: Maximize $Z = 4x + y$ subject to $x + y \le 50$, $3x + y \le 90$, $x, y \ge 0$. Find the maximum value.</div></div>
+            <div class="question-item"><span class="q-num">14.</span><div class="q-content">For the constraints $x \le 3$, $y \le 4$, $x \ge 0, y \ge 0$, list all the corner points of the feasible region.</div></div>
+            <div class="question-item"><span class="q-num">15.</span><div class="q-content">Find the maximum value of $Z = 2x + 5y$ for the feasible region defined in Question 14.</div></div>
+            <div class="question-item"><span class="q-num">16.</span><div class="q-content">Find the exact coordinates of the point of intersection of the constraint lines $2x + 3y = 12$ and $x + y = 5$.</div></div>
+            <div class="question-item"><span class="q-num">17.</span><div class="q-content">Maximize $Z = 3x + 9y$ subject to $x + 3y \le 60$, $x + y \ge 10$, $x \ge 0, y \ge 0$. Evaluate the objective function at all corner points and find the maximum value.</div></div>
+            <div class="question-item"><span class="q-num">18.</span><div class="q-content">What is the minimum value of $Z$ in the feasible region defined in Question 17?</div></div>
+        </div>
+
+        <div class="chapter-header">Section 3: Solving Unbounded LPPs & Half-Plane Checks</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">19.</span><div class="q-content">Minimize $Z = 200x + 500y$ subject to $x + 2y \ge 10$, $3x + 4y \le 24$, $x \ge 0, y \ge 0$. Find the minimum value of $Z$.</div></div>
+            <div class="question-item"><span class="q-num">20.</span><div class="q-content">Minimize $Z = 3x + 5y$ subject to $x + 3y \ge 3$, $x + y \ge 2$, $x, y \ge 0$. Find the minimum value.</div></div>
+            <div class="question-item"><span class="q-num">21.</span><div class="q-content">In Question 20, since the feasible region is unbounded, what specific inequality must be graphed as a dotted line to confirm the minimum value?</div></div>
+            <div class="question-item"><span class="q-num">22.</span><div class="q-content">Does the open half-plane from Question 21 share any common points with the feasible region?</div></div>
+            <div class="question-item"><span class="q-num">23.</span><div class="q-content">Minimize $Z = x + 2y$ subject to $2x + y \ge 3$, $x + 2y \ge 6$, $x, y \ge 0$. What is the minimum value?</div></div>
+            <div class="question-item"><span class="q-num">24.</span><div class="q-content">Maximize $Z = -x + 2y$ subject to $x \ge 3$, $x + y \ge 5$, $x + 2y \ge 6$, $y \ge 0$. Is there a maximum value?</div></div>
+            <div class="question-item"><span class="q-num">25.</span><div class="q-content">In Question 24, justify why the maximum value does or does not exist using the unbounded region properties.</div></div>
+        </div>
+
+        <div class="chapter-header">Section 4: Special Cases & Multiple Optimal Solutions</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">26.</span><div class="q-content">If the maximum value of an objective function $Z = px + qy$ occurs at two adjacent corner points $(3, 4)$ and $(4, 3)$, what is the relationship between $p$ and $q$?</div></div>
+            <div class="question-item"><span class="q-num">27.</span><div class="q-content">An LPP has a feasible region determined by the constraints $x + y \le 2$ and $x + y \ge 4$, with $x, y \ge 0$. What is the maximum value of $Z = x + y$?</div></div>
+            <div class="question-item"><span class="q-num">28.</span><div class="q-content">If the optimal value of the objective function is attained at the points $(0, 20)$ and $(15, 15)$, how many optimal solutions does the LPP have?</div></div>
+            <div class="question-item"><span class="q-num">29.</span><div class="q-content">If the feasible region for an LPP is bounded, what does the Extreme Point Theorem guarantee regarding the objective function?</div></div>
+            <div class="question-item"><span class="q-num">30.</span><div class="q-content">Given constraints $x - y \le -1$ and $-x + y \le 0$, with $x, y \ge 0$. Does this LPP have a feasible region?</div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

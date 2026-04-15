@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Solution Key</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 3: Red) */
+            --primary-color: #b71c1c; 
+            --bg-color: #ffebee;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ef5350;   
+            --bg-color: #3b1a1a;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; text-align: center;
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 20px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 12px; 
+            display: block; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); float: left; }
+        .q-content { margin-left: 35px; }
+        .ans-label { font-weight: bold; color: var(--primary-color); display: block; margin-top: 10px; margin-bottom: 5px;}
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); opacity: 0.05; 
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 3: Matrices - Challenger Drill (Level 3) <br><span style="font-size: 14pt; color: var(--primary-color);">SOLUTION KEY</span></div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Mastery Solutions</div>
+
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">
+                    Let $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$ and let $P(x) = x^2 - 5x - 2$. Show that $P(A) = O$. Hence, use this result to compute $A^3$.
+                    <span class="ans-label">Solution:</span>
+                    First, calculate $A^2 = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} = \begin{bmatrix} 1+6 & 2+8 \\ 3+12 & 6+16 \end{bmatrix} = \begin{bmatrix} 7 & 10 \\ 15 & 22 \end{bmatrix}$. <br>
+                    $P(A) = A^2 - 5A - 2I = \begin{bmatrix} 7 & 10 \\ 15 & 22 \end{bmatrix} - \begin{bmatrix} 5 & 10 \\ 15 & 20 \end{bmatrix} - \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix} = O$.<br>
+                    Since $A^2 - 5A - 2I = O$, we multiply by $A$ to get $A^3 - 5A^2 - 2A = O \Rightarrow A^3 = 5A^2 + 2A$. <br>
+                    $A^3 = 5\begin{bmatrix} 7 & 10 \\ 15 & 22 \end{bmatrix} + 2\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} = \begin{bmatrix} 35 & 50 \\ 75 & 110 \end{bmatrix} + \begin{bmatrix} 2 & 4 \\ 6 & 8 \end{bmatrix} = \begin{bmatrix} 37 & 54 \\ 81 & 118 \end{bmatrix}$.
+                </div>
+            </div>
+            
+            <div class="solution-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">
+                    If $A$ and $B$ are skew-symmetric matrices of the same order, prove that the matrix $AB$ is symmetric if and only if $A$ and $B$ commute (i.e., $AB = BA$).
+                    <span class="ans-label">Solution:</span>
+                    Given $A' = -A$ and $B' = -B$. <br>
+                    Let's take the transpose of $AB$: $(AB)' = B'A' = (-B)(-A) = BA$. <br>
+                    <strong>Forward Proof:</strong> Assume $AB$ is symmetric. Then $(AB)' = AB$. From above, $(AB)' = BA$. Therefore, $BA = AB$, meaning they commute. <br>
+                    <strong>Reverse Proof:</strong> Assume $A$ and $B$ commute, so $AB = BA$. We need to show $(AB)' = AB$. We know $(AB)' = BA$. Since $BA = AB$, we get $(AB)' = AB$. Thus $AB$ is symmetric.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">
+                    A square matrix $A$ is said to be orthogonal if $AA' = A'A = I$. Prove that if $A$ is an orthogonal matrix, then $A^{-1} = A'$.
+                    <span class="ans-label">Solution:</span>
+                    By the definition of an orthogonal matrix, we have $AA' = I$. <br>
+                    We know that for any invertible matrix $A$, its inverse $A^{-1}$ satisfies the property $A A^{-1} = I$. <br>
+                    Comparing the two equations: $A A' = A A^{-1}$. <br>
+                    Multiplying both sides by $A^{-1}$ from the left: $A^{-1}(AA') = A^{-1}(A A^{-1}) \Rightarrow (A^{-1}A)A' = (A^{-1}A)A^{-1} \Rightarrow I A' = I A^{-1} \Rightarrow A' = A^{-1}$. Proved.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">
+                    Let $A = \begin{bmatrix} \cos \theta & i\sin \theta \\ i\sin \theta & \cos \theta \end{bmatrix}$. Prove by the Principle of Mathematical Induction that $A^n = \begin{bmatrix} \cos n\theta & i\sin n\theta \\ i\sin n\theta & \cos n\theta \end{bmatrix}$ for all $n \in \mathbb{N}$, where $i^2 = -1$.
+                    <span class="ans-label">Solution:</span>
+                    <strong>Step 1 (Base Case):</strong> For $n=1$, $A^1 = \begin{bmatrix} \cos \theta & i\sin \theta \\ i\sin \theta & \cos \theta \end{bmatrix}$, which is true. <br>
+                    <strong>Step 2 (Assumption):</strong> Let it be true for $n=k$, so $A^k = \begin{bmatrix} \cos k\theta & i\sin k\theta \\ i\sin k\theta & \cos k\theta \end{bmatrix}$. <br>
+                    <strong>Step 3 (Induction):</strong> For $n=k+1$, $A^{k+1} = A^k \cdot A = \begin{bmatrix} \cos k\theta & i\sin k\theta \\ i\sin k\theta & \cos k\theta \end{bmatrix} \begin{bmatrix} \cos \theta & i\sin \theta \\ i\sin \theta & \cos \theta \end{bmatrix}$. <br>
+                    First element $= \cos k\theta \cos \theta + i^2 \sin k\theta \sin \theta$. Since $i^2 = -1$, this is $\cos k\theta \cos \theta - \sin k\theta \sin \theta = \cos(k+1)\theta$. <br>
+                    Second element $= i\cos k\theta \sin \theta + i\sin k\theta \cos \theta = i\sin(k+1)\theta$. <br>
+                    Continuing this, we get $\begin{bmatrix} \cos(k+1)\theta & i\sin(k+1)\theta \\ i\sin(k+1)\theta & \cos(k+1)\theta \end{bmatrix}$. Hence, proved by PMI.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">
+                    Let $A$ and $B$ be symmetric matrices of order $n$. Prove that the expression $A(BA) + B(AB)$ yields a symmetric matrix, while $A(BA) - B(AB)$ yields a skew-symmetric matrix.
+                    <span class="ans-label">Solution:</span>
+                    Given $A' = A$ and $B' = B$. Let $P = A(BA) + B(AB) = ABA + BAB$. <br>
+                    $P' = (ABA + BAB)' = (ABA)' + (BAB)' = A'B'A' + B'A'B'$. <br>
+                    Since matrices are symmetric, $P' = ABA + BAB = P$. Hence, $P$ is symmetric. <br>
+                    Let $Q = ABA - BAB$. <br>
+                    $Q' = (ABA - BAB)' = (ABA)' - (BAB)' = A'B'A' - B'A'B' = ABA - BAB = -(BAB - ABA) = -Q$. <br>
+                    Since $Q' = -Q$, the expression yields a skew-symmetric matrix.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">
+                    Let $A$ be a nilpotent matrix of index 2 (meaning $A^2 = O$). Prove that the inverse of the matrix $(I - A)$ is given by $(I + A)$.
+                    <span class="ans-label">Solution:</span>
+                    To prove that $(I+A)$ is the inverse of $(I-A)$, we must show their product is the identity matrix $I$. <br>
+                    Multiply them: $(I - A)(I + A) = I \cdot I + I \cdot A - A \cdot I - A \cdot A$. <br>
+                    $= I^2 + A - A - A^2$. <br>
+                    We know $I^2 = I$ and given $A^2 = O$. <br>
+                    $= I + O - O = I$. <br>
+                    Since $(I - A)(I + A) = I$, by definition, $(I - A)^{-1} = I + A$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">
+                    If $A$ is an idempotent matrix (i.e., $A^2 = A$), compute the simplified value of $(I+A)^3 - 7A$.
+                    <span class="ans-label">Solution:</span>
+                    Expand $(I+A)^3$ using the binomial formula (since $I$ and $A$ commute): <br>
+                    $(I+A)^3 = I^3 + 3I^2A + 3IA^2 + A^3$. <br>
+                    We know $I^3 = I$, $I^2A = A$, $IA^2 = A^2$. <br>
+                    Given $A^2 = A$. This also means $A^3 = A^2 \cdot A = A \cdot A = A^2 = A$. <br>
+                    Substituting these values back: $(I+A)^3 = I + 3A + 3A + A = I + 7A$. <br>
+                    Therefore, the expression $(I+A)^3 - 7A = (I + 7A) - 7A = I$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">
+                    Find the matrix $A$ if it satisfies the equation: $\begin{bmatrix} 2 & 1 \\ 3 & 2 \end{bmatrix} A \begin{bmatrix} -3 & 2 \\ 5 & -3 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$.
+                    <span class="ans-label">Solution:</span>
+                    Let $X = \begin{bmatrix} 2 & 1 \\ 3 & 2 \end{bmatrix}$ and $Y = \begin{bmatrix} -3 & 2 \\ 5 & -3 \end{bmatrix}$. The equation is $X A Y = I$. <br>
+                    To isolate $A$, multiply by $X^{-1}$ on the left and $Y^{-1}$ on the right: $A = X^{-1} I Y^{-1} = X^{-1} Y^{-1}$. <br>
+                    We find inverses: $X^{-1} = \frac{1}{(4-3)}\begin{bmatrix} 2 & -1 \\ -3 & 2 \end{bmatrix} = \begin{bmatrix} 2 & -1 \\ -3 & 2 \end{bmatrix}$. <br>
+                    $Y^{-1} = \frac{1}{(9-10)}\begin{bmatrix} -3 & -2 \\ -5 & -3 \end{bmatrix} = -1\begin{bmatrix} -3 & -2 \\ -5 & -3 \end{bmatrix} = \begin{bmatrix} 3 & 2 \\ 5 & 3 \end{bmatrix}$. <br>
+                    $A = \begin{bmatrix} 2 & -1 \\ -3 & 2 \end{bmatrix} \begin{bmatrix} 3 & 2 \\ 5 & 3 \end{bmatrix} = \begin{bmatrix} (6-5) & (4-3) \\ (-9+10) & (-6+6) \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">
+                    If $A = \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}$, find all possible real values of $\alpha$ and $\beta$ such that $(\alpha I + \beta A)^2 = A$.
+                    <span class="ans-label">Solution:</span>
+                    First, compute $A^2 = \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix} \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix} = -I$. <br>
+                    Expand LHS: $(\alpha I + \beta A)^2 = \alpha^2 I^2 + \beta^2 A^2 + 2\alpha\beta A = \alpha^2 I + \beta^2 (-I) + 2\alpha\beta A = (\alpha^2 - \beta^2)I + 2\alpha\beta A$. <br>
+                    Equate LHS to RHS: $(\alpha^2 - \beta^2)I + 2\alpha\beta A = A$. <br>
+                    Comparing coefficients of $I$ and $A$: <br>
+                    1) $\alpha^2 - \beta^2 = 0 \Rightarrow \alpha^2 = \beta^2 \Rightarrow \alpha = \beta$ or $\alpha = -\beta$. <br>
+                    2) $2\alpha\beta = 1$. <br>
+                    If $\alpha = \beta$, then $2\alpha^2 = 1 \Rightarrow \alpha^2 = 1/2 \Rightarrow \alpha = \pm \frac{1}{\sqrt{2}}$. Hence $\beta = \pm \frac{1}{\sqrt{2}}$ (same signs). <br>
+                    If $\alpha = -\beta$, then $-2\alpha^2 = 1 \Rightarrow \alpha^2 = -1/2$, which has no real solutions. <br>
+                    Thus, the real values are $(\alpha, \beta) = \left(\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}}\right)$ or $\left(-\frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}}\right)$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">
+                    Prove that if $A$ and $B$ are square matrices such that $AB = BA$, then for any positive integer $n \ge 1$, $AB^n = B^nA$.
+                    <span class="ans-label">Solution:</span>
+                    We will use Mathematical Induction. <br>
+                    <strong>Base Step ($n=1$):</strong> $AB^1 = B^1A \Rightarrow AB = BA$. This is given true. <br>
+                    <strong>Inductive Step:</strong> Assume it is true for $n = k$, i.e., $AB^k = B^kA$. <br>
+                    We must prove it for $n = k+1$. Consider LHS $= AB^{k+1}$. <br>
+                    $AB^{k+1} = A(B^k B) = (AB^k)B$. <br>
+                    Using the assumption, substitute $AB^k = B^kA$: $\Rightarrow (B^kA)B = B^k(AB)$. <br>
+                    Using the given $AB = BA$: $\Rightarrow B^k(BA) = (B^kB)A = B^{k+1}A = \text{RHS}$. <br>
+                    By PMI, $AB^n = B^nA$ holds for all $n \ge 1$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">
+                    Prove that for any two matrices $A$ and $B$ of order $n \times n$, $\text{Trace}(AB) = \text{Trace}(BA)$. Use this property to show that there exist no matrices $A$ and $B$ such that $AB - BA = I$.
+                    <span class="ans-label">Solution:</span>
+                    Let $A = [a_{ij}]$ and $B = [b_{ij}]$. <br>
+                    $\text{Trace}(AB) = \sum_{i=1}^n (AB)_{ii} = \sum_{i=1}^n \left( \sum_{j=1}^n a_{ij}b_{ji} \right)$. <br>
+                    Since scalars commute, $a_{ij}b_{ji} = b_{ji}a_{ij}$. Rearranging the sums: $\sum_{j=1}^n \left( \sum_{i=1}^n b_{ji}a_{ij} \right) = \sum_{j=1}^n (BA)_{jj} = \text{Trace}(BA)$. <br>
+                    Now, assume $AB - BA = I$. <br>
+                    Taking the trace on both sides: $\text{Trace}(AB - BA) = \text{Trace}(I)$. <br>
+                    By trace properties, $\text{Trace}(AB) - \text{Trace}(BA) = n$ (since trace of $I_{n}$ is $n$). <br>
+                    $0 = n$. Since $n \ge 1$ for matrices to exist, $0 = n$ is a contradiction. Hence, no such matrices exist.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">
+                    Let $A = \begin{bmatrix} 1 & a \\ 0 & 1 \end{bmatrix}$. Find a general formula for $A^n$, and then evaluate the matrix limit $\lim_{n \to \infty} \frac{1}{n} A^n$.
+                    <span class="ans-label">Solution:</span>
+                    Calculate early powers to find a pattern: <br>
+                    $A^2 = \begin{bmatrix} 1 & a \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & a \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 2a \\ 0 & 1 \end{bmatrix}$. <br>
+                    $A^3 = A^2 \cdot A = \begin{bmatrix} 1 & 2a \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & a \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 3a \\ 0 & 1 \end{bmatrix}$. <br>
+                    By observation, $A^n = \begin{bmatrix} 1 & na \\ 0 & 1 \end{bmatrix}$. <br>
+                    Now evaluate the limit: $\lim_{n \to \infty} \frac{1}{n} A^n = \lim_{n \to \infty} \begin{bmatrix} 1/n & (na)/n \\ 0 & 1/n \end{bmatrix} = \lim_{n \to \infty} \begin{bmatrix} 1/n & a \\ 0 & 1/n \end{bmatrix}$. <br>
+                    As $n \to \infty$, $1/n \to 0$. Thus, the limit is $\begin{bmatrix} 0 & a \\ 0 & 0 \end{bmatrix}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">
+                    If $f(x) = x^2 - 4x + 7$, and $A = \begin{bmatrix} 2 & 3 \\ -1 & 2 \end{bmatrix}$, show that $f(A) = O$. Using this polynomial equation, compute the exact matrix for $A^5$ without repeatedly multiplying matrices.
+                    <span class="ans-label">Solution:</span>
+                    $A^2 = \begin{bmatrix} 2 & 3 \\ -1 & 2 \end{bmatrix}\begin{bmatrix} 2 & 3 \\ -1 & 2 \end{bmatrix} = \begin{bmatrix} 1 & 12 \\ -4 & 1 \end{bmatrix}$. <br>
+                    $f(A) = A^2 - 4A + 7I = \begin{bmatrix} 1 & 12 \\ -4 & 1 \end{bmatrix} - \begin{bmatrix} 8 & 12 \\ -4 & 8 \end{bmatrix} + \begin{bmatrix} 7 & 0 \\ 0 & 7 \end{bmatrix} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix} = O$. <br>
+                    From this, $A^2 = 4A - 7I$. <br>
+                    To find $A^5$, we reduce the power iteratively: <br>
+                    $A^4 = (A^2)^2 = (4A - 7I)^2 = 16A^2 - 56A + 49I = 16(4A - 7I) - 56A + 49I = 64A - 112I - 56A + 49I = 8A - 63I$. <br>
+                    $A^5 = A \cdot A^4 = A(8A - 63I) = 8A^2 - 63A = 8(4A - 7I) - 63A = 32A - 56I - 63A = -31A - 56I$. <br>
+                    $A^5 = -31\begin{bmatrix} 2 & 3 \\ -1 & 2 \end{bmatrix} - \begin{bmatrix} 56 & 0 \\ 0 & 56 \end{bmatrix} = \begin{bmatrix} -62 & -93 \\ 31 & -62 \end{bmatrix} - \begin{bmatrix} 56 & 0 \\ 0 & 56 \end{bmatrix} = \begin{bmatrix} -118 & -93 \\ 31 & -118 \end{bmatrix}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">
+                    A matrix $X$ has $(a+b)$ rows and $(a+2)$ columns, while the matrix $Y$ has $(b+1)$ rows and $(a+3)$ columns. If both the products $XY$ and $YX$ are well-defined, determine the values of $a$ and $b$.
+                    <span class="ans-label">Solution:</span>
+                    Order of $X = (a+b) \times (a+2)$. Order of $Y = (b+1) \times (a+3)$. <br>
+                    For product $XY$ to be defined, the number of columns in $X$ must equal the number of rows in $Y$: <br>
+                    $\Rightarrow a+2 = b+1 \Rightarrow a - b = -1$  --- (Eq 1) <br>
+                    For product $YX$ to be defined, the number of columns in $Y$ must equal the number of rows in $X$: <br>
+                    $\Rightarrow a+3 = a+b \Rightarrow b = 3$. <br>
+                    Substitute $b = 3$ into Eq 1: $a - 3 = -1 \Rightarrow a = 2$. <br>
+                    Thus, $a = 2, b = 3$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">
+                    Let $A = \begin{bmatrix} 0 & 1 & 2 \\ 1 & 2 & 3 \\ 3 & 1 & 1 \end{bmatrix}$. Find the inverse of matrix $A$ strictly by using elementary row transformations.
+                    <span class="ans-label">Solution:</span>
+                    Write $A = IA$: $\begin{bmatrix} 0 & 1 & 2 \\ 1 & 2 & 3 \\ 3 & 1 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} A$. <br>
+                    $R_1 \leftrightarrow R_2$: $\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 2 \\ 3 & 1 & 1 \end{bmatrix} = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix} A$. <br>
+                    $R_3 \rightarrow R_3 - 3R_1$: $\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 2 \\ 0 & -5 & -8 \end{bmatrix} = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & -3 & 1 \end{bmatrix} A$. <br>
+                    $R_3 \rightarrow R_3 + 5R_2$: $\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 2 \\ 0 & 0 & 2 \end{bmatrix} = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 5 & -3 & 1 \end{bmatrix} A$. <br>
+                    $R_3 \rightarrow \frac{1}{2}R_3$: $\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 2 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 5/2 & -3/2 & 1/2 \end{bmatrix} A$. <br>
+                    $R_2 \rightarrow R_2 - 2R_3$: $\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} 0 & 1 & 0 \\ -4 & 3 & -1 \\ 5/2 & -3/2 & 1/2 \end{bmatrix} A$. <br>
+                    $R_1 \rightarrow R_1 - 3R_3$: $\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} -15/2 & 11/2 & -3/2 \\ -4 & 3 & -1 \\ 5/2 & -3/2 & 1/2 \end{bmatrix} A$. <br>
+                    $R_1 \rightarrow R_1 - 2R_2$: $\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} 1/2 & -1/2 & 1/2 \\ -4 & 3 & -1 \\ 5/2 & -3/2 & 1/2 \end{bmatrix} A$. <br>
+                    The inverse is $A^{-1} = \frac{1}{2} \begin{bmatrix} 1 & -1 & 1 \\ -8 & 6 & -2 \\ 5 & -3 & 1 \end{bmatrix}$.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

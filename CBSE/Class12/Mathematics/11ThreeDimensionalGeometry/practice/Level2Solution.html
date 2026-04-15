@@ -1,0 +1,685 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Solution Key</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 2: Blue) */
+            --primary-color: #1565c0; 
+            --bg-color: #e3f2fd;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #64b5f6;   
+            --bg-color: #1e2a38;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 16px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 12px; 
+            display: block; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); float: left; }
+        .q-content { margin-left: 35px; }
+        .ans-label { font-weight: bold; color: var(--primary-color); display: block; margin-top: 10px; margin-bottom: 5px;}
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); opacity: 0.05; 
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 11: Three Dimensional Geometry - Standard Drill (Level 2) <br><span style="font-size: 14pt; color: var(--primary-color);">SOLUTION KEY</span></div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section A: Lines and Angles</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">
+                    Find the direction cosines of the line which is perpendicular to the lines with direction ratios $1, -2, -2$ and $0, 2, 1$.
+                    <span class="ans-label">Solution:</span>
+                    The direction vector $\vec{b}$ of the required line will be the cross product of the direction vectors of the given lines: $\vec{b_1} = \hat{i} - 2\hat{j} - 2\hat{k}$ and $\vec{b_2} = 0\hat{i} + 2\hat{j} + \hat{k}$.<br>
+                    $\vec{b} = \vec{b_1} \times \vec{b_2} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 1 & -2 & -2 \\ 0 & 2 & 1 \end{vmatrix}$<br>
+                    $= \hat{i}(-2 - (-4)) - \hat{j}(1 - 0) + \hat{k}(2 - 0) = 2\hat{i} - \hat{j} + 2\hat{k}$.<br>
+                    Direction ratios are $(2, -1, 2)$.<br>
+                    Magnitude $= \sqrt{2^2 + (-1)^2 + 2^2} = \sqrt{4+1+4} = \sqrt{9} = 3$.<br>
+                    Therefore, the direction cosines are $\left(\frac{2}{3}, \frac{-1}{3}, \frac{2}{3}\right)$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">
+                    Find the vector and Cartesian equations of the line passing through the point $(1, 2, -4)$ and perpendicular to the two lines: $\frac{x-8}{3}=\frac{y+19}{-16}=\frac{z-10}{7}$ and $\frac{x-15}{3}=\frac{y-29}{8}=\frac{z-5}{-5}$.
+                    <span class="ans-label">Solution:</span>
+                    Direction ratios of the two given lines are $\vec{b_1} = (3, -16, 7)$ and $\vec{b_2} = (3, 8, -5)$.<br>
+                    The direction vector $\vec{b}$ of the required line is parallel to $\vec{b_1} \times \vec{b_2}$.<br>
+                    $\vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 3 & -16 & 7 \\ 3 & 8 & -5 \end{vmatrix} = \hat{i}(80 - 56) - \hat{j}(-15 - 21) + \hat{k}(24 - (-48))$<br>
+                    $= 24\hat{i} + 36\hat{j} + 72\hat{k}$.<br>
+                    Dividing by 12, proportional direction ratios are $2, 3, 6$.<br>
+                    Passing through $(1, 2, -4)$, the Cartesian equation is: $\frac{x-1}{2} = \frac{y-2}{3} = \frac{z+4}{6}$.<br>
+                    The vector equation is: $\vec{r} = (\hat{i} + 2\hat{j} - 4\hat{k}) + \lambda(2\hat{i} + 3\hat{j} + 6\hat{k})$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">
+                    Find the angle between the lines whose direction cosines are given by the equations $l+m+n=0$ and $l^2+m^2-n^2=0$.
+                    <span class="ans-label">Solution:</span>
+                    From the first equation, $n = -(l+m)$. Substitute this into the second equation:<br>
+                    $l^2 + m^2 - (-(l+m))^2 = 0 \implies l^2 + m^2 - (l^2 + m^2 + 2lm) = 0 \implies -2lm = 0 \implies lm = 0$.<br>
+                    Case 1: If $l = 0$, then $n = -m$. The direction cosines are $(0, m, -m)$. Dividing by $m$, proportional DRs are $(0, 1, -1)$.<br>
+                    Case 2: If $m = 0$, then $n = -l$. The direction cosines are $(l, 0, -l)$. Dividing by $l$, proportional DRs are $(1, 0, -1)$.<br>
+                    Let $\vec{b_1} = (0, 1, -1)$ and $\vec{b_2} = (1, 0, -1)$.<br>
+                    $\cos\theta = \frac{|(0)(1) + (1)(0) + (-1)(-1)|}{\sqrt{0+1+1} \sqrt{1+0+1}} = \frac{1}{\sqrt{2}\sqrt{2}} = \frac{1}{2}$.<br>
+                    Therefore, the angle $\theta = \frac{\pi}{3}$ or $60^\circ$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">
+                    Find the angle between the lines represented by $2x = 3y = -z$ and $6x = -y = -4z$.
+                    <span class="ans-label">Solution:</span>
+                    Convert the first line into standard form by dividing by the LCM (6): $\frac{x}{3} = \frac{y}{2} = \frac{z}{-6}$. DRs: $\vec{b_1} = (3, 2, -6)$.<br>
+                    Convert the second line by dividing by the LCM (12): $\frac{x}{2} = \frac{y}{-12} = \frac{z}{-3}$. DRs: $\vec{b_2} = (2, -12, -3)$.<br>
+                    $\cos\theta = \frac{|3(2) + 2(-12) + (-6)(-3)|}{\sqrt{9+4+36}\sqrt{4+144+9}} = \frac{|6 - 24 + 18|}{7 \times \sqrt{157}} = \frac{0}{7\sqrt{157}} = 0$.<br>
+                    Since $\cos\theta = 0$, the angle between the lines is $90^\circ$ (they are perpendicular).
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">
+                    Find the vector equation of a line passing through $(2, -1, 1)$ and parallel to the line joining the points $(1, 2, 3)$ and $(-1, 4, 1)$.
+                    <span class="ans-label">Solution:</span>
+                    Direction ratios of the line joining $(1, 2, 3)$ and $(-1, 4, 1)$ are:<br>
+                    $(-1 - 1, 4 - 2, 1 - 3) = (-2, 2, -2)$. Dividing by $-2$, proportional DRs are $(1, -1, 1)$.<br>
+                    The required line passes through $\vec{a} = 2\hat{i} - \hat{j} + \hat{k}$ and is parallel to $\vec{b} = \hat{i} - \hat{j} + \hat{k}$.<br>
+                    The vector equation is $\vec{r} = (2\hat{i} - \hat{j} + \hat{k}) + \lambda(\hat{i} - \hat{j} + \hat{k})$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">
+                    Find the Cartesian equation of a line passing through $(2, -1, 3)$ and equally inclined to the positive coordinate axes.
+                    <span class="ans-label">Solution:</span>
+                    A line equally inclined to the positive coordinate axes has direction angles $\alpha = \beta = \gamma$.<br>
+                    Thus, direction cosines $l = m = n$. Since $l^2 + m^2 + n^2 = 1$, we get $3l^2 = 1 \implies l = \frac{1}{\sqrt{3}}$.<br>
+                    The direction ratios can be taken as $(1, 1, 1)$.<br>
+                    The Cartesian equation passing through $(2, -1, 3)$ is $\frac{x-2}{1} = \frac{y+1}{1} = \frac{z-3}{1}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">
+                    Show that the line joining the origin to $(2, 1, 1)$ is perpendicular to the line determined by the points $(3, 5, -1)$ and $(4, 3, -1)$.
+                    <span class="ans-label">Solution:</span>
+                    Direction ratios of the first line (origin to $(2, 1, 1)$) are $\vec{b_1} = (2-0, 1-0, 1-0) = (2, 1, 1)$.<br>
+                    Direction ratios of the second line (from $(3, 5, -1)$ to $(4, 3, -1)$) are $\vec{b_2} = (4-3, 3-5, -1-(-1)) = (1, -2, 0)$.<br>
+                    To check for perpendicularity, compute the dot product: $\vec{b_1} \cdot \vec{b_2} = 2(1) + 1(-2) + 1(0) = 2 - 2 + 0 = 0$.<br>
+                    Since the dot product is zero, the two lines are perpendicular.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">
+                    If two lines have direction ratios proportional to $a, b, c$ and $b-c, c-a, a-b$ respectively, find the angle between them.
+                    <span class="ans-label">Solution:</span>
+                    Let $\vec{b_1} = a\hat{i} + b\hat{j} + c\hat{k}$ and $\vec{b_2} = (b-c)\hat{i} + (c-a)\hat{j} + (a-b)\hat{k}$.<br>
+                    Compute the dot product $\vec{b_1} \cdot \vec{b_2}$: <br>
+                    $= a(b-c) + b(c-a) + c(a-b) = ab - ac + bc - ab + ca - cb = 0$.<br>
+                    Since the dot product is 0, $\cos\theta = 0$. The angle between them is $90^\circ$ (or $\pi/2$).
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">
+                    Find the Cartesian equation of the line passing through the point $(-2, 4, -5)$ and parallel to the line given by $\frac{x+3}{3} = \frac{y-4}{5} = \frac{z+8}{6}$.
+                    <span class="ans-label">Solution:</span>
+                    The given line has direction ratios $3, 5, 6$. Since the required line is parallel to it, its direction ratios will also be $3, 5, 6$.<br>
+                    The line passes through $(-2, 4, -5)$.<br>
+                    The Cartesian equation is $\frac{x - (-2)}{3} = \frac{y - 4}{5} = \frac{z - (-5)}{6}$, which simplifies to:<br>
+                    $\frac{x+2}{3} = \frac{y-4}{5} = \frac{z+5}{6}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">
+                    Find the angle between the pair of lines whose direction ratios are $(1, 1, 2)$ and $(\sqrt{3}-1, -\sqrt{3}-1, 4)$.
+                    <span class="ans-label">Solution:</span>
+                    Let $\vec{b_1} = (1, 1, 2)$ and $\vec{b_2} = (\sqrt{3}-1, -\sqrt{3}-1, 4)$.<br>
+                    $\vec{b_1} \cdot \vec{b_2} = 1(\sqrt{3}-1) + 1(-\sqrt{3}-1) + 2(4) = \sqrt{3} - 1 - \sqrt{3} - 1 + 8 = 6$.<br>
+                    $|\vec{b_1}| = \sqrt{1^2 + 1^2 + 2^2} = \sqrt{6}$.<br>
+                    $|\vec{b_2}| = \sqrt{(\sqrt{3}-1)^2 + (-\sqrt{3}-1)^2 + 4^2} = \sqrt{3-2\sqrt{3}+1 + 3+2\sqrt{3}+1 + 16} = \sqrt{24} = 2\sqrt{6}$.<br>
+                    $\cos\theta = \frac{6}{\sqrt{6} \times 2\sqrt{6}} = \frac{6}{12} = \frac{1}{2}$. Thus, $\theta = 60^\circ$ or $\pi/3$.
+                </div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section B: Shortest Distance & Foot of Perpendicular</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">
+                    Calculate the shortest distance between the skew lines $\frac{x-1}{2} = \frac{y-2}{3} = \frac{z-3}{4}$ and $\frac{x-2}{3} = \frac{y-4}{4} = \frac{z-5}{5}$.
+                    <span class="ans-label">Solution:</span>
+                    Points: $\vec{a_1} = (1, 2, 3)$, $\vec{a_2} = (2, 4, 5)$. Therefore, $\vec{a_2} - \vec{a_1} = (1, 2, 2)$.<br>
+                    Direction vectors: $\vec{b_1} = (2, 3, 4)$, $\vec{b_2} = (3, 4, 5)$.<br>
+                    $\vec{b_1} \times \vec{b_2} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 2 & 3 & 4 \\ 3 & 4 & 5 \end{vmatrix} = \hat{i}(15 - 16) - \hat{j}(10 - 12) + \hat{k}(8 - 9) = -\hat{i} + 2\hat{j} - \hat{k}$.<br>
+                    Magnitude $|\vec{b_1} \times \vec{b_2}| = \sqrt{(-1)^2 + 2^2 + (-1)^2} = \sqrt{1+4+1} = \sqrt{6}$.<br>
+                    Numerator = $|(\vec{b_1} \times \vec{b_2}) \cdot (\vec{a_2} - \vec{a_1})| = |(-1)(1) + (2)(2) + (-1)(2)| = |-1 + 4 - 2| = |1| = 1$.<br>
+                    Shortest Distance = $\frac{1}{\sqrt{6}}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">
+                    Find the shortest distance between the parallel lines $\vec{r} = (\hat{i} + 2\hat{j} + 3\hat{k}) + \lambda(2\hat{i} + 3\hat{j} + 4\hat{k})$ and $\vec{r} = (2\hat{i} + 4\hat{j} + 5\hat{k}) + \mu(2\hat{i} + 3\hat{j} + 4\hat{k})$.
+                    <span class="ans-label">Solution:</span>
+                    The lines are parallel with $\vec{b} = 2\hat{i} + 3\hat{j} + 4\hat{k}$.<br>
+                    Points: $\vec{a_1} = \hat{i} + 2\hat{j} + 3\hat{k}$, $\vec{a_2} = 2\hat{i} + 4\hat{j} + 5\hat{k}$. Thus, $\vec{a_2} - \vec{a_1} = \hat{i} + 2\hat{j} + 2\hat{k}$.<br>
+                    Shortest Distance $d = \frac{|\vec{b} \times (\vec{a_2} - \vec{a_1})|}{|\vec{b}|}$.<br>
+                    $\vec{b} \times (\vec{a_2} - \vec{a_1}) = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 2 & 3 & 4 \\ 1 & 2 & 2 \end{vmatrix} = \hat{i}(6 - 8) - \hat{j}(4 - 4) + \hat{k}(4 - 3) = -2\hat{i} + 0\hat{j} + \hat{k}$.<br>
+                    $|\vec{b} \times (\vec{a_2} - \vec{a_1})| = \sqrt{(-2)^2 + 0^2 + 1^2} = \sqrt{4+0+1} = \sqrt{5}$.<br>
+                    $|\vec{b}| = \sqrt{2^2 + 3^2 + 4^2} = \sqrt{4+9+16} = \sqrt{29}$.<br>
+                    Shortest Distance = $\frac{\sqrt{5}}{\sqrt{29}} = \sqrt{\frac{5}{29}}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">
+                    Find the coordinates of the foot of the perpendicular and the image of the point $(1, 6, 3)$ with respect to the line $\frac{x}{1} = \frac{y-1}{2} = \frac{z-2}{3}$.
+                    <span class="ans-label">Solution:</span>
+                    Let $P = (1, 6, 3)$. General point on line: $F(\lambda, 2\lambda+1, 3\lambda+2)$.<br>
+                    Direction ratios of $PF$: $(\lambda-1, 2\lambda+1-6, 3\lambda+2-3) = (\lambda-1, 2\lambda-5, 3\lambda-1)$.<br>
+                    Since $PF$ is perpendicular to the line (with DRs $1, 2, 3$):<br>
+                    $1(\lambda-1) + 2(2\lambda-5) + 3(3\lambda-1) = 0 \implies \lambda - 1 + 4\lambda - 10 + 9\lambda - 3 = 0 \implies 14\lambda = 14 \implies \lambda = 1$.<br>
+                    Coordinates of Foot $F$: $(1, 3, 5)$.<br>
+                    Let Image be $I(x, y, z)$. $F$ is the midpoint of $P$ and $I$.<br>
+                    $\frac{x+1}{2} = 1 \implies x = 1$; $\frac{y+6}{2} = 3 \implies y = 0$; $\frac{z+3}{2} = 5 \implies z = 7$.<br>
+                    Image point is $(1, 0, 7)$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">
+                    Find the shortest distance between the lines given by vector equations $\vec{r} = (\hat{i} - 2\hat{j} + 3\hat{k}) + t(-\hat{i} + \hat{j} - 2\hat{k})$ and $\vec{r} = (\hat{i} - \hat{j} + \hat{k}) + s(\hat{i} + 2\hat{j} + 2\hat{k})$.
+                    <span class="ans-label">Solution:</span>
+                    $\vec{a_1} = (1, -2, 3)$, $\vec{a_2} = (1, -1, 1)$. $\vec{a_2} - \vec{a_1} = (0, 1, -2)$.<br>
+                    $\vec{b_1} = (-1, 1, -2)$, $\vec{b_2} = (1, 2, 2)$.<br>
+                    $\vec{b_1} \times \vec{b_2} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ -1 & 1 & -2 \\ 1 & 2 & 2 \end{vmatrix} = \hat{i}(2 - (-4)) - \hat{j}(-2 - (-2)) + \hat{k}(-2 - 1) = 6\hat{i} + 0\hat{j} - 3\hat{k}$.<br>
+                    $|\vec{b_1} \times \vec{b_2}| = \sqrt{6^2 + 0^2 + (-3)^2} = \sqrt{36+9} = \sqrt{45} = 3\sqrt{5}$.<br>
+                    Numerator $= |(6, 0, -3) \cdot (0, 1, -2)| = |0 + 0 + 6| = 6$.<br>
+                    Shortest Distance = $\frac{6}{3\sqrt{5}} = \frac{2}{\sqrt{5}}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">
+                    Find the length and the coordinates of the foot of the perpendicular drawn from the point $(2, -1, 5)$ to the line $\frac{x-11}{10} = \frac{y+2}{-4} = \frac{z+8}{-11}$.
+                    <span class="ans-label">Solution:</span>
+                    Let $P = (2, -1, 5)$. General point on line: $F(10\lambda+11, -4\lambda-2, -11\lambda-8)$.<br>
+                    DRs of $PF$: $(10\lambda+9, -4\lambda-1, -11\lambda-13)$.<br>
+                    $PF \perp$ line $\implies 10(10\lambda+9) - 4(-4\lambda-1) - 11(-11\lambda-13) = 0$.<br>
+                    $100\lambda + 90 + 16\lambda + 4 + 121\lambda + 143 = 0 \implies 237\lambda + 237 = 0 \implies \lambda = -1$.<br>
+                    Foot $F(10(-1)+11, -4(-1)-2, -11(-1)-8) = (1, 2, 3)$.<br>
+                    Length $PF = \sqrt{(1-2)^2 + (2-(-1))^2 + (3-5)^2} = \sqrt{(-1)^2 + 3^2 + (-2)^2} = \sqrt{1 + 9 + 4} = \sqrt{14}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">16.</span>
+                <div class="q-content">
+                    Find the image of the point $(5, 8, 15)$ in the line given by $\vec{r} = (6\hat{i} + 7\hat{j} + 7\hat{k}) + \lambda(3\hat{i} + 2\hat{j} - 2\hat{k})$.
+                    <span class="ans-label">Solution:</span>
+                    Point $P(5, 8, 15)$. General point $F(3\lambda+6, 2\lambda+7, -2\lambda+7)$.<br>
+                    DRs of $PF$: $(3\lambda+1, 2\lambda-1, -2\lambda-8)$.<br>
+                    Dot product with line's DRs $(3, 2, -2)$: $3(3\lambda+1) + 2(2\lambda-1) - 2(-2\lambda-8) = 0$.<br>
+                    $9\lambda + 3 + 4\lambda - 2 + 4\lambda + 16 = 0 \implies 17\lambda + 17 = 0 \implies \lambda = -1$.<br>
+                    Foot $F(3(-1)+6, 2(-1)+7, -2(-1)+7) = (3, 5, 9)$.<br>
+                    Image $I(x,y,z)$ where $F$ is midpoint: $\frac{x+5}{2}=3 \implies x=1$; $\frac{y+8}{2}=5 \implies y=2$; $\frac{z+15}{2}=9 \implies z=3$.<br>
+                    Image is $(1, 2, 3)$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">17.</span>
+                <div class="q-content">
+                    Prove that the lines $\frac{x-1}{2} = \frac{y-2}{3} = \frac{z-3}{4}$ and $\frac{x-4}{5} = \frac{y-1}{2} = z$ intersect. Find their point of intersection.
+                    <span class="ans-label">Solution:</span>
+                    Let $\frac{x-1}{2} = \frac{y-2}{3} = \frac{z-3}{4} = \lambda \implies$ Point is $P_1(2\lambda+1, 3\lambda+2, 4\lambda+3)$.<br>
+                    Let $\frac{x-4}{5} = \frac{y-1}{2} = \frac{z}{1} = \mu \implies$ Point is $P_2(5\mu+4, 2\mu+1, \mu)$.<br>
+                    For intersection, $2\lambda+1 = 5\mu+4 \implies 2\lambda - 5\mu = 3$ (Eq.1).<br>
+                    $3\lambda+2 = 2\mu+1 \implies 3\lambda - 2\mu = -1$ (Eq.2).<br>
+                    $4\lambda+3 = \mu \implies \mu = 4\lambda+3$ (Eq.3).<br>
+                    Sub (Eq.3) into (Eq.2): $3\lambda - 2(4\lambda+3) = -1 \implies 3\lambda - 8\lambda - 6 = -1 \implies -5\lambda = 5 \implies \lambda = -1$.<br>
+                    Then $\mu = 4(-1)+3 = -1$.<br>
+                    Check with Eq.1: $2(-1) - 5(-1) = -2 + 5 = 3$. It satisfies all three equations.<br>
+                    The lines intersect. Point is $(2(-1)+1, 3(-1)+2, 4(-1)+3) = (-1, -1, -1)$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">18.</span>
+                <div class="q-content">
+                    Find the shortest distance between the lines passing through $(1,2,3)$ and parallel to $2\hat{i}+3\hat{j}+4\hat{k}$, and the line passing through $(2,4,5)$ parallel to $3\hat{i}+4\hat{j}+5\hat{k}$.
+                    <span class="ans-label">Solution:</span>
+                    $\vec{a_1} = (1, 2, 3), \vec{a_2} = (2, 4, 5) \implies \vec{a_2} - \vec{a_1} = (1, 2, 2)$.<br>
+                    $\vec{b_1} = (2, 3, 4), \vec{b_2} = (3, 4, 5)$.<br>
+                    $\vec{b_1} \times \vec{b_2} = \hat{i}(15-16) - \hat{j}(10-12) + \hat{k}(8-9) = -\hat{i} + 2\hat{j} - \hat{k}$.<br>
+                    $|\vec{b_1} \times \vec{b_2}| = \sqrt{(-1)^2 + 2^2 + (-1)^2} = \sqrt{6}$.<br>
+                    Numerator $= |(-1)(1) + (2)(2) + (-1)(2)| = |-1 + 4 - 2| = 1$.<br>
+                    Shortest Distance = $\frac{1}{\sqrt{6}}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">19.</span>
+                <div class="q-content">
+                    Find the shortest distance between the lines given by $\frac{x+1}{7} = \frac{y+1}{-6} = \frac{z+1}{1}$ and $\frac{x-3}{1} = \frac{y-5}{-2} = \frac{z-7}{1}$.
+                    <span class="ans-label">Solution:</span>
+                    $\vec{a_1} = (-1, -1, -1), \vec{a_2} = (3, 5, 7) \implies \vec{a_2} - \vec{a_1} = (4, 6, 8)$.<br>
+                    $\vec{b_1} = (7, -6, 1), \vec{b_2} = (1, -2, 1)$.<br>
+                    $\vec{b_1} \times \vec{b_2} = \hat{i}(-6 - (-2)) - \hat{j}(7 - 1) + \hat{k}(-14 - (-6)) = -4\hat{i} - 6\hat{j} - 8\hat{k}$.<br>
+                    $|\vec{b_1} \times \vec{b_2}| = \sqrt{(-4)^2 + (-6)^2 + (-8)^2} = \sqrt{16 + 36 + 64} = \sqrt{116} = 2\sqrt{29}$.<br>
+                    Numerator $= |(-4)(4) + (-6)(6) + (-8)(8)| = |-16 - 36 - 64| = |-116| = 116$.<br>
+                    Shortest Distance = $\frac{116}{2\sqrt{29}} = \frac{58}{\sqrt{29}} = 2\sqrt{29}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">20.</span>
+                <div class="q-content">
+                    A line passes through $(2, -1, 3)$ and is perpendicular to the lines $\vec{r} = (\hat{i} + \hat{j} - \hat{k}) + \lambda(2\hat{i} - 2\hat{j} + \hat{k})$ and $\vec{r} = (2\hat{i} - \hat{j} - 3\hat{k}) + \mu(\hat{i} + 2\hat{j} + 2\hat{k})$. Obtain its vector equation.
+                    <span class="ans-label">Solution:</span>
+                    Direction vectors are $\vec{b_1} = (2, -2, 1)$ and $\vec{b_2} = (1, 2, 2)$.<br>
+                    The required line is parallel to $\vec{b} = \vec{b_1} \times \vec{b_2}$.<br>
+                    $\vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 2 & -2 & 1 \\ 1 & 2 & 2 \end{vmatrix} = \hat{i}(-4 - 2) - \hat{j}(4 - 1) + \hat{k}(4 - (-2)) = -6\hat{i} - 3\hat{j} + 6\hat{k}$.<br>
+                    Dividing by $-3$, proportional direction ratios are $(2, 1, -2)$.<br>
+                    Passes through $\vec{a} = 2\hat{i} - \hat{j} + 3\hat{k}$.<br>
+                    Vector Equation: $\vec{r} = (2\hat{i} - \hat{j} + 3\hat{k}) + t(2\hat{i} + \hat{j} - 2\hat{k})$.
+                </div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section C: The Plane</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">21.</span>
+                <div class="q-content">
+                    Find the equation of the plane passing through the points $(2, 1, -1)$ and $(-1, 3, 4)$ and perpendicular to the plane $x - 2y + 4z = 10$.
+                    <span class="ans-label">Solution:</span>
+                    Plane Eq: $A(x-2) + B(y-1) + C(z+1) = 0$.<br>
+                    Passes through $(-1, 3, 4) \implies -3A + 2B + 5C = 0$.<br>
+                    Perpendicular to $x - 2y + 4z = 10 \implies 1A - 2B + 4C = 0$.<br>
+                    Cross-multiplication: $\frac{A}{8 + 10} = \frac{-B}{-12 - 5} = \frac{C}{6 - 2} \implies \frac{A}{18} = \frac{B}{17} = \frac{C}{4} = k$.<br>
+                    Using $A=18, B=17, C=4$, eq: $18(x-2) + 17(y-1) + 4(z+1) = 0 \implies 18x + 17y + 4z = 49$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">22.</span>
+                <div class="q-content">
+                    Find the equation of the plane passing through the line of intersection of the planes $x + y + z = 1$ and $2x + 3y + 4z = 5$ which is perpendicular to the plane $x - y + z = 0$.
+                    <span class="ans-label">Solution:</span>
+                    Family of planes: $(x + y + z - 1) + \lambda(2x + 3y + 4z - 5) = 0 \implies (1+2\lambda)x + (1+3\lambda)y + (1+4\lambda)z - (1+5\lambda) = 0$.<br>
+                    Perpendicular to $x - y + z = 0 \implies (1+2\lambda)(1) + (1+3\lambda)(-1) + (1+4\lambda)(1) = 0$.<br>
+                    $1 + 2\lambda - 1 - 3\lambda + 1 + 4\lambda = 0 \implies 3\lambda + 1 = 0 \implies \lambda = -1/3$.<br>
+                    Substitute $\lambda = -1/3$: $\frac{1}{3}x + 0y - \frac{1}{3}z - \left(\frac{-2}{3}\right) = 0 \implies x - z + 2 = 0$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">23.</span>
+                <div class="q-content">
+                    Find the equation of the plane passing through the points $(1, 1, -1), (6, 4, -5)$ and $(-4, -2, 1)$.
+                    <span class="ans-label">Solution:</span>
+                    Vectors formed by points: $\vec{AB} = (5, 3, -4)$ and $\vec{AC} = (-5, -3, 2)$.<br>
+                    Normal vector $\vec{n} = \vec{AB} \times \vec{AC} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 5 & 3 & -4 \\ -5 & -3 & 2 \end{vmatrix} = \hat{i}(6 - 12) - \hat{j}(10 - 20) + \hat{k}(-15 - (-15)) = -6\hat{i} + 10\hat{j} + 0\hat{k}$.<br>
+                    Divide by 2, proportional normal is $(-3, 5, 0)$.<br>
+                    Equation: $-3(x-1) + 5(y-1) + 0(z+1) = 0 \implies -3x + 3 + 5y - 5 = 0 \implies 3x - 5y + 2 = 0$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">24.</span>
+                <div class="q-content">
+                    Find the equation of the plane passing through the line of intersection of the planes $2x + y - z = 3$ and $5x - 3y + 4z + 9 = 0$, and parallel to the line $\frac{x-1}{2} = \frac{y-3}{4} = \frac{z-5}{5}$.
+                    <span class="ans-label">Solution:</span>
+                    Plane: $(2x+y-z-3) + \lambda(5x-3y+4z+9) = 0 \implies (2+5\lambda)x + (1-3\lambda)y + (-1+4\lambda)z - 3 + 9\lambda = 0$.<br>
+                    Parallel to line $\implies$ normal is perpendicular to line's direction vector $(2,4,5)$.<br>
+                    $2(2+5\lambda) + 4(1-3\lambda) + 5(-1+4\lambda) = 0 \implies 4+10\lambda + 4-12\lambda - 5+20\lambda = 0 \implies 18\lambda + 3 = 0 \implies \lambda = -1/6$.<br>
+                    Substitute $\lambda = -1/6$: $(2-5/6)x + (1+3/6)y + (-1-4/6)z - 3 - 9/6 = 0$.<br>
+                    $\frac{7}{6}x + \frac{9}{6}y - \frac{10}{6}z - \frac{27}{6} = 0 \implies 7x + 9y - 10z - 27 = 0$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">25.</span>
+                <div class="q-content">
+                    Find the Cartesian equation of the plane passing through $(1, 2, 3)$ and perpendicular to the planes $x - 2y + z = 1$ and $2x + y + 3z = 2$.
+                    <span class="ans-label">Solution:</span>
+                    The normal to the required plane is perpendicular to the normals of the given planes, $(1, -2, 1)$ and $(2, 1, 3)$.<br>
+                    $\vec{n} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 1 & -2 & 1 \\ 2 & 1 & 3 \end{vmatrix} = \hat{i}(-6 - 1) - \hat{j}(3 - 2) + \hat{k}(1 - (-4)) = -7\hat{i} - \hat{j} + 5\hat{k}$.<br>
+                    Passes through $(1, 2, 3)$. Equation: $-7(x-1) - 1(y-2) + 5(z-3) = 0 \implies -7x + 7 - y + 2 + 5z - 15 = 0 \implies 7x + y - 5z + 6 = 0$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">26.</span>
+                <div class="q-content">
+                    A plane meets the coordinate axes at $A, B, C$ such that the centroid of $\Delta ABC$ is the point $(a, b, c)$. Show that the equation of the plane is $\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 3$.
+                    <span class="ans-label">Solution:</span>
+                    Let the plane intercepts be $p, q, r$. Then coordinates are $A(p, 0, 0), B(0, q, 0), C(0, 0, r)$.<br>
+                    Centroid is $\left(\frac{p+0+0}{3}, \frac{0+q+0}{3}, \frac{0+0+r}{3}\right) = \left(\frac{p}{3}, \frac{q}{3}, \frac{r}{3}\right)$.<br>
+                    Given centroid is $(a, b, c)$, so $a = p/3 \implies p = 3a$, $b = q/3 \implies q = 3b$, $c = r/3 \implies r = 3c$.<br>
+                    Intercept form of plane is $\frac{x}{p} + \frac{y}{q} + \frac{z}{r} = 1$.<br>
+                    Substitute intercepts: $\frac{x}{3a} + \frac{y}{3b} + \frac{z}{3c} = 1 \implies \frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 3$. Proved.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">27.</span>
+                <div class="q-content">
+                    Find the $x$, $y$, and $z$ intercepts of the plane passing through $(2, 3, 4)$ and parallel to the plane $3x - 4y + 5z = 6$.
+                    <span class="ans-label">Solution:</span>
+                    Parallel plane has equation $3x - 4y + 5z = k$.<br>
+                    Passes through $(2, 3, 4) \implies 3(2) - 4(3) + 5(4) = k \implies 6 - 12 + 20 = k \implies k = 14$.<br>
+                    Equation is $3x - 4y + 5z = 14$.<br>
+                    Divide by 14: $\frac{3x}{14} - \frac{4y}{14} + \frac{5z}{14} = 1 \implies \frac{x}{14/3} + \frac{y}{-7/2} + \frac{z}{14/5} = 1$.<br>
+                    Intercepts are $x = 14/3, y = -7/2, z = 14/5$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">28.</span>
+                <div class="q-content">
+                    Find the equation of the plane which contains the line of intersection of the planes $\vec{r} \cdot (\hat{i} + 2\hat{j} + 3\hat{k}) - 4 = 0$ and $\vec{r} \cdot (2\hat{i} + \hat{j} - \hat{k}) + 5 = 0$, and which is perpendicular to the plane $\vec{r} \cdot (5\hat{i} + 3\hat{j} - 6\hat{k}) + 8 = 0$.
+                    <span class="ans-label">Solution:</span>
+                    Cartesian equivalents: $x+2y+3z-4=0$ and $2x+y-z+5=0$.<br>
+                    Family of planes: $(x+2y+3z-4) + \lambda(2x+y-z+5) = 0 \implies (1+2\lambda)x + (2+\lambda)y + (3-\lambda)z - 4 + 5\lambda = 0$.<br>
+                    Perpendicular to $5x+3y-6z+8=0$, dot product is zero:<br>
+                    $5(1+2\lambda) + 3(2+\lambda) - 6(3-\lambda) = 0 \implies 5 + 10\lambda + 6 + 3\lambda - 18 + 6\lambda = 0 \implies 19\lambda - 7 = 0 \implies \lambda = 7/19$.<br>
+                    Substitute $\lambda=7/19$ into family:<br>
+                    $(1 + 14/19)x + (2 + 7/19)y + (3 - 7/19)z - 4 + 35/19 = 0 \implies \frac{33}{19}x + \frac{45}{19}y + \frac{50}{19}z - \frac{41}{19} = 0$.<br>
+                    Equation: $33x + 45y + 50z = 41$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">29.</span>
+                <div class="q-content">
+                    The foot of the perpendicular drawn from the origin to a plane is $(4, -2, -5)$. Find the equation of the plane.
+                    <span class="ans-label">Solution:</span>
+                    The normal vector to the plane is the vector from the origin $(0,0,0)$ to the foot $(4,-2,-5)$.<br>
+                    $\vec{n} = (4-0)\hat{i} + (-2-0)\hat{j} + (-5-0)\hat{k} = 4\hat{i} - 2\hat{j} - 5\hat{k}$.<br>
+                    The plane passes through the point $(4, -2, -5)$.<br>
+                    Equation: $4(x - 4) - 2(y + 2) - 5(z + 5) = 0 \implies 4x - 16 - 2y - 4 - 5z - 25 = 0$.<br>
+                    $4x - 2y - 5z = 45$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">30.</span>
+                <div class="q-content">
+                    Find the equation of the plane containing the line $\frac{x+1}{-3} = \frac{y-3}{2} = \frac{z+2}{1}$ and the point $(0, 7, -7)$.
+                    <span class="ans-label">Solution:</span>
+                    The line passes through point $A(-1, 3, -2)$ and has direction $\vec{b} = (-3, 2, 1)$.<br>
+                    The plane also contains point $B(0, 7, -7)$.<br>
+                    Vector $\vec{AB} = (0 - (-1), 7 - 3, -7 - (-2)) = (1, 4, -5)$.<br>
+                    Normal to plane $\vec{n} = \vec{b} \times \vec{AB} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ -3 & 2 & 1 \\ 1 & 4 & -5 \end{vmatrix} = \hat{i}(-10 - 4) - \hat{j}(15 - 1) + \hat{k}(-12 - 2) = -14\hat{i} - 14\hat{j} - 14\hat{k}$.<br>
+                    Dividing by $-14$, proportional normal is $(1, 1, 1)$.<br>
+                    Using point $(0, 7, -7)$, Equation: $1(x-0) + 1(y-7) + 1(z+7) = 0 \implies x + y + z = 0$.
+                </div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section D: Interaction and Distances</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">31.</span>
+                <div class="q-content">
+                    Find the distance of the point $(-1, -5, -10)$ from the point of intersection of the line $\vec{r} = (2\hat{i} - \hat{j} + 2\hat{k}) + \lambda(3\hat{i} + 4\hat{j} + 2\hat{k})$ and the plane $\vec{r} \cdot (\hat{i} - \hat{j} + \hat{k}) = 5$.
+                    <span class="ans-label">Solution:</span>
+                    First, find the point of intersection. General point on the line: $(3\lambda+2, 4\lambda-1, 2\lambda+2)$.<br>
+                    Substitute this point into the Cartesian equation of the plane ($x - y + z = 5$):<br>
+                    $(3\lambda+2) - (4\lambda-1) + (2\lambda+2) = 5 \implies 3\lambda + 2 - 4\lambda + 1 + 2\lambda + 2 = 5$<br>
+                    $\lambda + 5 = 5 \implies \lambda = 0$.<br>
+                    Substituting $\lambda = 0$, the point of intersection $P$ is $(2, -1, 2)$.<br>
+                    Distance between $P(2, -1, 2)$ and $Q(-1, -5, -10)$ is given by the distance formula:<br>
+                    $d = \sqrt{(-1-2)^2 + (-5 - (-1))^2 + (-10-2)^2} = \sqrt{(-3)^2 + (-4)^2 + (-12)^2}$<br>
+                    $d = \sqrt{9 + 16 + 144} = \sqrt{169} = 13$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">32.</span>
+                <div class="q-content">
+                    Show that the lines $\frac{x+3}{-3} = \frac{y-1}{1} = \frac{z-5}{5}$ and $\frac{x+1}{-1} = \frac{y-2}{2} = \frac{z-5}{5}$ are coplanar. Also find the equation of the plane containing them.
+                    <span class="ans-label">Solution:</span>
+                    Lines are coplanar if $[\vec{a_2} - \vec{a_1}, \vec{b_1}, \vec{b_2}] = 0$.<br>
+                    $\vec{a_1} = (-3, 1, 5), \vec{a_2} = (-1, 2, 5) \implies \vec{a_2} - \vec{a_1} = (2, 1, 0)$.<br>
+                    $\vec{b_1} = (-3, 1, 5), \vec{b_2} = (-1, 2, 5)$.<br>
+                    Determinant: $\begin{vmatrix} 2 & 1 & 0 \\ -3 & 1 & 5 \\ -1 & 2 & 5 \end{vmatrix} = 2(5 - 10) - 1(-15 + 5) + 0 = 2(-5) - 1(-10) = -10 + 10 = 0$.<br>
+                    Thus, the lines are coplanar.<br>
+                    Equation of the plane containing them:<br>
+                    $\begin{vmatrix} x - x_1 & y - y_1 & z - z_1 \\ a_1 & b_1 & c_1 \\ a_2 & b_2 & c_2 \end{vmatrix} = 0 \implies \begin{vmatrix} x+3 & y-1 & z-5 \\ -3 & 1 & 5 \\ -1 & 2 & 5 \end{vmatrix} = 0$<br>
+                    $(x+3)(5-10) - (y-1)(-15 - (-5)) + (z-5)(-6 - (-1)) = 0$<br>
+                    $-5(x+3) - (y-1)(-10) - 5(z-5) = 0 \implies -5(x+3) + 10(y-1) - 5(z-5) = 0$<br>
+                    Divide by -5: $(x+3) - 2(y-1) + (z-5) = 0 \implies x - 2y + z = 0$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">33.</span>
+                <div class="q-content">
+                    Find the distance of the point $(1, -2, 3)$ from the plane $x - y + z = 5$ measured parallel to the line $\frac{x}{2} = \frac{y}{3} = \frac{z}{-6}$.
+                    <span class="ans-label">Solution:</span>
+                    Equation of the line passing through $(1, -2, 3)$ and parallel to the given line (thus having direction ratios $2, 3, -6$) is:<br>
+                    $\frac{x-1}{2} = \frac{y+2}{3} = \frac{z-3}{-6} = k$.<br>
+                    A general point on this line is $P(2k+1, 3k-2, -6k+3)$.<br>
+                    This point lies on the plane $x - y + z = 5$, so we substitute it in:<br>
+                    $(2k+1) - (3k-2) + (-6k+3) = 5 \implies 2k + 1 - 3k + 2 - 6k + 3 = 5$<br>
+                    $-7k + 6 = 5 \implies -7k = -1 \implies k = 1/7$.<br>
+                    The point of intersection $P$ is $\left(2(1/7)+1, 3(1/7)-2, -6(1/7)+3\right) = \left(\frac{9}{7}, \frac{-11}{7}, \frac{15}{7}\right)$.<br>
+                    Distance from the original point $A(1, -2, 3)$ to $P$:<br>
+                    $d = \sqrt{\left(\frac{9}{7} - 1\right)^2 + \left(\frac{-11}{7} - (-2)\right)^2 + \left(\frac{15}{7} - 3\right)^2}$<br>
+                    $d = \sqrt{\left(\frac{2}{7}\right)^2 + \left(\frac{3}{7}\right)^2 + \left(\frac{-6}{7}\right)^2} = \sqrt{\frac{4 + 9 + 36}{49}} = \sqrt{\frac{49}{49}} = 1$ unit.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">34.</span>
+                <div class="q-content">
+                    Find the coordinates of the image of the point $(1, 3, 4)$ in the plane $2x + y + z = 18$.
+                    <span class="ans-label">Solution:</span>
+                    Let line passing through $P(1, 3, 4)$ perpendicular to the plane be $\frac{x-1}{2} = \frac{y-3}{1} = \frac{z-4}{1} = \lambda$.<br>
+                    General point on line (foot of perpendicular) $F(2\lambda+1, \lambda+3, \lambda+4)$.<br>
+                    $F$ lies on the plane: $2(2\lambda+1) + (\lambda+3) + (\lambda+4) = 18 \implies 4\lambda + 2 + \lambda + 3 + \lambda + 4 = 18 \implies 6\lambda + 9 = 18 \implies 6\lambda = 9 \implies \lambda = 3/2$.<br>
+                    To find the image $I(x,y,z)$, we double the value of $\lambda$ (since distance to image is double). Let $\lambda_I = 2(3/2) = 3$.<br>
+                    Image point $I(2(3)+1, 3+3, 3+4) = (7, 6, 7)$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">35.</span>
+                <div class="q-content">
+                    Find the distance of the point $(2, 3, 4)$ from the plane $3x + 2y + 2z + 5 = 0$ measured parallel to the line $\frac{x+3}{3} = \frac{y-2}{6} = \frac{z}{2}$.
+                    <span class="ans-label">Solution:</span>
+                    Line through $(2,3,4)$ parallel to the given line has DRs $3, 6, 2$. Eq: $\frac{x-2}{3} = \frac{y-3}{6} = \frac{z-4}{2} = \lambda$.<br>
+                    General point $P(3\lambda+2, 6\lambda+3, 2\lambda+4)$.<br>
+                    Substitute into plane: $3(3\lambda+2) + 2(6\lambda+3) + 2(2\lambda+4) + 5 = 0 \implies 9\lambda+6 + 12\lambda+6 + 4\lambda+8 + 5 = 0$.<br>
+                    $25\lambda + 25 = 0 \implies \lambda = -1$.<br>
+                    Intersection point $P(3(-1)+2, 6(-1)+3, 2(-1)+4) = (-1, -3, 2)$.<br>
+                    Distance $= \sqrt{(-1-2)^2 + (-3-3)^2 + (2-4)^2} = \sqrt{(-3)^2 + (-6)^2 + (-2)^2} = \sqrt{9 + 36 + 4} = \sqrt{49} = 7$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">36.</span>
+                <div class="q-content">
+                    Show that the line $\frac{x-1}{2} = \frac{y-2}{3} = \frac{z-3}{4}$ and the plane $x - 2y + z = 10$ are parallel. Find the perpendicular distance between them.
+                    <span class="ans-label">Solution:</span>
+                    Check dot product of line direction $(2, 3, 4)$ and plane normal $(1, -2, 1)$: $2(1) + 3(-2) + 4(1) = 2 - 6 + 4 = 0$. They are parallel.<br>
+                    Since line is parallel, distance between them is the distance from any point on line to the plane.<br>
+                    Point on line is $(1, 2, 3)$.<br>
+                    Distance $= \frac{|1(1) - 2(2) + 1(3) - 10|}{\sqrt{1^2 + (-2)^2 + 1^2}} = \frac{|1 - 4 + 3 - 10|}{\sqrt{1+4+1}} = \frac{|-10|}{\sqrt{6}} = \frac{10}{\sqrt{6}} = \frac{5\sqrt{6}}{3}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">37.</span>
+                <div class="q-content">
+                    Find the equation of the plane containing the two parallel lines $\frac{x-1}{2} = \frac{y+1}{-1} = \frac{z}{3}$ and $\frac{x}{2} = \frac{y-2}{-1} = \frac{z+1}{3}$.
+                    <span class="ans-label">Solution:</span>
+                    The plane contains the direction vector $\vec{b} = (2, -1, 3)$.<br>
+                    It also contains points $A(1, -1, 0)$ and $B(0, 2, -1)$. Vector $\vec{AB} = (0-1, 2-(-1), -1-0) = (-1, 3, -1)$.<br>
+                    The normal to the plane is $\vec{n} = \vec{b} \times \vec{AB} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 2 & -1 & 3 \\ -1 & 3 & -1 \end{vmatrix} = \hat{i}(1-9) - \hat{j}(-2 - (-3)) + \hat{k}(6 - 1) = -8\hat{i} - \hat{j} + 5\hat{k}$.<br>
+                    Equation using point $(0, 2, -1)$: $-8(x-0) - 1(y-2) + 5(z+1) = 0 \implies -8x - y + 2 + 5z + 5 = 0 \implies 8x + y - 5z - 7 = 0$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">38.</span>
+                <div class="q-content">
+                    Find the angle between the line $\frac{x-2}{3} = \frac{y+1}{-1} = \frac{z-3}{2}$ and the plane $3x + 4y + z + 5 = 0$.
+                    <span class="ans-label">Solution:</span>
+                    Line vector $\vec{b} = (3, -1, 2)$. Plane normal $\vec{n} = (3, 4, 1)$.<br>
+                    $\sin\theta = \frac{|\vec{b} \cdot \vec{n}|}{|\vec{b}||\vec{n}|} = \frac{|3(3) + (-1)(4) + 2(1)|}{\sqrt{9+1+4}\sqrt{9+16+1}} = \frac{|9 - 4 + 2|}{\sqrt{14}\sqrt{26}} = \frac{7}{\sqrt{364}}$.<br>
+                    $\sin\theta = \frac{7}{\sqrt{4 \times 91}} = \frac{7}{2\sqrt{91}} = \frac{7}{2\sqrt{7 \times 13}} = \frac{\sqrt{7}}{2\sqrt{13}} = \frac{1}{2}\sqrt{\frac{7}{13}}$.<br>
+                    $\theta = \sin^{-1}\left(\frac{7}{\sqrt{364}}\right)$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">39.</span>
+                <div class="q-content">
+                    Find the length and the foot of the perpendicular drawn from the point $(7, 14, 5)$ to the plane $2x + 4y - z = 2$.
+                    <span class="ans-label">Solution:</span>
+                    Line perpendicular to plane passing through $(7,14,5)$ is $\frac{x-7}{2} = \frac{y-14}{4} = \frac{z-5}{-1} = \lambda$.<br>
+                    Gen point $F(2\lambda+7, 4\lambda+14, -\lambda+5)$. Sub into plane: $2(2\lambda+7) + 4(4\lambda+14) - (-\lambda+5) = 2$.<br>
+                    $4\lambda + 14 + 16\lambda + 56 + \lambda - 5 = 2 \implies 21\lambda + 65 = 2 \implies 21\lambda = -63 \implies \lambda = -3$.<br>
+                    Foot $F(2(-3)+7, 4(-3)+14, -(-3)+5) = (1, 2, 8)$.<br>
+                    Length $d = \sqrt{(1-7)^2 + (2-14)^2 + (8-5)^2} = \sqrt{(-6)^2 + (-12)^2 + 3^2} = \sqrt{36 + 144 + 9} = \sqrt{189} = 3\sqrt{21}$ units.
+                </div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">40.</span>
+                <div class="q-content">
+                    Find the equation of the plane passing through the point $(-1, 3, 2)$ and perpendicular to each of the planes $x + 2y + 3z = 5$ and $3x + 3y + z = 0$.
+                    <span class="ans-label">Solution:</span>
+                    The normal of the required plane is perpendicular to the normals of the given planes $\vec{n_1}=(1,2,3)$ and $\vec{n_2}=(3,3,1)$.<br>
+                    $\vec{n} = \vec{n_1} \times \vec{n_2} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 1 & 2 & 3 \\ 3 & 3 & 1 \end{vmatrix} = \hat{i}(2 - 9) - \hat{j}(1 - 9) + \hat{k}(3 - 6) = -7\hat{i} + 8\hat{j} - 3\hat{k}$.<br>
+                    Equation through $(-1, 3, 2)$: $-7(x+1) + 8(y-3) - 3(z-2) = 0 \implies -7x - 7 + 8y - 24 - 3z + 6 = 0$.<br>
+                    $-7x + 8y - 3z - 25 = 0 \implies 7x - 8y + 3z + 25 = 0$.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

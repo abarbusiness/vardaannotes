@@ -1,0 +1,404 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Solution Key</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 0: Orangish) */
+            --primary-color: #e65100; 
+            --bg-color: #fff3e0;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ffb74d;   
+            --bg-color: #2d1a11;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 16px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 10px; margin-bottom: 10px; 
+            display: block;
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); float: left;}
+        .q-content { margin-left: 35px; }
+        .ans-label { font-weight: bold; color: var(--primary-color); display: block; margin-top: 6px; margin-bottom: 4px;}
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); opacity: 0.05; 
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 11: Three Dimensional Geometry - Foundation Drill (Level 0) <br><span style="font-size: 14pt; color: var(--primary-color);">SOLUTION KEY</span></div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <!-- Topic 11.1 -->
+        <div class="chapter-header">11.1 Direction Ratios & Direction Cosines</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">If $l, m, n$ are the direction cosines of a line, write the fundamental identity connecting them.<br><span class="ans-label">Answer:</span> $l^2 + m^2 + n^2 = 1$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">Write the direction ratios of the line joining the points $A(x_1, y_1, z_1)$ and $B(x_2, y_2, z_2)$.<br><span class="ans-label">Answer:</span> $(x_2 - x_1), (y_2 - y_1), (z_2 - z_1)$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">If $a, b, c$ are the direction ratios of a line, write the formula to find its direction cosine '$l$'.<br><span class="ans-label">Answer:</span> $l = \pm \frac{a}{\sqrt{a^2 + b^2 + c^2}}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">What are the direction cosines of the x-axis?<br><span class="ans-label">Answer:</span> $1, 0, 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">What are the direction cosines of the y-axis?<br><span class="ans-label">Answer:</span> $0, 1, 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">What are the direction cosines of the z-axis?<br><span class="ans-label">Answer:</span> $0, 0, 1$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">If a line makes angles $\alpha, \beta, \gamma$ with the coordinate axes, what is the value of $\cos^2\alpha + \cos^2\beta + \cos^2\gamma$?<br><span class="ans-label">Answer:</span> $1$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">Using the result from the previous question, deduce the value of $\sin^2\alpha + \sin^2\beta + \sin^2\gamma$.<br><span class="ans-label">Answer:</span> $(1-\cos^2\alpha) + (1-\cos^2\beta) + (1-\cos^2\gamma) = 3 - 1 = 2$</div>
+            </div>
+        </div>
+
+        <!-- Topic 11.2 -->
+        <div class="chapter-header">11.2 Equation of a Line in Space</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">Write the vector equation of a line passing through a point with position vector $\vec{a}$ and parallel to vector $\vec{b}$.<br><span class="ans-label">Answer:</span> $\vec{r} = \vec{a} + \lambda\vec{b}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">Write the Cartesian equation of a line passing through $(x_1, y_1, z_1)$ with direction ratios $a, b, c$.<br><span class="ans-label">Answer:</span> $\frac{x-x_1}{a} = \frac{y-y_1}{b} = \frac{z-z_1}{c}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">Write the vector equation of a line passing through two points with position vectors $\vec{a}$ and $\vec{b}$.<br><span class="ans-label">Answer:</span> $\vec{r} = \vec{a} + \lambda(\vec{b} - \vec{a})$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">Write the Cartesian equation of a line passing through $(x_1, y_1, z_1)$ and $(x_2, y_2, z_2)$.<br><span class="ans-label">Answer:</span> $\frac{x-x_1}{x_2-x_1} = \frac{y-y_1}{y_2-y_1} = \frac{z-z_1}{z_2-z_1}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">In the vector equation of a line $\vec{r} = \vec{a} + \lambda\vec{b}$, what does the scalar $\lambda$ represent?<br><span class="ans-label">Answer:</span> A real parameter (or constant) corresponding to different points on the line.</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">Write the coordinates of the general point on the line $\frac{x-x_1}{a} = \frac{y-y_1}{b} = \frac{z-z_1}{c} = \lambda$.<br><span class="ans-label">Answer:</span> $(a\lambda + x_1, b\lambda + y_1, c\lambda + z_1)$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">Identify a point through which the line $\frac{x-2}{3} = \frac{y-4}{5} = \frac{z+1}{2}$ passes.<br><span class="ans-label">Answer:</span> $(2, 4, -1)$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">16.</span>
+                <div class="q-content">Identify the direction ratios of the line $\frac{x-2}{3} = \frac{y-4}{5} = \frac{z+1}{2}$.<br><span class="ans-label">Answer:</span> $3, 5, 2$</div>
+            </div>
+        </div>
+
+        <!-- Topic 11.3 -->
+        <div class="chapter-header">11.3 Angle Between Two Lines</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">17.</span>
+                <div class="q-content">Write the formula for $\cos\theta$, where $\theta$ is the angle between the lines $\vec{r} = \vec{a_1} + \lambda\vec{b_1}$ and $\vec{r} = \vec{a_2} + \mu\vec{b_2}$.<br><span class="ans-label">Answer:</span> $\cos\theta = \left|\frac{\vec{b_1} \cdot \vec{b_2}}{|\vec{b_1}||\vec{b_2}|}\right|$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">18.</span>
+                <div class="q-content">What is the condition for two lines to be perpendicular in terms of their direction vectors $\vec{b_1}$ and $\vec{b_2}$?<br><span class="ans-label">Answer:</span> $\vec{b_1} \cdot \vec{b_2} = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">19.</span>
+                <div class="q-content">If two lines have direction ratios $(a_1, b_1, c_1)$ and $(a_2, b_2, c_2)$, write the Cartesian condition for them to be perpendicular.<br><span class="ans-label">Answer:</span> $a_1 a_2 + b_1 b_2 + c_1 c_2 = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">20.</span>
+                <div class="q-content">If two lines have direction ratios $(a_1, b_1, c_1)$ and $(a_2, b_2, c_2)$, write the Cartesian condition for them to be parallel.<br><span class="ans-label">Answer:</span> $\frac{a_1}{a_2} = \frac{b_1}{b_2} = \frac{c_1}{c_2}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">21.</span>
+                <div class="q-content">What is the angle between the x-axis and the y-axis in 3D space?<br><span class="ans-label">Answer:</span> $90^\circ$ (or $\frac{\pi}{2}$)</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">22.</span>
+                <div class="q-content">If $\vec{b_1} \cdot \vec{b_2} = 0$, what is the angle between the lines?<br><span class="ans-label">Answer:</span> $90^\circ$ (The lines are perpendicular)</div>
+            </div>
+        </div>
+
+        <!-- Topic 11.4 -->
+        <div class="chapter-header">11.4 Shortest Distance Between Two Lines</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">23.</span>
+                <div class="q-content">Lines in space which are neither parallel nor intersecting are called _________________ lines.<br><span class="ans-label">Answer:</span> Skew</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">24.</span>
+                <div class="q-content">Write the vector formula for the shortest distance $d$ between two skew lines $\vec{r} = \vec{a_1} + \lambda\vec{b_1}$ and $\vec{r} = \vec{a_2} + \mu\vec{b_2}$.<br><span class="ans-label">Answer:</span> $d = \left| \frac{(\vec{b_1} \times \vec{b_2}) \cdot (\vec{a_2} - \vec{a_1})}{|\vec{b_1} \times \vec{b_2}|} \right|$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">25.</span>
+                <div class="q-content">Write the vector formula for the shortest distance $d$ between two parallel lines $\vec{r} = \vec{a_1} + \lambda\vec{b}$ and $\vec{r} = \vec{a_2} + \mu\vec{b}$.<br><span class="ans-label">Answer:</span> $d = \left| \frac{\vec{b} \times (\vec{a_2} - \vec{a_1})}{|\vec{b}|} \right|$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">26.</span>
+                <div class="q-content">If two lines intersect, what is the value of the shortest distance between them?<br><span class="ans-label">Answer:</span> $0$ (Zero)</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">27.</span>
+                <div class="q-content">To prove that two skew lines intersect, the scalar triple product $(\vec{b_1} \times \vec{b_2}) \cdot (\vec{a_2} - \vec{a_1})$ must be equal to _________________.<br><span class="ans-label">Answer:</span> $0$</div>
+            </div>
+        </div>
+
+        <!-- Topic 11.5 -->
+        <div class="chapter-header">11.5 Foot of Perpendicular and Image</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">28.</span>
+                <div class="q-content">To find the foot of the perpendicular from point $P$ to a line, we first assume the foot to be the _________________ point on the line in terms of $\lambda$.<br><span class="ans-label">Answer:</span> General</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">29.</span>
+                <div class="q-content">True/False: The direction vector of the perpendicular line and the direction vector of the given line have a dot product of zero.<br><span class="ans-label">Answer:</span> True (Since they are perpendicular).</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">30.</span>
+                <div class="q-content">If $F$ is the foot of the perpendicular from $P$ to a line, and $P'$ is the image of $P$, what is the geometric relationship between $P, F,$ and $P'$?<br><span class="ans-label">Answer:</span> $F$ is the midpoint of the line segment joining $P$ and $P'$.</div>
+            </div>
+        </div>
+
+        <!-- Topic 11.6 -->
+        <div class="chapter-header">11.6 The Plane (JEE Focus)</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">31.</span>
+                <div class="q-content">Write the general Cartesian equation of a plane.<br><span class="ans-label">Answer:</span> $Ax + By + Cz + D = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">32.</span>
+                <div class="q-content">Write the normal form of the equation of a plane in vector form.<br><span class="ans-label">Answer:</span> $\vec{r} \cdot \hat{n} = d$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">33.</span>
+                <div class="q-content">In the equation $\vec{r} \cdot \hat{n} = d$, what does the scalar '$d$' physically represent?<br><span class="ans-label">Answer:</span> The perpendicular distance of the plane from the origin.</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">34.</span>
+                <div class="q-content">Write the equation of a plane passing through a point $(x_1, y_1, z_1)$ with a normal vector having direction ratios $A, B, C$.<br><span class="ans-label">Answer:</span> $A(x - x_1) + B(y - y_1) + C(z - z_1) = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">35.</span>
+                <div class="q-content">Write the intercept form of the equation of a plane having intercepts $a, b, c$ on the x, y, and z axes respectively.<br><span class="ans-label">Answer:</span> $\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">36.</span>
+                <div class="q-content">What is the equation of the $xy$-plane?<br><span class="ans-label">Answer:</span> $z = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">37.</span>
+                <div class="q-content">What is the equation of the $yz$-plane?<br><span class="ans-label">Answer:</span> $x = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">38.</span>
+                <div class="q-content">If a plane passes through the origin, what is the value of the constant term $D$ in its general equation $Ax+By+Cz+D=0$?<br><span class="ans-label">Answer:</span> $D = 0$</div>
+            </div>
+        </div>
+
+        <!-- Topic 11.7 -->
+        <div class="chapter-header">11.7 Interaction of Planes and Lines</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">39.</span>
+                <div class="q-content">The angle $\theta$ between two planes $\vec{r} \cdot \vec{n_1} = d_1$ and $\vec{r} \cdot \vec{n_2} = d_2$ is given by $\cos\theta =$ _________________.<br><span class="ans-label">Answer:</span> $\left|\frac{\vec{n_1} \cdot \vec{n_2}}{|\vec{n_1}||\vec{n_2}|}\right|$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">40.</span>
+                <div class="q-content">The angle $\theta$ between a line $\vec{r} = \vec{a} + \lambda\vec{b}$ and a plane $\vec{r} \cdot \vec{n} = d$ is given by $\sin\theta =$ _________________.<br><span class="ans-label">Answer:</span> $\left|\frac{\vec{b} \cdot \vec{n}}{|\vec{b}||\vec{n}|}\right|$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">41.</span>
+                <div class="q-content">What is the condition for a line (direction $\vec{b}$) to be parallel to a plane (normal $\vec{n}$)?<br><span class="ans-label">Answer:</span> $\vec{b} \cdot \vec{n} = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">42.</span>
+                <div class="q-content">What is the condition for a line (direction $\vec{b}$) to be perpendicular to a plane (normal $\vec{n}$)?<br><span class="ans-label">Answer:</span> $\vec{b}$ is parallel to $\vec{n}$ ($\vec{b} = k\vec{n}$)</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">43.</span>
+                <div class="q-content">Write the condition for two planes with normal vectors $\vec{n_1}$ and $\vec{n_2}$ to be mutually perpendicular.<br><span class="ans-label">Answer:</span> $\vec{n_1} \cdot \vec{n_2} = 0$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">44.</span>
+                <div class="q-content">Write the condition for two planes with normal vectors $\vec{n_1}$ and $\vec{n_2}$ to be parallel.<br><span class="ans-label">Answer:</span> $\vec{n_1} = \lambda\vec{n_2}$ (Their normals are proportional)</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">45.</span>
+                <div class="q-content">Two lines $\vec{r} = \vec{a_1} + \lambda\vec{b_1}$ and $\vec{r} = \vec{a_2} + \mu\vec{b_2}$ are coplanar if their shortest distance is _________________.<br><span class="ans-label">Answer:</span> $0$</div>
+            </div>
+        </div>
+
+        <!-- Topic 11.8 -->
+        <div class="chapter-header">11.8 Distance Formulas</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">46.</span>
+                <div class="q-content">Write the formula for the perpendicular distance of a point $(x_1, y_1, z_1)$ from the plane $Ax + By + Cz + D = 0$.<br><span class="ans-label">Answer:</span> $\frac{|Ax_1 + By_1 + Cz_1 + D|}{\sqrt{A^2 + B^2 + C^2}}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">47.</span>
+                <div class="q-content">Write the formula for the distance between two parallel planes $Ax + By + Cz + d_1 = 0$ and $Ax + By + Cz + d_2 = 0$.<br><span class="ans-label">Answer:</span> $\frac{|d_1 - d_2|}{\sqrt{A^2 + B^2 + C^2}}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">48.</span>
+                <div class="q-content">What is the perpendicular distance of the origin $(0,0,0)$ from the plane $Ax + By + Cz + D = 0$?<br><span class="ans-label">Answer:</span> $\frac{|D|}{\sqrt{A^2 + B^2 + C^2}}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">49.</span>
+                <div class="q-content">Write the 3D distance formula to find the distance between point $(x_1, y_1, z_1)$ and the origin.<br><span class="ans-label">Answer:</span> $\sqrt{x_1^2 + y_1^2 + z_1^2}$</div>
+            </div>
+            <div class="solution-item">
+                <span class="q-num">50.</span>
+                <div class="q-content">If a plane has the intercept form $\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$, write the coordinates of its intersection with the z-axis.<br><span class="ans-label">Answer:</span> $(0, 0, c)$</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Solutions</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 3 - Red Theme) */
+            --primary-color: #b71c1c; 
+            --bg-color: #ffebee;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ef5350;   
+            --bg-color: #3b1a1a;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Solution Key: Level 3 (Vector Algebra)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Challenger Solutions</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">1.</span><div class="q-content"><span class="ans-label">Proof:</span> LHS = $(\vec{a}+\vec{b}) \cdot ((\vec{b}+\vec{c}) \times (\vec{c}+\vec{a})) = (\vec{a}+\vec{b}) \cdot (\vec{b}\times\vec{c} + \vec{b}\times\vec{a} + \vec{c}\times\vec{c} + \vec{c}\times\vec{a})$. Since $\vec{c}\times\vec{c}=0$, this becomes $(\vec{a}+\vec{b}) \cdot (\vec{b}\times\vec{c} - \vec{a}\times\vec{b} + \vec{c}\times\vec{a})$. Distributing the dot product: $\vec{a}\cdot(\vec{b}\times\vec{c}) - \vec{a}\cdot(\vec{a}\times\vec{b}) + \vec{a}\cdot(\vec{c}\times\vec{a}) + \vec{b}\cdot(\vec{b}\times\vec{c}) - \vec{b}\cdot(\vec{a}\times\vec{b}) + \vec{b}\cdot(\vec{c}\times\vec{a})$. Any STP with repeated vectors is 0. So, $[\vec{a}\vec{b}\vec{c}] - 0 + 0 + 0 - 0 + [\vec{b}\vec{c}\vec{a}] = [\vec{a}\vec{b}\vec{c}] + [\vec{a}\vec{b}\vec{c}] = 2[\vec{a}\vec{b}\vec{c}]$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">2.</span><div class="q-content"><span class="ans-label">Proof:</span> Using BAC-CAB rule: $\vec{a} \times (\vec{b} \times \vec{c}) = (\vec{a}\cdot\vec{c})\vec{b} - (\vec{a}\cdot\vec{b})\vec{c}$. Similarly, $\vec{b} \times (\vec{c} \times \vec{a}) = (\vec{b}\cdot\vec{a})\vec{c} - (\vec{b}\cdot\vec{c})\vec{a}$ and $\vec{c} \times (\vec{a} \times \vec{b}) = (\vec{c}\cdot\vec{b})\vec{a} - (\vec{c}\cdot\vec{a})\vec{b}$. Summing these three gives: $( (\vec{a}\cdot\vec{c}) - (\vec{c}\cdot\vec{a}) )\vec{b} + ( (\vec{b}\cdot\vec{a}) - (\vec{a}\cdot\vec{b}) )\vec{c} + ( (\vec{c}\cdot\vec{b}) - (\vec{b}\cdot\vec{c}) )\vec{a} = \vec{0}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">3.</span><div class="q-content"><span class="ans-label">Ans:</span> Angle with $\vec{b}$ is $\frac{3\pi}{4}$, Angle with $\vec{c}$ is $\frac{\pi}{4}$. <i>Reason: $(\vec{a}\cdot\vec{c})\vec{b} - (\vec{a}\cdot\vec{b})\vec{c} = \frac{1}{\sqrt{2}}\vec{b} + \frac{1}{\sqrt{2}}\vec{c}$. Since $\vec{b}, \vec{c}$ are non-collinear, we compare coefficients: $\vec{a}\cdot\vec{c} = 1/\sqrt{2} \Rightarrow \cos\theta_c = 1/\sqrt{2} \Rightarrow \theta_c = \pi/4$. And $-(\vec{a}\cdot\vec{b}) = 1/\sqrt{2} \Rightarrow \cos\theta_b = -1/\sqrt{2} \Rightarrow \theta_b = 3\pi/4$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">4.</span><div class="q-content"><span class="ans-label">Ans:</span> $\vec{x} = \frac{\vec{b} + \vec{b}\times\vec{a} + (\vec{a}\cdot\vec{b})\vec{a}}{1+|\vec{a}|^2}$. <i>Reason: Take dot product with $\vec{a}$: $\vec{x}\cdot\vec{a} + 0 = \vec{b}\cdot\vec{a}$. Next, take cross product with $\vec{a}$: $\vec{x}\times\vec{a} + (\vec{x}\times\vec{a})\times\vec{a} = \vec{b}\times\vec{a}$. Use BAC-CAB: $\vec{x}\times\vec{a} + (\vec{x}\cdot\vec{a})\vec{a} - (\vec{a}\cdot\vec{a})\vec{x} = \vec{b}\times\vec{a}$. From original eq, $\vec{x}\times\vec{a} = \vec{b} - \vec{x}$. Substitute this and $\vec{x}\cdot\vec{a} = \vec{b}\cdot\vec{a}$ to get: $(\vec{b} - \vec{x}) + (\vec{b}\cdot\vec{a})\vec{a} - |\vec{a}|^2\vec{x} = \vec{b}\times\vec{a}$. Solve for $\vec{x}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">5.</span><div class="q-content"><span class="ans-label">Proof:</span> LHS = $(\vec{a}\times\vec{b}) \cdot ((\vec{b}\times\vec{c}) \times (\vec{c}\times\vec{a}))$. Let $\vec{u} = \vec{b}\times\vec{c}$. Then $\vec{u} \times (\vec{c}\times\vec{a}) = (\vec{u}\cdot\vec{a})\vec{c} - (\vec{u}\cdot\vec{c})\vec{a} = ([\vec{b}\vec{c}\vec{a}])\vec{c} - 0 = [\vec{a}\vec{b}\vec{c}]\vec{c}$. Substituting back: LHS = $(\vec{a}\times\vec{b}) \cdot ([\vec{a}\vec{b}\vec{c}]\vec{c}) = [\vec{a}\vec{b}\vec{c}] ((\vec{a}\times\vec{b})\cdot\vec{c}) = [\vec{a}\vec{b}\vec{c}] [\vec{a}\vec{b}\vec{c}] = [\vec{a}\vec{b}\vec{c}]^2$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">6.</span><div class="q-content"><span class="ans-label">Proof:</span> Since $\vec{c} \perp \vec{a}, \vec{b}$, $\vec{c}$ is parallel to $\vec{a}\times\vec{b}$. Since $|\vec{c}|=1$, $\vec{c} = \pm \frac{\vec{a}\times\vec{b}}{|\vec{a}\times\vec{b}|}$. Now, $[\vec{a}\vec{b}\vec{c}] = (\vec{a}\times\vec{b}) \cdot \vec{c} = \pm |\vec{a}\times\vec{b}|$. Squaring gives $[\vec{a}\vec{b}\vec{c}]^2 = |\vec{a}\times\vec{b}|^2 = |\vec{a}|^2|\vec{b}|^2\sin^2(\pi/6) = \frac{1}{4}|\vec{a}|^2|\vec{b}|^2$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">7.</span><div class="q-content"><span class="ans-label">Ans:</span> $\pm(2\hat{i} + 2\hat{k})$. <i>Reason: Let $\vec{v} = x\vec{a} + y\vec{b} = (x+y)\hat{i} + (x-y)\hat{j} + (x+y)\hat{k}$. Orthogonality: $\vec{v}\cdot\vec{c} = 0 \Rightarrow (x+y)(1) + (x-y)(2) + (x+y)(-1) = 0 \Rightarrow x+y+2x-2y-x-y = 2x-2y=0 \Rightarrow x=y$. So $\vec{v} = x(2\hat{i}+2\hat{k})$. Magnitude $|\vec{v}|^2 = x^2(4+4) = 8x^2$. We want magnitude $\sqrt{8}$, so $8x^2 = 8 \Rightarrow x = \pm 1$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">8.</span><div class="q-content"><span class="ans-label">Ans:</span> $\cos^{-1}\left(\frac{1}{\sqrt{3}}\right)$. <i>Reason: Let $|\vec{a}|=|\vec{b}|=|\vec{c}|=m$. Let $\vec{s} = \vec{a}+\vec{b}+\vec{c}$. $|\vec{s}|^2 = 3m^2 + 0 \Rightarrow |\vec{s}| = m\sqrt{3}$. $\cos\theta = \frac{\vec{a}\cdot\vec{s}}{|\vec{a}||\vec{s}|} = \frac{\vec{a}\cdot\vec{a} + 0 + 0}{m(m\sqrt{3})} = \frac{m^2}{m^2\sqrt{3}} = \frac{1}{\sqrt{3}}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">9.</span><div class="q-content"><span class="ans-label">Proof:</span> Let the origin be the orthocenter $H$, so $\vec{h} = \vec{0}$. The altitudes from A and B meet at H. So $\vec{a} \perp (\vec{c}-\vec{b}) \Rightarrow \vec{a}\cdot\vec{c} - \vec{a}\cdot\vec{b} = 0 \Rightarrow \vec{a}\cdot\vec{c} = \vec{a}\cdot\vec{b}$. Also $\vec{b} \perp (\vec{c}-\vec{a}) \Rightarrow \vec{b}\cdot\vec{c} = \vec{a}\cdot\vec{b}$. Therefore, $\vec{a}\cdot\vec{c} = \vec{b}\cdot\vec{c} \Rightarrow \vec{c}\cdot(\vec{a}-\vec{b}) = 0$. This means altitude from C passes through H, proving concurrency.</div></div>
+            <div class="question-item solution-item"><span class="q-num">10.</span><div class="q-content"><span class="ans-label">Proof:</span> Let origin be center of circle. Let position vectors of diameter endpoints be $\vec{a}$ and $-\vec{a}$. Let $P$ on circle be $\vec{r}$. Then $|\vec{r}| = |\vec{a}|$. The vectors for the inscribed angle are $\vec{r}-\vec{a}$ and $\vec{r}-(-\vec{a}) = \vec{r}+\vec{a}$. Their dot product is $(\vec{r}-\vec{a})\cdot(\vec{r}+\vec{a}) = |\vec{r}|^2 - |\vec{a}|^2 = 0$. Hence they are perpendicular.</div></div>
+            <div class="question-item solution-item"><span class="q-num">11.</span><div class="q-content"><span class="ans-label">Proof:</span> By definition, $\vec{a} \cdot \vec{b} = |\vec{a}||\vec{b}|\cos\theta$. Taking absolute value: $|\vec{a} \cdot \vec{b}| = |\vec{a}||\vec{b}||\cos\theta|$. Since the maximum value of $|\cos\theta|$ is 1, it follows that $|\vec{a} \cdot \vec{b}| \le |\vec{a}||\vec{b}|$. Equality holds when $\theta = 0$ or $\pi$ (vectors are collinear).</div></div>
+            <div class="question-item solution-item"><span class="q-num">12.</span><div class="q-content"><span class="ans-label">Proof:</span> Expand: $(|\vec{a}|^2+|\vec{b}|^2-2\vec{a}\cdot\vec{b}) + (|\vec{b}|^2+|\vec{c}|^2-2\vec{b}\cdot\vec{c}) + (|\vec{c}|^2+|\vec{a}|^2-2\vec{c}\cdot\vec{a}) = 9$. Since they are unit vectors, $6 - 2(\vec{a}\cdot\vec{b} + \vec{b}\cdot\vec{c} + \vec{c}\cdot\vec{a}) = 9 \Rightarrow 2(\vec{a}\cdot\vec{b} + \vec{b}\cdot\vec{c} + \vec{c}\cdot\vec{a}) = -3$. Consider $|\vec{a}+\vec{b}+\vec{c}|^2 = 3 + 2(\sum\vec{a}\cdot\vec{b}) = 3 - 3 = 0$. Hence $\vec{a}+\vec{b}+\vec{c} = \vec{0}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">13.</span><div class="q-content"><span class="ans-label">Proof:</span> Original volume $V = \frac{1}{6}|[\vec{a}\vec{b}\vec{c}]|$. New volume $V' = \frac{1}{6}|[\vec{a}+\vec{b} \quad \vec{b}+\vec{c} \quad \vec{c}+\vec{a}]|$. From Q1, this STP equals $2[\vec{a}\vec{b}\vec{c}]$. Thus, $V' = \frac{1}{6}|2[\vec{a}\vec{b}\vec{c}]| = 2 \times (\frac{1}{6}|[\vec{a}\vec{b}\vec{c}]|) = 2V$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">14.</span><div class="q-content"><span class="ans-label">Ans:</span> $x = -\frac{1}{2}$. <i>Reason: STP = $1(12+2x) - 0 + 1(2x^2-24) = 2x^2 + 2x - 12$. This is a quadratic in $x$ representing a parabola opening upwards. The minimum value occurs at $x = -\frac{b}{2a} = -\frac{2}{4} = -\frac{1}{2}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">15.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{\pi}{3}$. <i>Reason: $\vec{c} \cdot \vec{d} = 0 \Rightarrow (\vec{a}+2\vec{b})\cdot(5\vec{a}-4\vec{b}) = 5|\vec{a}|^2 - 8|\vec{b}|^2 + 6\vec{a}\cdot\vec{b} = 0$. Since unit vectors, $5(1) - 8(1) + 6\cos\theta = 0 \Rightarrow -3 + 6\cos\theta = 0 \Rightarrow \cos\theta = 1/2$. Thus $\theta = \pi/3$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">16.</span><div class="q-content"><span class="ans-label">Proof:</span> The reciprocal vectors are defined as $\vec{p} = \frac{\vec{b}\times\vec{c}}{[\vec{a}\vec{b}\vec{c}]}$, $\vec{q} = \frac{\vec{c}\times\vec{a}}{[\vec{a}\vec{b}\vec{c}]}$, $\vec{r} = \frac{\vec{a}\times\vec{b}}{[\vec{a}\vec{b}\vec{c}]}$. Therefore, $\vec{a}\cdot\vec{p} = \frac{\vec{a}\cdot(\vec{b}\times\vec{c})}{[\vec{a}\vec{b}\vec{c}]} = \frac{[\vec{a}\vec{b}\vec{c}]}{[\vec{a}\vec{b}\vec{c}]} = 1$. Similarly, $\vec{b}\cdot\vec{q} = 1$ and $\vec{c}\cdot\vec{r} = 1$. Sum is $1+1+1=3$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">17.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $\vec{u} = \vec{a}\times\vec{b}$. LHS = $\vec{u} \cdot (\vec{c}\times\vec{d}) = [\vec{u} \, \vec{c} \, \vec{d}] = (\vec{u}\times\vec{c}) \cdot \vec{d} = ((\vec{a}\times\vec{b})\times\vec{c}) \cdot \vec{d}$. Apply BAC-CAB rule: $((\vec{a}\cdot\vec{c})\vec{b} - (\vec{b}\cdot\vec{c})\vec{a}) \cdot \vec{d}$. Distributing dot product yields $(\vec{a}\cdot\vec{c})(\vec{b}\cdot\vec{d}) - (\vec{b}\cdot\vec{c})(\vec{a}\cdot\vec{d})$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">18.</span><div class="q-content"><span class="ans-label">Ans:</span> $|\vec{b}| = 1$. <i>Reason: $\vec{c} = \vec{a}\times\vec{b} \Rightarrow \vec{c} \perp \vec{a}, \vec{b}$. $\vec{a} = \vec{b}\times\vec{c} \Rightarrow \vec{a} \perp \vec{b}, \vec{c}$. Hence $\vec{a}, \vec{b}, \vec{c}$ are mutually orthogonal. Magnitudes: $|\vec{c}| = |\vec{a}||\vec{b}|\sin(\pi/2) = |\vec{a}||\vec{b}|$. Also $|\vec{a}| = |\vec{b}||\vec{c}|$. Substitute $|\vec{c}|$ to get $|\vec{a}| = |\vec{b}|^2|\vec{a}|$. Since $\vec{a}\neq\vec{0}$, $|\vec{b}|^2 = 1 \Rightarrow |\vec{b}|=1$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">19.</span><div class="q-content"><span class="ans-label">Proof:</span> $|\hat{a} - \hat{b}|^2 = |\hat{a}|^2 + |\hat{b}|^2 - 2\hat{a}\cdot\hat{b} = 1 + 1 - 2\cos\theta = 2(1 - \cos\theta) = 4\sin^2(\theta/2)$. Taking square roots: $|\hat{a} - \hat{b}| = 2\sin(\theta/2) \Rightarrow \sin(\theta/2) = \frac{1}{2}|\hat{a}-\hat{b}|$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">20.</span><div class="q-content"><span class="ans-label">Ans:</span> $y = -2$. <i>Reason: Vectors $\vec{AB} = (1, -1, 0)$, $\vec{AC} = (0, 1, -1)$, $\vec{AD} = (2, y-1, 1)$. For coplanarity, STP = $0$. $1(1+y-1) - (-1)(0 - (-2)) + 0 = 0 \Rightarrow y + 2 = 0 \Rightarrow y = -2$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">21.</span><div class="q-content"><span class="ans-label">Proof:</span> Expand the STP: $(\vec{a}-\vec{b}) \cdot ((\vec{b}-\vec{c}) \times (\vec{c}-\vec{a})) = (\vec{a}-\vec{b}) \cdot (\vec{b}\times\vec{c} - \vec{b}\times\vec{a} - \vec{c}\times\vec{c} + \vec{c}\times\vec{a}) = \vec{a}\cdot(\vec{b}\times\vec{c}) - \vec{b}\cdot(\vec{c}\times\vec{a}) = [\vec{a}\vec{b}\vec{c}] - [\vec{b}\vec{c}\vec{a}] = [\vec{a}\vec{b}\vec{c}] - [\vec{a}\vec{b}\vec{c}] = 0$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">22.</span><div class="q-content"><span class="ans-label">Ans:</span> $x = -1, y = -10, z = 8$. <i>Reason: Dot products of any two must be 0. Let vectors be $\vec{u}, \vec{v}, \vec{w}$. $\vec{u}\cdot\vec{w} = 3x + 1 + 2 = 0 \Rightarrow 3x = -3 \Rightarrow x=-1$. Now $\vec{u} = -\hat{i}-\hat{j}+\hat{k}$. $\vec{u}\cdot\vec{v} = -2 - y - z = 0 \Rightarrow y+z = -2$. $\vec{v}\cdot\vec{w} = 6 - y - 2z = 0 \Rightarrow y+2z = 6$. Subtract equations: $z = 8 \Rightarrow y = -10$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">23.</span><div class="q-content"><span class="ans-label">Proof:</span> Let vertices be $\vec{a}, \vec{b}, \vec{c}$. Midpoint of BC is $\frac{\vec{b}+\vec{c}}{2}$. Point dividing median from A in $2:1$ is $\frac{2(\frac{\vec{b}+\vec{c}}{2}) + 1(\vec{a})}{2+1} = \frac{\vec{a}+\vec{b}+\vec{c}}{3}$. By symmetry, the other two medians divided in 2:1 yield the exact same point, proving they are concurrent.</div></div>
+            <div class="question-item solution-item"><span class="q-num">24.</span><div class="q-content"><span class="ans-label">Ans:</span> $\sqrt{6}$ and $\sqrt{14}$. <i>Reason: Adjacent sides are $\frac{\vec{d_1}+\vec{d_2}}{2}$ and $\frac{\vec{d_1}-\vec{d_2}}{2}$. $\vec{a} = 2\hat{i} - \hat{j} + \hat{k}$, length $= \sqrt{4+1+1} = \sqrt{6}$. $\vec{b} = \hat{i} + 2\hat{j} - 3\hat{k}$, length $= \sqrt{1+4+9} = \sqrt{14}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">25.</span><div class="q-content"><span class="ans-label">Ans:</span> $40$ Joules. <i>Reason: Net force $\vec{F} = \vec{F_1} + \vec{F_2} = 7\hat{i} + 2\hat{j} - 4\hat{k}$. Displacement $\vec{d} = \vec{OQ} - \vec{OP} = 4\hat{i} + 2\hat{j} - 2\hat{k}$. Work $W = \vec{F} \cdot \vec{d} = 28 + 4 + 8 = 40$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">26.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{3}{7}\hat{i} - \frac{2}{7}\hat{j} + \frac{6}{7}\hat{k}$. <i>Reason: $\vec{a}\times\vec{b} = 15\hat{i} - 10\hat{j} + 30\hat{k}$. Magnitude = $\sqrt{225+100+900} = 35$. Unit vector = $\frac{1}{35}(15\hat{i} - 10\hat{j} + 30\hat{k})$. Simplify by dividing by 5.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">27.</span><div class="q-content"><span class="ans-label">Proof:</span> Area = $\frac{1}{2} |\vec{AB} \times \vec{AC}| = \frac{1}{2} |(\vec{b}-\vec{a}) \times (\vec{c}-\vec{a})| = \frac{1}{2} |\vec{b}\times\vec{c} - \vec{b}\times\vec{a} - \vec{a}\times\vec{c} + \vec{a}\times\vec{a}| = \frac{1}{2} |\vec{a}\times\vec{b} + \vec{b}\times\vec{c} + \vec{c}\times\vec{a}|$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">28.</span><div class="q-content"><span class="ans-label">Proof:</span> $\vec{a}, \vec{b}, \vec{c}$ coplanar $\Rightarrow [\vec{a}\vec{b}\vec{c}] = 0$. The STP of the new vectors is $[\vec{a}\times\vec{b} \quad \vec{b}\times\vec{c} \quad \vec{c}\times\vec{a}] = [\vec{a}\vec{b}\vec{c}]^2 = 0^2 = 0$. Hence they are also coplanar.</div></div>
+            <div class="question-item solution-item"><span class="q-num">29.</span><div class="q-content"><span class="ans-label">Proof:</span> Subtracting the given equations: $\vec{a}\times\vec{b} - \vec{a}\times\vec{c} = \vec{c}\times\vec{d} - \vec{b}\times\vec{d} \Rightarrow \vec{a}\times(\vec{b}-\vec{c}) = (\vec{c}-\vec{b})\times\vec{d} \Rightarrow \vec{a}\times(\vec{b}-\vec{c}) = -\vec{d}\times(\vec{b}-\vec{c})$. Moving terms: $(\vec{a}-\vec{d})\times(\vec{b}-\vec{c}) = \vec{0}$. Since cross product is zero and neither vector is zero, they must be parallel.</div></div>
+            <div class="question-item solution-item"><span class="q-num">30.</span><div class="q-content"><span class="ans-label">Ans:</span> $6$ cubic units. <i>Reason: Volume of new parallelepiped is $[\vec{a}\times\vec{b} \quad \vec{b}\times\vec{c} \quad \vec{c}\times\vec{a}] = [\vec{a}\vec{b}\vec{c}]^2 = 36$. Hence $[\vec{a}\vec{b}\vec{c}] = \pm 6$. The volume of the original parallelepiped is $|[\vec{a}\vec{b}\vec{c}]| = 6$.</i></div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

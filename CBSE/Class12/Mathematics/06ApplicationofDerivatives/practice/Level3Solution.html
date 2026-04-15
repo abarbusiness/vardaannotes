@@ -1,0 +1,395 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Solution Key</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 3: Red) */
+            --primary-color: #b71c1c; 
+            --bg-color: #ffebee;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ef5350;   
+            --bg-color: #3b1a1a;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; text-align: center;
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 20px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 12px; 
+            display: block; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); float: left; }
+        .q-content { margin-left: 35px; }
+        .ans-label { font-weight: bold; color: var(--primary-color); display: block; margin-top: 10px; margin-bottom: 5px;}
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); opacity: 0.05; 
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 6: Application of Derivatives - Challenger Drill (Level 3) <br><span style="font-size: 14pt; color: var(--primary-color);">SOLUTION KEY</span></div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Mastery Solutions</div>
+
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">
+                    Find the equation of the common tangent to the curves $y = x^2$ and $y = -x^2 + 4x - 4$.
+                    <span class="ans-label">Solution:</span>
+                    Let the points of tangency be $(a, a^2)$ on the first curve and $(b, -b^2+4b-4)$ on the second.<br>
+                    Derivative of first curve: $y' = 2x$. At $x=a$, slope is $2a$.<br>
+                    Derivative of second curve: $y' = -2x + 4$. At $x=b$, slope is $-2b+4$.<br>
+                    Since it's a common tangent, slopes are equal: $2a = -2b + 4 \implies a = 2 - b \implies b = 2 - a$.<br>
+                    Equation of tangent from first curve: $y - a^2 = 2a(x - a) \implies y = 2ax - a^2$.<br>
+                    Equation of tangent from second curve: $y - (-b^2+4b-4) = (-2b+4)(x - b)$. Substituting $b=2-a$ and $-2b+4 = 2a$:<br>
+                    $y - (-(2-a)^2 + 4(2-a) - 4) = 2a(x - (2-a))$<br>
+                    $y - (-4 + 4a - a^2 + 8 - 4a - 4) = 2ax - 4a + 2a^2$<br>
+                    $y - (a^2) = 2ax - 4a + 2a^2 \implies y = 2ax + a^2 - 4a$.<br>
+                    Comparing intercepts of both equations: $-a^2 = a^2 - 4a \implies 2a^2 - 4a = 0 \implies 2a(a - 2) = 0$.<br>
+                    So, $a = 0$ or $a = 2$.<br>
+                    If $a = 0$, tangent is $y = 0$. If $a = 2$, tangent is $y = 4x - 4$.
+                </div>
+            </div>
+            
+            <div class="solution-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">
+                    Calculate the shortest distance between the parabola $y = x^2 + 3x + 2$ and the straight line $x - y - 2 = 0$.
+                    <span class="ans-label">Solution:</span>
+                    The shortest distance occurs along the common normal. Therefore, the tangent to the parabola at the closest point must be parallel to the given line.<br>
+                    Slope of given line $x - y - 2 = 0 \implies y = x - 2$ is $m = 1$.<br>
+                    Derivative of parabola: $\frac{dy}{dx} = 2x + 3$.<br>
+                    Set slope equal to 1: $2x + 3 = 1 \implies 2x = -2 \implies x = -1$.<br>
+                    When $x = -1$, $y = (-1)^2 + 3(-1) + 2 = 1 - 3 + 2 = 0$. The closest point is $P(-1, 0)$.<br>
+                    Perpendicular distance from $P(-1, 0)$ to the line $x - y - 2 = 0$ is $d = \frac{|ax_1 + by_1 + c|}{\sqrt{a^2 + b^2}}$.<br>
+                    $d = \frac{|-1 - 0 - 2|}{\sqrt{1^2 + (-1)^2}} = \frac{|-3|}{\sqrt{2}} = \frac{3}{\sqrt{2}} = \frac{3\sqrt{2}}{2}$ units.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">
+                    Find the value(s) of the parameter $a$ for which the function $f(x) = \sin x - ax + b$ is strictly decreasing on the entire real number line $\mathbb{R}$.
+                    <span class="ans-label">Solution:</span>
+                    For $f(x)$ to be strictly decreasing on $\mathbb{R}$, $f'(x) \le 0$ for all $x \in \mathbb{R}$ (and $f'(x)=0$ only at discrete points).<br>
+                    $f'(x) = \cos x - a$.<br>
+                    We require $\cos x - a \le 0 \implies a \ge \cos x$ for all $x \in \mathbb{R}$.<br>
+                    Since the maximum value of $\cos x$ is $1$, for $a$ to be greater than or equal to $\cos x$ everywhere, we must have $a \ge 1$.<br>
+                    Therefore, the values of $a$ are $[1, \infty)$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">
+                    Using the concepts of monotonicity, prove the double inequality: $\frac{x}{1+x} < \ln(1+x) < x$ for all $x > 0$.
+                    <span class="ans-label">Solution:</span>
+                    **Part 1:** Prove $\ln(1+x) < x$. Let $g(x) = x - \ln(1+x)$.<br>
+                    $g'(x) = 1 - \frac{1}{1+x} = \frac{x}{1+x}$.<br>
+                    For $x > 0$, $g'(x) > 0$, so $g(x)$ is strictly increasing.<br>
+                    Since $g(0) = 0 - \ln(1) = 0$, for $x > 0$, $g(x) > g(0) \implies x - \ln(1+x) > 0 \implies \ln(1+x) < x$.<br><br>
+                    **Part 2:** Prove $\frac{x}{1+x} < \ln(1+x)$. Let $h(x) = \ln(1+x) - \frac{x}{1+x}$.<br>
+                    $h'(x) = \frac{1}{1+x} - \frac{1(1+x) - x(1)}{(1+x)^2} = \frac{1}{1+x} - \frac{1}{(1+x)^2} = \frac{1+x-1}{(1+x)^2} = \frac{x}{(1+x)^2}$.<br>
+                    For $x > 0$, $h'(x) > 0$, so $h(x)$ is strictly increasing.<br>
+                    Since $h(0) = \ln(1) - 0 = 0$, for $x > 0$, $h(x) > h(0) \implies \ln(1+x) - \frac{x}{1+x} > 0 \implies \frac{x}{1+x} < \ln(1+x)$.<br>
+                    Combining both parts proves the double inequality.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">
+                    A window is designed in the shape of a rectangle surmounted by an equilateral triangle. If the perimeter of the entire window is fixed at $12\text{ m}$, find the dimensions of the rectangular portion that will maximize the total area of the window.
+                    <span class="ans-label">Solution:</span>
+                    Let the base of the rectangle be $x$ and the height be $y$. The sides of the equilateral triangle are also $x$.<br>
+                    Perimeter of the window (excluding the internal base of the triangle) is $x + 2y + x + x = 3x + 2y = 12 \implies y = \frac{12 - 3x}{2} = 6 - 1.5x$.<br>
+                    Total Area $A = xy + \frac{\sqrt{3}}{4}x^2 = x(6 - 1.5x) + \frac{\sqrt{3}}{4}x^2 = 6x - 1.5x^2 + \frac{\sqrt{3}}{4}x^2$.<br>
+                    $A' = 6 - 3x + \frac{\sqrt{3}}{2}x = 0 \implies 6 = x\left(3 - \frac{\sqrt{3}}{2}\right) \implies 6 = x\left(\frac{6 - \sqrt{3}}{2}\right)$.<br>
+                    $x = \frac{12}{6 - \sqrt{3}}$.<br>
+                    $y = 6 - 1.5\left(\frac{12}{6 - \sqrt{3}}\right) = 6 - \frac{18}{6 - \sqrt{3}} = \frac{36 - 6\sqrt{3} - 18}{6 - \sqrt{3}} = \frac{18 - 6\sqrt{3}}{6 - \sqrt{3}}$.<br>
+                    $A'' = -3 + \frac{\sqrt{3}}{2} < 0$, verifying this is a maximum.<br>
+                    Dimensions: Base $x = \frac{12}{6 - \sqrt{3}}\text{ m}$, Height $y = \frac{18 - 6\sqrt{3}}{6 - \sqrt{3}}\text{ m}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">
+                    An inverted conical tank has a base radius of $2\text{ m}$ and a height of $4\text{ m}$. Water is flowing into the tank at the constant rate of $2\text{ m}^3/\text{min}$. At what exact rate is the water level rising at the instant when the depth of the water is $3\text{ m}$?
+                    <span class="ans-label">Solution:</span>
+                    By similar triangles, $\frac{r}{h} = \frac{2}{4} = \frac{1}{2} \implies r = \frac{h}{2}$.<br>
+                    Volume of water $V = \frac{1}{3}\pi r^2 h = \frac{1}{3}\pi \left(\frac{h}{2}\right)^2 h = \frac{\pi}{12}h^3$.<br>
+                    Differentiating w.r.t $t$: $\frac{dV}{dt} = \frac{\pi}{4}h^2 \frac{dh}{dt}$.<br>
+                    Given $\frac{dV}{dt} = 2\text{ m}^3/\text{min}$, and we want $\frac{dh}{dt}$ when $h = 3\text{ m}$.<br>
+                    $2 = \frac{\pi}{4}(3)^2 \frac{dh}{dt} \implies 2 = \frac{9\pi}{4}\frac{dh}{dt} \implies \frac{dh}{dt} = \frac{8}{9\pi}\text{ m/min}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">
+                    Determine the absolute maximum and absolute minimum values of the trigonometric function $f(x) = \sin x + \frac{1}{2}\cos 2x$ over the closed interval $[0, \frac{\pi}{2}]$.
+                    <span class="ans-label">Solution:</span>
+                    $f'(x) = \cos x - \frac{1}{2}(2\sin 2x) = \cos x - \sin 2x = \cos x - 2\sin x \cos x = \cos x(1 - 2\sin x)$.<br>
+                    Set $f'(x) = 0$. Solutions in $[0, \pi/2]$: $\cos x = 0 \implies x = \pi/2$, and $1 - 2\sin x = 0 \implies \sin x = 1/2 \implies x = \pi/6$.<br>
+                    Evaluate at endpoints and critical points:<br>
+                    $f(0) = \sin(0) + \frac{1}{2}\cos(0) = 0 + 1/2 = 1/2$.<br>
+                    $f(\pi/6) = \sin(\pi/6) + \frac{1}{2}\cos(\pi/3) = 1/2 + \frac{1}{2}(1/2) = 1/2 + 1/4 = 3/4$.<br>
+                    $f(\pi/2) = \sin(\pi/2) + \frac{1}{2}\cos(\pi) = 1 + \frac{1}{2}(-1) = 1 - 1/2 = 1/2$.<br>
+                    Absolute Max $= 3/4$ (at $x = \pi/6$). Absolute Min $= 1/2$ (at $x=0$ and $x=\pi/2$).
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">
+                    Prove analytically that the family of ellipses $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ and the family of hyperbolas $\frac{x^2}{a^2 + \lambda} + \frac{y^2}{b^2 + \lambda} = 1$ intersect orthogonally at all points of intersection.
+                    <span class="ans-label">Solution:</span>
+                    Curve 1 slope ($m_1$): Differentiating gives $\frac{2x}{a^2} + \frac{2y}{b^2}y' = 0 \implies y' = -\frac{b^2 x}{a^2 y}$.<br>
+                    Curve 2 slope ($m_2$): Differentiating gives $\frac{2x}{a^2+\lambda} + \frac{2y}{b^2+\lambda}y' = 0 \implies y' = -\frac{(b^2+\lambda)x}{(a^2+\lambda)y}$.<br>
+                    Product $m_1 m_2 = \frac{b^2(b^2+\lambda)x^2}{a^2(a^2+\lambda)y^2}$.<br>
+                    Subtracting the equations of the curves at intersection $(x, y)$:<br>
+                    $x^2\left(\frac{1}{a^2} - \frac{1}{a^2+\lambda}\right) + y^2\left(\frac{1}{b^2} - \frac{1}{b^2+\lambda}\right) = 0$<br>
+                    $x^2\left(\frac{\lambda}{a^2(a^2+\lambda)}\right) + y^2\left(\frac{\lambda}{b^2(b^2+\lambda)}\right) = 0 \implies \frac{x^2}{a^2(a^2+\lambda)} = -\frac{y^2}{b^2(b^2+\lambda)} \implies \frac{x^2}{y^2} = -\frac{a^2(a^2+\lambda)}{b^2(b^2+\lambda)}$.<br>
+                    Substitute $\frac{x^2}{y^2}$ into $m_1 m_2$ product:<br>
+                    $m_1 m_2 = \frac{b^2(b^2+\lambda)}{a^2(a^2+\lambda)} \times \left(-\frac{a^2(a^2+\lambda)}{b^2(b^2+\lambda)}\right) = -1$.<br>
+                    Since $m_1 m_2 = -1$, they intersect orthogonally.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">
+                    For the polynomial function $f(x) = x^4 - 4x^3 + 4x^2$, find all points of local maxima, local minima, and the exact coordinates of any points of inflection.
+                    <span class="ans-label">Solution:</span>
+                    $f'(x) = 4x^3 - 12x^2 + 8x = 4x(x^2 - 3x + 2) = 4x(x-1)(x-2)$.<br>
+                    Critical points are $x = 0, 1, 2$.<br>
+                    $f''(x) = 12x^2 - 24x + 8 = 4(3x^2 - 6x + 2)$.<br>
+                    At $x=0$, $f''(0) = 8 > 0 \implies$ Local Min at $(0, 0)$.<br>
+                    At $x=1$, $f''(1) = -4 < 0 \implies$ Local Max at $(1, 1)$.<br>
+                    At $x=2$, $f''(2) = 8 > 0 \implies$ Local Min at $(2, 0)$.<br>
+                    Points of inflection occur where $f''(x) = 0$ (and changes sign): $3x^2 - 6x + 2 = 0 \implies x = \frac{6 \pm \sqrt{36 - 24}}{6} = \frac{6 \pm 2\sqrt{3}}{6} = 1 \pm \frac{1}{\sqrt{3}}$.<br>
+                    Both are legitimate points of inflection.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">
+                    A manufacturer can sell $x$ items at a price of rupees $(5 - \frac{x}{100})$ each. The total cost price of producing $x$ items is rupees $(\frac{x}{5} + 500)$. Find the number of items he should produce and sell to maximize his overall profit.
+                    <span class="ans-label">Solution:</span>
+                    Revenue $R(x) = x(5 - x/100) = 5x - x^2/100$.<br>
+                    Cost $C(x) = x/5 + 500 = 0.2x + 500$.<br>
+                    Profit $P(x) = R(x) - C(x) = 5x - x^2/100 - (0.2x + 500) = 4.8x - x^2/100 - 500$.<br>
+                    $P'(x) = 4.8 - \frac{2x}{100} = 4.8 - \frac{x}{50} = 0 \implies \frac{x}{50} = 4.8 \implies x = 240$.<br>
+                    $P''(x) = -1/50 < 0$, which confirms it is a maximum.<br>
+                    The manufacturer should produce and sell 240 items.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">
+                    Determine the precise intervals of strict monotonicity (intervals of increase and decrease) for the transcendental function $f(x) = x^x$ defined for $x > 0$.
+                    <span class="ans-label">Solution:</span>
+                    Let $y = x^x$. Taking natural logarithm: $\ln y = x\ln x$.<br>
+                    Differentiating w.r.t $x$: $\frac{1}{y} \frac{dy}{dx} = 1 \cdot \ln x + x \cdot \frac{1}{x} = \ln x + 1 \implies f'(x) = x^x(\ln x + 1)$.<br>
+                    Since $x^x > 0$ for all $x > 0$, the sign of $f'(x)$ depends solely on $(\ln x + 1)$.<br>
+                    $f'(x) = 0 \implies \ln x + 1 = 0 \implies \ln x = -1 \implies x = e^{-1} = 1/e$.<br>
+                    For $0 < x < 1/e$, $\ln x < -1 \implies f'(x) < 0$. Function is strictly decreasing.<br>
+                    For $x > 1/e$, $\ln x > -1 \implies f'(x) > 0$. Function is strictly increasing.<br>
+                    Interval of strict decrease: $(0, 1/e)$. Interval of strict increase: $(1/e, \infty)$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">
+                    A camera is mounted on the ground $2000\text{ m}$ away from the base of a rocket launch pad. The rocket is rising vertically at a constant velocity of $50\text{ m/s}$. Find the rate of change of the angle of elevation of the camera at the exact moment when the rocket is $1500\text{ m}$ above the ground.
+                    <span class="ans-label">Solution:</span>
+                    Let $y$ be the height of the rocket and $\theta$ be the angle of elevation. We have $\tan\theta = \frac{y}{2000}$.<br>
+                    Differentiating w.r.t $t$: $\sec^2\theta \frac{d\theta}{dt} = \frac{1}{2000}\frac{dy}{dt}$.<br>
+                    Given $\frac{dy}{dt} = 50$, and at the instant $y = 1500$, $\tan\theta = \frac{1500}{2000} = \frac{3}{4}$.<br>
+                    Using identity $\sec^2\theta = 1 + \tan^2\theta = 1 + \frac{9}{16} = \frac{25}{16}$.<br>
+                    Substituting values: $\left(\frac{25}{16}\right) \frac{d\theta}{dt} = \frac{1}{2000}(50) = \frac{1}{40}$.<br>
+                    $\frac{d\theta}{dt} = \frac{1}{40} \times \frac{16}{25} = \frac{16}{1000} = 0.016\text{ rad/s}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">
+                    Find the equations of the two distinct tangent lines to the quadratic curve $y = x^2 - 2x + 3$ that can be drawn from the external origin point $(0, 0)$.
+                    <span class="ans-label">Solution:</span>
+                    Let $(x_1, y_1)$ be the point of tangency on the curve. Then $y_1 = x_1^2 - 2x_1 + 3$.<br>
+                    Slope of tangent $m = \frac{dy}{dx} = 2x_1 - 2$.<br>
+                    Equation of tangent line: $y - y_1 = (2x_1 - 2)(x - x_1)$.<br>
+                    Since this tangent passes through $(0,0)$, plug in $x=0, y=0$: $-y_1 = (2x_1 - 2)(-x_1) \implies y_1 = 2x_1^2 - 2x_1$.<br>
+                    Equating $y_1$: $x_1^2 - 2x_1 + 3 = 2x_1^2 - 2x_1 \implies x_1^2 = 3 \implies x_1 = \pm\sqrt{3}$.<br>
+                    If $x_1 = \sqrt{3}$, $m = 2\sqrt{3} - 2$. Tangent equation is $y = (2\sqrt{3} - 2)x$.<br>
+                    If $x_1 = -\sqrt{3}$, $m = -2\sqrt{3} - 2$. Tangent equation is $y = -(2\sqrt{3} + 2)x$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">
+                    Find the points on the curve $y = x^3$ where the slope of the tangent is equal to the $x$-coordinate of the point. Subsequently, find the equation of the normal at the non-zero point.
+                    <span class="ans-label">Solution:</span>
+                    Let point be $(x, y)$. Slope $\frac{dy}{dx} = 3x^2$.<br>
+                    Given slope equals x-coordinate: $3x^2 = x \implies 3x^2 - x = 0 \implies x(3x - 1) = 0 \implies x = 0, x = 1/3$.<br>
+                    Points are $(0, 0)$ and $(1/3, 1/27)$.<br>
+                    At the non-zero point $(1/3, 1/27)$, the tangent slope $m_t = 1/3$. Thus, normal slope $m_n = -3$.<br>
+                    Equation of normal: $y - 1/27 = -3(x - 1/3) \implies y - 1/27 = -3x + 1 \implies 3x + y - 28/27 = 0 \implies 81x + 27y - 28 = 0$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">
+                    Show that the maximum volume of a cylinder which can be inscribed in a sphere of radius $R$ is $\frac{1}{\sqrt{3}}$ times the volume of the sphere itself.
+                    <span class="ans-label">Solution:</span>
+                    Let height of cylinder be $2x$. By Pythagoras, base radius $r = \sqrt{R^2 - x^2}$.<br>
+                    Volume of cylinder $V_c = \pi r^2(2x) = 2\pi x(R^2 - x^2) = 2\pi R^2 x - 2\pi x^3$.<br>
+                    $V_c' = 2\pi R^2 - 6\pi x^2 = 0 \implies x^2 = R^2/3 \implies x = R/\sqrt{3}$.<br>
+                    Max volume $V_c = 2\pi \left(\frac{R}{\sqrt{3}}\right) \left(R^2 - \frac{R^2}{3}\right) = \frac{2\pi R}{\sqrt{3}} \left(\frac{2R^2}{3}\right) = \frac{4\pi R^3}{3\sqrt{3}}$.<br>
+                    Volume of sphere $V_s = \frac{4}{3}\pi R^3$.<br>
+                    Ratio $\frac{V_c}{V_s} = \frac{\frac{4\pi R^3}{3\sqrt{3}}}{\frac{4}{3}\pi R^3} = \frac{1}{\sqrt{3}}$. Proved.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

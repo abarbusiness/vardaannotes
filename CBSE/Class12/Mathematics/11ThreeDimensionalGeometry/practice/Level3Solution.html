@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Solution Key</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 3: Red) */
+            --primary-color: #b71c1c; 
+            --bg-color: #ffebee;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ef5350;   
+            --bg-color: #3b1a1a;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; text-align: center;
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 20px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 12px; 
+            display: block; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); float: left; }
+        .q-content { margin-left: 35px; }
+        .ans-label { font-weight: bold; color: var(--primary-color); display: block; margin-top: 10px; margin-bottom: 5px;}
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); opacity: 0.05; 
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 11: Three Dimensional Geometry - Challenger Drill (Level 3) <br><span style="font-size: 14pt; color: var(--primary-color);">SOLUTION KEY</span></div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Mastery Solutions</div>
+
+        <div class="questions-container">
+            <div class="solution-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">
+                    A variable plane is at a constant perpendicular distance $p$ from the origin and meets the coordinate axes at points $A, B,$ and $C$. Prove analytically that the locus of the centroid of the tetrahedron $OABC$ is given by the equation $x^{-2} + y^{-2} + z^{-2} = 16p^{-2}$.
+                    <span class="ans-label">Solution:</span>
+                    Let the plane be $\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$. Its distance from the origin $(0,0,0)$ is $p$, so $\frac{|0+0+0-1|}{\sqrt{(1/a)^2 + (1/b)^2 + (1/c)^2}} = p \implies \frac{1}{a^2} + \frac{1}{b^2} + \frac{1}{c^2} = \frac{1}{p^2}$.<br>
+                    The intercepts yield the vertices: $A(a,0,0), B(0,b,0), C(0,0,c)$, and $O(0,0,0)$.<br>
+                    Let the centroid of the tetrahedron be $(x_1, y_1, z_1)$.<br>
+                    $x_1 = \frac{a+0+0+0}{4} \implies a = 4x_1$.<br>
+                    $y_1 = \frac{0+b+0+0}{4} \implies b = 4y_1$.<br>
+                    $z_1 = \frac{0+0+c+0}{4} \implies c = 4z_1$.<br>
+                    Substitute $a, b, c$ into the distance relation: $\frac{1}{(4x_1)^2} + \frac{1}{(4y_1)^2} + \frac{1}{(4z_1)^2} = \frac{1}{p^2}$.<br>
+                    $\frac{1}{16x_1^2} + \frac{1}{16y_1^2} + \frac{1}{16z_1^2} = \frac{1}{p^2} \implies \frac{1}{x_1^2} + \frac{1}{y_1^2} + \frac{1}{z_1^2} = \frac{16}{p^2}$.<br>
+                    Thus, the locus is $x^{-2} + y^{-2} + z^{-2} = 16p^{-2}$.
+                </div>
+            </div>
+            
+            <div class="solution-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">
+                    Find the magnitude and the equations of the line of shortest distance between the lines $L_1: \frac{x-8}{3} = \frac{y+9}{-16} = \frac{z-10}{7}$ and $L_2: \frac{x-15}{3} = \frac{y-29}{8} = \frac{z-5}{-5}$.
+                    <span class="ans-label">Solution:</span>
+                    $\vec{b_1} \times \vec{b_2} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 3 & -16 & 7 \\ 3 & 8 & -5 \end{vmatrix} = \hat{i}(80 - 56) - \hat{j}(-15 - 21) + \hat{k}(24 - (-48)) = 24\hat{i} + 36\hat{j} + 72\hat{k}$.<br>
+                    Dividing by 12, proportional direction ratios for the shortest distance line are $(2, 3, 6)$. Magnitude $|\vec{b}| = \sqrt{4+9+36} = 7$.<br>
+                    $\vec{a_2} - \vec{a_1} = (15-8, 29-(-9), 5-10) = (7, 38, -5)$.<br>
+                    Shortest Distance $d = \frac{|(7)(2) + (38)(3) + (-5)(6)|}{7} = \frac{|14 + 114 - 30|}{7} = \frac{98}{7} = 14$ units.<br>
+                    Equation of the line of SD is given by the intersection of two planes: Plane containing $L_1$ and SD vector, and Plane containing $L_2$ and SD vector.<br>
+                    Plane 1: $\begin{vmatrix} x-8 & y+9 & z-10 \\ 3 & -16 & 7 \\ 2 & 3 & 6 \end{vmatrix} = 0 \implies -117(x-8) - 4(y+9) + 41(z-10) = 0 \implies 117x + 4y - 41z - 490 = 0$.<br>
+                    Plane 2: $\begin{vmatrix} x-15 & y-29 & z-5 \\ 3 & 8 & -5 \\ 2 & 3 & 6 \end{vmatrix} = 0 \implies 63(x-15) - 28(y-29) - 7(z-5) = 0 \implies 9x - 4y - z - 14 = 0$.<br>
+                    The equations of the line of SD are $117x + 4y - 41z - 490 = 0 = 9x - 4y - z - 14$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">
+                    A variable plane passes through a fixed point $(a, b, c)$ and meets the coordinate axes at the points $A, B,$ and $C$. Show that the locus of the point common to the three planes drawn through $A, B,$ and $C$ parallel to the coordinate planes is $\frac{a}{x} + \frac{b}{y} + \frac{c}{z} = 1$.
+                    <span class="ans-label">Solution:</span>
+                    Let the plane be $\frac{x}{p} + \frac{y}{q} + \frac{z}{r} = 1$. Since it passes through $(a,b,c)$, we have $\frac{a}{p} + \frac{b}{q} + \frac{c}{r} = 1$.<br>
+                    The intercepts are $A(p, 0, 0), B(0, q, 0), C(0, 0, r)$.<br>
+                    The plane through $A$ parallel to the $yz$-plane is $x = p$.<br>
+                    The plane through $B$ parallel to the $zx$-plane is $y = q$.<br>
+                    The plane through $C$ parallel to the $xy$-plane is $z = r$.<br>
+                    Let $(x_1, y_1, z_1)$ be the point common to these three planes. Then $x_1 = p, y_1 = q, z_1 = r$.<br>
+                    Substitute $p, q, r$ into the initial constraint: $\frac{a}{x_1} + \frac{b}{y_1} + \frac{c}{z_1} = 1$.<br>
+                    Hence, the locus is $\frac{a}{x} + \frac{b}{y} + \frac{c}{z} = 1$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">
+                    Find the exact equation of the line which represents the reflection of the line $\frac{x-1}{9} = \frac{y-2}{-1} = \frac{z+3}{-3}$ in the plane $3x - 3y + 10z = 26$.
+                    <span class="ans-label">Solution:</span>
+                    Let's check if the line is parallel to the plane: dot product of direction vector $(9, -1, -3)$ and normal $(3, -3, 10)$ is $9(3) + (-1)(-3) + (-3)(10) = 27 + 3 - 30 = 0$. Yes, they are parallel.<br>
+                    Since the line is parallel, its reflection will also be parallel to it. So, the new direction ratios remain $9, -1, -3$.<br>
+                    Take a point on the line: $P(1, 2, -3)$. We find its image in the plane.<br>
+                    Equation of normal from $P$: $\frac{x-1}{3} = \frac{y-2}{-3} = \frac{z+3}{10} = k$. Foot $F(3k+1, -3k+2, 10k-3)$.<br>
+                    $F$ lies on the plane: $3(3k+1) - 3(-3k+2) + 10(10k-3) = 26 \implies 9k+3 + 9k-6 + 100k-30 = 26 \implies 118k - 33 = 26 \implies 118k = 59 \implies k = 1/2$.<br>
+                    For the image $I$, use $k' = 2k = 1$. Image point is $I(3(1)+1, -3(1)+2, 10(1)-3) = (4, -1, 7)$.<br>
+                    The reflected line passes through $(4, -1, 7)$ and is parallel to the original line.<br>
+                    Equation: $\frac{x-4}{9} = \frac{y+1}{-1} = \frac{z-7}{-3}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">
+                    Find the distance of the point $P(3, 8, 2)$ from the line $\frac{x-1}{2} = \frac{y-3}{4} = \frac{z-2}{3}$ measured parallel to the plane $3x + 2y - 2z + 15 = 0$.
+                    <span class="ans-label">Solution:</span>
+                    Let the line drawn from $P(3, 8, 2)$ parallel to the plane intersect the given line at $Q$.<br>
+                    The general coordinates of $Q$ on the given line are $(2\lambda+1, 4\lambda+3, 3\lambda+2)$.<br>
+                    The vector $\vec{PQ} = (2\lambda+1-3, 4\lambda+3-8, 3\lambda+2-2) = (2\lambda-2, 4\lambda-5, 3\lambda)$.<br>
+                    Since $PQ$ is parallel to the plane, $\vec{PQ}$ is perpendicular to the normal of the plane $(3, 2, -2)$.<br>
+                    $3(2\lambda-2) + 2(4\lambda-5) - 2(3\lambda) = 0 \implies 6\lambda - 6 + 8\lambda - 10 - 6\lambda = 0 \implies 8\lambda - 16 = 0 \implies \lambda = 2$.<br>
+                    Coordinates of $Q$ are $(2(2)+1, 4(2)+3, 3(2)+2) = (5, 11, 8)$.<br>
+                    Distance $PQ = \sqrt{(5-3)^2 + (11-8)^2 + (8-2)^2} = \sqrt{2^2 + 3^2 + 6^2} = \sqrt{4 + 9 + 36} = \sqrt{49} = 7$ units.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">
+                    Using the properties of scalar triple products, prove that the lines given by $\frac{x-a+d}{\alpha-\delta} = \frac{y-a}{\alpha} = \frac{z-a-d}{\alpha+\delta}$ and $\frac{x-b+c}{\beta-\gamma} = \frac{y-b}{\beta} = \frac{z-b-c}{\beta+\gamma}$ are strictly coplanar.
+                    <span class="ans-label">Solution:</span>
+                    Points on lines: $P_1(a-d, a, a+d)$ and $P_2(b-c, b, b+c)$.<br>
+                    Vector $\vec{P_1 P_2} = (b-c-a+d, b-a, b+c-a-d)$.<br>
+                    Direction vectors: $\vec{b_1} = (\alpha-\delta, \alpha, \alpha+\delta)$ and $\vec{b_2} = (\beta-\gamma, \beta, \beta+\gamma)$.<br>
+                    Coplanarity condition requires the determinant of these three vectors to be zero.<br>
+                    $D = \begin{vmatrix} b-a-c+d & b-a & b-a+c-d \\ \alpha-\delta & \alpha & \alpha+\delta \\ \beta-\gamma & \beta & \beta+\gamma \end{vmatrix}$.<br>
+                    Apply column operation: $C_1 \to C_1 + C_3$.<br>
+                    Column 1 becomes: $(b-a-c+d) + (b-a+c-d) = 2(b-a)$.<br>
+                    Row 2, Column 1 becomes: $(\alpha-\delta) + (\alpha+\delta) = 2\alpha$.<br>
+                    Row 3, Column 1 becomes: $(\beta-\gamma) + (\beta+\gamma) = 2\beta$.<br>
+                    Now $C_1$ is $2(b-a), 2\alpha, 2\beta$, which is exactly $2 \times C_2$.<br>
+                    Since Column 1 and Column 2 are proportional ($C_1 = 2C_2$), the determinant $D = 0$. Thus, the lines are coplanar.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">
+                    Find the equations of the lines which bisect the angles between the two lines given by $\frac{x-1}{2} = \frac{y+1}{-2} = \frac{z}{1}$ and $\frac{x-1}{1} = \frac{y+1}{2} = \frac{z}{-2}$.
+                    <span class="ans-label">Solution:</span>
+                    The lines intersect at $P(1, -1, 0)$. Direction vectors are $\vec{b_1} = 2\hat{i} - 2\hat{j} + \hat{k}$ and $\vec{b_2} = \hat{i} + 2\hat{j} - 2\hat{k}$.<br>
+                    Their magnitudes are both $\sqrt{4+4+1} = 3$.<br>
+                    Unit vectors are $\hat{u} = \frac{1}{3}(2, -2, 1)$ and $\hat{v} = \frac{1}{3}(1, 2, -2)$.<br>
+                    The direction vectors of the angle bisectors are parallel to $\hat{u} + \hat{v}$ and $\hat{u} - \hat{v}$.<br>
+                    $\vec{d_1} \parallel \hat{u} + \hat{v} = \frac{1}{3}(3, 0, -1) \sim (3, 0, -1)$.<br>
+                    $\vec{d_2} \parallel \hat{u} - \hat{v} = \frac{1}{3}(1, -4, 3) \sim (1, -4, 3)$.<br>
+                    The bisecting lines pass through $P(1, -1, 0)$.<br>
+                    Equations: $B_1: \frac{x-1}{3} = \frac{y+1}{0} = \frac{z}{-1}$ and $B_2: \frac{x-1}{1} = \frac{y+1}{-4} = \frac{z}{3}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">
+                    A line $L$ passes through the origin and makes angles $\alpha, \beta, \gamma$ with the coordinate planes $x=0, y=0, z=0$ respectively. Prove that $\cos^2\alpha + \cos^2\beta + \cos^2\gamma = 2$.
+                    <span class="ans-label">Solution:</span>
+                    Let the direction cosines of line $L$ be $l, m, n$. Thus $l^2 + m^2 + n^2 = 1$.<br>
+                    The normal to the $yz$-plane ($x=0$) is the $x$-axis (with direction cosines $1, 0, 0$).<br>
+                    The angle $\theta_1$ between the line and the normal to the $yz$-plane is given by $\cos\theta_1 = l(1) + m(0) + n(0) = l$.<br>
+                    The angle $\alpha$ the line makes with the plane is complementary to $\theta_1$, so $\alpha = 90^\circ - \theta_1 \implies \sin\alpha = \cos\theta_1 = l$.<br>
+                    Similarly, the angle $\beta$ with the $zx$-plane ($y=0$) gives $\sin\beta = m$.<br>
+                    And the angle $\gamma$ with the $xy$-plane ($z=0$) gives $\sin\gamma = n$.<br>
+                    Squaring and adding: $\sin^2\alpha + \sin^2\beta + \sin^2\gamma = l^2 + m^2 + n^2 = 1$.<br>
+                    We know $\sin^2 x = 1 - \cos^2 x$. Substituting this:<br>
+                    $(1 - \cos^2\alpha) + (1 - \cos^2\beta) + (1 - \cos^2\gamma) = 1 \implies 3 - (\cos^2\alpha + \cos^2\beta + \cos^2\gamma) = 1$.<br>
+                    Therefore, $\cos^2\alpha + \cos^2\beta + \cos^2\gamma = 2$. Proved.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">
+                    Find the geometric condition under which the three planes $x=cy+bz$, $y=az+cx$, and $z=bx+ay$ intersect exactly in a single line.
+                    <span class="ans-label">Solution:</span>
+                    Rewrite the planes as a homogeneous system of linear equations:<br>
+                    $x - cy - bz = 0$<br>
+                    $cx - y + az = 0$<br>
+                    $bx + ay - z = 0$<br>
+                    For the planes to intersect in a line (infinitely many solutions), the determinant of the coefficient matrix must be zero.<br>
+                    $\begin{vmatrix} 1 & -c & -b \\ c & -1 & a \\ b & a & -1 \end{vmatrix} = 0$<br>
+                    Expanding the determinant: $1(1 - a^2) - (-c)(-c - ab) + (-b)(ac + b) = 0$<br>
+                    $1 - a^2 - (c^2 + abc) - (abc + b^2) = 0$<br>
+                    $1 - a^2 - c^2 - abc - abc - b^2 = 0 \implies 1 - a^2 - b^2 - c^2 - 2abc = 0$.<br>
+                    The required condition is $a^2 + b^2 + c^2 + 2abc = 1$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">
+                    A plane passes through a fixed point $(p, q, r)$ and cuts the coordinate axes in points $A, B,$ and $C$. Find the locus of the center of the sphere passing through the origin $O$ and the points $A, B, C$.
+                    <span class="ans-label">Solution:</span>
+                    Let the intercepts of the variable plane be $a, b, c$. Equation of the plane is $\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$.<br>
+                    It passes through $(p,q,r)$, so $\frac{p}{a} + \frac{q}{b} + \frac{r}{c} = 1$.<br>
+                    The vertices of the tetrahedron $OABC$ are $(0,0,0), (a,0,0), (0,b,0), (0,0,c)$.<br>
+                    The center $(x_1, y_1, z_1)$ of the sphere passing through these points is the midpoint of the principal diagonal of the bounding box, i.e., $x_1 = a/2, y_1 = b/2, z_1 = c/2$.<br>
+                    Thus, $a = 2x_1, b = 2y_1, c = 2z_1$.<br>
+                    Substitute these into the initial constraint: $\frac{p}{2x_1} + \frac{q}{2y_1} + \frac{r}{2z_1} = 1$.<br>
+                    Multiply by 2: $\frac{p}{x_1} + \frac{q}{y_1} + \frac{r}{z_1} = 2$.<br>
+                    The locus is $\frac{p}{x} + \frac{q}{y} + \frac{r}{z} = 2$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">
+                    Find the equation of the line passing through the origin which intersects the two lines $L_1: \frac{x-3}{1} = \frac{y-5}{2} = \frac{z-7}{3}$ and $L_2: \frac{x+1}{2} = \frac{y+2}{1} = \frac{z+3}{4}$.
+                    <span class="ans-label">Solution:</span>
+                    The required line lies in the plane $P_1$ formed by the origin and $L_1$, and also in the plane $P_2$ formed by the origin and $L_2$.<br>
+                    Normal to $P_1$: $\vec{n_1} = \vec{OA} \times \vec{b_1} = (3, 5, 7) \times (1, 2, 3) = \hat{i}(15-14) - \hat{j}(9-7) + \hat{k}(6-5) = \hat{i} - 2\hat{j} + \hat{k}$. Equation of $P_1$: $x - 2y + z = 0$.<br>
+                    Normal to $P_2$: $\vec{n_2} = \vec{OB} \times \vec{b_2} = (-1, -2, -3) \times (2, 1, 4) = \hat{i}(-8 - (-3)) - \hat{j}(-4 - (-6)) + \hat{k}(-1 - (-4)) = -5\hat{i} - 2\hat{j} + 3\hat{k}$. Equation of $P_2$: $-5x - 2y + 3z = 0$.<br>
+                    The required line is the intersection of these two planes. Its direction vector is $\vec{n_1} \times \vec{n_2}$.<br>
+                    $\vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 1 & -2 & 1 \\ -5 & -2 & 3 \end{vmatrix} = \hat{i}(-6 - (-2)) - \hat{j}(3 - (-5)) + \hat{k}(-2 - 10) = -4\hat{i} - 8\hat{j} - 12\hat{k} \sim (1, 2, 3)$.<br>
+                    Since it passes through the origin, the equation is $\frac{x}{1} = \frac{y}{2} = \frac{z}{3}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">
+                    A tetrahedron has vertices at $O(0,0,0), A(1,2,1), B(2,1,3),$ and $C(-1,1,2)$. Find the exact acute angle between the two triangular faces $OAB$ and $ABC$.
+                    <span class="ans-label">Solution:</span>
+                    The angle between the faces is the angle between their normal vectors.<br>
+                    Normal to face OAB: $\vec{n_1} = \vec{OA} \times \vec{OB} = (1, 2, 1) \times (2, 1, 3) = \hat{i}(6-1) - \hat{j}(3-2) + \hat{k}(1-4) = 5\hat{i} - \hat{j} - 3\hat{k}$.<br>
+                    Normal to face ABC: Vectors are $\vec{AB} = (2-1, 1-2, 3-1) = (1, -1, 2)$ and $\vec{AC} = (-1-1, 1-2, 2-1) = (-2, -1, 1)$.<br>
+                    $\vec{n_2} = \vec{AB} \times \vec{AC} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 1 & -1 & 2 \\ -2 & -1 & 1 \end{vmatrix} = \hat{i}(-1 - (-2)) - \hat{j}(1 - (-4)) + \hat{k}(-1 - 2) = \hat{i} - 5\hat{j} - 3\hat{k}$.<br>
+                    Angle: $\cos\theta = \frac{|\vec{n_1} \cdot \vec{n_2}|}{|\vec{n_1}||\vec{n_2}|} = \frac{|5(1) + (-1)(-5) + (-3)(-3)|}{\sqrt{25+1+9}\sqrt{1+25+9}} = \frac{|5 + 5 + 9|}{\sqrt{35}\sqrt{35}} = \frac{19}{35}$.<br>
+                    $\theta = \cos^{-1}\left(\frac{19}{35}\right)$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">
+                    In a cube of edge length '$a$', find the shortest distance between the main diagonal of the cube and a face diagonal that does not intersect the main diagonal.
+                    <span class="ans-label">Solution:</span>
+                    Let the vertices of the cube be at $O(0,0,0)$ to $G(a,a,a)$.<br>
+                    Main diagonal $OG$ passes through $(0,0,0)$ and $(a,a,a)$. Vector eq: $\vec{r_1} = \lambda(a, a, a) \sim \lambda(1, 1, 1)$.<br>
+                    Face diagonal on the XY plane not intersecting $OG$ is $AC$, connecting $(a,0,0)$ and $(0,a,0)$. Vector eq: $\vec{r_2} = (a, 0, 0) + \mu(-a, a, 0) \sim (a, 0, 0) + \mu(-1, 1, 0)$.<br>
+                    $\vec{a_2} - \vec{a_1} = (a, 0, 0) - (0, 0, 0) = (a, 0, 0)$.<br>
+                    $\vec{b_1} \times \vec{b_2} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ 1 & 1 & 1 \\ -1 & 1 & 0 \end{vmatrix} = \hat{i}(0-1) - \hat{j}(0 - (-1)) + \hat{k}(1 - (-1)) = -\hat{i} - \hat{j} + 2\hat{k}$.<br>
+                    $|\vec{b_1} \times \vec{b_2}| = \sqrt{(-1)^2 + (-1)^2 + 2^2} = \sqrt{1+1+4} = \sqrt{6}$.<br>
+                    Numerator $= |(-\hat{i} - \hat{j} + 2\hat{k}) \cdot (a, 0, 0)| = |-a| = a$.<br>
+                    Shortest distance $= \frac{a}{\sqrt{6}}$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">
+                    Find the coordinates of the two possible points on the line $\frac{x+2}{3} = \frac{y+1}{2} = \frac{z-3}{2}$ that are situated at an exact distance of $3\sqrt{2}$ units from the point $(1, 2, 3)$.
+                    <span class="ans-label">Solution:</span>
+                    Let the point on the line be $F(3\lambda-2, 2\lambda-1, 2\lambda+3)$.<br>
+                    Distance from $P(1, 2, 3)$ squared is $(3\sqrt{2})^2 = 18$.<br>
+                    $(3\lambda-2-1)^2 + (2\lambda-1-2)^2 + (2\lambda+3-3)^2 = 18$<br>
+                    $(3\lambda-3)^2 + (2\lambda-3)^2 + (2\lambda)^2 = 18$<br>
+                    $9\lambda^2 - 18\lambda + 9 + 4\lambda^2 - 12\lambda + 9 + 4\lambda^2 = 18$<br>
+                    $17\lambda^2 - 30\lambda + 18 = 18 \implies 17\lambda^2 - 30\lambda = 0 \implies \lambda(17\lambda - 30) = 0$.<br>
+                    Thus, $\lambda = 0$ or $\lambda = 30/17$.<br>
+                    For $\lambda = 0$, the point is $(-2, -1, 3)$.<br>
+                    For $\lambda = 30/17$, the point is $(3(30/17)-2, 2(30/17)-1, 2(30/17)+3) = \left(\frac{56}{17}, \frac{43}{17}, \frac{111}{17}\right)$.
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">
+                    Find the equation of the plane which contains the line of intersection of the planes $x+2y+3z-4=0$ and $2x+y-z+5=0$, and which is perpendicular to the plane $5x+3y-6z+8=0$.
+                    <span class="ans-label">Solution:</span>
+                    Family of planes: $(x+2y+3z-4) + \lambda(2x+y-z+5) = 0$<br>
+                    $(1+2\lambda)x + (2+\lambda)y + (3-\lambda)z - 4 + 5\lambda = 0$.<br>
+                    This is perpendicular to $5x+3y-6z+8=0$, so the dot product of their normals is zero:<br>
+                    $5(1+2\lambda) + 3(2+\lambda) - 6(3-\lambda) = 0$<br>
+                    $5 + 10\lambda + 6 + 3\lambda - 18 + 6\lambda = 0 \implies 19\lambda - 7 = 0 \implies \lambda = 7/19$.<br>
+                    Substitute $\lambda=7/19$ back into the family equation:<br>
+                    $\left(1 + \frac{14}{19}\right)x + \left(2 + \frac{7}{19}\right)y + \left(3 - \frac{7}{19}\right)z - 4 + \frac{35}{19} = 0$<br>
+                    $\frac{33}{19}x + \frac{45}{19}y + \frac{50}{19}z - \frac{41}{19} = 0 \implies 33x + 45y + 50z = 41$.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

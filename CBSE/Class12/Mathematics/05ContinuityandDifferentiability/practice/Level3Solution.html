@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Solutions</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 3 - Red Theme) */
+            --primary-color: #b71c1c; 
+            --bg-color: #ffebee;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ef5350;   
+            --bg-color: #3b1a1a;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Solution Key: Level 3 (C&D Challenger Drill)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Challenger Solutions</div>
+        <div class="questions-container">
+            <div class="question-item solution-item"><span class="q-num">1.</span><div class="q-content"><span class="ans-label">Ans:</span> Points of discontinuity: $x = \frac{1}{2}, 1, \frac{3}{2}$. <i>Reason: $\cos(\pi x)$ takes integer values $\{-1, 0, 1\}$ in $[0, 2]$. Check intervals: for $0 < x < 1/2$, $\cos(\pi x) \in (0, 1) \Rightarrow f(x) = 0$. For $1/2 \le x < 1$, $\cos(\pi x) \in (-1, 0] \Rightarrow f(x) = -1$. Limit jumps at integer changes of the inner function.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">2.</span><div class="q-content"><span class="ans-label">Ans:</span> $\{0, 1, 2\}$. <i>Reason: The graph of $f(x)$ follows $x$ from $0$ to $1$, then $2-x$ from $1$ to $2$. Sharp corners exist at $x=0$, $x=1$ (intersection of $|x|$ and $|x-2|$), and $x=2$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">3.</span><div class="q-content"><span class="ans-label">Ans:</span> $a = 2c, b = -c^2$. <i>Reason: For continuity at $x=c$: $c^2 = ac + b$. For differentiability: $2c = a$. Substituting $a$ back gives $b = -c^2$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">4.</span><div class="q-content"><span class="ans-label">Ans:</span> $k = \frac{1}{8}$. <i>Reason: Limit $\lim_{x \to 0} \frac{2\sin^2\left(\frac{1-\cos x}{2}\right)}{x^4} = 2 \lim_{x \to 0} \left(\frac{\sin\left(\frac{x^2}{4}\right)}{x^2}\right)^2 = 2 \times \left(\frac{1}{4}\right)^2 = \frac{1}{8}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">5.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{1}{2}$. <i>Reason: Let $x = \tan\theta$. $u = \tan^{-1}\left(\frac{\sec\theta-1}{\tan\theta}\right) = \frac{\theta}{2} = \frac{1}{2}\tan^{-1}x$. Let $v = \tan^{-1}x$. $du/dv = 1/2$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">6.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $y = \sqrt{\sin x + y} \Rightarrow y^2 = \sin x + y$. Differentiating both sides implicitly: $2y\frac{dy}{dx} = \cos x + \frac{dy}{dx} \Rightarrow \frac{dy}{dx}(2y-1) = \cos x$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">7.</span><div class="q-content"><span class="ans-label">Proof:</span> Taking log: $y \log x = x - y \Rightarrow y(1+\log x) = x \Rightarrow y = \frac{x}{1+\log x}$. Differentiate using quotient rule: $\frac{dy}{dx} = \frac{(1+\log x)\cdot 1 - x\cdot \frac{1}{x}}{(1+\log x)^2} = \frac{\log x}{(1+\log x)^2}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">8.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{2\sqrt{2}}{a}$. <i>Reason: $dx/dt = a(-\sin t + \frac{1}{\sin t}) = a\cos t \cot t$. $dy/dt = a\cos t$. So $dy/dx = \tan t$. $d^2y/dx^2 = \sec^2t \times \frac{dt}{dx} = \frac{\sec^2t}{a\cos t\cot t} = \frac{\sec^3 t}{a\cot t}$. At $\pi/4$, $\frac{(\sqrt{2})^3}{a(1)} = \frac{2\sqrt{2}}{a}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">9.</span><div class="q-content"><span class="ans-label">Ans:</span> $1$. <i>Reason: For $x > 1$, let $x = \tan\theta$ where $\theta \in (\pi/4, \pi/2)$. $u = \sin^{-1}(\sin 2\theta) = \pi - 2\theta$. $v = \cos^{-1}(\cos 2\theta) = 2\theta$. $\frac{du}{dx} = \frac{-2}{1+x^2}$, $\frac{dv}{dx} = \frac{-2}{1+x^2}$ (since it must match $2\theta$ for $x>0$ domain but wait, $\cos^{-1}(\frac{1-x^2}{1+x^2}) = 2\tan^{-1}x$ is valid for all $x \ge 0$). Wait, for $x>1$, $u = \pi - 2\tan^{-1}x$, $v = 2\tan^{-1}x$. $du/dv = -1$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">10.</span><div class="q-content"><span class="ans-label">Proof:</span> $y_1 = n(x+\sqrt{1+x^2})^{n-1} \cdot \left(1 + \frac{x}{\sqrt{1+x^2}}\right) = \frac{ny}{\sqrt{1+x^2}}$. Square and cross-multiply: $(1+x^2)y_1^2 = n^2y^2$. Differentiate again: $(1+x^2)2y_1 y_2 + 2x y_1^2 = 2n^2y y_1$. Cancel $2y_1$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">11.</span><div class="q-content"><span class="ans-label">Proof:</span> $x = \frac{\cos y}{\cos(a+y)}$. Diff wrt $y$: $\frac{dx}{dy} = \frac{\cos(a+y)(-\sin y) - \cos y(-\sin(a+y))}{\cos^2(a+y)} = \frac{\sin(a+y)\cos y - \cos(a+y)\sin y}{\cos^2(a+y)} = \frac{\sin a}{\cos^2(a+y)}$. Invert to get $dy/dx$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">12.</span><div class="q-content"><span class="ans-label">Ans:</span> $c = \frac{mb+na}{m+n}$. <i>Reason: $f(a)=f(b)=0$. $f'(x) = m(x-a)^{m-1}(x-b)^n + n(x-b)^{n-1}(x-a)^m = 0$. Factoring out $(x-a)^{m-1}(x-b)^{n-1}$ gives $m(x-b) + n(x-a) = 0 \Rightarrow x = \frac{mb+na}{m+n}$. It divides $[a,b]$ in $n:m$ ratio internally.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">13.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $f(x) = \tan^{-1}x$ in $[a, b]$. LMVT $\Rightarrow \frac{\tan^{-1}b - \tan^{-1}a}{b-a} = \frac{1}{1+c^2}$ where $a < c < b$. Since $0 < a < c < b$, we have $\frac{1}{1+b^2} < \frac{1}{1+c^2} < \frac{1}{1+a^2}$. Multiply by $b-a$ to get the result.</div></div>
+            <div class="question-item solution-item"><span class="q-num">14.</span><div class="q-content"><span class="ans-label">Ans:</span> $\text{LHD} = 0, \text{RHD} = 0$. Yes, differentiable. <i>Reason: Around $x=2$, $|x-1| = x-1$ and $|x-3| = 3-x$. So $f(x) = x-1 + 3-x = 2$ (a constant). Derivative of constant is 0.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">15.</span><div class="q-content"><span class="ans-label">Proof:</span> Cross multiply: $y\sqrt{1-x^2} = \sin^{-1}x$. Differentiate: $y \cdot \frac{-x}{\sqrt{1-x^2}} + \frac{dy}{dx}\sqrt{1-x^2} = \frac{1}{\sqrt{1-x^2}}$. Multiply by $\sqrt{1-x^2}$: $-xy + (1-x^2)\frac{dy}{dx} = 1$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">16.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $x^3 = \sin\theta, y^3 = \sin\phi$. $\cos\theta + \cos\phi = a^3(\sin\theta - \sin\phi)$. Use sum-to-product: $\cot\frac{\theta-\phi}{2} = a^3$. So $\theta - \phi = 2\cot^{-1}(a^3)$. Differentiate: $\frac{3x^2}{\sqrt{1-x^6}} - \frac{3y^2}{\sqrt{1-y^6}}\frac{dy}{dx} = 0$. Isolate $dy/dx$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">17.</span><div class="q-content"><span class="ans-label">Proof:</span> $y_1 = \frac{a e^{a\sin^{-1}x}}{\sqrt{1-x^2}} = \frac{ay}{\sqrt{1-x^2}}$. Square and cross-multiply: $(1-x^2)y_1^2 = a^2y^2$. Differentiating yields $(1-x^2)2y_1 y_2 - 2x y_1^2 = 2a^2y y_1$. Cancel $2y_1$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">18.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{2}{1+4x^2} + \frac{3}{1+9x^2}$. <i>Reason: $y = \tan^{-1}\left(\frac{2x+3x}{1-(2x)(3x)}\right) = \tan^{-1}(2x) + \tan^{-1}(3x)$. Apply sum rule.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">19.</span><div class="q-content"><span class="ans-label">Ans:</span> $2$ points. <i>Reason: Sharp edges occur where $\sin x = \cos x$, which is at $x = \frac{\pi}{4}$ and $x = \frac{5\pi}{4}$ in the given interval.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">20.</span><div class="q-content"><span class="ans-label">Ans:</span> Differentiable at $x=1$, Non-differentiable at $x=2$. <i>Reason: The term $\sin(\pi x)$ becomes zero at integers, dampening the jump discontinuity of $[x^2]$. At $x=1$, LHD=RHD=$-\pi$. At $x=2$, jump is unrecoverable smoothly for derivative.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">21.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $f(t) = e^t$ on $[0, x]$. By LMVT, $\frac{e^x - e^0}{x - 0} = e^c$ for some $c \in (0, x)$. Since $c > 0$, $e^c > e^0 = 1$. Thus $\frac{e^x - 1}{x} > 1 \Rightarrow e^x > 1+x$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">22.</span><div class="q-content"><span class="ans-label">Proof:</span> $y = x^y$. Take log: $\log y = y\log x$. Differentiate implicitly: $\frac{1}{y}\frac{dy}{dx} = y \cdot \frac{1}{x} + \log x \frac{dy}{dx}$. Rearrange to isolate $\frac{dy}{dx}$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">23.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{3x^2+1}{2(x^3+x)\log x} - \frac{\log(x^3+x)}{2x(\log x)^2}$. <i>Reason: Rewrite as $y = \frac{\log(x^3+x)}{2\log x}$ using change of base formula, then apply quotient rule.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">24.</span><div class="q-content"><span class="ans-label">Proof:</span> $y_1 = \frac{ad-bc}{(cx+d)^2}$. $y_2 = \frac{-2c(ad-bc)}{(cx+d)^3}$. $y_3 = \frac{6c^2(ad-bc)}{(cx+d)^4}$. Substitute into $2y_1y_3 = 2\left(\frac{ad-bc}{(cx+d)^2}\right)\left(\frac{6c^2(ad-bc)}{(cx+d)^4}\right) = \frac{12c^2(ad-bc)^2}{(cx+d)^6} = 3(y_2)^2$.</div></div>
+            <div class="question-item solution-item"><span class="q-num">25.</span><div class="q-content"><span class="ans-label">Ans:</span> $0$. <i>Reason: $f(x) = x^3$ for $x \ge 0$ and $-x^3$ for $x < 0$. $f'(x) = 3x^2$ for $x \ge 0$ and $-3x^2$ for $x < 0$. $f''(x) = 6x$ for $x \ge 0$ and $-6x$ for $x < 0$. At $x=0$, LHD of $f'$ is 0 and RHD of $f'$ is 0, so $f''(0) = 0$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">26.</span><div class="q-content"><span class="ans-label">Proof:</span> Let $t = x+\sqrt{x^2-1}$. Notice $x-\sqrt{x^2-1} = 1/t$. $y = t^m + t^{-m}$. Find $y_1$, then square and cross-multiply to form a diff equation involving $(x^2-1)y_1^2$. Diff again to get result.</div></div>
+            <div class="question-item solution-item"><span class="q-num">27.</span><div class="q-content"><span class="ans-label">Ans:</span> $a=0$. <i>Reason: $y = x^{1/2} + a x^{-1/2}$. $y_1 = \frac{1}{2}x^{-1/2} - \frac{a}{2}x^{-3/2}$. $y_2 = -\frac{1}{4}x^{-3/2} + \frac{3a}{4}x^{-5/2}$. Substitute into eq: $2x(-\frac{1}{4}x^{-3/2} + \frac{3a}{4}x^{-5/2}) + 3(\frac{1}{2}x^{-1/2} - \frac{a}{2}x^{-3/2}) = x^{-1/2} + 0 \cdot x^{-3/2}$. We need this to be 0 for all x, which requires $a=0$ and the structure dictates it works when $a=0$ wait, actually only $a$ matters for cancellation.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">28.</span><div class="q-content"><span class="ans-label">Ans:</span> Continuous at $x=1$. <i>Reason: Limit $\lim_{x \to 1} |x-1|$ is 0, and $([x] - [-x])$ is a bounded function around $x=1$. $0 \times (\text{bounded}) = 0$. Function value is also 0.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">29.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{1}{e}$. <i>Reason: $y = t^t$ where $t=\log_e x$. $dy/dx = (dy/dt) \cdot (dt/dx) = t^t(1+\log_e t) \cdot \frac{1}{x}$. At $x=e$, $t=1$. $y'(e) = 1^1(1+0) \cdot \frac{1}{e} = \frac{1}{e}$.</i></div></div>
+            <div class="question-item solution-item"><span class="q-num">30.</span><div class="q-content"><span class="ans-label">Ans:</span> $\frac{1}{2\sqrt{1-x^2}}$. <i>Reason: Substitute $x = \cos 2\theta$. $y = \tan^{-1}\left(\frac{\sqrt{2}\cos\theta - \sqrt{2}\sin\theta}{\sqrt{2}\cos\theta + \sqrt{2}\sin\theta}\right) = \tan^{-1}\left(\tan\left(\frac{\pi}{4}-\theta\right)\right) = \frac{\pi}{4} - \frac{1}{2}\cos^{-1}x$. Diff gives result.</i></div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

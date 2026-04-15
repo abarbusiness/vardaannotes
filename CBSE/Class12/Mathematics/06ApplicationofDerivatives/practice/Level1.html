@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Mathematics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 1: Green) */
+            --primary-color: #2e7d32; 
+            --bg-color: #e8f5e9;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #81c784;   
+            --bg-color: #1b2e20;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; 
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); 
+            opacity: 0.05;     
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 6: Application of Derivatives - Practice Drill (Level 1)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Mathematics</span>
+            </div>
+        </div>
+
+        <!-- Topic 6.1 -->
+        <div class="chapter-header">6.1 Rate of Change of Quantities</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">1.</span><div class="q-content">Find the rate of change of the area of a circle with respect to its radius $r$ when $r = 5\text{ cm}$.</div></div>
+            <div class="question-item"><span class="q-num">2.</span><div class="q-content">Find the rate of change of the area of a circle with respect to its radius $r$ when $r = 12\text{ cm}$.</div></div>
+            <div class="question-item"><span class="q-num">3.</span><div class="q-content">The radius of a circle is increasing uniformly at the rate of $3\text{ cm/s}$. Find the rate at which the area of the circle is increasing when the radius is $10\text{ cm}$.</div></div>
+            <div class="question-item"><span class="q-num">4.</span><div class="q-content">An edge of a variable cube is increasing at the rate of $3\text{ cm/s}$. How fast is the volume of the cube increasing when the edge is $10\text{ cm}$ long?</div></div>
+            <div class="question-item"><span class="q-num">5.</span><div class="q-content">A stone is dropped into a quiet lake and waves move in circles at a speed of $4\text{ cm/s}$. At the instant when the radius of the circular wave is $10\text{ cm}$, how fast is the enclosed area increasing?</div></div>
+            <div class="question-item"><span class="q-num">6.</span><div class="q-content">The length $x$ of a rectangle is decreasing at the rate of $3\text{ cm/min}$ and the width $y$ is increasing at the rate of $2\text{ cm/min}$. When $x = 10\text{ cm}$ and $y = 6\text{ cm}$, find the rate of change of the perimeter.</div></div>
+            <div class="question-item"><span class="q-num">7.</span><div class="q-content">Using the data from the previous question (Q6), find the rate of change of the area of the rectangle.</div></div>
+            <div class="question-item"><span class="q-num">8.</span><div class="q-content">A balloon, which always remains spherical, has a variable diameter $\frac{3}{2}(2x + 1)$. Find the rate of change of its volume with respect to $x$.</div></div>
+            <div class="question-item"><span class="q-num">9.</span><div class="q-content">A spherical bubble is expanding so that its radius is increasing at the rate of $0.02\text{ cm/s}$. Find the rate of increase of its surface area when the radius is $5\text{ cm}$.</div></div>
+            <div class="question-item"><span class="q-num">10.</span><div class="q-content">The total cost $C(x)$ in Rupees associated with the production of $x$ units of an item is given by $C(x) = 0.005x^3 - 0.02x^2 + 30x + 5000$. Find the marginal cost when 3 units are produced.</div></div>
+            <div class="question-item"><span class="q-num">11.</span><div class="q-content">The total revenue in Rupees received from the sale of $x$ units of a product is given by $R(x) = 13x^2 + 26x + 15$. Find the marginal revenue when $x = 7$.</div></div>
+            <div class="question-item"><span class="q-num">12.</span><div class="q-content">A particle moves along the curve $y = \frac{2}{3}x^3 + 1$. Find the points on the curve at which the y-coordinate is changing twice as fast as the x-coordinate.</div></div>
+            <div class="question-item"><span class="q-num">13.</span><div class="q-content">A ladder $5\text{ m}$ long is leaning against a wall. The bottom of the ladder is pulled along the ground, away from the wall, at the rate of $2\text{ cm/s}$. How fast is its height on the wall decreasing when the foot of the ladder is $4\text{ m}$ away from the wall?</div></div>
+            <div class="question-item"><span class="q-num">14.</span><div class="q-content">The surface area of a spherical balloon is increasing at the rate of $2\text{ cm}^2\text{/s}$. Find the rate of change of its volume when the radius is $6\text{ cm}$.</div></div>
+            <div class="question-item"><span class="q-num">15.</span><div class="q-content">Sand is pouring from a pipe at the rate of $12\text{ cm}^3\text{/s}$. The falling sand forms a cone on the ground in such a way that the height of the cone is always one-sixth of the radius of the base. How fast is the height of the sand cone increasing when the height is $4\text{ cm}$?</div></div>
+        </div>
+
+        <!-- Topic 6.2 -->
+        <div class="chapter-header">6.2 Increasing and Decreasing Functions</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">16.</span><div class="q-content">Show that the function $f(x) = 3x + 17$ is strictly increasing on $\mathbb{R}$.</div></div>
+            <div class="question-item"><span class="q-num">17.</span><div class="q-content">Show that the function $f(x) = e^{2x}$ is strictly increasing on $\mathbb{R}$.</div></div>
+            <div class="question-item"><span class="q-num">18.</span><div class="q-content">Find the intervals in which the function $f(x) = x^2 - 4x + 6$ is strictly increasing.</div></div>
+            <div class="question-item"><span class="q-num">19.</span><div class="q-content">Find the intervals in which the function $f(x) = x^2 - 4x + 6$ is strictly decreasing.</div></div>
+            <div class="question-item"><span class="q-num">20.</span><div class="q-content">Find the intervals in which the function $f(x) = 2x^2 - 3x$ is strictly increasing or decreasing.</div></div>
+            <div class="question-item"><span class="q-num">21.</span><div class="q-content">Determine the intervals where $f(x) = 2x^3 - 3x^2 - 36x + 7$ is strictly increasing.</div></div>
+            <div class="question-item"><span class="q-num">22.</span><div class="q-content">Determine the intervals where $f(x) = 2x^3 - 3x^2 - 36x + 7$ is strictly decreasing.</div></div>
+            <div class="question-item"><span class="q-num">23.</span><div class="q-content">Find the intervals in which $f(x) = 4x^3 - 6x^2 - 72x + 30$ is strictly increasing.</div></div>
+            <div class="question-item"><span class="q-num">24.</span><div class="q-content">Find the intervals in which $f(x) = -2x^3 - 9x^2 - 12x + 1$ is strictly decreasing.</div></div>
+            <div class="question-item"><span class="q-num">25.</span><div class="q-content">Prove that the function given by $f(x) = \cos x$ is strictly decreasing in $(0, \pi)$.</div></div>
+            <div class="question-item"><span class="q-num">26.</span><div class="q-content">Prove that the function given by $f(x) = \cos x$ is strictly increasing in $(\pi, 2\pi)$.</div></div>
+            <div class="question-item"><span class="q-num">27.</span><div class="q-content">Prove that $f(x) = x - \sin x$ is strictly increasing for all real $x$.</div></div>
+            <div class="question-item"><span class="q-num">28.</span><div class="q-content">Find the intervals in which the function $f(x) = \sin x + \cos x$, $0 \le x \le 2\pi$ is strictly increasing.</div></div>
+            <div class="question-item"><span class="q-num">29.</span><div class="q-content">Find the intervals in which the function $f(x) = \sin 3x$, $x \in [0, \pi/2]$ is strictly increasing or decreasing.</div></div>
+            <div class="question-item"><span class="q-num">30.</span><div class="q-content">Show that $f(x) = \ln(\sin x)$ is strictly increasing on $(0, \pi/2)$.</div></div>
+            <div class="question-item"><span class="q-num">31.</span><div class="q-content">Show that $f(x) = \ln(\cos x)$ is strictly decreasing on $(0, \pi/2)$.</div></div>
+        </div>
+
+        <!-- Topic 6.3 -->
+        <div class="chapter-header">6.3 Tangents and Normals</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">32.</span><div class="q-content">Find the slope of the tangent to the curve $y = 3x^4 - 4x$ at $x = 4$.</div></div>
+            <div class="question-item"><span class="q-num">33.</span><div class="q-content">Find the slope of the tangent to the curve $y = \frac{x-1}{x-2}$ at $x = 10$.</div></div>
+            <div class="question-item"><span class="q-num">34.</span><div class="q-content">Find the slope of the normal to the curve $y = x^3 - 3x + 2$ at the point whose x-coordinate is 3.</div></div>
+            <div class="question-item"><span class="q-num">35.</span><div class="q-content">Find the point at which the tangent to the curve $y = \sqrt{4x-3} - 1$ has its slope equal to $\frac{2}{3}$.</div></div>
+            <div class="question-item"><span class="q-num">36.</span><div class="q-content">Find points on the curve $\frac{x^2}{9} + \frac{y^2}{16} = 1$ at which the tangents are parallel to the x-axis.</div></div>
+            <div class="question-item"><span class="q-num">37.</span><div class="q-content">Find points on the curve $\frac{x^2}{9} + \frac{y^2}{16} = 1$ at which the tangents are parallel to the y-axis.</div></div>
+            <div class="question-item"><span class="q-num">38.</span><div class="q-content">Find the equation of all lines having slope $-1$ that are tangents to the curve $y = \frac{1}{x-1}$.</div></div>
+            <div class="question-item"><span class="q-num">39.</span><div class="q-content">Find the equation of the tangent to the curve $y = x^4 - 6x^3 + 13x^2 - 10x + 5$ at $(0, 5)$.</div></div>
+            <div class="question-item"><span class="q-num">40.</span><div class="q-content">Find the equation of the normal to the curve $y = x^4 - 6x^3 + 13x^2 - 10x + 5$ at $(0, 5)$.</div></div>
+            <div class="question-item"><span class="q-num">41.</span><div class="q-content">Find the equation of the tangent to the curve $y = \sin^2 x$ at $x = \pi/4$.</div></div>
+            <div class="question-item"><span class="q-num">42.</span><div class="q-content">Find the equation of the tangent to the curve $y = x^3 - 3x + 2$ which is parallel to the line $y = 9x - 5$.</div></div>
+            <div class="question-item"><span class="q-num">43.</span><div class="q-content">Find the angle of intersection of the curves $y = x^2$ and $x^2 = y$ at $(1, 1)$.</div></div>
+            <div class="question-item"><span class="q-num">44.</span><div class="q-content">Show that the curves $x = y^2$ and $xy = k$ cut at right angles if $8k^2 = 1$.</div></div>
+            <div class="question-item"><span class="q-num">45.</span><div class="q-content">Find the equation of the normal to the curve $x^2 = 4y$ which passes through the point $(1, 2)$.</div></div>
+            <div class="question-item"><span class="q-num">46.</span><div class="q-content">Prove that the curve $\left(\frac{x}{a}\right)^n + \left(\frac{y}{b}\right)^n = 2$ touches the straight line $\frac{x}{a} + \frac{y}{b} = 2$ at the point $(a, b)$, whatever be the value of $n$.</div></div>
+        </div>
+
+        <!-- Topic 6.4 -->
+        <div class="chapter-header">6.4 Approximations and Differentials</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">47.</span><div class="q-content">Using differentials, find the approximate value of $\sqrt{36.6}$.</div></div>
+            <div class="question-item"><span class="q-num">48.</span><div class="q-content">Using differentials, find the approximate value of $\sqrt{25.3}$.</div></div>
+            <div class="question-item"><span class="q-num">49.</span><div class="q-content">Using differentials, find the approximate value of $(26)^{1/3}$.</div></div>
+            <div class="question-item"><span class="q-num">50.</span><div class="q-content">Using differentials, find the approximate value of $(0.999)^{1/10}$.</div></div>
+            <div class="question-item"><span class="q-num">51.</span><div class="q-content">Using differentials, find the approximate value of $\sqrt{0.48}$.</div></div>
+            <div class="question-item"><span class="q-num">52.</span><div class="q-content">Find the approximate change in the volume $V$ of a cube of side $x$ meters caused by increasing the side by $1\%$.</div></div>
+            <div class="question-item"><span class="q-num">53.</span><div class="q-content">Find the approximate change in the surface area of a cube of side $x$ meters caused by decreasing the side by $1\%$.</div></div>
+            <div class="question-item"><span class="q-num">54.</span><div class="q-content">If the radius of a sphere is measured as $9\text{ cm}$ with an error of $0.03\text{ cm}$, find the approximate error in calculating its volume.</div></div>
+            <div class="question-item"><span class="q-num">55.</span><div class="q-content">If the radius of a sphere is measured as $7\text{ m}$ with an error of $0.02\text{ m}$, find the approximate error in calculating its surface area.</div></div>
+            <div class="question-item"><span class="q-num">56.</span><div class="q-content">Find the approximate value of $f(3.02)$, where $f(x) = 3x^2 + 5x + 3$.</div></div>
+            <div class="question-item"><span class="q-num">57.</span><div class="q-content">Find the approximate value of $f(2.01)$, where $f(x) = 4x^2 + 5x + 2$.</div></div>
+            <div class="question-item"><span class="q-num">58.</span><div class="q-content">Find the percentage error in calculating the volume of a cubical box if an error of $1\%$ is made in measuring the length of its edge.</div></div>
+            <div class="question-item"><span class="q-num">59.</span><div class="q-content">The pressure $P$ and volume $V$ of a gas are connected by the relation $PV^{1.4} = \text{const}$. Find the approximate percentage change in $V$ when $P$ is increased by $0.5\%$.</div></div>
+            <div class="question-item"><span class="q-num">60.</span><div class="q-content">If the error in measuring the radius of a circle is $1.5\%$, find the percentage error in computing its area.</div></div>
+            <div class="question-item"><span class="q-num">61.</span><div class="q-content">Show that the relative error in computing the volume of a sphere is three times the relative error in measuring its radius.</div></div>
+        </div>
+
+        <!-- Topic 6.5 -->
+        <div class="chapter-header">6.5 Maxima and Minima</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">62.</span><div class="q-content">Find the maximum and minimum values, if any, of the function $f(x) = (2x - 1)^2 + 3$.</div></div>
+            <div class="question-item"><span class="q-num">63.</span><div class="q-content">Find the maximum and minimum values, if any, of the function $f(x) = -(x - 1)^2 + 10$.</div></div>
+            <div class="question-item"><span class="q-num">64.</span><div class="q-content">Find the maximum and minimum values of $f(x) = |x + 2| - 1$.</div></div>
+            <div class="question-item"><span class="q-num">65.</span><div class="q-content">Find the local maxima and local minima, if any, of the function $f(x) = x^2$. Also find the local maximum and local minimum values.</div></div>
+            <div class="question-item"><span class="q-num">66.</span><div class="q-content">Find the local maxima and local minima for $f(x) = x^3 - 3x$.</div></div>
+            <div class="question-item"><span class="q-num">67.</span><div class="q-content">Find the local maxima and local minima for $f(x) = 3x^4 + 4x^3 - 12x^2 + 12$.</div></div>
+            <div class="question-item"><span class="q-num">68.</span><div class="q-content">Find all the points of local maxima and local minima of the function $f(x) = \sin x - \cos x$, where $0 < x < 2\pi$.</div></div>
+            <div class="question-item"><span class="q-num">69.</span><div class="q-content">Find the absolute maximum and absolute minimum values of $f(x) = x^3$ on the interval $[-2, 2]$.</div></div>
+            <div class="question-item"><span class="q-num">70.</span><div class="q-content">Find the absolute maximum and absolute minimum values of $f(x) = 4x - \frac{1}{2}x^2$ on the interval $[-2, 4.5]$.</div></div>
+            <div class="question-item"><span class="q-num">71.</span><div class="q-content">Find the absolute maximum and minimum values of $f(x) = \sin x + \cos x$ in the interval $[0, \pi]$.</div></div>
+            <div class="question-item"><span class="q-num">72.</span><div class="q-content">Find the maximum profit that a company can make, if the profit function is given by $p(x) = 41 - 24x - 18x^2$.</div></div>
+            <div class="question-item"><span class="q-num">73.</span><div class="q-content">Prove that the function $f(x) = e^x$ does not have any maxima or minima.</div></div>
+            <div class="question-item"><span class="q-num">74.</span><div class="q-content">Show that the function $f(x) = x^3 - 6x^2 + 12x - 8$ has a point of inflection at $x = 2$.</div></div>
+            <div class="question-item"><span class="q-num">75.</span><div class="q-content">Find the points of local maxima, local minima, and the point of inflection for $f(x) = x^5 - 5x^4 + 5x^3 - 1$.</div></div>
+            <div class="question-item"><span class="q-num">76.</span><div class="q-content">At what points in the interval $[0, 2\pi]$, does the function $\sin 2x$ attain its maximum value?</div></div>
+        </div>
+
+        <!-- Topic 6.6 -->
+        <div class="chapter-header">6.6 Applied Optimization</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">77.</span><div class="q-content">Find two positive numbers whose sum is 15 and the sum of whose squares is minimum.</div></div>
+            <div class="question-item"><span class="q-num">78.</span><div class="q-content">Find two positive numbers $x$ and $y$ such that their sum is 35 and the product $x^2 y^5$ is a maximum.</div></div>
+            <div class="question-item"><span class="q-num">79.</span><div class="q-content">Find two positive numbers whose product is 100 and whose sum is minimum.</div></div>
+            <div class="question-item"><span class="q-num">80.</span><div class="q-content">A wire of length $28\text{ m}$ is to be cut into two pieces. One of the pieces is to be made into a square and the other into a circle. What should be the lengths of the two pieces so that the combined area of the square and the circle is minimum?</div></div>
+            <div class="question-item"><span class="q-num">81.</span><div class="q-content">Prove that of all rectangles with a given perimeter, the square has the maximum area.</div></div>
+            <div class="question-item"><span class="q-num">82.</span><div class="q-content">Prove that of all rectangles with a given fixed area, the square has the minimum perimeter.</div></div>
+            <div class="question-item"><span class="q-num">83.</span><div class="q-content">A square piece of tin of side $18\text{ cm}$ is to be made into a box without top, by cutting a square from each corner and folding up the flaps to form the box. What should be the side of the square to be cut off so that the volume of the box is the maximum possible?</div></div>
+            <div class="question-item"><span class="q-num">84.</span><div class="q-content">A rectangular sheet of tin $45\text{ cm}$ by $24\text{ cm}$ is to be made into a box without top, by cutting off squares from each corner and folding up the flaps. What should be the side of the square to be cut off so that the volume of the box is maximum?</div></div>
+            <div class="question-item"><span class="q-num">85.</span><div class="q-content">Show that the volume of the largest cone that can be inscribed in a sphere of radius $R$ is $\frac{8}{27}$ of the volume of the sphere.</div></div>
+            <div class="question-item"><span class="q-num">86.</span><div class="q-content">Show that the height of the cylinder of maximum volume that can be inscribed in a sphere of radius $R$ is $\frac{2R}{\sqrt{3}}$.</div></div>
+            <div class="question-item"><span class="q-num">87.</span><div class="q-content">Show that the semi-vertical angle of the cone of the maximum volume and of given slant height is $\tan^{-1}\sqrt{2}$.</div></div>
+            <div class="question-item"><span class="q-num">88.</span><div class="q-content">An open cylindrical tank whose base is a circle is to be constructed of metal sheet so as to contain a volume of $\pi a^3$ cubic units. Find the dimensions (radius and height) so that the sheet required is minimum.</div></div>
+            <div class="question-item"><span class="q-num">89.</span><div class="q-content">Show that a right circular cylinder which is open at the top, and has a given surface area and maximum volume, is such that its height is equal to the radius of the base.</div></div>
+            <div class="question-item"><span class="q-num">90.</span><div class="q-content">Find the maximum area of an isosceles triangle inscribed in a given ellipse $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ with its vertex at one end of the major axis.</div></div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>
