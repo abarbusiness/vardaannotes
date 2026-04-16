@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Physics Solutions Key</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS: Level 1 (Green) */
+            --primary-color: #2e7d32; 
+            --bg-color: #e8f5e9;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #81c784;   
+            --bg-color: #1a2a1c;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; 
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .solution-item { 
+            display: flex; flex-direction: column; margin-bottom: 8px; 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;
+            page-break-inside: avoid;
+        }
+        .sol-header { display: flex; align-items: baseline; margin-bottom: 5px; }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+        .ans-text { color: var(--text-secondary); line-height: 1.5; padding-left: 35px;} 
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); 
+            opacity: 0.05;     
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+            .solution-item { border-bottom: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">SOLUTION KEY: Ch-4 Moving Charges & Magnetism (Level 1)</div>
+            <div class="meta-info">
+                <span>Teacher/Evaluator Copy</span>
+                <span>Class: 12</span>
+                <span>Subject: Physics</span>
+            </div>
+        </div>
+
+        <!-- TOPIC 4.1 -->
+        <div class="chapter-header">Topic 4.1: Magnetic Force & Motion of Charge</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">1.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    $F = qvB\sin\theta$ <br>
+                    $F = (1.6 \times 10^{-19} \text{ C}) \times (2 \times 10^7 \text{ m/s}) \times (1.5 \text{ T}) \times \sin(30^\circ)$ <br>
+                    $F = 4.8 \times 10^{-12} \times 0.5 = 2.4 \times 10^{-12} \text{ N}$
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">2.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">A moving charge generates its own magnetic field. The external magnetic field interacts with this moving charge's magnetic field, resulting in a force. A stationary charge does not produce a magnetic field, so $v = 0 \implies F = q(0)B\sin\theta = 0$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">3.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Radius $r = \frac{mv}{qB}$. For the same $v$ and $B$, $r \propto \frac{m}{q}$. <br>
+                For $\alpha$-particle: $m_\alpha = 4m_p$, $q_\alpha = 2e$. <br>
+                For proton: $m_p, e$. <br>
+                Ratio $\frac{r_\alpha}{r_p} = \frac{4m_p / 2e}{m_p / e} = \frac{2}{1}$. Ratio is $2:1$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">4.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Maximum force occurs when the charge moves perpendicular to the magnetic field ($\theta = 90^\circ$), because $\sin(90^\circ) = 1$. The max force is $F_{max} = qvB$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">5.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">The trajectory will be a straight line. If velocity is parallel to the field, $\theta = 0^\circ$ or $180^\circ$. Force $F = qvB\sin(0^\circ) = 0$. Since net force is zero, velocity remains unchanged.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">6.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    Cyclotron frequency $\nu_c = \frac{qB}{2\pi m}$ <br>
+                    $\nu_c = \frac{1.6 \times 10^{-19} \times 1}{2 \times 3.14 \times 1.67 \times 10^{-27}}$ <br>
+                    $\nu_c \approx 1.52 \times 10^7 \text{ Hz}$ or $15.2 \text{ MHz}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">7.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Magnetic force $\vec{F} = q(\vec{v} \times \vec{B})$. This force is always perpendicular to velocity $\vec{v}$. Work done $dW = \vec{F} \cdot d\vec{s} = \vec{F} \cdot (\vec{v}dt) = 0$. Since work is zero, kinetic energy remains constant (speed is unchanged).</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">8.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Lorentz force is the total force exerted on a charged particle moving through a region containing both electric and magnetic fields. <br>
+                $\vec{F} = \vec{F}_e + \vec{F}_m = q\vec{E} + q(\vec{v} \times \vec{B})$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">9.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Electron moves in +x direction ($\vec{v} = v\hat{i}$). Field is in +y direction ($\vec{B} = B\hat{j}$). Charge $q = -e$. <br>
+                $\vec{F} = -e(v\hat{i} \times B\hat{j}) = -ev(\hat{k}) = -ev\hat{k}$. <br>
+                The force is directed along the negative z-axis.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">10.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">The path becomes helical when the charge enters the magnetic field at an oblique angle (neither parallel, anti-parallel, nor exactly perpendicular). i.e., $0^\circ < \theta < 90^\circ$ or $90^\circ < \theta < 180^\circ$.</div>
+            </div>
+        </div>
+
+        <!-- TOPIC 4.2 -->
+        <div class="chapter-header">Topic 4.2: Magnetic Field due to Current (Biot-Savart Law)</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">11.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Biot-Savart Law states that the magnetic field $d\vec{B}$ due to a current element $Id\vec{l}$ is directly proportional to the current and length, and inversely proportional to the square of the distance. <br>
+                Vector form: $d\vec{B} = \frac{\mu_0 I}{4\pi} \frac{d\vec{l} \times \vec{r}}{r^3}$ or $\frac{\mu_0 I}{4\pi} \frac{d\vec{l} \times \hat{r}}{r^2}$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">12.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    $B = \frac{\mu_0 I}{2\pi r}$ <br>
+                    $B = \frac{4\pi \times 10^{-7} \times 35}{2\pi \times 0.20} = \frac{2 \times 10^{-7} \times 35}{0.20}$ <br>
+                    $B = \frac{70 \times 10^{-7}}{0.20} = 350 \times 10^{-7} = 3.5 \times 10^{-5} \text{ T}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">13.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    $B = \frac{\mu_0 N I}{2r}$ <br>
+                    $B = \frac{4\pi \times 10^{-7} \times 100 \times 5}{2 \times 0.10}$ <br>
+                    $B = \frac{2000\pi \times 10^{-7}}{0.20} = 10000\pi \times 10^{-7} \approx 3.14 \times 10^{-3} \text{ T}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">14.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Magnetic field at the center is $B = \frac{\mu_0 I}{2r}$. If $I$ becomes $2I$ and $r$ becomes $2r$, then $B' = \frac{\mu_0 (2I)}{2(2r)} = \frac{\mu_0 I}{2r} = B$. The field remains unchanged.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">15.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    <b>Similarity:</b> Both laws follow the inverse square law with respect to distance ($\propto 1/r^2$). <br>
+                    <b>Difference:</b> Electric field is produced by a scalar source (charge $q$), while magnetic field is produced by a vector source (current element $Id\vec{l}$).
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">16.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">For a full circle, $B = \frac{\mu_0 I}{2R}$. For a semicircle, the field is exactly half. <br>
+                $B = \frac{1}{2} \left(\frac{\mu_0 I}{2R}\right) = \frac{\mu_0 I}{4R}$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">17.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Using the Right-Hand Thumb Rule, curling the fingers in the anti-clockwise direction points the thumb outwards. Therefore, the field is directed perpendicularly <b>out of the plane of the paper</b>.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">18.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Since $B \propto \frac{1}{r}$, the graph of $B$ versus $r$ is a rectangular hyperbola in the first quadrant, curving downwards as distance $r$ increases.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">19.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">At the center, $B = \frac{\mu_0 I}{2R}$. <br>
+                For loop P: $B_P = \frac{\mu_0 I}{2R}$. <br>
+                For loop Q: $B_Q = \frac{\mu_0 (2I)}{2R} = 2 B_P$. <br>
+                Ratio $B_P : B_Q = 1 : 2$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">20.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">If you hold the straight current-carrying conductor in your right hand such that the thumb points in the direction of the current, then the direction in which your fingers curl gives the direction of the magnetic field lines.</div>
+            </div>
+        </div>
+
+        <!-- TOPIC 4.3 -->
+        <div class="chapter-header">Topic 4.3: Ampere’s Circuital Law</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">21.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">$\oint \vec{B} \cdot d\vec{l} = \mu_0 I_{enclosed}$ <br>
+                The line integral of magnetic field $\vec{B}$ around any closed path in a vacuum is equal to $\mu_0$ times the total steady current threading the surface bounded by the closed path.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">22.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    Number of turns per unit length $n = \frac{N}{L} = \frac{500}{0.5} = 1000 \text{ turns/m}$. <br>
+                    $B = \mu_0 n I = (4\pi \times 10^{-7}) \times (1000) \times (5)$ <br>
+                    $B = 20\pi \times 10^{-4} \approx 6.28 \times 10^{-3} \text{ T}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">23.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">No. The formula for an ideal long solenoid is $B = \mu_0 n I$. This shows that the magnetic field is uniform inside and is independent of the radius of the solenoid (as long as it is long compared to its radius).</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">24.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">A toroid is a hollow circular ring on which a large number of turns of a wire are closely wound (like a solenoid bent into a circle). <br>
+                Inside the core: $B = \mu_0 n I$ (where $n = \frac{N}{2\pi r}$).</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">25.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">If we draw an Amperian loop outside the toroid, the net current enclosed is zero (since every turn carrying current 'down' is canceled by the same current coming 'up'). By Ampere's Law, $\oint \vec{B} \cdot d\vec{l} = \mu_0 (0) \implies B = 0$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">26.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    $B = \mu_r \mu_0 n I$ <br>
+                    $B = 400 \times (4\pi \times 10^{-7}) \times 1000 \times 2$ <br>
+                    $B = 3200000\pi \times 10^{-7} = 0.32\pi \approx 1.0 \text{ T}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">27.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Inside the wire ($r < a$), $B \propto r$ (linear increase from zero at center). Outside the wire ($r > a$), $B \propto \frac{1}{r}$ (hyperbolic decrease). The graph is a straight line through the origin reaching a peak at $r=a$, then curving downwards.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">28.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Because for symmetric distributions, an Amperian loop can be chosen such that $\vec{B}$ is constant in magnitude and parallel to $d\vec{l}$ everywhere on the loop, simplifying the integral $\oint \vec{B} \cdot d\vec{l}$ to $B \oint dl = B(2\pi r)$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">29.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">At the exact ends of a long solenoid, the magnetic field is half of its value at the center. <br>
+                $B_{ends} = \frac{1}{2} \mu_0 n I$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">30.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">The magnetic field in the empty space completely enclosed by the inner boundary of the toroid is zero, because an Amperian loop drawn there encloses no net current ($I_{enc} = 0$).</div>
+            </div>
+        </div>
+
+        <!-- TOPIC 4.4 -->
+        <div class="chapter-header">Topic 4.4: Force between Two Parallel Currents</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">31.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    Force per unit length $f = \frac{\mu_0 I_1 I_2}{2\pi d}$ <br>
+                    $f = \frac{4\pi \times 10^{-7} \times 5 \times 10}{2\pi \times 0.10} = \frac{100 \times 10^{-7}}{0.10} = 10^{-4} \text{ N/m}$. <br>
+                    Nature: Attractive (since currents are in the same direction).
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">32.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">One Ampere is the constant current which, if maintained in two straight parallel conductors of infinite length and negligible cross-section, placed 1 meter apart in vacuum, would produce a force of $2 \times 10^{-7}$ Newtons per meter of length between them.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">33.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Wire 1 creates a magnetic field at Wire 2. Using the right-hand grip rule, if currents are opposite, the field from Wire 1 causes a force on Wire 2 (via Fleming's Left-Hand rule) that points away from Wire 1. Thus, they repel.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">34.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">It will experience a net force. The side of the loop closest to the wire experiences a stronger force (attractive or repulsive based on direction) than the far side (since $B \propto 1/r$). Thus, the opposing forces don't cancel, creating a net force.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">35.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">$\vec{F} = I (\vec{l} \times \vec{B})$, where $\vec{l}$ is a vector whose magnitude is the length of the conductor and direction is the direction of the current.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">36.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Since the wire is perpendicular to the field, $\theta = 90^\circ$. <br>
+                $F = I L B \sin(90^\circ) = I L B$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">37.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">The spring will contract (compress). This is because adjacent turns of the spring carry current in the same direction. Parallel currents in the same direction attract each other.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">38.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">$f = \frac{F}{L} = \frac{\mu_0 I^2}{2\pi d}$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">39.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Fleming's Left-Hand Rule: Stretch thumb, forefinger, and middle finger of the left hand mutually perpendicular. If the forefinger points to the magnetic field and the middle finger to the current, then the thumb points to the direction of force.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">40.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">When the conductor is placed exactly parallel or anti-parallel to the magnetic field ($\theta = 0^\circ$ or $180^\circ$). In this case, $\sin\theta = 0$, making the force $F = ILB\sin\theta = 0$.</div>
+            </div>
+        </div>
+
+        <!-- TOPIC 4.5 -->
+        <div class="chapter-header">Topic 4.5: Torque on a Current Loop</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">41.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">$\vec{\tau} = \vec{m} \times \vec{B}$</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">42.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    $\tau = N I A B \sin\theta$ <br>
+                    $A = \pi r^2 = \pi (0.08)^2 = 0.0064\pi \text{ m}^2$ <br>
+                    $\tau = 30 \times 6 \times (0.0064\pi) \times 1.0 \times \sin(60^\circ)$ <br>
+                    $\tau = 180 \times 0.0201 \times 0.866 \approx 3.13 \text{ N}\cdot\text{m}$.
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">43.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">A magnetic dipole is any system that produces a magnetic field similar to a bar magnet (e.g., a current loop). The dipole moment formula is $m = N I A$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">44.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Bohr Magneton is the minimum magnetic dipole moment associated with an electron due to its orbital motion in the ground state of a hydrogen atom. <br>
+                Value: $\mu_B = \frac{eh}{4\pi m_e} = 9.27 \times 10^{-24} \text{ A}\cdot\text{m}^2$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">45.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">
+                    Electric Dipole: $\vec{\tau} = \vec{p} \times \vec{E}$ (where $\vec{p}$ is electric dipole moment). <br>
+                    Magnetic Dipole: $\vec{\tau} = \vec{m} \times \vec{B}$ (where $\vec{m}$ is magnetic dipole moment). Both follow identical mathematical cross-product relationships.
+                </div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">46.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">$\mu_l = \frac{e}{2m_e} L$, where $e$ is electron charge, $m_e$ is its mass, and $L$ is the angular momentum. The ratio $\frac{\mu_l}{L} = \frac{e}{2m_e}$ is called the gyromagnetic ratio.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">47.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Stable equilibrium occurs when the magnetic moment vector $\vec{m}$ is exactly parallel to the external magnetic field $\vec{B}$ (i.e., angle $\theta = 0^\circ$).</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">48.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Torque is maximum when the plane of the loop is parallel to the magnetic field. In this state, the normal vector to the loop is perpendicular to the field ($\theta = 90^\circ$). $\tau_{max} = NIAB$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">49.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Initial moment $M = I \times A$. <br>
+                New current $I' = I/2$, New area $A' = 2A$. <br>
+                New moment $M' = I' \times A' = (I/2) \times (2A) = I \times A = M$. <br>
+                The magnetic moment remains unchanged.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">50.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">No. In a strictly uniform magnetic field, the net translational force on any closed current loop is exactly zero. It only experiences a torque (unless $\theta=0^\circ$ or $180^\circ$).</div>
+            </div>
+        </div>
+
+        <!-- TOPIC 4.6 -->
+        <div class="chapter-header">Topic 4.6: Moving Coil Galvanometer</div>
+        <div class="questions-container">
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">51.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">It is based on the principle that when a current-carrying coil is placed in a uniform magnetic field, it experiences a magnetic torque that tends to rotate it.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">52.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">The soft iron core increases the strength of the magnetic field due to its high permeability, making the galvanometer more sensitive. It also helps to make the field radial.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">53.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Current sensitivity is the deflection produced per unit of current passing through the galvanometer. $I_s = \frac{\theta}{I} = \frac{NAB}{k}$. <br>
+                SI Unit: rad/A or div/A.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">54.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">1. Increasing the number of turns ($N$) in the coil. <br>
+                2. Increasing the area ($A$) of the coil. <br>
+                3. Using a stronger magnetic field ($B$). <br>
+                4. Decreasing the restoring torque per unit twist ($k$) of the suspension wire.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">55.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">Voltage sensitivity is the deflection produced per unit voltage applied ($V_s = \frac{\theta}{V} = \frac{NAB}{kR}$). No, increasing $N$ increases the length of the wire, which proportionally increases the resistance $R$. The ratio $N/R$ remains almost constant, so voltage sensitivity does not necessarily increase.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">56.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">To convert to a voltmeter, connect a high resistance ($R_s$) in series. <br>
+                $R_s = \frac{V}{I_g} - R_g = \frac{18}{3 \times 10^{-3}} - 12 = 6000 - 12 = 5988 \, \Omega$. <br>
+                Connect $5988 \, \Omega$ in series.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">57.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">To convert to an ammeter, connect a low resistance shunt ($S$) in parallel. <br>
+                $S = \frac{I_g R_g}{I - I_g} = \frac{4 \times 10^{-3} \times 15}{6 - 0.004} = \frac{0.06}{5.996} \approx 0.010 \, \Omega$. <br>
+                Connect $0.01 \, \Omega$ in parallel.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">58.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">A radial magnetic field ensures that the plane of the coil is always parallel to the magnetic field regardless of its orientation. Thus, the torque $\tau = NIAB\sin(90^\circ) = NIAB$ remains maximum and directly proportional to current $I$.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">59.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">The material should have a small restoring torque per unit twist ($k$) to ensure high sensitivity, and it should have high tensile strength and a steady elastic behavior.</div>
+            </div>
+            <div class="solution-item">
+                <div class="sol-header"><span class="q-num">60.</span><span class="ans-label">Answer:</span></div>
+                <div class="ans-text">An ammeter is connected in series because it must measure the total current flowing through the circuit component, and it has very low resistance to avoid altering that current. A voltmeter is connected in parallel to measure the potential difference across a component, and it has very high resistance so it doesn't draw significant current from the main circuit.</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

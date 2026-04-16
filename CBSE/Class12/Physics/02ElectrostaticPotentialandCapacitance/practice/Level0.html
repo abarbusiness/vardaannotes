@@ -1,0 +1,457 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Physics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS: Level 0 (Foundation) */
+            --primary-color: #e65100; 
+            --bg-color: #fff3e0;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ffb74d;   /* Lighter orange for readability */
+            --bg-color: #3e2723;        /* Dark brown/orange container background */
+            --body-bg: #121212;         /* Very dark body background */
+            --text-main: #e0e0e0;       /* Off-white text */
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 12px; /* Increased margin for print space */
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- NEW STYLES FOR MCQs & MATCH THE FOLLOWING --- */
+        .mcq-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; padding-left: 0px; }
+        .mcq-opt { flex: 1 1 45%; }
+        .match-table { width: 85%; margin: 10px 0px 10px 35px; border-collapse: collapse; font-size: 11pt; }
+        .match-table th, .match-table td { border: 1px solid var(--border-color); padding: 6px 10px; text-align: left; }
+        .match-table th { background-color: var(--bg-color); color: var(--primary-color); }
+        .sub-heading { font-weight: bold; margin-top: 15px; margin-bottom: 5px; color: var(--text-secondary); text-decoration: underline; font-size: 11.5pt;}
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style></head><body><!-- Theme Toggle --><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></button><script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script><img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark"><div class="container">
+    <div class="header">
+        <h1 class="institute-name">Vardaan Learning Institute</h1>
+        <div class="tagline">
+            <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+        </div>
+        <div class="worksheet-title">Electrostatic Potential and Capacitance (Level 0: Foundation Drill)</div>
+        <div class="meta-info">
+            <span>Student Name: ____________________________________</span>
+            <span>Class: 12</span>
+            <span>Subject: Physics</span>
+        </div>
+    </div>
+
+    <div class="chapter-header">Topic 1: Electrostatic Potential & Potential Difference</div>
+    <div class="questions-container">
+        <div class="sub-heading">Part I: Fill in the Blanks</div>
+        <div class="question-item"><span class="q-num">1.</span><div class="q-content">The SI unit of electrostatic potential is ________.</div></div>
+        <div class="question-item"><span class="q-num">2.</span><div class="q-content">Electrostatic potential is a ________ quantity.</div></div>
+        <div class="question-item"><span class="q-num">3.</span><div class="q-content">The work done in bringing a unit positive charge from infinity to a point is called the electric ________ at that point.</div></div>
+        <div class="question-item"><span class="q-num">4.</span><div class="q-content">$1 \text{ Volt} = 1 \text{ Joule} / 1$ ________.</div></div>
+        <div class="question-item"><span class="q-num">5.</span><div class="q-content">If potential is the same everywhere, the work done in moving a charge is ________.</div></div>
+
+        <div class="sub-heading">Part II: Multiple Choice Questions (MCQs)</div>
+        <div class="question-item">
+            <span class="q-num">6.</span>
+            <div class="q-content">Which of the following is the dimensional formula of electrostatic potential?
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $[ML^2T^{-2}A^{-1}]$</div><div class="mcq-opt">(b) $[ML^2T^{-3}A^{-1}]$</div>
+                    <div class="mcq-opt">(c) $[MLT^{-2}A^{-1}]$</div><div class="mcq-opt">(d) $[ML^2T^{-3}A^{-2}]$</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">7.</span>
+            <div class="q-content">Work done in moving a charge of $2\text{ C}$ across a potential difference of $5\text{ V}$ is:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $2.5\text{ J}$</div><div class="mcq-opt">(b) $10\text{ J}$</div>
+                    <div class="mcq-opt">(c) $7\text{ J}$</div><div class="mcq-opt">(d) $20\text{ J}$</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">8.</span>
+            <div class="q-content">A positive charge naturally moves from:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Higher to lower potential</div><div class="mcq-opt">(b) Lower to higher potential</div>
+                    <div class="mcq-opt">(c) Does not move</div><div class="mcq-opt">(d) In random direction</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">9.</span>
+            <div class="q-content">1 electron volt ($1\text{ eV}$) is equal to:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $1.6 \times 10^{-19}\text{ J}$</div><div class="mcq-opt">(b) $1.6 \times 10^{19}\text{ J}$</div>
+                    <div class="mcq-opt">(c) $9.1 \times 10^{-31}\text{ J}$</div><div class="mcq-opt">(d) $1\text{ J}$</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-heading">Part III: Match the Following</div>
+        <div class="question-item">
+            <span class="q-num">10.</span>
+            <div class="q-content">Match the quantities in Column A with their appropriate unit/formula in Column B:
+                <table class="match-table">
+                    <tr><th>Column A</th><th>Column B</th></tr>
+                    <tr><td>(P) Electrostatic Potential</td><td>(1) Coulomb</td></tr>
+                    <tr><td>(Q) Work Done</td><td>(2) $W/q$</td></tr>
+                    <tr><td>(R) Charge</td><td>(3) Volt</td></tr>
+                    <tr><td>(S) Potential Difference</td><td>(4) Joules</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-header">Topic 2: Potential due to Point Charges & Systems</div>
+    <div class="questions-container">
+        <div class="sub-heading">Part I: Fill in the Blanks</div>
+        <div class="question-item"><span class="q-num">11.</span><div class="q-content">The formula for potential $V$ at a distance $r$ from a point charge $q$ is ________.</div></div>
+        <div class="question-item"><span class="q-num">12.</span><div class="q-content">The electric potential on the equatorial line of an electric dipole is ________.</div></div>
+        <div class="question-item"><span class="q-num">13.</span><div class="q-content">For an electric dipole, the potential at an axial point is inversely proportional to $r^x$. The value of $x$ is ________.</div></div>
+        <div class="question-item"><span class="q-num">14.</span><div class="q-content">The constant $\frac{1}{4\pi\epsilon_0}$ has a numerical value of ________ $\text{Nm}^2/\text{C}^2$.</div></div>
+        <div class="question-item"><span class="q-num">15.</span><div class="q-content">Potential inside a hollow charged spherical conductor is ________ to the potential on its surface.</div></div>
+
+        <div class="sub-heading">Part II: Multiple Choice Questions (MCQs)</div>
+        <div class="question-item">
+            <span class="q-num">16.</span>
+            <div class="q-content">If the distance from a point charge is doubled, the potential becomes:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Double</div><div class="mcq-opt">(b) Half</div>
+                    <div class="mcq-opt">(c) One-fourth</div><div class="mcq-opt">(d) Four times</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">17.</span>
+            <div class="q-content">The net potential at the midpoint of two equal and opposite charges is:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Maximum</div><div class="mcq-opt">(b) Zero</div>
+                    <div class="mcq-opt">(c) Minimum</div><div class="mcq-opt">(d) Infinity</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">18.</span>
+            <div class="q-content">The superposition principle states that total potential is the ________ sum of individual potentials.
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Vector</div><div class="mcq-opt">(b) Algebraic</div>
+                    <div class="mcq-opt">(c) Exponential</div><div class="mcq-opt">(d) Logarithmic</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-heading">Part III: True or False</div>
+        <div class="question-item"><span class="q-num">19.</span><div class="q-content">Electric potential due to a point charge varies inversely with the square of the distance. (True/False)</div></div>
+        <div class="question-item"><span class="q-num">20.</span><div class="q-content">The potential at the center of a dipole is always zero. (True/False)</div></div>
+
+        <div class="sub-heading">Part IV: Match the Following</div>
+        <div class="question-item">
+            <span class="q-num">21.</span>
+            <div class="q-content">Match the source with its correct potential formula:
+                <table class="match-table">
+                    <tr><th>Source</th><th>Formula for Potential ($V$)</th></tr>
+                    <tr><td>(P) Point Charge</td><td>(1) $0$</td></tr>
+                    <tr><td>(Q) Dipole (Axial)</td><td>(2) Constant (same as surface)</td></tr>
+                    <tr><td>(R) Dipole (Equatorial)</td><td>(3) $\frac{kq}{r}$</td></tr>
+                    <tr><td>(S) Inside Hollow Sphere</td><td>(4) $\frac{kp}{r^2}$</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-header">Topic 3: Equipotential Surfaces & E-Field Relation</div>
+    <div class="questions-container">
+        <div class="sub-heading">Part I: Fill in the Blanks</div>
+        <div class="question-item"><span class="q-num">22.</span><div class="q-content">An ________ surface has the same potential at all points.</div></div>
+        <div class="question-item"><span class="q-num">23.</span><div class="q-content">Work done in moving a test charge on an equipotential surface is ________.</div></div>
+        <div class="question-item"><span class="q-num">24.</span><div class="q-content">Electric field lines are always ________ to equipotential surfaces.</div></div>
+        <div class="question-item"><span class="q-num">25.</span><div class="q-content">The mathematical relation between electric field and potential gradient is $E =$ ________.</div></div>
+        <div class="question-item"><span class="q-num">26.</span><div class="q-content">The negative sign in $E = -dV/dr$ shows that electric field points in the direction of ________ potential.</div></div>
+
+        <div class="sub-heading">Part II: Multiple Choice Questions (MCQs)</div>
+        <div class="question-item">
+            <span class="q-num">27.</span>
+            <div class="q-content">Equipotential surfaces for an isolated point charge are:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Parallel planes</div><div class="mcq-opt">(b) Concentric cylinders</div>
+                    <div class="mcq-opt">(c) Concentric spheres</div><div class="mcq-opt">(d) Intersecting planes</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">28.</span>
+            <div class="q-content">Equipotential surfaces for a uniform electric field are:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Parallel planes</div><div class="mcq-opt">(b) Concentric spheres</div>
+                    <div class="mcq-opt">(c) Cylinders</div><div class="mcq-opt">(d) Ellipses</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">29.</span>
+            <div class="q-content">Can two equipotential surfaces intersect?
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Yes</div><div class="mcq-opt">(b) No</div>
+                    <div class="mcq-opt">(c) Only at infinity</div><div class="mcq-opt">(d) Only for negative charges</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">30.</span>
+            <div class="q-content">If $V = 5x$ volts, the magnitude of the electric field $E$ along the x-axis is:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $5\text{ V/m}$</div><div class="mcq-opt">(b) $10\text{ V/m}$</div>
+                    <div class="mcq-opt">(c) $x\text{ V/m}$</div><div class="mcq-opt">(d) Zero</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-heading">Part III: True or False</div>
+        <div class="question-item"><span class="q-num">31.</span><div class="q-content">The surface of a charged perfect conductor is an equipotential surface. (True/False)</div></div>
+        <div class="question-item"><span class="q-num">32.</span><div class="q-content">Potential gradient is a vector quantity. (True/False)</div></div>
+    </div>
+
+    <div class="chapter-header">Section D: Electrostatic Potential Energy</div>
+    <div class="questions-container">
+        <div class="sub-heading">Part I: Fill in the Blanks</div>
+        <div class="question-item"><span class="q-num">33.</span><div class="q-content">The potential energy of a system of two charges is given by $U =$ ________.</div></div>
+        <div class="question-item"><span class="q-num">34.</span><div class="q-content">The SI unit of electrostatic potential energy is ________.</div></div>
+        <div class="question-item"><span class="q-num">35.</span><div class="q-content">Potential energy of a dipole in an external electric field is $U =$ ________.</div></div>
+        <div class="question-item"><span class="q-num">36.</span><div class="q-content">A dipole is in stable equilibrium when the angle between $\vec{p}$ and $\vec{E}$ is ________ degrees.</div></div>
+        <div class="question-item"><span class="q-num">37.</span><div class="q-content">Work done in rotating a dipole from $\theta_1$ to $\theta_2$ is $W =$ ________.</div></div>
+
+        <div class="sub-heading">Part II: Multiple Choice Questions (MCQs)</div>
+        <div class="question-item">
+            <span class="q-num">38.</span>
+            <div class="q-content">If two like charges are brought closer, the potential energy of the system:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Increases</div><div class="mcq-opt">(b) Decreases</div>
+                    <div class="mcq-opt">(c) Remains same</div><div class="mcq-opt">(d) Becomes zero</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">39.</span>
+            <div class="q-content">If an electron and proton are brought closer, the potential energy:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Increases</div><div class="mcq-opt">(b) Decreases</div>
+                    <div class="mcq-opt">(c) Remains same</div><div class="mcq-opt">(d) Becomes positive</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">40.</span>
+            <div class="q-content">The potential energy of a dipole is minimum when it is aligned:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Perpendicular to E</div><div class="mcq-opt">(b) Opposite to E</div>
+                    <div class="mcq-opt">(c) Parallel to E</div><div class="mcq-opt">(d) At $45^\circ$ to E</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-heading">Part III: Match the Following</div>
+        <div class="question-item">
+            <span class="q-num">41.</span>
+            <div class="q-content">Match the Dipole Alignment with its Potential Energy ($U$):
+                <table class="match-table">
+                    <tr><th>Alignment ($\theta$)</th><th>Potential Energy ($U$)</th></tr>
+                    <tr><td>(P) $\theta = 0^\circ$ (Stable)</td><td>(1) $+pE$</td></tr>
+                    <tr><td>(Q) $\theta = 90^\circ$</td><td>(2) $-pE$</td></tr>
+                    <tr><td>(R) $\theta = 180^\circ$ (Unstable)</td><td>(3) $0$</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-header">Topic 4: Electrostatic Potential Energy</div>
+    <div class="questions-container">
+        <div class="sub-heading">Part I: Fill in the Blanks</div>
+        <div class="question-item"><span class="q-num">42.</span><div class="q-content">Capacitance $C$ is the ratio of ________ to potential difference $V$.</div></div>
+        <div class="question-item"><span class="q-num">43.</span><div class="q-content">The SI unit of capacitance is ________.</div></div>
+        <div class="question-item"><span class="q-num">44.</span><div class="q-content">$1\mu\text{F} =$ ________ Farads.</div></div>
+        <div class="question-item"><span class="q-num">45.</span><div class="q-content">Capacitance of an isolated spherical conductor of radius $R$ is $C =$ ________.</div></div>
+        <div class="question-item"><span class="q-num">46.</span><div class="q-content">Capacitance of a parallel plate capacitor in vacuum is $C =$ ________.</div></div>
+        <div class="question-item"><span class="q-num">47.</span><div class="q-content">When a dielectric is inserted between the plates, capacitance ________.</div></div>
+        <div class="question-item"><span class="q-num">48.</span><div class="q-content">In a series combination of capacitors, ________ remains the same across each.</div></div>
+        <div class="question-item"><span class="q-num">49.</span><div class="q-content">In a parallel combination of capacitors, ________ remains the same across each.</div></div>
+
+        <div class="sub-heading">Part II: Multiple Choice Questions (MCQs)</div>
+        <div class="question-item">
+            <span class="q-num">50.</span>
+            <div class="q-content">Equivalent capacitance of $C_1$ and $C_2$ in parallel is:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $C_1 + C_2$</div><div class="mcq-opt">(b) $\frac{C_1 C_2}{C_1+C_2}$</div>
+                    <div class="mcq-opt">(c) $\frac{1}{C_1} + \frac{1}{C_2}$</div><div class="mcq-opt">(d) $\frac{C_1+C_2}{C_1 C_2}$</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">51.</span>
+            <div class="q-content">Equivalent capacitance of two $4\mu\text{F}$ capacitors in series is:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $8\mu\text{F}$</div><div class="mcq-opt">(b) $2\mu\text{F}$</div>
+                    <div class="mcq-opt">(c) $4\mu\text{F}$</div><div class="mcq-opt">(d) $16\mu\text{F}$</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">52.</span>
+            <div class="q-content">The energy stored in a capacitor is given by:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $\frac{1}{2}CV^2$</div><div class="mcq-opt">(b) $\frac{1}{2}QV$</div>
+                    <div class="mcq-opt">(c) $\frac{Q^2}{2C}$</div><div class="mcq-opt">(d) All of these</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">53.</span>
+            <div class="q-content">If the distance between plates of a parallel plate capacitor is halved, capacitance:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) Halves</div><div class="mcq-opt">(b) Doubles</div>
+                    <div class="mcq-opt">(c) Quadruples</div><div class="mcq-opt">(d) Remains unchanged</div>
+                </div>
+            </div>
+        </div>
+        <div class="question-item">
+            <span class="q-num">54.</span>
+            <div class="q-content">The value of dielectric constant ($K$) for a perfect conductor is:
+                <div class="mcq-options">
+                    <div class="mcq-opt">(a) $1$</div><div class="mcq-opt">(b) $0$</div>
+                    <div class="mcq-opt">(c) Infinity</div><div class="mcq-opt">(d) $-1$</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-heading">Part III: Match the Following</div>
+        <div class="question-item">
+            <span class="q-num">55.</span>
+            <div class="q-content">Match the quantities with their formulas:
+                <table class="match-table">
+                    <tr><th>Quantity</th><th>Formula</th></tr>
+                    <tr><td>(P) Energy Density ($u$)</td><td>(1) $\frac{1}{2}CV^2$</td></tr>
+                    <tr><td>(Q) Energy Stored ($U$)</td><td>(2) $\frac{1}{2}\epsilon_0 E^2$</td></tr>
+                    <tr><td>(R) Series Equivalent ($C_s$)</td><td>(3) $C_1 + C_2$</td></tr>
+                    <tr><td>(S) Parallel Equivalent ($C_p$)</td><td>(4) $(\frac{1}{C_1} + \frac{1}{C_2})^{-1}$</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="chapter-header">Topic 5: Capacitance & Combinations</div>
+    <div class="questions-container">
+        <div class="sub-heading">Part I: Fill in the Blanks</div>
+    </div></div></body></html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Physics Worksheet (Level 0)</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS: Level 0 (Orangish) */
+            --primary-color: #e65100; 
+            --bg-color: #fff3e0;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ff9800;   
+            --bg-color: #2e1d0f;        
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.5; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; 
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 12px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 6px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 4px; 
+            font-size: 11.5pt; page-break-inside: avoid; text-align: left; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; padding-bottom: 2px; }
+
+        .mcq-options { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 3px; }
+        .mcq-option { flex: 1; min-width: 45%; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); 
+            opacity: 0.05;     
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter 6: Electromagnetic Induction (Level 0 - Foundation)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 12</span>
+                <span>Subject: Physics</span>
+            </div>
+        </div>
+
+        <!-- TOPIC 6.1 -->
+        <div class="chapter-header">Topic 6.1: Magnetic Flux & Faraday’s Laws</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">
+                    (MCQ) The SI unit of magnetic flux is:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Tesla</div>
+                        <div class="mcq-option">(b) Weber</div>
+                        <div class="mcq-option">(c) Henry</div>
+                        <div class="mcq-option">(d) Maxwell</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">
+                    (MCQ) The correct mathematical formula for magnetic flux ($\Phi_B$) over an area $\vec{A}$ in a uniform magnetic field $\vec{B}$ is:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) $\vec{B} \times \vec{A}$</div>
+                        <div class="mcq-option">(b) $\frac{\vec{B}}{\vec{A}}$</div>
+                        <div class="mcq-option">(c) $\vec{B} \cdot \vec{A}$</div>
+                        <div class="mcq-option">(d) $B + A$</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">
+                    (MCQ) Faraday’s Law states that the magnitude of induced EMF is directly proportional to the:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Magnetic flux</div>
+                        <div class="mcq-option">(b) Resistance of the coil</div>
+                        <div class="mcq-option">(c) Rate of change of magnetic flux</div>
+                        <div class="mcq-option">(d) Area of the coil</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">(Fill in the blank) The phenomenon of generating electric current by changing magnetic fields is known as Electromagnetic ____________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">(Fill in the blank) 1 Weber is equal to 1 Tesla multiplied by 1 ____________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">(True/False) Magnetic flux is a vector quantity.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">(One Word) Who discovered electromagnetic induction independently in the USA at the same time as Michael Faraday in the UK?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">(One Word) What is the widely used CGS unit of magnetic flux?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">(Formula) Write the formula for induced EMF ($e$) for a coil of $N$ turns according to Faraday's law of induction.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">
+                    (MCQ) Magnetic flux linking a surface is maximum when the angle $\theta$ between the area vector and the magnetic field lines is:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) $90^\circ$</div>
+                        <div class="mcq-option">(b) $45^\circ$</div>
+                        <div class="mcq-option">(c) $180^\circ$</div>
+                        <div class="mcq-option">(d) $0^\circ$</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOPIC 6.2 -->
+        <div class="chapter-header">Topic 6.2: Lenz’s Law</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">
+                    (MCQ) Lenz’s Law is a direct consequence of the law of conservation of:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Charge</div>
+                        <div class="mcq-option">(b) Momentum</div>
+                        <div class="mcq-option">(c) Energy</div>
+                        <div class="mcq-option">(d) Mass</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">
+                    (MCQ) The negative sign in Faraday’s equation ($e = - \frac{d\Phi}{dt}$) is mathematically justified by:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Ampere's Law</div>
+                        <div class="mcq-option">(b) Lenz's Law</div>
+                        <div class="mcq-option">(c) Gauss's Law</div>
+                        <div class="mcq-option">(d) Biot-Savart Law</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">
+                    (MCQ) If the North pole of a bar magnet is brought rapidly near a closed conducting coil, the face of the coil facing the magnet will act as a:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) South pole</div>
+                        <div class="mcq-option">(b) North pole</div>
+                        <div class="mcq-option">(c) Positive charge</div>
+                        <div class="mcq-option">(d) Negative charge</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">(Fill in the blank) According to Lenz's law, the induced current always flows in such a direction as to ____________ the change that produced it.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">(Fill in the blank) The mechanical work done in moving a magnet against the opposing force of an induced current is converted into ____________ energy.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">16.</span>
+                <div class="q-content">(True/False) Lenz's law is used strictly to determine the exact magnitude of the induced EMF.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">17.</span>
+                <div class="q-content">(True/False) If the inward magnetic flux into the plane of a closed loop is continuously decreasing, the induced current will flow in a clockwise direction.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">18.</span>
+                <div class="q-content">(One Word) Name the specific law that exclusively provides the <b>direction</b> of the induced EMF or current in a circuit.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">19.</span>
+                <div class="q-content">
+                    (MCQ) Which hand rule is sometimes used alternatively to find the direction of induced current in a straight conductor moving in a magnetic field?
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Fleming's Left-Hand Rule</div>
+                        <div class="mcq-option">(b) Fleming's Right-Hand Rule</div>
+                        <div class="mcq-option">(c) Maxwell's Corkscrew Rule</div>
+                        <div class="mcq-option">(d) Right-Hand Thumb Rule</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">20.</span>
+                <div class="q-content">(One Word) Does Lenz's law violate the principle of conservation of energy? (Yes/No)</div>
+            </div>
+        </div>
+
+        <!-- TOPIC 6.3 -->
+        <div class="chapter-header">Topic 6.3: Motional EMF</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">21.</span>
+                <div class="q-content">
+                    (MCQ) The motional EMF $E$ induced across the ends of a straight conducting rod of length $l$ moving with velocity $v$ perpendicularly to a uniform magnetic field $B$ is:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) $\frac{1}{2} B l v$</div>
+                        <div class="mcq-option">(b) $B^2 l v$</div>
+                        <div class="mcq-option">(c) $B l v$</div>
+                        <div class="mcq-option">(d) $\frac{B v}{l}$</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">22.</span>
+                <div class="q-content">
+                    (MCQ) If a conducting rod of length $l$ rotates with angular velocity $\omega$ in a uniform perpendicular magnetic field $B$, the EMF induced between its center and one end is:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) $B \omega l$</div>
+                        <div class="mcq-option">(b) $\frac{1}{2} B \omega l^2$</div>
+                        <div class="mcq-option">(c) $B \omega l^2$</div>
+                        <div class="mcq-option">(d) $\frac{1}{2} B^2 \omega l$</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">23.</span>
+                <div class="q-content">
+                    (MCQ) Motional EMF arises fundamentally due to the magnetic Lorentz force acting on the free ____________ inside the moving conductor.
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Protons</div>
+                        <div class="mcq-option">(b) Neutrons</div>
+                        <div class="mcq-option">(c) Electrons</div>
+                        <div class="mcq-option">(d) Atoms</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">24.</span>
+                <div class="q-content">(Fill in the blank) The magnitude of the magnetic Lorentz force on an electron of charge $e$ moving with velocity $v$ perpendicular to field $B$ inside the rod is ____________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">25.</span>
+                <div class="q-content">(Fill in the blank) To induce a steady motional EMF, the moving conductor must physically "cut" the magnetic ____________ lines.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">26.</span>
+                <div class="q-content">(True/False) If a straight conducting rod moves perfectly parallel to uniform magnetic field lines, the motional EMF induced across it is zero.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">27.</span>
+                <div class="q-content">(True/False) The value of the induced motional EMF depends on the electrical resistance of the rod.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">28.</span>
+                <div class="q-content">(Formula) Write the formula for the electrical power $P$ required to push a rod of length $l$ and resistance $R$ with constant velocity $v$ in a perpendicular field $B$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">29.</span>
+                <div class="q-content">(Formula) Complete the vector scalar triple product formula for motional EMF: $E = \int (\vec{v} \times \vec{B}) \cdot d\vec{l}$. When $\vec{v}, \vec{B}, \vec{l}$ are mutually perpendicular, what does it simplify to?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">30.</span>
+                <div class="q-content">
+                    (MCQ) The induced EMF is maximum when a conductor moves:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Parallel to the magnetic field</div>
+                        <div class="mcq-option">(b) At $45^\circ$ to the magnetic field</div>
+                        <div class="mcq-option">(c) Perpendicular to the magnetic field</div>
+                        <div class="mcq-option">(d) Anti-parallel to the magnetic field</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOPIC 6.4 -->
+        <div class="chapter-header">Topic 6.4: Eddy Currents</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">31.</span>
+                <div class="q-content">
+                    (MCQ) Eddy currents are induced primarily in:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Thin conducting wires</div>
+                        <div class="mcq-option">(b) Insulating materials</div>
+                        <div class="mcq-option">(c) Bulk solid metallic blocks</div>
+                        <div class="mcq-option">(d) Semiconductors only</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">32.</span>
+                <div class="q-content">
+                    (MCQ) The undesirable heating effect of eddy currents in transformers can be effectively minimized by using:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Solid copper cores</div>
+                        <div class="mcq-option">(b) Laminated soft iron cores</div>
+                        <div class="mcq-option">(c) Thicker wires</div>
+                        <div class="mcq-option">(d) Higher voltages</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">33.</span>
+                <div class="q-content">
+                    (MCQ) Which of the following is NOT a practical application of eddy currents?
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Magnetic braking in trains</div>
+                        <div class="mcq-option">(b) Induction furnaces</div>
+                        <div class="mcq-option">(c) Dead-beat galvanometers</div>
+                        <div class="mcq-option">(d) Electric room heaters (resistance wire)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">34.</span>
+                <div class="q-content">(Fill in the blank) Industrial induction furnaces utilize the intense heat generated by large ____________ currents to melt metal alloys.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">35.</span>
+                <div class="q-content">(Fill in the blank) The rapid stopping of a swinging copper pendulum plate as it enters a strong magnetic field is known as Electromagnetic ____________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">36.</span>
+                <div class="q-content">(True/False) Eddy currents always dissipate energy by producing a Joule heating effect within the bulk conductor.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">37.</span>
+                <div class="q-content">(True/False) Large eddy currents are highly desirable and beneficial inside the iron core of an AC transformer.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">38.</span>
+                <div class="q-content">(One Word) What specific type of frictionless braking is used in some modern high-speed electric trains based on this principle?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">39.</span>
+                <div class="q-content">(One Word) What is the alternative name for Eddy Currents, named after the physicist who discovered them?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">40.</span>
+                <div class="q-content">
+                    (MCQ) Cutting long slots or holes in a metal plate swinging through a magnetic field will:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Increase the eddy currents</div>
+                        <div class="mcq-option">(b) Reduce the eddy currents</div>
+                        <div class="mcq-option">(c) Have no effect at all</div>
+                        <div class="mcq-option">(d) Change the direction of gravity</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOPIC 6.5 -->
+        <div class="chapter-header">Topic 6.5: Inductance</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">41.</span>
+                <div class="q-content">
+                    (MCQ) The standard SI unit of self-inductance and mutual inductance is the:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Faraday</div>
+                        <div class="mcq-option">(b) Henry</div>
+                        <div class="mcq-option">(c) Weber</div>
+                        <div class="mcq-option">(d) Tesla</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">42.</span>
+                <div class="q-content">
+                    (MCQ) The self-inductance ($L$) of an ideal long air-cored solenoid of length $l$, area $A$, and $N$ total turns is:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) $\frac{\mu_0 N^2 A}{l}$</div>
+                        <div class="mcq-option">(b) $\frac{\mu_0 N A}{l}$</div>
+                        <div class="mcq-option">(c) $\mu_0 N^2 A l$</div>
+                        <div class="mcq-option">(d) $\frac{\mu_0 N A^2}{l}$</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">43.</span>
+                <div class="q-content">
+                    (MCQ) The phenomenon by which an opposing EMF is induced in a coil strictly due to the changing current in the <b>same</b> coil is called:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Mutual induction</div>
+                        <div class="mcq-option">(b) Self-induction</div>
+                        <div class="mcq-option">(c) Electromagnetic damping</div>
+                        <div class="mcq-option">(d) Capacitance</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">44.</span>
+                <div class="q-content">(Fill in the blank) The mutual inductance ($M$) between two adjacent coils depends strongly on their relative geometry and ____________ to each other.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">45.</span>
+                <div class="q-content">(Fill in the blank) Because it physically opposes any growth or decay of current, Self-inductance is often referred to as the electrical analogue of mechanical ____________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">46.</span>
+                <div class="q-content">(True/False) The unit Henry (H) is dimensionally equivalent to Weber per Ampere (Wb/A).</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">47.</span>
+                <div class="q-content">(True/False) Inserting a ferromagnetic soft iron core inside a solenoid will dramatically decrease its self-inductance.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">48.</span>
+                <div class="q-content">(One Word) What is the generic name of the passive electrical circuit component specifically designed to introduce self-inductance?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">49.</span>
+                <div class="q-content">(Formula) Write the formula for the magnetic potential energy ($U$) stored in an inductor of inductance $L$ carrying a steady current $I$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">50.</span>
+                <div class="q-content">(Formula) Write the formula for the Mutual Inductance ($M$) of two long perfectly coaxial solenoids of length $l$, inner cross-sectional area $A$, and turn densities $n_1$ and $n_2$.</div>
+            </div>
+        </div>
+
+        <!-- TOPIC 6.6 -->
+        <div class="chapter-header">Topic 6.6: AC Generator</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">51.</span>
+                <div class="q-content">
+                    (MCQ) An AC Generator acts as a machine that systematically converts:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Electrical energy into mechanical energy</div>
+                        <div class="mcq-option">(b) Chemical energy into electrical energy</div>
+                        <div class="mcq-option">(c) Mechanical energy into electrical energy</div>
+                        <div class="mcq-option">(d) Heat energy into mechanical energy</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">52.</span>
+                <div class="q-content">
+                    (MCQ) The fundamental working principle of an AC generator is:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) Heating effect of current</div>
+                        <div class="mcq-option">(b) Magnetic effect of current</div>
+                        <div class="mcq-option">(c) Electromagnetic Induction</div>
+                        <div class="mcq-option">(d) Lorentz force on stationary charges</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">53.</span>
+                <div class="q-content">
+                    (MCQ) The peak (maximum) induced EMF ($E_0$) generated by an AC generator coil rotating with angular velocity $\omega$ is given by:
+                    <div class="mcq-options">
+                        <div class="mcq-option">(a) $NAB$</div>
+                        <div class="mcq-option">(b) $NAB\omega$</div>
+                        <div class="mcq-option">(c) $\frac{NAB}{\omega}$</div>
+                        <div class="mcq-option">(d) $N^2 AB\omega$</div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">54.</span>
+                <div class="q-content">(Fill in the blank) In an AC generator setup, the ends of the rotating armature coil are smoothly connected to the external stationary circuit via two continuous slip ____________.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">55.</span>
+                <div class="q-content">(Fill in the blank) The induced EMF essentially alternates its polarity because the angle ($\theta$) between the coil's area vector and the magnetic field changes ____________ with time.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">56.</span>
+                <div class="q-content">(True/False) The AC voltage frequency ($Hz$) in the external circuit is exactly equal to the frequency of physical rotation of the armature coil inside the generator.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">57.</span>
+                <div class="q-content">(True/False) A split ring commutator (half-rings) is an essential component used to maintain the alternating nature of the current in an AC generator.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">58.</span>
+                <div class="q-content">(One Word) What is the technical name for the main rotating coil assembly inside a generator or motor?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">59.</span>
+                <div class="q-content">(Formula) Write the sine-wave expression for the instantaneous EMF $e(t)$ produced by an AC generator at any time $t$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">60.</span>
+                <div class="q-content">(One Word) In the generator formula $E_0 = NAB\omega$, what specific physical quantity does $\omega$ strictly represent?</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

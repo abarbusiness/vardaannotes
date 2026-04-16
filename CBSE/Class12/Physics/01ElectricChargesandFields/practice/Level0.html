@@ -1,0 +1,394 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Physics Worksheet</title>
+    <!-- MathJax -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 0) */
+            --primary-color: #e65100; 
+            --bg-color: #fff3e0;
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ff9800;   /* Lighter orange based on readability */
+            --bg-color: #3e2723;        /* Dark container background */
+            --body-bg: #121212;         /* Very dark body background */
+            --text-main: #e0e0e0;       /* Off-white text */
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; /* Prominent Size */
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .solution-item { 
+            border-bottom: 1px dashed var(--bg-color); padding-bottom: 5px; margin-bottom: 8px; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; }
+        .ans-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); /* Inverts White BG to Black */
+            opacity: 0.05;     /* Blends black box into dark background */
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style></head><body><!-- Theme Toggle --><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></button><script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script><img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark"><div class="container">
+    <div class="header">
+        <h1 class="institute-name">Vardaan Learning Institute</h1>
+        <div class="tagline">
+            <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+        </div>
+        <div class="worksheet-title">Chapter 1: Electric Charges and Fields - Foundation Drill (Level 0)</div>
+        <div class="meta-info">
+            <span>Student Name: ____________________________________</span>
+            <span>Class: 12</span>
+            <span>Subject: Physics</span>
+        </div>
+    </div>
+
+    <!-- Section 1.1 & 1.2 -->
+    <div class="chapter-header">Topic 1: Electric Charge & Basic Properties</div>
+    <div class="questions-container">
+        <!-- Fill in the blanks -->
+        <div class="question-item"><span class="q-num">1.</span><div class="q-content">The SI unit of electric charge is ____________.</div></div>
+        <div class="question-item"><span class="q-num">2.</span><div class="q-content">The magnitude of elementary charge on a proton is exactly ____________ C.</div></div>
+        <div class="question-item"><span class="q-num">3.</span><div class="q-content">When a glass rod is rubbed with silk, the glass rod acquires a ____________ charge.</div></div>
+        
+        <!-- MCQs -->
+        <div class="question-item"><span class="q-num">4.</span><div class="q-content">
+            Which of the following is the true test of electrification?<br>
+            (A) Attraction &nbsp;&nbsp;&nbsp; (B) Repulsion &nbsp;&nbsp;&nbsp; (C) Both &nbsp;&nbsp;&nbsp; (D) None
+        </div></div>
+        <div class="question-item"><span class="q-num">5.</span><div class="q-content">
+            The number of electrons present in $1\text{ C}$ of charge is approximately:<br>
+            (A) $6.25 \times 10^{18}$ &nbsp;&nbsp;&nbsp; (B) $1.6 \times 10^{-19}$ &nbsp;&nbsp;&nbsp; (C) $6.25 \times 10^{19}$ &nbsp;&nbsp;&nbsp; (D) $1.6 \times 10^{19}$
+        </div></div>
+        <div class="question-item"><span class="q-num">6.</span><div class="q-content">
+            The law of conservation of charge states that:<br>
+            (A) Charge cannot be created or destroyed isolatedly.<br>
+            (B) The total charge of an isolated system remains constant.<br>
+            (C) Charges can be created in equal and opposite pairs.<br>
+            (D) All of the above are correct interpretations.
+        </div></div>
+
+        <!-- VSAs -->
+        <div class="question-item"><span class="q-num">7.</span><div class="q-content">Define the quantization of charge and state its formula.</div></div>
+        <div class="question-item"><span class="q-num">8.</span><div class="q-content">What does the equation $q_1 + q_2 = 0$ signify in electrostatics?</div></div>
+        <div class="question-item"><span class="q-num">9.</span><div class="q-content">Can a physical body have a total charge of $4.8 \times 10^{-19}\text{ C}$? Give a reason.</div></div>
+        <div class="question-item"><span class="q-num">10.</span><div class="q-content">Distinguish basically between conductors and insulators.</div></div>
+        <div class="question-item"><span class="q-num">11.</span><div class="q-content">What is meant by the process of "grounding" or "earthing"?</div></div>
+        <div class="question-item"><span class="q-num">12.</span><div class="q-content">What is charging by induction?</div></div>
+
+        <!-- Match the Following -->
+        <div class="question-item"><span class="q-num">13.</span><div class="q-content">
+            Match the following concepts correctly:<br>
+            <table style="width: 100%; max-width: 500px; margin-top: 5px;">
+                <tr><td style="width: 50%;">(a) Positive charge on a body</td><td>(i) Given by $q = ne$</td></tr>
+                <tr><td>(b) Negative charge on a body</td><td>(ii) Arises due to excess of electrons</td></tr>
+                <tr><td>(c) Quantization principle</td><td>(iii) Arises due to deficiency of electrons</td></tr>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- Section 1.3 -->
+    <div class="chapter-header">Topic 2: Coulomb's Law</div>
+    <div class="questions-container">
+        <!-- Fill in the blanks -->
+        <div class="question-item"><span class="q-num">14.</span><div class="q-content">The numerical value of $1/(4\pi\epsilon_0)$ in vacuum is ____________ $\text{Nm}^2/\text{C}^2$.</div></div>
+        <div class="question-item"><span class="q-num">15.</span><div class="q-content">The constant $\epsilon_0$ is known as the ____________ of free space.</div></div>
+        
+        <!-- MCQs -->
+        <div class="question-item"><span class="q-num">16.</span><div class="q-content">
+            The electrostatic force between two point charges separated by distance $r$ is proportional to:<br>
+            (A) $r$ &nbsp;&nbsp;&nbsp; (B) $r^2$ &nbsp;&nbsp;&nbsp; (C) $1/r$ &nbsp;&nbsp;&nbsp; (D) $1/r^2$
+        </div></div>
+        <div class="question-item"><span class="q-num">17.</span><div class="q-content">
+            If a dielectric medium of constant $K$ is introduced between two point charges, the force between them:<br>
+            (A) increases $K$ times &nbsp;&nbsp;&nbsp; (B) decreases $K$ times &nbsp;&nbsp;&nbsp; (C) remains the same &nbsp;&nbsp;&nbsp; (D) becomes zero
+        </div></div>
+        <div class="question-item"><span class="q-num">18.</span><div class="q-content">
+            Relative permittivity (Dielectric constant) $\epsilon_r$ is defined as the ratio:<br>
+            (A) $\epsilon_0 / \epsilon$ &nbsp;&nbsp;&nbsp; (B) $\epsilon / \epsilon_0$ &nbsp;&nbsp;&nbsp; (C) $\epsilon_0 \times \epsilon$ &nbsp;&nbsp;&nbsp; (D) $\epsilon_0 + \epsilon$
+        </div></div>
+
+        <!-- VSAs -->
+        <div class="question-item"><span class="q-num">19.</span><div class="q-content">State Coulomb's law in electrostatics.</div></div>
+        <div class="question-item"><span class="q-num">20.</span><div class="q-content">Write Coulomb's law strictly in vector form.</div></div>
+        <div class="question-item"><span class="q-num">21.</span><div class="q-content">What is the accepted dielectric constant ($K$) for a perfectly conducting metal?</div></div>
+        <div class="question-item"><span class="q-num">22.</span><div class="q-content">State the principle of superposition for electrostatic forces.</div></div>
+        <div class="question-item"><span class="q-num">23.</span><div class="q-content">Two point charges $+1\mu\text{C}$ and $+5\mu\text{C}$ are placed at a distance. What is the ratio of the forces acting on them?</div></div>
+
+        <!-- Match the Following -->
+        <div class="question-item"><span class="q-num">24.</span><div class="q-content">
+            Match the physical quantities to their standard SI values:<br>
+            <table style="width: 100%; max-width: 500px; margin-top: 5px;">
+                <tr><td style="width: 50%;">(a) $1/(4\pi\epsilon_0)$</td><td>(i) Vector sum of individual forces</td></tr>
+                <tr><td>(b) $\epsilon_0$</td><td>(ii) $9 \times 10^9 \text{ Nm}^2/\text{C}^2$</td></tr>
+                <tr><td>(c) Superposition principle</td><td>(iii) $8.854 \times 10^{-12} \text{ C}^2/\text{Nm}^2$</td></tr>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- Section 1.4 & 1.5 -->
+    <div class="chapter-header">Topic 3: Electric Field & Field Lines</div>
+    <div class="questions-container">
+        <!-- Fill in the blanks -->
+        <div class="question-item"><span class="q-num">25.</span><div class="q-content">The SI unit of electric field intensity is ____________ or $\text{V/m}$.</div></div>
+        <div class="question-item"><span class="q-num">26.</span><div class="q-content">The electric field inside a hollow conducting charged sphere is perfectly ____________.</div></div>
+        <div class="question-item"><span class="q-num">27.</span><div class="q-content">Electric field lines always diverge away from a ____________ charge.</div></div>
+
+        <!-- MCQs -->
+        <div class="question-item"><span class="q-num">28.</span><div class="q-content">
+            The magnitude of the electric field due to a point charge varies with distance $r$ as:<br>
+            (A) $1/r$ &nbsp;&nbsp;&nbsp; (B) $1/r^2$ &nbsp;&nbsp;&nbsp; (C) $1/r^3$ &nbsp;&nbsp;&nbsp; (D) directly proportional to $r$
+        </div></div>
+        <div class="question-item"><span class="q-num">29.</span><div class="q-content">
+            Two electric field lines can intersect:<br>
+            (A) at a point charge &nbsp;&nbsp;&nbsp; (B) at a neutral point &nbsp;&nbsp;&nbsp; (C) never &nbsp;&nbsp;&nbsp; (D) in a uniform field
+        </div></div>
+        <div class="question-item"><span class="q-num">30.</span><div class="q-content">
+            By convention, an electrostatic test charge is always taken as:<br>
+            (A) Unit positive &nbsp;&nbsp;&nbsp; (B) Unit negative &nbsp;&nbsp;&nbsp; (C) Large positive &nbsp;&nbsp;&nbsp; (D) Large negative
+        </div></div>
+
+        <!-- VSAs -->
+        <div class="question-item"><span class="q-num">31.</span><div class="q-content">Define electric field intensity at a point.</div></div>
+        <div class="question-item"><span class="q-num">32.</span><div class="q-content">Write the formula for the electric field due to a point charge $Q$ at a distance $r$.</div></div>
+        <div class="question-item"><span class="q-num">33.</span><div class="q-content">Define electric field lines.</div></div>
+        <div class="question-item"><span class="q-num">34.</span><div class="q-content">Give the primary reason why electrostatic field lines do not form closed continuous loops.</div></div>
+        <div class="question-item"><span class="q-num">35.</span><div class="q-content">What does the tangent drawn at any point on an electric field line represent?</div></div>
+
+        <!-- Match the Following -->
+        <div class="question-item"><span class="q-num">36.</span><div class="q-content">
+            Match the electric field concepts:<br>
+            <table style="width: 100%; max-width: 500px; margin-top: 5px;">
+                <tr><td style="width: 50%;">(a) Uniform electric field</td><td>(i) Net electric field intensity is zero</td></tr>
+                <tr><td>(b) Tangent on a field line</td><td>(ii) Parallel and equally spaced straight lines</td></tr>
+                <tr><td>(c) Neutral point</td><td>(iii) Gives the direction of electric field vector</td></tr>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- Section 1.6 & 1.7 -->
+    <div class="chapter-header">Topic 4: Electric Flux & Electric Dipole</div>
+    <div class="questions-container">
+        <!-- Fill in the blanks -->
+        <div class="question-item"><span class="q-num">37.</span><div class="q-content">The formula for electric flux through an area $\vec{A}$ in a uniform field $\vec{E}$ is $\Phi = $ ____________.</div></div>
+        <div class="question-item"><span class="q-num">38.</span><div class="q-content">The SI unit of electric dipole moment is ____________.</div></div>
+
+        <!-- MCQs -->
+        <div class="question-item"><span class="q-num">39.</span><div class="q-content">
+            The net electric flux passing through a closed cubic box enclosing an electric dipole is:<br>
+            (A) $q/\epsilon_0$ &nbsp;&nbsp;&nbsp; (B) $2q/\epsilon_0$ &nbsp;&nbsp;&nbsp; (C) Zero &nbsp;&nbsp;&nbsp; (D) Infinity
+        </div></div>
+        <div class="question-item"><span class="q-num">40.</span><div class="q-content">
+            The torque acting on a dipole placed in a uniform electric field is maximum when the angle between $\vec{p}$ and $\vec{E}$ is:<br>
+            (A) $0^\circ$ &nbsp;&nbsp;&nbsp; (B) $45^\circ$ &nbsp;&nbsp;&nbsp; (C) $90^\circ$ &nbsp;&nbsp;&nbsp; (D) $180^\circ$
+        </div></div>
+        <div class="question-item"><span class="q-num">41.</span><div class="q-content">
+            For a short dipole, the ratio of electric field magnitudes at an axial point to an equatorial point at the same distance is:<br>
+            (A) $1:1$ &nbsp;&nbsp;&nbsp; (B) $2:1$ &nbsp;&nbsp;&nbsp; (C) $1:2$ &nbsp;&nbsp;&nbsp; (D) $4:1$
+        </div></div>
+
+        <!-- VSAs -->
+        <div class="question-item"><span class="q-num">42.</span><div class="q-content">Define electric flux. Is it a scalar or a vector quantity?</div></div>
+        <div class="question-item"><span class="q-num">43.</span><div class="q-content">Define electric dipole moment. State its direction convention.</div></div>
+        <div class="question-item"><span class="q-num">44.</span><div class="q-content">Write the vector expression for the torque experienced by a dipole in a uniform electric field.</div></div>
+        <div class="question-item"><span class="q-num">45.</span><div class="q-content">Under what condition is an electric dipole in stable equilibrium in a uniform electric field?</div></div>
+        <div class="question-item"><span class="q-num">46.</span><div class="q-content">Write the formula for the potential energy of a dipole placed in a uniform electric field.</div></div>
+
+        <!-- Match the Following -->
+        <div class="question-item"><span class="q-num">47.</span><div class="q-content">
+            Match the dipole formulas:<br>
+            <table style="width: 100%; max-width: 500px; margin-top: 5px;">
+                <tr><td style="width: 50%;">(a) Torque ($\vec{\tau}$)</td><td>(i) $-\vec{p} \cdot \vec{E}$</td></tr>
+                <tr><td>(b) Potential Energy ($U$)</td><td>(ii) $q(2\vec{a})$</td></tr>
+                <tr><td>(c) Dipole Moment ($\vec{p}$)</td><td>(iii) $\vec{p} \times \vec{E}$</td></tr>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- Section 1.8 & 1.9 -->
+    <div class="chapter-header">Topic 5: Continuous Charge Distribution & Gauss’s Law</div>
+    <div class="questions-container">
+        <!-- Fill in the blanks -->
+        <div class="question-item"><span class="q-num">48.</span><div class="q-content">The surface charge density $\sigma$ is defined as charge per unit ____________.</div></div>
+        <div class="question-item"><span class="q-num">49.</span><div class="q-content">Gauss's law mathematically links the total electric flux to the total enclosed ____________.</div></div>
+
+        <!-- MCQs -->
+        <div class="question-item"><span class="q-num">50.</span><div class="q-content">
+            What is the standard SI unit of linear charge density ($\lambda$)?<br>
+            (A) $\text{C/m}^2$ &nbsp;&nbsp;&nbsp; (B) $\text{C/m}^3$ &nbsp;&nbsp;&nbsp; (C) $\text{C/m}$ &nbsp;&nbsp;&nbsp; (D) Coulombs
+        </div></div>
+        <div class="question-item"><span class="q-num">51.</span><div class="q-content">
+            According to Gauss's Law, the electric flux out of a closed surface depends solely on:<br>
+            (A) the shape of the surface &nbsp;&nbsp;&nbsp; (B) the volume of the surface &nbsp;&nbsp;&nbsp; (C) the net charge enclosed &nbsp;&nbsp;&nbsp; (D) the position of charges inside
+        </div></div>
+        <div class="question-item"><span class="q-num">52.</span><div class="q-content">
+            A Gaussian surface is essentially:<br>
+            (A) Always a perfect sphere &nbsp;&nbsp;&nbsp; (B) An imaginary closed surface &nbsp;&nbsp;&nbsp; (C) A real metallic shield &nbsp;&nbsp;&nbsp; (D) A 2D planar area
+        </div></div>
+
+        <!-- VSAs -->
+        <div class="question-item"><span class="q-num">53.</span><div class="q-content">Define volume charge density ($\rho$) and write its SI unit.</div></div>
+        <div class="question-item"><span class="q-num">54.</span><div class="q-content">State Gauss’s Law in electrostatics.</div></div>
+        <div class="question-item"><span class="q-num">55.</span><div class="q-content">Write the integral mathematical expression for Gauss’s Law.</div></div>
+        <div class="question-item"><span class="q-num">56.</span><div class="q-content">If a point charge $q$ is located at the center of a sphere of radius $R$, what happens to the total flux if the radius is doubled?</div></div>
+        <div class="question-item"><span class="q-num">57.</span><div class="q-content">If a closed surface contains zero net charge, what can be said about the net electric flux leaving the surface?</div></div>
+
+        <!-- Match the Following -->
+        <div class="question-item"><span class="q-num">58.</span><div class="q-content">
+            Match the charge density symbols to their expressions:<br>
+            <table style="width: 100%; max-width: 500px; margin-top: 5px;">
+                <tr><td style="width: 50%;">(a) Linear density ($\lambda$)</td><td>(i) $Q/A$</td></tr>
+                <tr><td>(b) Surface density ($\sigma$)</td><td>(ii) $Q/V$</td></tr>
+                <tr><td>(c) Volume density ($\rho$)</td><td>(iii) $Q/L$</td></tr>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- Section 1.10 -->
+    <div class="chapter-header">Topic 6: Applications of Gauss’s Law</div>
+    <div class="questions-container">
+        <!-- Fill in the blanks -->
+        <div class="question-item"><span class="q-num">59.</span><div class="q-content">The magnitude of the electric field due to an infinitely long straight charged wire is proportional to ____________ (in terms of distance $r$).</div></div>
+        <div class="question-item"><span class="q-num">60.</span><div class="q-content">The electric field produced by an infinite uniformly charged plane sheet is completely ____________ of the distance from the sheet.</div></div>
+
+        <!-- MCQs -->
+        <div class="question-item"><span class="q-num">61.</span><div class="q-content">
+            What is the electric field at a point inside a uniformly charged thin spherical shell?<br>
+            (A) Infinity &nbsp;&nbsp;&nbsp; (B) $\sigma / 2\epsilon_0$ &nbsp;&nbsp;&nbsp; (C) Zero &nbsp;&nbsp;&nbsp; (D) $kq/R^2$
+        </div></div>
+        <div class="question-item"><span class="q-num">62.</span><div class="q-content">
+            The electric field intensity due to a uniformly charged infinite plane sheet having surface density $\sigma$ is:<br>
+            (A) $\sigma / \epsilon_0$ &nbsp;&nbsp;&nbsp; (B) $\sigma / 2\epsilon_0$ &nbsp;&nbsp;&nbsp; (C) $2\sigma / \epsilon_0$ &nbsp;&nbsp;&nbsp; (D) Zero
+        </div></div>
+        <div class="question-item"><span class="q-num">63.</span><div class="q-content">
+            For a uniformly charged spherical shell, the electric field for points outside the shell ($r > R$) behaves as if:<br>
+            (A) The shell has no charge.<br>
+            (B) The charge is uniformly distributed throughout the volume.<br>
+            (C) The entire charge is concentrated at the center.<br>
+            (D) The field is uniform everywhere.
+        </div></div>
+
+        <!-- VSAs -->
+        <div class="question-item"><span class="q-num">64.</span><div class="q-content">Write the final formula for the electric field due to an infinite line charge.</div></div>
+        <div class="question-item"><span class="q-num">65.</span><div class="q-content">Write the formula for the electric field just outside a charged conducting surface.</div></div>
+        <div class="question-item"><span class="q-num">66.</span><div class="q-content">Write the formula for the electric field at a distance $r$ ($r > R$) outside a spherical shell of radius $R$ and total charge $Q$.</div></div>
+        <div class="question-item"><span class="q-num">67.</span><div class="q-content">If two large parallel conducting plates carry equal and opposite surface charge densities ($\pm\sigma$), what is the electric field in the region between them?</div></div>
+
+        <!-- Match the Following -->
+        <div class="question-item"><span class="q-num">68.</span><div class="q-content">
+            Match the continuous charge distributions with their corresponding Electric Field magnitudes:<br>
+            <table style="width: 100%; max-width: 500px; margin-top: 5px;">
+                <tr><td style="width: 50%;">(a) Infinite line charge</td><td>(i) Zero</td></tr>
+                <tr><td>(b) Infinite plane sheet</td><td>(ii) $\sigma / (2\epsilon_0)$</td></tr>
+                <tr><td>(c) Inside a spherical shell</td><td>(iii) $\lambda / (2\pi\epsilon_0 r)$</td></tr>
+            </table>
+        </div></div>
+    </div>
+
+    <div class="footer">
+        Created by Team Vardaan | Powered by Vardaan Comet<br>
+        Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+    </div></div></body></html>
