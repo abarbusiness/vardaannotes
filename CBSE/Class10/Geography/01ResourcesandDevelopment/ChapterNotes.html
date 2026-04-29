@@ -1,139 +1,248 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 01: Resources and Development - Vardaan Master Notes</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- MathJax Configuration -->
-    <script>
-        MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                processEscapes: true
-            },
-            chtml: {
-                mtextInheritFont: true,
-                scale: 1.05
-            },
-            options: {
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-            }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Resources and Development - Geography - Vardaan Learning Institute</title>
     <style>
-        /* --- CSS VARIABLES & THEME --- */
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            /* Core Colors */
-            --paper-bg: #ffffff;
-            --ink-color: #000000;
-            --accent-color: #000000;
-
-            /* Theme Palettes (Geography Style: Earth/Blue Tones) */
-            --yellow-bg: #fffde7;
-            --yellow-border: #fdd835;
-
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
             --green-border: #43a047;
-
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
-            /* Primary Geography Color */
-
             --pink-bg: #fce4ec;
             --pink-border: #d81b60;
-
-            --red-border: #d32f2f;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
 
-        /* --- GLOBAL RESET & TYPOGRAPHY --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
         }
 
+        /* --- GLOBAL LAYOUT --- */
         body {
             background-color: var(--paper-bg);
-            color: var(--ink-color);
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* --- DARK MODE (FILTER INVERSION) --- */
-        html,
-        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
             overflow-x: hidden;
-            width: 100%;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            transition: filter 0.3s ease;
-        }
-
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg);
-        }
-
-        /* --- ADAPTIVE WATERMARK --- */
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
             z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.1;
             max-width: 80%;
-            height: auto;
-            opacity: 0.05;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important;
+            filter: invert(1); 
+            opacity: 0.15;
         }
 
-        /* --- PAPER SHEET LAYOUT --- */
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
             background-color: var(--paper-bg);
-            box-shadow: none;
-            border: none;
             width: 210mm;
             max-width: 100%;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
-        @media screen and (max-width: 800px) {
-            .paper-sheet {
-                width: 100%;
-                padding: 20px;
-            }
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px; /* TIGHTENED LAYOUT */
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
         }
 
-        /* --- THEME TOGGLE BUTTON --- */
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO (Updated V2.2) --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            
+            /* DEFAULT STATE: Hidden on screen */
+            display: none;
+            
+            /* Layout properties (active when visible) */
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            
+            /* TIGHTENED LAYOUT */
+            margin-top: 5px; 
+            
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- THEME TOGGLE --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -141,7 +250,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--toggle-bg);
             border: none;
             cursor: pointer;
             z-index: 1000;
@@ -150,180 +259,108 @@
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
-        }
-
-        .icon-sun,
-        .icon-moon {
+        .icon-sun, .icon-moon {
             position: absolute;
-            width: 24px;
-            height: 24px;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
         }
 
-        .icon-moon {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
-        }
-
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
-        }
-
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        /* --- CONTENT STYLING --- */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            border-bottom: 2px solid var(--ink-color);
-            padding-bottom: 0.5rem;
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-        }
-
-        p,
-        li {
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        ul,
-        ol {
-            padding-left: 25px;
-            margin-bottom: 1rem;
-        }
-
-        /* --- SPECIAL COMPONENTS --- */
-        .geo-box {
-            background-color: var(--blue-bg);
-            border-left: 4px solid var(--blue-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .land-box {
-            background-color: var(--green-bg);
-            border-left: 4px solid var(--green-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .master-tip {
-            border: 2px dashed var(--red-border);
-            background-color: #fffaf0;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-            font-style: italic;
-        }
-
-        .tip-header {
-            font-weight: 700;
-            color: var(--red-border);
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Image Placeholder */
-        .img-placeholder {
-            width: 100%;
-            height: 300px;
-            background-color: #f0f0f0;
-            border: 2px dashed #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 1.5rem 0;
-            flex-direction: column;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .img-prompt {
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #555;
-            background: #e0e0e0;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-            max-width: 90%;
-        }
-
-        /* --- PRINT OPTIMIZATION --- */
+        /* --- STRICT PRINT CONFIGURATION --- */
         @media print {
-            body {
-                background-color: #fff;
+            /* 1. Reset Colors to Clean White/Black */
+            body { 
+                background-color: #ffffff !important; 
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
             }
-
-            html.dark-mode {
-                filter: none !important;
-            }
-
-            .theme-toggle {
-                display: none;
-            }
-
-            .paper-sheet {
-                width: 100%;
-                margin: 0;
-                padding: 0;
+            
+            .paper-sheet { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
                 box-shadow: none !important;
-                border: none !important;
             }
 
+            /* 2. FORCE HIDE Toggle & Web Footer ONLY */
+            .theme-toggle, 
+            .branding-footer {
+                display: none !important;
+            }
+
+            /* 3. FORCE SHOW Contact Info in Print (Updated V2.2) */
+            .contact-info {
+                display: flex !important;
+            }
+
+            /* 4. Force Watermark Visibility in Print */
             .watermark-overlay {
-                position: fixed;
-                opacity: 0.05 !important;
+                display: flex !important;
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+                mix-blend-mode: normal !important; 
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+
+            .watermark-image {
+                filter: none !important; 
+                max-width: 80% !important;
+            }
+
+            /* 5. Configure PDF/Print Page Numbers */
+            @page {
+                size: A4;
+                margin: 2cm;
+                
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+
+                /* The Pink Disc */
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60; 
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
             }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- ADAPTIVE WATERMARK -->
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
     <div class="watermark-overlay">
-        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            alt="Vardaan Watermark" class="watermark-image">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
     </div>
 
-    <!-- THEME TOGGLE -->
+    <!-- COMPONENT: Dark Mode Toggle -->
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -336,182 +373,342 @@
         </svg>
     </button>
 
-    <!-- CONTENT PAPER -->
+    <!-- MAIN CONTAINER -->
     <div class="paper-sheet">
-        <h1>Resources and Development</h1>
-        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Geography • Chapter 01</p>
-
-        <h2>1. Resources</h2>
-        <p>Everything available in our environment which can be used to satisfy our needs, provided, it is
-            technologically accessible, economically feasible and culturally acceptable can be termed as 'Resource'.</p>
-
-        <div class="geo-box">
-            <h4>Classification of Resources</h4>
-            <ul>
-                <li><strong>On the basis of Origin:</strong>
-                    <ul>
-                        <li>Biotic: From biosphere (Human, Flora, Fauna).</li>
-                        <li>Abiotic: Non-living (Rocks, Metals).</li>
-                    </ul>
-                </li>
-                <li><strong>On the basis of Exhaustibility:</strong>
-                    <ul>
-                        <li>Renewable: Can be renewed (Solar, Wind, Water).</li>
-                        <li>Non-Renewable: Formed over geological ages (Minerals, Fossil Fuels).</li>
-                    </ul>
-                </li>
-                <li><strong>On the basis of Ownership:</strong>
-                    <ul>
-                        <li>Individual: Plots, Houses, Wells.</li>
-                        <li>Community: Grazing grounds, Ponds, Parks.</li>
-                        <li>National: Roads, Canals, Railways. (All minerals, water resources, forests, wildlife within
-                            political boundaries + 12 nautical miles oceanic area).</li>
-                        <li>International: Oceanic resources beyond 200 nautical miles of Exclusive Economic Zone (EEZ).
-                            Managed by international institutions.</li>
-                    </ul>
-                </li>
-                <li><strong>On the basis of Status of Development:</strong>
-                    <ul>
-                        <li>Potential: Found in a region but not utilized (e.g., Solar in Rajasthan).</li>
-                        <li>Developed: Surveyed and quality/quantity determined.</li>
-                        <li>Stock: Potential to satisfy needs but no technology to access (e.g., Hydrogen in water as
-                            fuel).</li>
-                        <li>Reserves: Subset of stock which can be used with existing know-how but kept for future
-                            (e.g., Water in dams).</li>
-                    </ul>
-                </li>
-            </ul>
+        
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 10 Geography • Chapter Notes</div>
+            
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
         </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>RESOURCES AND DEVELOPMENT</h1>
+        
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>What is a Resource?</strong><br>
+            Everything available in our environment which can be used to satisfy our needs, provided it is <strong>technologically accessible</strong>, <strong>economically feasible</strong>, and <strong>culturally acceptable</strong> can be termed as a 'Resource'.
+        </div>
+
+        <p>The process of transformation of things available in our environment involves an interactive relationship between <strong>nature, technology, and institutions</strong>. Human beings interact with nature through technology and create institutions to accelerate their economic development.</p>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            Resources are <strong>not</strong> free gifts of nature. They are a function of human activities. Human beings themselves are essential components of resources as they transform material available in our environment into resources.
+        </div>
+
+        <h2>1. Classification of Resources</h2>
+        <p>Resources can be classified in the following ways:</p>
+
+        <div style="border: 2px dashed var(--meta-text); padding: 20px; text-align: center; margin: 25px 0; background-color: var(--toggle-bg); border-radius: 8px;">
+            <span style="display: block; font-weight: bold; color: var(--pink-border); margin-bottom: 10px; text-transform: uppercase;">[ Image Placeholder: Flowchart ]</span>
+            <p style="font-size: 0.9rem; color: var(--meta-text); font-style: italic; margin: 0;"><strong>Image Prompt:</strong> A clean, highly structured educational flowchart illustrating the classification of resources. Top node: Resources. Split into Natural (Renewable, Non-Renewable) and Human (Structures/Institutions, Quantity/Quality). Keep the image background fully white and prefer landscape.</p>
+        </div>
+
+        <h3>(a) On the Basis of Origin</h3>
+        <ul>
+            <li><strong>Biotic Resources:</strong> These are obtained from the biosphere and have life. <em>Examples: human beings, flora and fauna, fisheries, livestock.</em></li>
+            <li><strong>Abiotic Resources:</strong> All those things which are composed of non-living things are called abiotic resources. <em>Examples: rocks and metals.</em></li>
+        </ul>
+
+        <h3>(b) On the Basis of Exhaustibility</h3>
+        <ul>
+            <li><strong>Renewable Resources:</strong> Resources which can be renewed or reproduced by physical, chemical or mechanical processes. <em>Examples: solar and wind energy, water, forests, and wildlife.</em> (Further divided into continuous/flow like wind/water).</li>
+            <li><strong>Non-Renewable Resources:</strong> These occur over a very long geological time. They take millions of years in their formation. Some like metals are recyclable, and some like fossil fuels cannot be recycled and get exhausted with use. <em>Examples: minerals and fossil fuels.</em></li>
+        </ul>
+
+        <h3>(c) On the Basis of Ownership</h3>
+        <ul>
+            <li><strong>Individual Resources:</strong> Owned privately by individuals. <em>Examples: plots, houses, pasture lands, ponds, water in wells.</em></li>
+            <li><strong>Community Owned Resources:</strong> Accessible to all the members of the community. <em>Examples: grazing grounds, burial grounds, village ponds, public parks, picnic spots.</em></li>
+            <li><strong>National Resources:</strong> Technically, all resources belong to the nation. The country has legal powers to acquire even private property for public good. <em>Note: Oceanic area up to <strong>12 nautical miles</strong> (22.2 km) from the coast is termed territorial water, and resources therein belong to the nation.</em></li>
+            <li><strong>International Resources:</strong> Regulated by international institutions. The oceanic resources beyond <strong>200 nautical miles</strong> of the Exclusive Economic Zone belong to open ocean, and no individual country can utilise these without the concurrence of international institutions.</li>
+        </ul>
+
+        <h3>(d) On the Basis of the Status of Development</h3>
+        <ul>
+            <li><strong>Potential Resources:</strong> Resources found in a region but not yet utilised. <em>Example: The western parts of India (Rajasthan and Gujarat) have enormous potential for solar and wind energy but have not been developed properly.</em></li>
+            <li><strong>Developed Resources:</strong> Resources which are surveyed, and their quality and quantity have been determined for utilisation. Development depends on technology and level of feasibility.</li>
+            <li><strong>Stock:</strong> Materials in the environment which have the potential to satisfy human needs, but humans <strong>do not have the appropriate technology</strong> to access them. <em>Example: Water is a compound of hydrogen and oxygen. Hydrogen can be a rich source of energy, but we lack the advanced technology to use it for this purpose.</em></li>
+            <li><strong>Reserves:</strong> They are the subset of the 'stock', which can be put into use with the help of <strong>existing technical 'know-how'</strong>, but their use has not been started yet. They are kept for meeting future requirements. <em>Example: Water in the dams, forests, etc.</em></li>
+        </ul>
 
         <h2>2. Development of Resources</h2>
-        <p>Resources are free gifts of nature but their indiscriminate use has led to:</p>
+        <p>Indiscriminate use of resources by human beings has led to the following major problems:</p>
+        <ul>
+            <li><strong>Depletion</strong> of resources for satisfying the greed of a few individuals.</li>
+            <li>Accumulation of resources in few hands, dividing the society into two segments i.e., <strong>haves and have-nots</strong> or rich and poor.</li>
+            <li>Indiscriminate exploitation has led to global ecological crises such as <strong>global warming, ozone layer depletion, environmental pollution, and land degradation</strong>.</li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <strong>Sustainable Economic Development:</strong> It means 'development should take place without damaging the environment, and development in the present should not compromise with the needs of the future generations.'
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Rio de Janeiro Earth Summit, 1992:</strong><br>
+            In June 1992, more than 100 heads of states met in Rio de Janeiro in Brazil for the first International Earth Summit. The summit was convened for addressing urgent problems of environmental protection and socio-economic development at the global level. The assembled leaders signed the <strong>Declaration on Global Climatic Change and Biological Diversity</strong> and endorsed the global Forest Principles and adopted <strong>Agenda 21</strong>.
+        </div>
+
+        <h3>Agenda 21</h3>
+        <ul>
+            <li>It is the declaration signed by world leaders in <strong>1992</strong> at the United Nations Conference on Environment and Development (<strong>UNCED</strong>), which took place at Rio de Janeiro.</li>
+            <li><strong>Aim:</strong> Achieving global sustainable development and combatting environmental damage, poverty, and disease through global co-operation.</li>
+            <li><strong>Major Objective:</strong> Every local government should draw its own local Agenda 21.</li>
+        </ul>
+
+        <h2>3. Resource Planning</h2>
+        <p>Planning is the widely accepted strategy for judicious use of resources. It is crucial for a country like India, which has enormous diversity in the availability of resources.</p>
+        <ul>
+            <li>There are regions rich in certain types of resources but deficient in others.</li>
+            <li><em>Example:</em> Jharkhand, Chhattisgarh and MP are rich in minerals and coal deposits.</li>
+            <li><em>Example:</em> Arunachal Pradesh has abundant water resources but lacks infrastructural development.</li>
+            <li><em>Example:</em> Rajasthan is well endowed with solar and wind energy but lacks water resources.</li>
+            <li><em>Example:</em> The cold desert of Ladakh is isolated but has a very rich cultural heritage. It is deficient in water, infrastructure, and vital minerals.</li>
+            <li>This calls for <strong>balanced resource planning</strong> at the national, state, regional, and local levels.</li>
+        </ul>
+
+        <h3>Resource Planning in India</h3>
+        <p>Resource planning is a complex process which involves three main stages:</p>
         <ol>
-            <li>Depletion of resources for greed of few.</li>
-            <li>Accumulation of resources in few hands (Haves vs Have-nots).</li>
-            <li>Global Ecological Crises: Ozone depletion, Global warming.</li>
+            <li><strong>Identification and inventory</strong> of resources across regions of the country. This involves surveying, mapping, and qualitative/quantitative estimation and measurement of resources.</li>
+            <li><strong>Evolving a planning structure</strong> endowed with appropriate technology, skill, and institutional set-up for implementing resource development plans.</li>
+            <li><strong>Matching</strong> the resource development plans with overall national development plans.</li>
         </ol>
 
-        <h3>Sustainable Development</h3>
-        <p>Development should take place without damaging the environment, and development in present should not
-            compromise with needs of future generations.</p>
-
-        <div class="master-tip">
-            <span class="tip-header">RIO DE JANEIRO EARTH SUMMIT (1992)</span>
-            <ul>
-                <li>First International Earth Summit. Brazil.</li>
-                <li>Adopted <strong>Agenda 21</strong> (to combat environmental damage, poverty, disease through global
-                    cooperation).</li>
-            </ul>
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <strong>Conservation of Resources:</strong> Gandhiji voiced his concern about resource conservation by saying: <em>"There is enough for everybody's need and not for anybody's greed."</em> He placed the greedy and selfish individuals as the root cause for resource depletion and was against mass production, wanting to replace it with <strong>the production by the masses</strong>.
         </div>
 
-        <h2>3. Land Resources (India)</h2>
+        <h2>4. Land Resources</h2>
+        <p>We perform our economic activities on land and we use it in different ways. Land is a natural resource of utmost importance, supporting natural vegetation, wildlife, human life, and economic activities. However, it is an asset of a <strong>finite magnitude</strong>.</p>
+
+        <h3>Relief Features of India</h3>
         <ul>
-            <li><strong>Plains (43%):</strong> Agriculture, Industry.</li>
-            <li><strong>Mountains (30%):</strong> Perennial flow of rivers, Tourism.</li>
-            <li><strong>Plateaus (27%):</strong> Reserves of minerals, fossil fuels, forests.</li>
+            <li><strong>Plains (43%):</strong> Provide facilities for agriculture and industry.</li>
+            <li><strong>Mountains (30%):</strong> Ensure perennial flow of some rivers, provide facilities for tourism and ecological aspects.</li>
+            <li><strong>Plateaus (27%):</strong> Possess rich reserves of minerals, fossil fuels, and forests.</li>
         </ul>
 
-        <h3>Land Degradation Components in India</h3>
+        <div style="border: 2px dashed var(--meta-text); padding: 20px; text-align: center; margin: 25px 0; background-color: var(--toggle-bg); border-radius: 8px;">
+            <span style="display: block; font-weight: bold; color: var(--pink-border); margin-bottom: 10px; text-transform: uppercase;">[ Image Placeholder: Pie Chart ]</span>
+            <p style="font-size: 0.9rem; color: var(--meta-text); font-style: italic; margin: 0;"><strong>Image Prompt:</strong> A clean 3D pie chart showing land under important relief features in India. Plains (43%) in blue, Mountains (30%) in grey, and Plateaus (27%) in yellow/brown. Include a clear legend. Keep the image background fully white and prefer landscape.</p>
+        </div>
+
+        <h3>Land Utilisation Categories</h3>
+        <ol>
+            <li><strong>Forests</strong></li>
+            <li><strong>Land not available for cultivation:</strong> 
+                <ul>
+                    <li>Barren and waste land.</li>
+                    <li>Land put to non-agricultural uses (buildings, roads, factories).</li>
+                </ul>
+            </li>
+            <li><strong>Other uncultivated land (excluding fallow land):</strong>
+                <ul>
+                    <li>Permanent pastures and grazing land.</li>
+                    <li>Land under miscellaneous tree crops groves.</li>
+                    <li>Cultruable waste land (left uncultivated for more than 5 agricultural years).</li>
+                </ul>
+            </li>
+            <li><strong>Fallow lands:</strong>
+                <ul>
+                    <li>Current fallow (left without cultivation for one or less than one agricultural year).</li>
+                    <li>Other than current fallow (left uncultivated for the past 1 to 5 agricultural years).</li>
+                </ul>
+            </li>
+            <li><strong>Net Sown Area:</strong> The physical extent of land on which crops are sown and harvested.</li>
+        </ol>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Gross Cropped Area:</strong> Area sown more than once in an agricultural year plus net sown area is known as gross cropped area.
+        </div>
+
+        <h3>Land Use Pattern in India</h3>
+        <p>Total geographical area of India is <strong>3.28 million sq km</strong>. Land use data, however, is available only for 93% of the total geographical area because land use reporting for most of the north-east states (except Assam) has not been done fully, and some areas in J&K are occupied by Pakistan and China.</p>
+
         <ul>
-            <li><strong>Mining:</strong> Jharkhand, Chhattisgarh, MP, Odisha. (Deforestation/Deep scars).</li>
-            <li><strong>Overgrazing:</strong> Gujarat, Rajasthan, MP, Maharashtra.</li>
-            <li><strong>Over-irrigation:</strong> Punjab, Haryana, Western UP. (Water logging increases
-                salinity/alkalinity).</li>
-            <li><strong>Industrial Effluents:</strong> Pollution of land and water.</li>
+            <li>The pattern of <strong>net sown area</strong> varies greatly from one state to another. It is over 80% of the total area in Punjab and Haryana, and less than 10% in Arunachal Pradesh, Mizoram, Manipur, and Andaman Nicobar Islands.</li>
+            <li>Forest area is far lower than the desired <strong>33%</strong> of geographical area, as outlined in the National Forest Policy (1952).</li>
         </ul>
 
-        <h2>4. Soil as a Resource</h2>
+        <h2>5. Land Degradation and Conservation Measures</h2>
+        <p>Human activities have not only brought about degradation of land but have also aggravated the pace of natural forces to cause damage to land.</p>
 
-        <div class="land-box">
-            <h4>1. Alluvial Soil (Most important/widespread)</h4>
-            <ul>
-                <li><strong>Coverage:</strong> Entire Northern Plains, Eastern coastal plains (deltas).</li>
-                <li><strong>Composition:</strong> Sand, Silt, Clay. Rich in Potash, Phosphoric Acid, Lime. (Deficient in
-                    Nitrogen).</li>
-                <li><strong>Type:</strong> Khadar (New, more fertile, fine) vs Bangar (Old, kankar nodules, less
-                    fertile).</li>
-                <li><strong>Crops:</strong> Sugarcane, Paddy, Wheat, Pulses.</li>
-            </ul>
-        </div>
-
-        <div class="land-box">
-            <h4>2. Black Soil (Regur Soil)</h4>
-            <ul>
-                <li><strong>Coverage:</strong> Deccan trap (Basalt) region. Maharashtra, Saurashtra, Malwa, MP,
-                    Chhattisgarh.</li>
-                <li><strong>Properties:</strong> Made of Lava flows. Clayey material. Holds moisture well. Develops deep
-                    cracks in hot weather (self-aeration). Sticky when wet.</li>
-                <li><strong>Crops:</strong> Cotton (Ideal).</li>
-            </ul>
-        </div>
-
-        <div class="land-box">
-            <h4>3. Red and Yellow Soil</h4>
-            <ul>
-                <li><strong>Coverage:</strong> Areas of low rainfall in eastern/southern Deccan plateau (Odisha,
-                    Chhattisgarh).</li>
-                <li><strong>Color:</strong> Red due to diffusion of iron in crystalline/metamorphic rocks. Yellow when
-                    hydrated.</li>
-            </ul>
-        </div>
-
-        <div class="land-box">
-            <h4>4. Laterite Soil (Brick)</h4>
-            <ul>
-                <li><strong>Formation:</strong> Intense leaching due to heavy rains.</li>
-                <li><strong>Properties:</strong> Acidic (pH < 6.0). Deficient in plant nutrients.</li>
-                <li><strong>Crops:</strong> Tea/Coffee (Karnataka/Kerala), Cashew nut (TN/AP/Kerala).</li>
-            </ul>
-        </div>
-
-        <div class="land-box">
-            <h4>5. Arid Soil</h4>
-            <ul>
-                <li><strong>Coverage:</strong> Western Rajasthan.</li>
-                <li><strong>Properties:</strong> Sandy texture, Saline nature. Kankar layer at bottom restricts water
-                    infiltration.</li>
-            </ul>
-        </div>
-
-        <h2>5. Soil Erosion and Conservation</h2>
-        <p><strong>Erosion:</strong> Removal of topsoil. Caused by running water (Gullies/Ravines) and Wind.</p>
-        <p><strong>Sheet Erosion:</strong> Top layer washed away by water flow over large area.</p>
-        <p><strong>Conservation Methods:</strong></p>
+        <h3>Causes of Land Degradation (State-wise)</h3>
+        <p>This is extremely important for board exam map and matching questions:</p>
         <ul>
-            <li><strong>Contour Ploughing:</strong> Ploughing along contour lines to decelerate water flow.</li>
-            <li><strong>Terrace Farming:</strong> Steps cut on slopes (Western/Central Himalayas).</li>
-            <li><strong>Strip Cropping:</strong> Strips of grass left to grow between crops to break wind force.</li>
-            <li><strong>Shelter Belts:</strong> Planting lines of trees to stabilize dunes (Desert).</li>
+            <li><strong>Mining:</strong> Mining sites are abandoned after excavation work is complete leaving deep scars and traces of over-burdening. States affected: <strong>Jharkhand, Chhattisgarh, Madhya Pradesh, and Odisha</strong>.</li>
+            <li><strong>Overgrazing:</strong> Unregulated grazing by cattle. States affected: <strong>Gujarat, Rajasthan, Madhya Pradesh, and Maharashtra</strong>.</li>
+            <li><strong>Over-irrigation:</strong> Responsible for land degradation due to water logging leading to increase in salinity and alkalinity in the soil. States affected: <strong>Punjab, Haryana, and western Uttar Pradesh</strong>.</li>
+            <li><strong>Mineral Processing:</strong> Grinding of limestone for cement industry and calcite/soapstone for ceramic industry generates huge quantities of dust in the atmosphere, which settles down and retards the infiltration of water into the soil.</li>
+            <li><strong>Industrial Effluents:</strong> Industrial waste has become a major source of land and water pollution in many parts of the country.</li>
         </ul>
 
-        <div class="img-placeholder">
-            <span>[IMAGE PLACEHOLDER: SOIL MAP OF INDIA]</span>
-            <div class="img-prompt">
-                Map of India showing distribution of Major Soil Types: Alluvial (Green), Black (Grey), Red & Yellow
-                (Red), Laterite (Pink), Arid (Yellow), Forest (Dark Green).
-            </div>
+        <h3>Conservation Measures</h3>
+        <ul>
+            <li>Afforestation and proper management of grazing.</li>
+            <li>Planting of shelter belts of plants.</li>
+            <li>Control on overgrazing.</li>
+            <li>Stabilisation of sand dunes by growing thorny bushes.</li>
+            <li>Proper management of waste lands and control of mining activities.</li>
+            <li>Proper discharge and disposal of industrial effluents and wastes after treatment.</li>
+        </ul>
+
+        <h2>6. Soil as a Resource</h2>
+        <p>Soil is the most important renewable natural resource. It is the medium of plant growth and supports different types of living organisms on the earth. It takes millions of years to form soil up to a few cm in depth.</p>
+        <p><strong>Factors of Soil Formation:</strong> Relief, parent rock or bed rock, climate, vegetation and other forms of life, and time. Forces of nature like change in temperature, actions of running water, wind and glaciers, activities of decomposers etc. contribute to the formation of soil.</p>
+
+        <div style="border: 2px dashed var(--meta-text); padding: 20px; text-align: center; margin: 25px 0; background-color: var(--toggle-bg); border-radius: 8px;">
+            <span style="display: block; font-weight: bold; color: var(--pink-border); margin-bottom: 10px; text-transform: uppercase;">[ Image Placeholder: Map of India ]</span>
+            <p style="font-size: 0.9rem; color: var(--meta-text); font-style: italic; margin: 0;"><strong>Image Prompt:</strong> A detailed educational map of India showing the major soil types. Use clear distinct colours for Alluvial, Black, Red and Yellow, Laterite, Arid, and Forest soils. Include a highly visible legend box. Keep the image background fully white and prefer landscape.</p>
+        </div>
+
+        <h3>Classification of Soils</h3>
+
+        <h4>I. Alluvial Soils</h4>
+        <ul>
+            <li><strong>Importance:</strong> This is the most widely spread and important soil. The entire northern plains are made of alluvial soil.</li>
+            <li><strong>Formation:</strong> Deposited by three important Himalayan river systems: the Indus, the Ganga, and the Brahmaputra.</li>
+            <li><strong>Location:</strong> Northern plains, extending to Rajasthan and Gujarat through a narrow corridor. Also found in the eastern coastal plains particularly in the deltas of the Mahanadi, Godavari, Krishna, and Kaveri rivers.</li>
+            <li><strong>Composition:</strong> Contains adequate proportion of <strong>potash, phosphoric acid, and lime</strong>.</li>
+            <li><strong>Age Classification:</strong>
+                <ul>
+                    <li><strong>Khadar (New Alluvial):</strong> More fine particles, more fertile, renewed frequently.</li>
+                    <li><strong>Bangar (Old Alluvial):</strong> Higher concentration of kanker (calcareous) nodules, less fertile.</li>
+                </ul>
+            </li>
+            <li><strong>Crops:</strong> Ideal for the growth of sugarcane, paddy, wheat, and other cereal and pulse crops. Regions are intensively cultivated and densely populated.</li>
+        </ul>
+
+        <h4>II. Black Soil</h4>
+        <ul>
+            <li><strong>Also known as:</strong> Regur soil or Black cotton soil.</li>
+            <li><strong>Formation:</strong> Climatic condition along with the parent rock material (basalt) are the important factors for its formation.</li>
+            <li><strong>Location:</strong> Typical of the <strong>Deccan trap (Basalt) region</strong> spread over northwest Deccan plateau (Maharashtra, Saurashtra, Malwa, Madhya Pradesh, Chhattisgarh).</li>
+            <li><strong>Composition:</strong> Made up of extremely fine i.e. <strong>clayey</strong> material. Well-known for their <strong>capacity to hold moisture</strong>. Rich in soil nutrients, such as calcium carbonate, magnesium, potash, and lime. Poor in phosphoric contents.</li>
+            <li><strong>Special Feature:</strong> They develop deep cracks during hot weather, which helps in the proper aeration of the soil. These soils are sticky when wet and difficult to work on unless tilled immediately after the first shower.</li>
+        </ul>
+
+        <h4>III. Red and Yellow Soils</h4>
+        <ul>
+            <li><strong>Formation:</strong> Develops on crystalline igneous rocks in areas of low rainfall.</li>
+            <li><strong>Location:</strong> Eastern and southern parts of the Deccan plateau, parts of Odisha, Chhattisgarh, southern parts of the middle Ganga plain.</li>
+            <li><strong>Colour:</strong> Develops a reddish colour due to <strong>diffusion of iron</strong> in crystalline and metamorphic rocks. It looks yellow when it occurs in a <strong>hydrated form</strong>.</li>
+        </ul>
+
+        <h4>IV. Laterite Soil</h4>
+        <ul>
+            <li><strong>Name Origin:</strong> Derived from the Latin word 'later' which means brick.</li>
+            <li><strong>Formation:</strong> Develops under tropical and subtropical climate with alternate wet and dry season. This soil is the result of <strong>intense leaching due to heavy rain</strong>.</li>
+            <li><strong>Features:</strong> Mostly deep to very deep, <strong>acidic (pH < 6.0)</strong>, generally deficient in plant nutrients. They are prone to degradation and erosion.</li>
+            <li><strong>Location:</strong> Mostly in southern states, Western Ghats region of Maharashtra, Odisha, some parts of West Bengal and North-east regions.</li>
+            <li><strong>Crops:</strong> Very useful for growing <strong>Tea and Coffee</strong> (in Karnataka, Kerala, Tamil Nadu). Red laterite soils in Tamil Nadu, Andhra Pradesh, and Kerala are eminently suitable for crops like <strong>cashewnut</strong>.</li>
+        </ul>
+
+        <h4>V. Arid Soils</h4>
+        <ul>
+            <li><strong>Colour & Texture:</strong> Range from red to brown in colour. Generally <strong>sandy in texture and saline in nature</strong>.</li>
+            <li><strong>Features:</strong> Due to dry climate and high temperature, evaporation is faster and the soil lacks humus and moisture.</li>
+            <li><strong>Composition:</strong> The lower horizons of the soil are occupied by <strong>Kankar</strong> because of the increasing calcium content downwards, which restricts the infiltration of water.</li>
+            <li><strong>Location:</strong> Western Rajasthan. Can become cultivable after proper irrigation.</li>
+        </ul>
+
+        <h4>VI. Forest Soils</h4>
+        <ul>
+            <li><strong>Location:</strong> Found in the hilly and mountainous areas where sufficient rain forests are available.</li>
+            <li><strong>Features:</strong> The soils texture varies according to the mountain environment where they are formed. They are <strong>loamy and silty</strong> in valley sides and <strong>coarse grained</strong> in the upper slopes.</li>
+            <li><strong>Snowbound areas:</strong> In the snow-covered areas of Himalayas, these soils experience denudation and are acidic with low humus content.</li>
+        </ul>
+
+        <h2>7. Soil Erosion and Soil Conservation</h2>
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Soil Erosion:</strong> The denudation of the soil cover and subsequent washing down is described as soil erosion. The processes of soil formation and erosion go on simultaneously, but the balance is disturbed by human activities (deforestation, over-grazing, construction, mining) and natural forces (wind, glacier, water).
+        </div>
+
+        <h3>Types of Water Erosion</h3>
+        <ul>
+            <li><strong>Gully Erosion:</strong> The running water cuts through the clayey soils and makes deep channels as gullies. The land becomes unfit for cultivation and is known as <strong>bad land</strong>. In the Chambal basin, such lands are called <strong>ravines</strong>.</li>
+            <li><strong>Sheet Erosion:</strong> Sometimes water flows as a sheet over large areas down a slope. In such cases, the top soil is washed away.</li>
+            <li><strong>Wind Erosion:</strong> Wind blows loose soil off flat or sloping land.</li>
+        </ul>
+
+        <div style="border: 2px dashed var(--meta-text); padding: 20px; text-align: center; margin: 25px 0; background-color: var(--toggle-bg); border-radius: 8px;">
+            <span style="display: block; font-weight: bold; color: var(--pink-border); margin-bottom: 10px; text-transform: uppercase;">[ Image Placeholder: Soil Erosion ]</span>
+            <p style="font-size: 0.9rem; color: var(--meta-text); font-style: italic; margin: 0;"><strong>Image Prompt:</strong> A split-screen landscape educational illustration showing 'Gully Erosion' on the left (deep cracks/ravines in clay soil) and 'Contour Ploughing' on the right (tractor ploughing in circular lines around a hill). Keep the image background fully white and prefer landscape.</p>
+        </div>
+
+        <h3>Soil Conservation Techniques</h3>
+        <ul>
+            <li><strong>Contour Ploughing:</strong> Ploughing along the contour lines can decelerate the flow of water down the slopes.</li>
+            <li><strong>Terrace Farming:</strong> Steps can be cut out on the slopes making terraces. Terrace cultivation restricts erosion. Extensively used in Western and Central Himalayas.</li>
+            <li><strong>Strip Cropping:</strong> Large fields are divided into strips. Strips of grass are left to grow between the crops. This breaks up the force of the wind.</li>
+            <li><strong>Shelter Belts:</strong> Planting lines of trees to create shelter. These shelter belts have contributed significantly to the stabilisation of sand dunes and in stabilising the desert in western India.</li>
+        </ul>
+
+        <h2>Important Previous Year Questions (PYQs)</h2>
+        
+        <div class="blue-box">
+            <span class="box-label">Q & A</span>
+            <strong>Q1. Differentiate between Stock and Reserve resources with examples.</strong><br>
+            <strong>Ans:</strong> <em>Stock</em> refers to materials in the environment that have the potential to satisfy human needs, but human beings do not have the appropriate technology to access them (e.g., extracting energy from hydrogen and oxygen in water). <em>Reserves</em> are the subset of stock that can be put into use with existing technology, but their use has not started yet; they are kept for future requirements (e.g., water in dams).
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q & A</span>
+            <strong>Q2. Write a short note on Agenda 21.</strong><br>
+            <strong>Ans:</strong> It is the declaration signed by world leaders in 1992 at the United Nations Conference on Environment and Development (UNCED) at Rio de Janeiro, Brazil. Its aim is to achieve global sustainable development. Its major objective is that every local government should draw its own local Agenda 21 to combat environmental damage, poverty, and disease.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q & A</span>
+            <strong>Q3. Explain the main causes of land degradation in India.</strong><br>
+            <strong>Ans:</strong> 
+            <ul>
+                <li><strong>Mining:</strong> In states like Jharkhand, Chhattisgarh, and Odisha, mining has left deep scars and traces of over-burdening.</li>
+                <li><strong>Overgrazing:</strong> Unregulated grazing in Gujarat, Rajasthan, and Maharashtra has degraded land.</li>
+                <li><strong>Over-irrigation:</strong> In Punjab and Haryana, over-irrigation causes waterlogging, leading to increased salinity and alkalinity.</li>
+                <li><strong>Industrial Effluents:</strong> Untreated industrial waste pollutes land and water.</li>
+            </ul>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q & A</span>
+            <strong>Q4. Distinguish between Khadar and Bangar soil.</strong><br>
+            <strong>Ans:</strong> <strong>Khadar</strong> is the new alluvial soil, found closer to river basins. It is renewed frequently, has finer particles, and is more fertile. <strong>Bangar</strong> is the old alluvial soil found further away from the river. It contains a higher concentration of 'kankar' (calcareous nodules) and is relatively less fertile than Khadar.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q & A</span>
+            <strong>Q5. What is the importance of Contour Ploughing and Shelter Belts?</strong><br>
+            <strong>Ans:</strong> <strong>Contour ploughing</strong> involves ploughing along contour lines of a slope, which acts as a barrier to decelerate the downward flow of water, preventing soil erosion. <strong>Shelter belts</strong> are lines of trees planted to break the force of the wind. They are highly effective in preventing wind erosion and stabilising sand dunes, particularly in desert regions.
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
         </div>
 
     </div>
 
-    <!-- SCRIPT FOR TOGGLE -->
+    <!-- THEME TOGGLE SCRIPT -->
     <script>
         function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-
-            if (html.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        // Initialize Theme
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark-mode');
+            document.documentElement.classList.toggle('dark-mode');
         }
     </script>
 </body>
-
 </html>
