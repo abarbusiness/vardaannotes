@@ -1,15 +1,21 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 02: Motion in a Straight Line - Vardaan Master Notes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Kinematics - Vardaan Learning Institute</title>
+    
+    <!-- MathJax for Formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
+            /* Light Mode Palette */
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
@@ -17,63 +23,233 @@
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
             --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0
-        }
-
-        body {
-            background: #fff;
-            color: #000;
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.7
-        }
-
-        html {
-            transition: filter .3s
-        }
-
+        /* --- DARK MODE VARIABLES --- */
         html.dark-mode {
-            filter: invert(1) hue-rotate(180deg)
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
         }
 
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            z-index: 9999
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.1;
             max-width: 80%;
-            opacity: 0.05
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important
+            filter: invert(1); 
+            opacity: 0.15;
         }
 
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
-            background: #fff;
+            background-color: var(--paper-bg);
             width: 210mm;
             max-width: 100%;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px; /* TIGHTENED LAYOUT */
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO (Updated V2.2) --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            
+            /* DEFAULT STATE: Hidden on screen */
+            display: none;
+            
+            /* Layout properties (active when visible) */
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            
+            /* TIGHTENED LAYOUT */
+            margin-top: 5px; 
+            
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- THEME TOGGLE --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -81,7 +257,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--toggle-bg);
             border: none;
             cursor: pointer;
             z-index: 1000;
@@ -90,210 +266,157 @@
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
-        }
-
-        .icon-sun,
-        .icon-moon {
+        .icon-sun, .icon-moon {
             position: absolute;
             transition: all 0.5s ease;
+            stroke: var(--icon-fill);
         }
 
-        .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- CHAPTER IMAGE STYLES --- */
+        .chapter-image {
+            display: block;
+            width: 75%;
+            max-width: 750px;
+            height: auto;
+            margin: 25px auto;
         }
 
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
+        html.dark-mode .chapter-image {
+            filter: invert(1);
         }
 
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            color: #6a1b9a;
-            margin-bottom: .5rem
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #6a1b9a;
-            padding-bottom: .5rem;
-            color: #6a1b9a
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-            color: #7b1fa2
-        }
-
-        p,
-        li {
-            margin-bottom: .8rem
-        }
-
-        ul,
-        ol {
-            padding-left: 1.5rem
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: .8rem
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: center
-        }
-
-        th {
-            background: #f3e5f5;
-            font-weight: 600
-        }
-
-        /* No borders for content boxes as per user request */
-        .definition-box,
-        .rule-box,
-        .analysis-box {
-            background: #ffffff;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-        }
-
-        /* Keep Derivation Box distinct (Purple) but NO border */
-        .derivation-box {
-            background: #f3e5f5;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-        }
-
-        .highlight-formula {
-            background-color: #ffffff;
-            border: 2px solid #7b1fa2;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 10px 0;
-            display: inline-block;
-            font-weight: bold;
-        }
-
-        .master-tip {
-            border: 2px dashed #d32f2f;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            background: #ffebee;
-            font-style: italic
-        }
-
-        .formula-box {
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0 #000;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            position: relative;
-            background: #fff
-        }
-
-        .formula-box::after {
-            content: "FORMULA";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #000;
-            color: #fff;
-            padding: 2px 8px;
-            font-size: .75rem
-        }
-
-        .practice-box {
-            background: #fff8e1;
-            border: 2px solid #ff6f00;
+        /* --- IMAGE PLACEHOLDER (CUSTOM FOR AI PROMPTS) --- */
+        .ai-image-placeholder {
+            border: 2px dashed var(--accent-purple);
+            background-color: var(--example-bg);
             border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0
+            padding: 30px 20px;
+            margin: 30px 0;
+            text-align: center;
+            color: var(--meta-text);
+            font-family: monospace;
+            position: relative;
+        }
+        
+        .ai-image-placeholder::before {
+            content: "🖼️ IMAGE PLACEHOLDER";
+            display: block;
+            font-weight: bold;
+            color: var(--accent-purple);
+            font-family: 'Segoe UI', sans-serif;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
         }
 
-        .practice-header {
-            font-weight: 700;
-            color: #d35400;
-            margin-bottom: .5rem
+        /* --- CHART CONTAINER --- */
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 30px auto;
+            background: var(--paper-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .q-tag {
-            background: #d35400;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: .75rem;
-            margin-right: 5px
-        }
-
-        @media screen and (max-width:800px) {
-            .paper-sheet {
-                width: 95%;
-                padding: 15px
-            }
-
-            table {
-                font-size: .65rem
-            }
-
-            h1 {
-                font-size: 1.8rem
-            }
-        }
-
+        /* --- STRICT PRINT CONFIGURATION --- */
         @media print {
-            html.dark-mode {
-                filter: none !important
+            /* 1. Reset Colors to Clean White/Black */
+            body { 
+                background-color: #ffffff !important; 
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+            
+            .paper-sheet { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                box-shadow: none !important;
             }
 
-            .theme-toggle {
-                display: none
+            /* 2. FORCE HIDE Toggle & Web Footer ONLY */
+            .theme-toggle, 
+            .branding-footer {
+                display: none !important;
             }
 
-            .paper-sheet {
-                width: 100%;
-                padding: 10mm
+            /* 3. FORCE SHOW Contact Info in Print (Updated V2.2) */
+            .contact-info {
+                display: flex !important;
+            }
+
+            /* 4. Force Watermark Visibility in Print */
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+                mix-blend-mode: normal !important; 
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+
+            .watermark-image {
+                filter: none !important; 
+                max-width: 80% !important;
+            }
+
+            /* Hide Chart containers if they don't print well, though modern browsers usually handle it */
+            
+            /* 5. Configure PDF/Print Page Numbers */
+            @page {
+                size: A4;
+                margin: 2cm;
+                
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+
+                /* The Pink Disc */
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60; 
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
             }
         }
     </style>
 </head>
-
 <body>
-    <div class="watermark-overlay"><img
-            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            class="watermark-image"></div>
+
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -306,361 +429,313 @@
         </svg>
     </button>
 
+    <!-- MAIN CONTAINER -->
     <div class="paper-sheet">
-        <h1>Motion in a Straight Line</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">CBSE Class 11 Physics â€¢ Chapter 02</p>
-
-        <div class="rule-box">
-            <p><strong>Chapter Overview</strong></p>
-            <p>This chapter covers the fundamental concepts of <strong>Motion in a Straight Line</strong>. Ensure you
-                understand the definitions and derivations thoroughly.</p>
-        </div>
-
-
-        <!-- 02.1 Introduction -->
-        <!-- 2.1-2.3 Motion Concepts - ULTRA DETAILED -->
-        <h2>2.1 Introduction to Motion</h2>
         
-        <div class="definition-box">
-            <p><strong>Motion:</strong> Change in position of an object with respect to its surroundings with time.</p>
-            <p><strong>Frame of Reference:</strong> Coordinate system with respect to which motion is described.</p>
-            <p><strong>Types of Motion:</strong></p>
-            <ul>
-                <li><strong>1D Motion:</strong> Motion along a straight line (e.g., train on straight track)</li>
-                <li><strong>2D Motion:</strong> Motion in a plane (covered in Chapter 3)</li>
-                <li><strong>3D Motion:</strong> Motion in space</li>
-            </ul>
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 11 Physics • Chapter Notes</div>
+            
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
         </div>
 
-        <h2>2.2 Position, Path Length & Displacement</h2>
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>Kinematics: Motion in a Straight Line</h1>
         
-        <div class="derivation-box">
-            <p><strong>Position:</strong> Location of particle with respect to origin. Represented by position vector $\vec{r}$ or coordinate x.</p>
-            <p><strong>Path Length (Distance):</strong> Actual length of path traveled. Scalar quantity, always positive.</p>
-            <p><strong>Displacement:</strong> Change in position. Vector from initial to final position.</p>
-            <div class="highlight-formula">$$ \Delta x = x_f - x_i $$</div>
-            <p><strong>Key Differences:</strong></p>
-            <ul>
-                <li>Path length â‰¥ |Displacement|</li>
-                <li>For straight line motion in one direction: Path length = |Displacement|</li>
-                <li>For round trip: Displacement = 0, but path length â‰  0</li>
-            </ul>
-        </div>
+        <p>Welcome to Kinematics! This is the branch of physics where we study <strong>how</strong> things move, without worrying about <strong>why</strong> they move (we don't care about forces here; that comes in the next chapter). Let's start from the absolute basics and build up to Board Exam levels!</p>
 
-        <div class="practice-box">
-            <span class="practice-header">Worked Example 1</span>
-            <p><strong>Q:</strong> A person walks 40 m East, then 30 m West. Find (a) Distance (b) Displacement.</p>
-            <p><strong>Solution:</strong><br>
-            (a) Distance = Total path = 40 + 30 = <strong>70 m</strong><br>
-            (b) Taking East as positive: Displacement = 40 - 30 = <strong>+10 m (10 m East)</strong></p>
-        </div>
-
-        <h2>2.3 Average & Instantaneous Velocity</h2>
+        <h2>1. The Concept of Rest and Motion</h2>
+        <p>In physics, nothing is in absolute rest or absolute motion. It all depends on who is looking! This is called the <strong>Frame of Reference</strong>.</p>
         
-        <div class="definition-box">
-            <p><strong>Average Velocity:</strong> Displacement per unit time.</p>
-            <div class="highlight-formula">$$ v_{avg} = \frac{\Delta x}{\Delta t} = \frac{x_f - x_i}{t_f - t_i} $$</div>
-            <p><strong>Average Speed:</strong> Total distance per unit time.</p>
-            <p>$$ speed_{avg} = \frac{Total\ distance}{Total\ time} $$</p>
-            <p><strong>Instantaneous Velocity:</strong> Velocity at a particular instant.</p>
-            <div class="highlight-formula">$$ v = \lim_{\Delta t \to 0} \frac{\Delta x}{\Delta t} = \frac{dx}{dt} $$</div>
-            <p>Instantaneous speed = |v| (magnitude of instantaneous velocity)</p>
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Rest:</strong> An object is at rest if its position does not change with time relative to an observer.<br><br>
+            <strong>Motion:</strong> An object is in motion if its position changes with time relative to an observer.
         </div>
 
-        <h2>2.4 Acceleration</h2>
-        
-        <div class="definition-box">
-            <p><strong>Average Acceleration:</strong> Change in velocity per unit time.</p>
-            <div class="highlight-formula">$$ a_{avg} = \frac{\Delta v}{\Delta t} = \frac{v_f - v_i}{t_f - t_i} $$</div>
-            <p><strong>Instantaneous Acceleration:</strong></p>
-            <div class="highlight-formula">$$ a = \lim_{\Delta t \to 0} \frac{\Delta v}{\Delta t} = \frac{dv}{dt} = \frac{d^2x}{dt^2} $$</div>
-            <p><strong>Types:</strong></p>
-            <ul>
-                <li><strong>Uniform Acceleration:</strong> Constant acceleration (a = constant)</li>
-                <li><strong>Non-uniform Acceleration:</strong> Variable acceleration (a â‰  constant)</li>
-            </ul>
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <strong>Example:</strong> If you are sitting inside a moving train, you are at <strong>rest</strong> with respect to your co-passenger, but you are in <strong>motion</strong> with respect to a person standing outside on the platform!
         </div>
 
-        <h2>2.5 Kinematic Equations (Equations of Motion)</h2>
-        
-        <div class="analysis-box">
-            <p><strong>Applicable only for uniformly accelerated motion</strong></p>
-            <p><strong>Standard Notation:</strong></p>
-            <ul>
-                <li>u = initial velocity</li>
-                <li>v = final velocity</li>
-                <li>a = acceleration (constant)</li>
-                <li>t = time</li>
-                <li>s = displacement</li>
-            </ul>
+        <img src="Images/concept%20of%20relative%20motion.jpg" alt="Understanding Relative Motion" class="chapter-image">
+
+        <h3>Practice Problems: Rest & Motion</h3>
+        <ol>
+            <li>A person is sitting in a moving car. Is he at rest or in motion with respect to (a) the car seat, (b) a tree outside the window? <br><em>(Ans: (a) Rest, (b) Motion)</em></li>
+            <li>Can an object be in motion and at rest simultaneously? Explain. <br><em>(Hint: Yes, relative to different frames of reference. Give the train example.)</em></li>
+            <li>Two trains A and B are moving in the same direction with the exact same speed. What is the state of train A with respect to a passenger sitting in train B? <br><em>(Ans: At rest)</em></li>
+        </ol>
+
+        <h2>2. Distance vs. Displacement</h2>
+        <p>This is the most fundamental difference in kinematics. Students often confuse the two, so pay close attention!</p>
+
+        <h3>Distance</h3>
+        <ul>
+            <li>It is the <strong>actual length of the path</strong> traveled by an object.</li>
+            <li>It is a <strong>Scalar Quantity</strong> (it only has magnitude, no direction. Example: 50 km).</li>
+            <li>It can never be negative or zero for a moving object.</li>
+        </ul>
+
+        <h3>Displacement</h3>
+        <ul>
+            <li>It is the <strong>shortest straight-line distance</strong> between the initial and final positions.</li>
+            <li>It is a <strong>Vector Quantity</strong> (it has magnitude AND direction. Example: 50 km North).</li>
+            <li>It can be positive, negative, or zero!</li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <strong>Golden Rule for Board Exams:</strong><br>
+            Distance is always greater than or equal to the magnitude of Displacement. <br>
+            \( \text{Distance} \ge |\text{Displacement}| \) <br>
+            They are only equal when the object moves in a perfectly straight line without turning back!
         </div>
 
-        <h3>Derivation of First Equation: v = u + at</h3>
-        <div class="derivation-box">
-            <p><strong>Given:</strong> Uniform acceleration a</p>
-            <p>By definition: $a = \frac{v - u}{t}$</p>
-            <p>$at = v - u$</p>
-            <div class="highlight-formula">$$ v = u + at $$</div>
-            <p><strong>Physical Meaning:</strong> Final velocity = Initial velocity + Gain in velocity</p>
+        <img src="Images/vector%20diagram%20showing%20a%20map%20from%20Point%20A%20to%20Point%20B.jpg" alt="Difference Between Distance and Displacement" class="chapter-image">
+
+        <h3>Practice Problems: Distance & Displacement</h3>
+        <ol>
+            <li>A student walks 3 km East, then turns and walks 4 km North. Find the total distance traveled and the displacement. <br><em>(Ans: Distance = 7 km, Displacement = 5 km using Pythagoras theorem)</em></li>
+            <li>An athlete completes one round of a circular track of radius \( R \) in 40 seconds. What will be his displacement at the end of 2 minutes 20 seconds? (NCERT) <br><em>(Hint: 2 min 20 sec = 140s. Number of rounds = 140/40 = 3.5. He ends up exactly opposite to the starting point. Ans: \( 2R \))</em></li>
+            <li>Can displacement be zero even if distance is not zero? Give a real-life example. <br><em>(Ans: Yes, like walking to school and returning back home.)</em></li>
+            <li>A boy throws a ball straight up to a height of 10 m, and it falls back into his hands. What is the distance and displacement of the ball? <br><em>(Ans: Distance = 20 m, Displacement = 0 m)</em></li>
+        </ol>
+
+        <h2>3. Speed and Velocity</h2>
+        <p>Just like distance and displacement, we have speed and velocity to tell us how fast an object is moving.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Speed:</strong> The rate of change of distance. (Scalar)<br>
+            \( v = \frac{\text{Distance}}{\text{Time}} \)<br><br>
+            <strong>Velocity:</strong> The rate of change of displacement. (Vector)<br>
+            \( \vec{v} = \frac{\text{Displacement}}{\text{Time}} \)
         </div>
 
-        <h3>Derivation of Second Equation: $s = ut + \frac{1}{2}at^2$</h3>
-        <div class="derivation-box">
-            <p><strong>Method 1: Using average velocity</strong></p>
-            <p>For uniform acceleration, average velocity = $\frac{u + v}{2}$</p>
-            <p>Displacement: $s = v_{avg} \times t = \frac{u + v}{2} \times t$</p>
-            <p>From first equation: $v = u + at$</p>
-            <p>$s = \frac{u + (u + at)}{2} \times t = \frac{2u + at}{2} \times t$</p>
-            <p>$s = \frac{2ut + at^2}{2} = ut + \frac{1}{2}at^2$</p>
-            <div class="highlight-formula">$$ s = ut + \frac{1}{2}at^2 $$</div>
-            
-            <p><strong>Method 2: Using calculus</strong></p>
-            <p>$v = \frac{ds}{dt} = u + at$</p>
-            <p>$ds = (u + at)dt$</p>
-            <p>Integrating both sides from 0 to t:</p>
-            <p>$\int_0^s ds = \int_0^t (u + at)dt$</p>
-            <p>$s = [ut]_0^t + [a\frac{t^2}{2}]_0^t = ut + \frac{1}{2}at^2$ âœ“</p>
+        <h3>Types of Speed/Velocity</h3>
+        <ul>
+            <li><strong>Uniform:</strong> Traveling equal distances/displacements in equal intervals of time.</li>
+            <li><strong>Average:</strong> Total distance divided by total time.</li>
+            <li><strong>Instantaneous:</strong> Speed or velocity at a specific, exact moment in time (like what a car's speedometer shows). Mathematically, it's the derivative of position: \( v = \frac{dx}{dt} \).</li>
+        </ul>
+
+        <h3>Practice Problems: Speed & Velocity</h3>
+        <ol>
+            <li>Convert the speed of a train traveling at 72 km/h into m/s. <br><em>(Hint: Multiply by 5/18. Ans: 20 m/s)</em></li>
+            <li>A car travels from City A to City B at a speed of 40 km/h and returns from B to A at 60 km/h. Calculate the average speed and average velocity of the car. (NCERT) <br><em>(Hint: Average velocity is 0 because displacement is 0. For average speed use \( \frac{2v_1v_2}{v_1+v_2} \). Ans: 48 km/h)</em></li>
+            <li>Odometer of a car reads 2000 km at the start of a trip and 2400 km at the end. If the trip took 8 hours, calculate average speed in km/h and m/s. <br><em>(Ans: 50 km/h, 13.9 m/s)</em></li>
+        </ol>
+
+        <h2>4. Acceleration</h2>
+        <p>When you press the gas pedal on a car, your velocity changes. This change in velocity over time is called <strong>Acceleration</strong>.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Acceleration (\( a \)):</strong> The rate of change of velocity with respect to time. It is a vector quantity.<br>
+            \( a = \frac{v - u}{t} \)<br>
+            Where \( v \) is final velocity, \( u \) is initial velocity, and \( t \) is time taken.
+            <br><br>
+            <strong>SI Unit:</strong> \( m/s^2 \)
         </div>
 
-        <h3>Derivation of Third Equation: $v^2 = u^2 + 2as$</h3>
-        <div class="derivation-box">
-            <p><strong>Method 1: Eliminating time</strong></p>
-            <p>From first equation: $t = \frac{v - u}{a}$ ... (i)</p>
-            <p>From second equation: $s = ut + \frac{1}{2}at^2$ ... (ii)</p>
-            <p>Substitute (i) in (ii):</p>
-            <p>$s = u \cdot \frac{v - u}{a} + \frac{1}{2}a\left(\frac{v - u}{a}\right)^2$</p>
-            <p>$s = \frac{uv - u^2}{a} + \frac{(v - u)^2}{2a}$</p>
-            <p>$s = \frac{2(uv - u^2) + (v - u)^2}{2a} = \frac{2uv - 2u^2 + v^2 - 2uv + u^2}{2a}$</p>
-            <p>$s = \frac{v^2 - u^2}{2a}$</p>
-            <p>$2as = v^2 - u^2$</p>
-            <div class="highlight-formula">$$ v^2 = u^2 + 2as $$</div>
-            
-            <p><strong>Method 2: Using calculus</strong></p>
-            <p>$a = \frac{dv}{dt} = \frac{dv}{ds} \cdot \frac{ds}{dt} = v\frac{dv}{ds}$</p>
-            <p>$a \, ds = v \, dv$</p>
-            <p>Integrating: $\int_0^s a \, ds = \int_u^v v \, dv$</p>
-            <p>$as = \left[\frac{v^2}{2}\right]_u^v = \frac{v^2}{2} - \frac{u^2}{2}$</p>
-            <p>$2as = v^2 - u^2$ â†’ $v^2 = u^2 + 2as$ âœ“</p>
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <strong>What is Retardation?</strong><br>
+            If velocity is decreasing, the acceleration acts in the opposite direction to the motion. This is called negative acceleration, deceleration, or <strong>retardation</strong>. (Example: applying brakes).
         </div>
 
-        <div class="analysis-box">
-            <p><strong>Summary of Three Equations:</strong></p>
-            <table>
-                <tr>
-                    <th>Equation</th>
-                    <th>Missing Quantity</th>
-                    <th>Use When</th>
-                </tr>
-                <tr>
-                    <td>$v = u + at$</td>
-                    <td>s (displacement)</td>
-                    <td>Finding v when s is not given/needed</td>
-                </tr>
-                <tr>
-                    <td>$s = ut + \frac{1}{2}at^2$</td>
-                    <td>v (final velocity)</td>
-                    <td>Finding s when v is not given/needed</td>
-                </tr>
-                <tr>
-                    <td>$v^2 = u^2 + 2as$</td>
-                    <td>t (time)</td>
-                    <td>Finding v or s when time is not given/needed</td>
-                </tr>
-            </table>
+        <h3>Practice Problems: Acceleration</h3>
+        <ol>
+            <li>A train starting from a railway station (initially at rest) moves with uniform acceleration and attains a speed of 40 km/h in 10 minutes. Find its acceleration in \( m/s^2 \). <br><em>(Hint: Convert km/h to m/s, and minutes to seconds first. \( u=0 \). Ans: \( \approx 0.0185 \text{ } m/s^2 \))</em></li>
+            <li>A motorcycle moving with a speed of 5 m/s is subjected to an acceleration of \( 0.2 \text{ } m/s^2 \). Calculate the speed of the motorcycle after 10 seconds. <br><em>(Hint: Use \( v = u + at \). Ans: 7 m/s)</em></li>
+            <li>Is it possible for an object to have zero velocity but non-zero acceleration? <br><em>(Hint: Yes, think of a ball thrown straight up at its absolute highest point. Velocity is 0, but gravity \( 9.8 \text{ } m/s^2 \) is still acting on it!)</em></li>
+        </ol>
+
+        <h2>5. Kinematic Equations for Uniform Acceleration</h2>
+        <p>These three equations are the heart of Class 11 mechanics. You will use them everywhere! <strong>Note:</strong> They can ONLY be used when acceleration (\( a \)) is constant.</p>
+
+        <ul>
+            <li><strong>First Equation (Velocity-Time Relation):</strong> <br> \( v = u + at \)</li>
+            <li><strong>Second Equation (Position-Time Relation):</strong> <br> \( s = ut + \frac{1}{2}at^2 \)</li>
+            <li><strong>Third Equation (Velocity-Position Relation):</strong> <br> \( v^2 = u^2 + 2as \)</li>
+        </ul>
+        <p><em>Where: \( u \) = initial velocity, \( v \) = final velocity, \( a \) = acceleration, \( t \) = time, \( s \) = displacement.</em></p>
+
+        <h3>Practice Problems: Kinematic Equations</h3>
+        <ol>
+            <li>A racing car has a uniform acceleration of \( 4 \text{ } m/s^2 \). What distance will it cover in 10 seconds after the start? <br><em>(Hint: Starts from rest means \( u = 0 \). Use 2nd equation. Ans: 200 m)</em></li>
+            <li>A scooter moving at a speed of 10 m/s is stopped by applying brakes which produce a uniform retardation of \( -0.5 \text{ } m/s^2 \). How much distance will be covered by the scooter before it stops? <br><em>(Hint: Stops means \( v = 0 \). Use 3rd equation. Ans: 100 m)</em></li>
+            <li>An electron moving with a velocity of \( 5 \times 10^4 \text{ } m/s \) enters a uniform electric field and acquires a uniform acceleration of \( 10^4 \text{ } m/s^2 \). Calculate the time in which its velocity doubles. <br><em>(Hint: Final velocity \( v \) will be \( 10 \times 10^4 \text{ } m/s \). Use 1st equation. Ans: 5 seconds)</em></li>
+        </ol>
+
+        <h2>6. Graphical Representation of Motion</h2>
+        <p>Graphs are a visual way to understand kinematics. Let's look at the two most important ones.</p>
+
+        <h3>A. Position-Time (x-t) Graph</h3>
+        <ul>
+            <li>The <strong>slope</strong> of a position-time graph gives the <strong>Velocity</strong>.</li>
+            <li>Steeper slope = Higher velocity.</li>
+            <li>Horizontal line = Object is at rest (zero velocity).</li>
+        </ul>
+
+        <!-- Position-Time Graph Canvas -->
+        <div class="chart-container">
+            <canvas id="ptGraph"></canvas>
         </div>
 
-        <div class="practice-box">
-            <span class="practice-header">Worked Example 2 - Comprehensive Kinematics</span>
-            <p><strong>Q:</strong> A car accelerates uniformly from 18 km/h to 54 km/h in 5 s. Find (a) Acceleration (b) Distance covered.</p>
-            
-            <p><strong>Solution:</strong><br>
-            Convert to m/s: $u = 18 \times \frac{5}{18} = 5$ m/s, $v = 54 \times \frac{5}{18} = 15$ m/s<br>
-            Time: $t = 5$ s<br><br>
-            
-            (a) Using $v = u + at$:<br>
-            $15 = 5 + a(5)$<br>
-            $5a = 10$ â†’ $a = \mathbf{2 \text{ m/s}^2}$<br><br>
-            
-            (b) Using $s = ut + \frac{1}{2}at^2$:<br>
-            $s = 5(5) + \frac{1}{2}(2)(5)^2 = 25 + 25 = \mathbf{50 \text{ m}}$<br><br>
-            
-            <strong>Verification</strong> using $v^2 = u^2 + 2as$:<br>
-            $15^2 = 5^2 + 2(2)s$ â†’ $225 = 25 + 4s$ â†’ $s = 50$ m âœ“</p>
+        <h3>B. Velocity-Time (v-t) Graph</h3>
+        <ul>
+            <li>The <strong>slope</strong> of a velocity-time graph gives the <strong>Acceleration</strong>.</li>
+            <li>The <strong>Area under the curve</strong> of a velocity-time graph gives the <strong>Displacement</strong>. This is extremely important for board exams!</li>
+        </ul>
+
+        <!-- Velocity-Time Graph Canvas -->
+        <div class="chart-container">
+            <canvas id="vtGraph"></canvas>
         </div>
 
-
-
-        <h2>2.6 Graphical Analysis of Motion</h2>
-        
-        <h3>Position-Time (s-t) Graph</h3>
-        <div class="analysis-box">
-            <p><strong>Interpretation:</strong></p>
-            <ul>
-                <li><strong>Slope</strong> = Velocity ($v = \frac{ds}{dt}$)</li>
-                <li>Steeper slope â†’ Higher velocity</li>
-                <li>Horizontal line â†’ At rest (v = 0)</li>
-                <li>Positive slope â†’ Moving forward</li>
-                <li>Negative slope â†’ Moving backward</li>
-            </ul>
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            If the v-t graph is a straight line sloping upwards, it means the object has <strong>uniform positive acceleration</strong>.
         </div>
 
-        <h3>Velocity-Time (v-t) Graph</h3>
-        <div class="analysis-box">
-            <p><strong>Interpretation:</strong></p>
-            <ul>
-                <li><strong>Slope</strong> = Acceleration ($a = \frac{dv}{dt}$)</li>
-                <li><strong>Area under curve</strong> = Displacement</li>
-                <li>Horizontal line â†’ Uniform motion (a = 0)</li>
-                <li>Straight line with slope â†’ Uniform acceleration</li>
-                <li>Curved line â†’ Non-uniform acceleration</li>
-            </ul>
+        <h3>Practice Problems: Graphs</h3>
+        <ol>
+            <li>What does the area under a velocity-time graph represent? <br><em>(Ans: Displacement)</em></li>
+            <li>What does the slope of a position-time graph represent? <br><em>(Ans: Velocity)</em></li>
+            <li>If the position-time graph of a moving object is a straight horizontal line parallel to the time axis, what is the object's state? <br><em>(Ans: The object is at rest, velocity is zero)</em></li>
+            <li>Draw (on paper) a velocity-time graph for a car moving with a constant speed of 20 m/s for 5 seconds, and then applying brakes to stop uniformly in the next 5 seconds. Calculate total displacement using the area. <br><em>(Hint: Area of rectangle + Area of triangle. Ans: 100m + 50m = 150m)</em></li>
+        </ol>
+
+        <h2>7. Motion Under Gravity (Free Fall)</h2>
+        <p>When an object is dropped, thrown up, or thrown down, the earth pulls it with a constant acceleration called acceleration due to gravity (\( g \)).</p>
+        <p>Value of \( g \approx 9.8 \text{ } m/s^2 \) (often taken as \( 10 \text{ } m/s^2 \) for easy calculations).</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <strong>Sign Convention Trick for Problem Solving:</strong><br>
+            Always choose a direction as positive. <br>
+            <em>Easiest method:</em> Take the upward direction as Positive (+) and downward as Negative (-).<br>
+            Therefore, gravity (\( g \)) is ALWAYS pointing down, so <strong>\( a = -g \)</strong> in your equations!
         </div>
 
-        <div class="derivation-box">
-            <p><strong>Deriving $s = ut + \frac{1}{2}at^2$ from v-t graph:</strong></p>
-            <p>For uniform acceleration starting from velocity u:</p>
-            <p>v-t graph is a straight line from (0, u) to (t, v)</p>
-            <p>Area = Area of rectangle + Area of triangle</p>
-            <p>$s = ut + \frac{1}{2}(v - u)t$</p>
-            <p>Since $v - u = at$:</p>
-            <p>$s = ut + \frac{1}{2}at^2$ âœ“</p>
-        </div>
+        <p>When an object is thrown vertically upwards:</p>
+        <ul>
+            <li>At the highest point, its velocity becomes zero (\( v = 0 \)).</li>
+            <li>Time of ascent = Time of descent (if air resistance is ignored).</li>
+            <li>The kinematic equations become: <br>
+                \( v = u - gt \)<br>
+                \( s = ut - \frac{1}{2}gt^2 \)<br>
+                \( v^2 = u^2 - 2gs \)
+            </li>
+        </ul>
 
-        <h3>Acceleration-Time (a-t) Graph</h3>
-        <div class="analysis-box">
-            <p><strong>Interpretation:</strong></p>
-            <ul>
-                <li><strong>Area under curve</strong> = Change in velocity</li>
-                <li>Horizontal line â†’ Uniform acceleration</li>
-                <li>Zero line â†’ Uniform velocity</li>
-            </ul>
-        </div>
+        <img src="Images/A%20scientific%20diagram%20showing%20a%20ball%20being%20thrown%20straight%20up%20into%20the%20air%20and%20falling%20back%20down.jpg" alt="Physics Diagram: Object Thrown Vertically Upward" class="chapter-image">
 
-        <div class="practice-box">
-            <span class="practice-header">Worked Example 3 - Graph Interpretation</span>
-            <p><strong>Q:</strong> A body starts from rest and moves with uniform acceleration 2 m/sÂ² for 5 s, then moves with constant velocity for 3 s. Find total displacement using v-t graph.</p>
-            
-            <p><strong>Solution:</strong><br>
-            <strong>Phase 1 (0-5s):</strong> $u = 0$, $a = 2$ m/sÂ², $t = 5$ s<br>
-            Final velocity: $v = 0 + 2(5) = 10$ m/s<br>
-            Displacement = Area of triangle = $\frac{1}{2} \times 5 \times 10 = 25$ m<br><br>
-            
-            <strong>Phase 2 (5-8s):</strong> Constant velocity = 10 m/s, time = 3 s<br>
-            Displacement = Area of rectangle = $10 \times 3 = 30$ m<br><br>
-            
-            <strong>Total displacement = 25 + 30 = 55 m</strong></p>
-        </div>
+        <h3>Practice Problems: Motion Under Gravity</h3>
+        <ol>
+            <li>A ball is thrown vertically upwards with a velocity of 20 m/s. How high will it go? (Take \( g = 10 \text{ } m/s^2 \)). <br><em>(Hint: At max height \( v = 0 \). Acceleration \( a = -10 \). Use \( v^2 = u^2 + 2as \). Ans: 20 m)</em></li>
+            <li>A stone is dropped from a cliff of height 20 m. How much time will it take to reach the ground? (Take \( g = 10 \text{ } m/s^2 \)). <br><em>(Hint: Dropped means \( u = 0 \). Displacement is downward so \( s = -20 \). \( a = -10 \). Use 2nd equation. Ans: 2 seconds)</em></li>
+            <li>A ball thrown up is caught by the thrower after 4 seconds. With what velocity was it thrown? <br><em>(Hint: Total time is 4s, so time to reach max height is 2s. At max height \( v=0, t=2 \). Use 1st equation \( v = u - gt \). Ans: \( u = 20 \text{ } m/s \))</em></li>
+        </ol>
 
-        <h2>2.7 Relative Velocity in One Dimension</h2>
-        
-        <div class="definition-box">
-            <p><strong>Relative Velocity:</strong> Velocity of one object with respect to another.</p>
-            <p>If A moves with velocity $v_A$ and B moves with velocity $v_B$ (both w.r.t. ground):</p>
-            <div class="highlight-formula">$$ v_{AB} = v_A - v_B $$</div>
-            <p>$v_{AB}$ = Velocity of A relative to B</p>
-            <p><strong>Note:</strong> $v_{AB} = -v_{BA}$</p>
-        </div>
-
-        <div class="practice-box">
-            <span class="practice-header">Worked Example 4 - Relative Velocity</span>
-            <p><strong>Q:</strong> Train A moves east at 60 km/h. Train B moves west at 40 km/h. Find velocity of A relative to B.</p>
-            
-            <p><strong>Solution:</strong><br>
-            Taking east as positive:<br>
-            $v_A = +60$ km/h, $v_B = -40$ km/h<br>
-            $v_{AB} = v_A - v_B = 60 - (-40) = \mathbf{100 \text{ km/h (east)}}$<br>
-            (A appears to move at 100 km/h eastward to observer in B)</p>
-        </div>
-
-        <h2>2.8 Motion Under Gravity (Free Fall)</h2>
-        
-        <div class="definition-box">
-            <p><strong>Free Fall:</strong> Motion under gravity alone (air resistance neglected).</p>
-            <p><strong>Acceleration due to gravity:</strong> $g = 9.8$ m/sÂ² â‰ˆ 10 m/sÂ² (downward)</p>
-            <p><strong>Sign Convention:</strong></p>
-            <ul>
-                <li>Taking upward as positive: $a = -g$</li>
-                <li>Taking downward as positive: $a = +g$</li>
-            </ul>
-        </div>
-
-        <div class="derivation-box">
-            <p><strong>Equations for Vertical Motion (taking upward as +ve):</strong></p>
-            <ul>
-                <li>$v = u - gt$ (velocity decreases when going up)</li>
-                <li>$h = ut - \frac{1}{2}gt^2$ (h = height)</li>
-                <li>$v^2 = u^2 - 2gh$</li>
-            </ul>
-            
-            <p><strong>For object dropped (u = 0):</strong></p>
-            <ul>
-                <li>$v = gt$ (downward)</li>
-                <li>$h = \frac{1}{2}gt^2$</li>
-                <li>$v^2 = 2gh$</li>
-            </ul>
-            
-            <p><strong>For object thrown upward:</strong></p>
-            <ul>
-                <li>At maximum height: $v = 0$</li>
-                <li>Max height: $H = \frac{u^2}{2g}$</li>
-                <li>Time to reach max height: $t_up = \frac{u}{g}$</li>
-                <li>Total time of flight (up and down): $T = \frac{2u}{g}$</li>
-                <li>Velocity on return = -u (same magnitude, opposite direction)</li>
-            </ul>
-        </div>
-
-        <div class="practice-box">
-            <span class="practice-header">Worked Example 5 - Free Fall</span>
-            <p><strong>Q:</strong> A stone is dropped from a height of 80 m. Find (a) Time to reach ground (b) Velocity just before hitting ground. (g = 10 m/sÂ²)</p>
-            
-            <p><strong>Solution:</strong><br>
-            Given: $u = 0$, $h = 80$ m, $g = 10$ m/sÂ²<br><br>
-            
-            (a) Using $h = \frac{1}{2}gt^2$:<br>
-            $80 = \frac{1}{2}(10)t^2$<br>
-            $t^2 = 16$ â†’ $t = \mathbf{4 \text{ s}}$<br><br>
-            
-            (b) Using $v^2 = 2gh$:<br>
-            $v^2 = 2(10)(80) = 1600$<br>
-            $v = \mathbf{40 \text{ m/s (downward)}}$<br><br>
-            
-            <strong>OR</strong> using $v = gt = 10 \times 4 = 40$ m/s âœ“</p>
-        </div>
-
-        <div class="practice-box">
-            <span class="practice-header">Worked Example 6 - Upward Throw</span>
-            <p><strong>Q:</strong> A ball is thrown vertically upward with velocity 20 m/s. Find (a) Maximum height (b) Total time in air (c) Velocity after 1.5 s. (g = 10 m/sÂ²)</p>
-            
-            <p><strong>Solution:</strong><br>
-            Given: $u = 20$ m/s (upward), $g = 10$ m/sÂ²<br><br>
-            
-            (a) Max height: $H = \frac{u^2}{2g} = \frac{(20)^2}{2(10)} = \frac{400}{20} = \mathbf{20 \text{ m}}$<br><br>
-            
-            (b) Total time: $T = \frac{2u}{g} = \frac{2(20)}{10} = \mathbf{4 \text{ s}}$<br><br>
-            
-            (c) At t = 1.5 s (taking upward as positive):<br>
-            $v = u - gt = 20 - 10(1.5) = 20 - 15 = \mathbf{+5 \text{ m/s}}$ (still going up)</p>
-        </div>
-
-
-
-        <div class="master-tip">
-            <p><strong>Study Tip:</strong> Master the derivations in this chapter as they are frequently asked in exams.
-                Practice numericals based on the formulas.</p>
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
         </div>
 
     </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
     <script>
         function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+            document.documentElement.classList.toggle('dark-mode');
         }
-        // Initialize Theme - Default to LIGHT
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark-mode');
-        }
+
+        // --- CHART.JS INITIALIZATION ---
+        // Ensure DOM is loaded before rendering charts
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // 1. Position-Time Graph
+            const ptCtx = document.getElementById('ptGraph').getContext('2d');
+            new Chart(ptCtx, {
+                type: 'line',
+                data: {
+                    labels: ['0s', '1s', '2s', '3s', '4s', '5s'],
+                    datasets: [{
+                        label: 'Uniform Motion (Constant Velocity)',
+                        data: [0, 10, 20, 30, 40, 50],
+                        borderColor: '#1e88e5', // var(--blue-border)
+                        backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0 // Straight line
+                    },
+                    {
+                        label: 'Object at Rest',
+                        data: [20, 20, 20, 20, 20, 20],
+                        borderColor: '#d81b60', // var(--pink-border)
+                        borderDash: [5, 5],
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Position vs Time Graph',
+                            font: { size: 16 }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Time (s)' } },
+                        y: { title: { display: true, text: 'Position (m)' } }
+                    }
+                }
+            });
+
+            // 2. Velocity-Time Graph
+            const vtCtx = document.getElementById('vtGraph').getContext('2d');
+            new Chart(vtCtx, {
+                type: 'line',
+                data: {
+                    labels: ['0s', '1s', '2s', '3s', '4s', '5s'],
+                    datasets: [{
+                        label: 'Uniform Acceleration',
+                        data: [0, 5, 10, 15, 20, 25],
+                        borderColor: '#43a047', // var(--green-border)
+                        backgroundColor: 'rgba(67, 160, 71, 0.2)',
+                        borderWidth: 3,
+                        fill: true, // Highlights area under curve
+                        tension: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Velocity vs Time Graph (Area = Displacement)',
+                            font: { size: 16 }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Time (s)' } },
+                        y: { title: { display: true, text: 'Velocity (m/s)' } }
+                    }
+                }
+            });
+        });
     </script>
 </body>
-
 </html>
