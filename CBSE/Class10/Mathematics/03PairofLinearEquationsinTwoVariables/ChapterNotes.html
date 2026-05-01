@@ -1,143 +1,275 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 03: Pair of Linear Equations - Vardaan Master Notes</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- MathJax Configuration -->
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Pair of Linear Equations in Two Variables - Mathematics - Vardaan Learning Institute</title>
+    
+    <!-- MATHJAX INTEGRATION FOR LATEX RENDERING -->
     <script>
         MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']],
                 processEscapes: true
-            },
-            chtml: {
-                mtextInheritFont: true,
-                scale: 1.05
-            },
-            options: {
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
             }
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- CHART.JS FOR INTERACTIVE GRAPHS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- CSS VARIABLES & THEME --- */
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            /* Core Colors */
-            --paper-bg: #ffffff;
-            --ink-color: #000000;
-            --accent-color: #000000;
-
-            /* Theme Palettes */
-            --yellow-bg: #fffde7;
-            --yellow-border: #fdd835;
-
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
             --green-border: #43a047;
-
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
-
             --pink-bg: #fce4ec;
             --pink-border: #d81b60;
-
-            --red-border: #d32f2f;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
 
-        /* --- GLOBAL RESET & TYPOGRAPHY --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
         }
 
-        html,
-        body {
-            overflow-x: hidden;
-            width: 100%;
-        }
-
+        /* --- GLOBAL LAYOUT --- */
         body {
             background-color: var(--paper-bg);
-            color: var(--ink-color);
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* --- DARK MODE (FILTER INVERSION) --- */
-        html {
-            transition: filter 0.3s ease;
-        }
-
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg);
-        }
-
-        /* --- ADAPTIVE WATERMARK (V2.5 UNIFIED) --- */
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
             z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.1;
             max-width: 80%;
-            height: auto;
-            opacity: 0.05;
-            /* Light Mode Default */
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
         }
 
-        /* Dark Mode Override for Watermark */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
+        }
+
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important;
+            filter: invert(1); 
+            opacity: 0.15;
         }
 
-        /* --- PAPER SHEET LAYOUT --- */
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
             background-color: var(--paper-bg);
-            /* seamless paper: no shadow, no border */
-            box-shadow: none;
-            border: none;
             width: 210mm;
-            /* A4 Width */
             max-width: 100%;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10;
-            /* Above watermark */
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
-        @media screen and (max-width: 800px) {
-            .paper-sheet {
-                width: 100%;
-                padding: 20px;
-            }
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
         }
 
-        /* --- THEME TOGGLE BUTTON --- */
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: var(--example-bg);
+        }
+
+        th, td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--blue-bg);
+            color: var(--blue-border);
+            font-weight: bold;
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- THEME TOGGLE --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -145,7 +277,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--toggle-bg);
             border: none;
             cursor: pointer;
             z-index: 1000;
@@ -154,330 +286,394 @@
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        /* Double Inversion for Toggle Button */
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
-        }
-
-        .icon-sun,
-        .icon-moon {
+        .icon-sun, .icon-moon {
             position: absolute;
-            width: 24px;
-            height: 24px;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
         }
 
-        /* Light Mode State */
-        .icon-moon {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
-        }
-
-        /* Dark Mode State */
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
-        }
-
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-
-        /* --- CONTENT STYLING --- */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid var(--ink-color);
-            padding-bottom: 0.5rem;
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        p {
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            color: #333;
-        }
-
-        ul,
-        ol {
-            margin-bottom: 1rem;
-            padding-left: 25px;
-        }
-
-        li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* --- SPECIAL COMPONENTS --- */
-
-        /* Formula Box */
-        .formula-box {
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0px #000;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            position: relative;
-            background-color: #fff;
-        }
-
-        .formula-pill {
-            position: absolute;
-            top: -12px;
-            right: 20px;
-            background: #000;
-            color: #fff;
-            padding: 2px 10px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* Master Tip */
-        .master-tip {
-            border: 2px dashed var(--red-border);
-            background-color: #fffaf0;
-            padding: 1rem;
-            margin: 1.5rem 0;
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 10px;
             border-radius: 8px;
-            font-style: italic;
+            border: 1px solid var(--toggle-border);
         }
 
-        .tip-header {
-            font-weight: 700;
-            color: var(--red-border);
-            font-style: normal;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Concept Blocks */
-        .concept-green {
-            background-color: var(--green-bg);
-            border-left: 4px solid var(--green-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .concept-blue {
-            background-color: var(--blue-bg);
-            border-left: 4px solid var(--blue-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .concept-pink {
-            background-color: var(--pink-bg);
-            border-left: 4px solid var(--pink-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 8px 8px 0;
-        }
-
-        /* Placeholder Images (No Border) */
-        .placeholder-image {
-            width: 100%;
-            padding: 3rem;
-            margin: 2rem 0;
-            background-color: #f5f5f5;
-            color: #888;
-            font-weight: 600;
-            text-align: center;
-            font-style: italic;
-            border-radius: 4px;
-        }
-
-        /* Table Styling for Conditions */
-        .condition-table {
-            width: 100%;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
-            overflow-x: auto;
-            /* Enable horizontal scroll */
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            /* Hide scrollbar Firefox */
-            -ms-overflow-style: none;
-            /* Hide scrollbar IE/Edge */
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .condition-table::-webkit-scrollbar {
-            display: none;
-            /* Hide scrollbar WebKit */
-        }
-
-        .condition-table table {
-            width: 100%;
-            min-width: 600px;
-            /* Force scroll on small screens */
-            border-collapse: collapse;
-        }
-
-        .condition-table th,
-        .condition-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
-        }
-
-        /* ... (existing styles) ... */
-
-        /* ... (inside body) ... */
-
-        <div class="condition-table"><table><tr><th>Condition (Algebraic)</th><th>Interpretation (Graph)</th><th>Consistency</th><th>Mathematical Ratio</th></tr><tr><td><strong>Unique Solution</strong></td><td>Intersecting Lines</td><td>Consistent</td><td>$\frac {
-            a_1
-        }
-
-            {
-            a_2
-        }
-
-        \neq \frac {
-            b_1
-        }
-
-            {
-            b_2
-        }
-
-        $</td></tr><tr><td><strong>No Solution</strong></td><td>Parallel Lines</td><td>Inconsistent</td><td>$\frac {
-            a_1
-        }
-
-            {
-            a_2
-        }
-
-        =\frac {
-            b_1
-        }
-
-            {
-            b_2
-        }
-
-        \neq \frac {
-            c_1
-        }
-
-            {
-            c_2
-        }
-
-        $</td></tr><tr><td><strong>Infinitely Many Solutions</strong></td><td>Coincident Lines</td><td>Consistent (Dependent)</td><td>$\frac {
-            a_1
-        }
-
-            {
-            a_2
-        }
-
-        =\frac {
-            b_1
-        }
-
-            {
-            b_2
-        }
-
-        =\frac {
-            c_1
-        }
-
-            {
-            c_2
-        }
-
-        $</td></tr></table></div><div class="placeholder-image">[AI IMAGE PROMPT: Three distinct graphs side-by-side. 1. Two lines crossing at a single sharp point (Unique). 2. Two parallel distinct tracks never meeting (No Solution). 3. Two different colored lines perfectly overlapping each other (Infinite). Clean vector style.] </div>
-        /* ... (sections 2, 3) ... */
-
-        < !-- TYPE 1: BOAT --><div class="concept-pink"><h3>Type 1: Upstream & Downstream (The Boat)</h3><p><strong>Logic:</strong>Water helps downstream ($+$),
-        opposes upstream ($-$).</p><ul><li>Speed of Boat (Still water)=$x$ km/h.</li><li>Speed of Stream=$y$ km/h.</li><li><strong>Downstream Speed:</strong>$(x+y)$ km/h.</li><li><strong>Upstream Speed:</strong>$(x-y)$ km/h.</li><li>Time=Distance / Speed.</li></ul><div class="placeholder-image">[AI IMAGE PROMPT: A split visual. LEFT: "Downstream" - A speedboat rushing WITH the flow of a river,
-        arrows pointing same way,
-        speedometer showing high speed (x+y). RIGHT: "Upstream" - The same boat struggling AGAINST the river flow,
-        huge water resistance,
-        speedometer showing lower speed (x-y).] </div><div class="formula-box" style="margin: 1rem 0; border-style: dashed;"><strong>EXAMPLE PROBLEM:</strong><br>
-        /* ... (keep example) ... */
-        </div></div>
-        /* ... (Types 2, 3) ... */
-
-        < !-- TYPE 4: WORK & TIME --><div class="concept-pink"><h3>Type 4: Work & Time (+ Taps & Tanks)</h3><p><strong>Logic:</strong>Work is inversely proportional to Time. Always calculate "1 Day/Hour Work" .</p><ul><li>If A takes $x$ days,
-        1 day work=$1/x$.</li><li>If Tap A fills tank in $x$ hours,
-        1 hour fill=$1/x$.</li><li>Together 1 day work: $1/x+1/y$.</li></ul><div class="placeholder-image">[AI IMAGE PROMPT: Comparison visual. LEFT: Construction workers building a brick wall,
-        text "Men/Days" . RIGHT: Water gushing from two different sized taps into a glass tank,
-        water level rising,
-        text "Rate of Filling" . Detailed 3D illustration.] </div><div class="formula-box" style="margin: 1rem 0; border-style: dashed;">
-        /* ... (keep example) ... */
-        </div></div>< !-- TYPE 5: AGE PROBLEMS --><div class="concept-blue"><h3>Type 5: Age Problems (Father & Son)</h3><p><strong>Logic:</strong>"Hence" means Add (+). "Ago" means Subtract (-).</p><ul><li>Let Present Age of Father=$x$,
-        Son=$y$.</li><li><strong>'n' years Ago:</strong>$(x-n)$ and $(y-n)$.</li><li><strong>'n' years Hence:</strong>$(x+n)$ and $(y+n)$.</li></ul><div class="placeholder-image">[AI IMAGE PROMPT: A heartwarming timeline evolution. Left side: Faded sepia tone,
-        younger father holding a toddler (Past/Ago). Center: Normal color,
-        Middle-aged father with teenage son (Present). Right side: Futuristic/Bright tone,
-        Older father with adult son (Future/Hence). Mathematical gap arrows "+5 years",
-        "-5 years" .] </div><div class="formula-box" style="margin: 1rem 0; border-style: dashed;">
-        /* ... (keep example) ... */
-        </div></div>< !-- TYPE 6: FRACTIONS -->
-        /* ... (keep section) ... */
-
-        < !-- TYPE 7: SPEED,
-        DISTANCE,
-        TIME --><div class="concept-pink"><h3>Type 7: Trains & Relative Speed</h3><p><strong>Logic:</strong>Same Direction=Subtract Speeds. Opposite Direction=Add Speeds.</p><ul><li>Distance between points=$D$.</li><li>Same Direction: Relative Speed=$(x-y)$. Time=$D/(x-y)$.</li><li>Opposite Direction: Relative Speed=$(x+y)$. Time=$D/(x+y)$.</li></ul><div class="placeholder-image">[AI IMAGE PROMPT: A dynamic cinematic shot of two high-speed trains. SCENE 1: Trains rushing towards each other on parallel tracks,
-        blurring with speed (Relative Speed=Add). SCENE 2: One train overtaking another train moving in the same direction,
-        looking slower relatively (Relative Speed=Subtract). Vivid motion blur effects.] </div><div class="formula-box" style="margin: 1rem 0; border-style: dashed;">
-
-        /* ... (keep existing) ... */
-        </div></div><h2>5. Advanced Geometry Corner</h2><p><strong>Question: Determining Area of Triangle formed by lines and axis.</strong></p><p><strong>Steps:</strong></p><ol><li>Draw the partial graph of both lines.</li><li>Find intersection point of lines (Vertex A).</li><li>Find intersection points with X-axis (Vertices B and C).</li><li><strong>Base:</strong>Distance between B and C ($|x_2 - x_1|$).</li><li><strong>Height:</strong>Y-coordinate of Vertex A ($ordinate$).</li><li><strong>Area:</strong>$1/2 \times \text {
-            Base
-        }
-
-        \times \text {
-            Height
-        }
-
-        $.</li></ol></div>< !-- SCRIPT FOR TOGGLE --><script>function toggleTheme() {
-            const html=document.documentElement;
-            html.classList.toggle('dark-mode');
-
-            if (html.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { 
+                background-color: #ffffff !important; 
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
             }
-
-            else {
-                localStorage.setItem('theme', 'light');
+            .paper-sheet { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                box-shadow: none !important;
+            }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay {
+                display: flex !important; position: fixed !important; z-index: -1 !important;
+                opacity: 0.1 !important; mix-blend-mode: normal !important; 
+                left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important;
+            }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center {
+                    content: counter(page); display: block; width: 30px; height: 30px;
+                    background-color: #d81b60; color: #ffffff; border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold;
+                    text-align: center; line-height: 30px; margin: 0 auto;
+                }
             }
         }
+    </style>
+</head>
+<body>
 
-        if (localStorage.getItem('theme')==='dark') {
-            document.documentElement.classList.add('dark-mode');
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 10 Mathematics • Chapter Notes</div>
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <h1>PAIR OF LINEAR EQUATIONS IN TWO VARIABLES</h1>
+        
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>What is a Linear Equation in Two Variables?</strong><br>
+            An equation of the form $ax + by + c = 0$, where $a, b,$ and $c$ are real numbers, and both $a$ and $b$ are not zero ($a^2 + b^2 \neq 0$), is called a linear equation in two variables $x$ and $y$. Geometrically, it represents a <strong>straight line</strong>.
+        </div>
+
+        <p>Two linear equations in the same two variables $x$ and $y$ are called a <strong>Pair of Linear Equations in Two Variables</strong>. The most general form is:</p>
+        <p style="text-align: center; font-size: 1.2rem;">
+            $$a_1x + b_1y + c_1 = 0$$
+            $$a_2x + b_2y + c_2 = 0$$
+        </p>
+        <p>Where $a_1, b_1, c_1, a_2, b_2, c_2$ are all real numbers and $a_1^2 + b_1^2 \neq 0$, $a_2^2 + b_2^2 \neq 0$.</p>
+
+        <h2>1. Graphical Method of Solution</h2>
+        <p>A pair of linear equations in two variables will represent two straight lines drawn on the same Cartesian plane. There are only three possibilities for these two lines:</p>
+
+        <div class="chart-container">
+            <canvas id="linesChart"></canvas>
+            <p style="text-align: center; font-size: 0.8rem; color: #666; margin-top: 5px;"><em>Interactive Graph showing Intersecting Lines ($x+y=5$ and $2x-y=4$)</em></p>
+        </div>
+
+        <h3>Conditions for Solvability (Consistency & Inconsistency)</h3>
+        <p>This is the most frequently asked topic in Section A (MCQs) of the CBSE Board Examination.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Ratio Comparison</th>
+                    <th>Graphical Representation</th>
+                    <th>Algebraic Interpretation</th>
+                    <th>System Nature</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$\frac{a_1}{a_2} \neq \frac{b_1}{b_2}$</td>
+                    <td><strong>Intersecting Lines</strong></td>
+                    <td>Exactly ONE solution (Unique)</td>
+                    <td><strong>Consistent</strong></td>
+                </tr>
+                <tr>
+                    <td>$\frac{a_1}{a_2} = \frac{b_1}{b_2} = \frac{c_1}{c_2}$</td>
+                    <td><strong>Coincident Lines</strong></td>
+                    <td>Infinitely Many Solutions</td>
+                    <td><strong>Consistent (Dependent)</strong></td>
+                </tr>
+                <tr>
+                    <td>$\frac{a_1}{a_2} = \frac{b_1}{b_2} \neq \frac{c_1}{c_2}$</td>
+                    <td><strong>Parallel Lines</strong></td>
+                    <td>No Solution</td>
+                    <td><strong>Inconsistent</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="green-box">
+            <span class="box-label">Practice</span>
+            <strong>Classroom Discussion Problems:</strong>
+            <ol>
+                <li>Find the value of $k$ for which the system $kx - y = 2$ and $6x - 2y = 3$ has a unique solution. <em>(Ans: $k \neq 3$)</em></li>
+                <li>Find $k$ if $x + 2y = 5$ and $3x + ky + 15 = 0$ have infinitely many solutions. <em>(Ans: $k = 6$)</em></li>
+                <li>Check graphically whether the pair of equations $x + 3y = 6$ and $2x - 3y = 12$ is consistent. If so, solve them graphically. <em>(Ans: Intersect at $(6,0)$)</em></li>
+            </ol>
+        </div>
+
+        <h2>2. Algebraic Methods of Solving</h2>
+        <p>As per the highly rationalised CBSE syllabus, you must master two algebraic methods to solve a system of linear equations. <em>(Note: Cross-Multiplication Method is DELETED)</em>.</p>
+
+        <h3>Method 1: Substitution Method</h3>
+        <p>In this method, we express one variable in terms of the other from one equation and substitute it into the second equation.</p>
+        <ul>
+            <li><strong>Step 1:</strong> Find the value of one variable, say $y$, in terms of $x$ from either equation.</li>
+            <li><strong>Step 2:</strong> Substitute this value of $y$ into the other equation. This reduces it to an equation in one variable ($x$).</li>
+            <li><strong>Step 3:</strong> Solve the equation to find $x$.</li>
+            <li><strong>Step 4:</strong> Substitute the value of $x$ back into the expression from Step 1 to find $y$.</li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">Important Example</span>
+            Solve by Substitution: $7x - 15y = 2$ and $x + 2y = 3$<br><br>
+            <strong>Sol:</strong> From eq(ii), $x = 3 - 2y$.<br>
+            Substitute in eq(i): $7(3 - 2y) - 15y = 2$<br>
+            $21 - 14y - 15y = 2 \implies -29y = -19 \implies y = \frac{19}{29}$<br>
+            Now, $x = 3 - 2\left(\frac{19}{29}\right) = \frac{87 - 38}{29} = \frac{49}{29}$<br>
+            <strong>Solution:</strong> $x = \frac{49}{29}, y = \frac{19}{29}$
+        </div>
+
+        <h3>Method 2: Elimination Method</h3>
+        <p>This is often the fastest method. We equate the coefficients of one of the variables and add or subtract the equations to "eliminate" that variable.</p>
+        <ul>
+            <li><strong>Step 1:</strong> Multiply both equations by suitable non-zero constants to make the coefficients of either $x$ or $y$ numerically equal.</li>
+            <li><strong>Step 2:</strong> Add or subtract the equations to eliminate the equated variable.</li>
+            <li><strong>Step 3:</strong> Solve the resulting equation in one variable.</li>
+            <li><strong>Step 4:</strong> Substitute this value in any of the original equations to find the other variable.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Practice</span>
+            <strong>Solve by Elimination (RD Sharma Type):</strong>
+            <ol>
+                <li>$3x + 4y = 10$ and $2x - 2y = 2$ <em>(Ans: $x=2, y=1$)</em></li>
+                <li>$ax + by = c$ and $bx + ay = 1 + c$ <em>(Literal Equations - highly expected in Board Exams)</em></li>
+                <li>$\frac{x}{2} + \frac{2y}{3} = -1$ and $x - \frac{y}{3} = 3$ <em>(Ans: $x=2, y=-3$)</em></li>
+            </ol>
+        </div>
+
+        <h2>3. Master Class: Word Problems Taxonomy</h2>
+        <p>Word problems form the core of Long Answer Type Questions (4 or 5 markers). Below is an exhaustive research-backed categorization of all <strong>12 possible word problem types</strong> asked in CBSE, sourced from RS Aggarwal, RD Sharma, and NCERT Exemplar.</p>
+
+        <div style="border: 2px dashed var(--meta-text); padding: 20px; text-align: center; margin: 25px 0; background-color: var(--toggle-bg); border-radius: 8px;">
+            <span style="display: block; font-weight: bold; color: var(--pink-border); margin-bottom: 10px; text-transform: uppercase;">[ Image Placeholder: Mathematical Real-World Applications ]</span>
+            <p style="font-size: 0.9rem; color: var(--meta-text); font-style: italic; margin: 0;"><strong>Image Prompt:</strong> A clean, landscape infographic showing real-world applications of linear equations. Show subtle icons of a Train, a Bank (Money/Coins), a Calendar (Ages), Scales (Mixtures) and a Boat on a river (Upstream/Downstream). Keep the image background fully white and prefer landscape.</p>
+        </div>
+
+        <h3>Type A: Problems on Ages</h3>
+        <p><strong>Golden Rule:</strong> If the present age is $x$, age $n$ years ago is $(x-n)$ and age $n$ years later is $(x+n)$.</p>
+        <ul>
+            <li><strong>Sample Concept:</strong> Let father's present age be $x$ and son's be $y$. "Five years hence, father will be 3 times his son" $\implies (x+5) = 3(y+5)$.</li>
+        </ul>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. Ten years ago, a father was twelve times as old as his son and ten years hence, he will be twice as old as his son will be then. Find their present ages.<br> 
+            <em>(Setup: $x-10 = 12(y-10)$ and $x+10 = 2(y+10)$ $\rightarrow$ Ans: Father=34, Son=12)</em><br><br>
+            2. The sum of the present ages of a father and his son is 99 years. When the father was as old as his son is now, his age was four times age of the son at that time. Find their present ages.<br>
+            <em>(Setup: $x+y=99$ and $x - (x-y) = 4[y-(x-y)]$ $\rightarrow$ Ans: Father=54, Son=45)</em>
+        </div>
+
+        <h3>Type B: Problems on Fractions</h3>
+        <p><strong>Golden Rule:</strong> Always let the numerator be $x$ and the denominator be $y$. The fraction is $\frac{x}{y}$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. A fraction becomes $\frac{1}{3}$ when 1 is subtracted from the numerator and it becomes $\frac{1}{4}$ when 8 is added to its denominator. Find the fraction.<br> 
+            <em>(Setup: $\frac{x-1}{y} = \frac{1}{3}$ and $\frac{x}{y+8} = \frac{1}{4}$ $\rightarrow$ Ans: $\frac{5}{12}$)</em>
+        </div>
+
+        <h3>Type C: Problems on Two-Digit Numbers</h3>
+        <p><strong>Golden Rule:</strong> Let the unit digit be $y$ and tens digit be $x$. The original number is $10x + y$. The number obtained by reversing the digits is $10y + x$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. The sum of a two-digit number and the number obtained by reversing the digits is 66. If the digits of the number differ by 2, find the number. How many such numbers are there?<br> 
+            <em>(Setup: $(10x+y) + (10y+x) = 66 \implies x+y=6$. Also $x-y=2$ OR $y-x=2$. $\rightarrow$ Ans: 42 or 24. Two such numbers.)</em>
+        </div>
+
+        <h3>Type D: Fixed & Variable Charges (Commercial)</h3>
+        <p><strong>Golden Rule:</strong> Let the fixed charge be $Rs. x$ and the charge per unit (day/km/hostel meal) be $Rs. y$. Total Cost = $x + (\text{Number} \times y)$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. A lending library has a fixed charge for the first three days and an additional charge for each day thereafter. Saritha paid Rs 27 for a book kept for 7 days, while Susy paid Rs 21 for the book she kept for 5 days. Find the fixed charge and the charge for each extra day.<br> 
+            <em>(Setup: $x + 4y = 27$ and $x + 2y = 21$ $\rightarrow$ Ans: Fixed=Rs 15, Extra=Rs 3/day)</em>
+        </div>
+
+        <h3>Type E: Time, Distance, Speed & Trains</h3>
+        <p><strong>Golden Rule:</strong> $Time = \frac{Distance}{Speed}$. If two bodies move in the same direction, relative speed is $(u-v)$. If they move in opposite directions, relative speed is $(u+v)$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. Places A and B are 100 km apart on a highway. One car starts from A and another from B at the same time. If they travel in the same direction, they meet in 5 hours. If they travel towards each other, they meet in 1 hour. What are speeds?<br> 
+            <em>(Setup: $5x - 5y = 100$ and $x + y = 100$ $\rightarrow$ Ans: 60 km/h and 40 km/h)</em><br><br>
+            2. A train covered a certain distance at a uniform speed. If the train would have been 10 km/h faster, it would have taken 2 hours less. If it were slower by 10 km/h, it would have taken 3 hours more. Find the distance.<br> 
+            <em>(Setup: Let speed=$x$, time=$y$. Dist=$xy$. $(x+10)(y-2)=xy$ and $(x-10)(y+3)=xy$ $\rightarrow$ Ans: 600 km)</em>
+        </div>
+
+        <h3>Type F: Boats and Streams</h3>
+        <p><strong>Golden Rule:</strong> Let speed of boat in still water be $x$ km/h and speed of stream be $y$ km/h. Speed Downstream $= (x+y)$, Speed Upstream $= (x-y)$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. A boat goes 30 km upstream and 44 km downstream in 10 hours. In 13 hours, it can go 40 km upstream and 55 km downstream. Determine the speeds.<br> 
+            <em>(Setup: $\frac{30}{x-y} + \frac{44}{x+y} = 10$ and $\frac{40}{x-y} + \frac{55}{x+y} = 13$ $\rightarrow$ Ans: Boat=8 km/h, Stream=3 km/h)</em>
+        </div>
+
+        <h3>Type G: Work, Energy & Time</h3>
+        <p><strong>Golden Rule:</strong> If a man takes $x$ days to finish a work, his 1 day's work is $\frac{1}{x}$. If $y$ women finish it in $y$ days, 1 woman's 1 day's work is $\frac{1}{y}$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. 2 women and 5 men can together finish an embroidery work in 4 days, while 3 women and 6 men can finish it in 3 days. Find the time taken by 1 woman alone, and 1 man alone.<br> 
+            <em>(Setup: $\frac{2}{x} + \frac{5}{y} = \frac{1}{4}$ and $\frac{3}{x} + \frac{6}{y} = \frac{1}{3}$ $\rightarrow$ Ans: Woman=18 days, Man=36 days)</em>
+        </div>
+
+        <h3>Type H: Geometry & Mensuration</h3>
+        <p><strong>Golden Rule:</strong> Area of rectangle = $l \times b$. For a cyclic quad, sum of opposite angles = $180^\circ$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. The area of a rectangle gets reduced by 9 sq units, if length is reduced by 5 and breadth is increased by 3. If we increase length by 3 and breadth by 2, area increases by 67 sq units. Find dimensions.<br> 
+            <em>(Setup: $(x-5)(y+3) = xy - 9$ and $(x+3)(y+2) = xy + 67$ $\rightarrow$ Ans: L=17, B=9)</em>
+        </div>
+
+        <h3>Type I: Numbers and Ratios (Basic Number Relations)</h3>
+        <p><strong>Golden Rule:</strong> Let the two numbers be $x$ and $y$. Translate words like "sum", "difference", "times", or "ratio" directly into algebraic operations.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. The difference between two numbers is 26 and one number is three times the other. Find them.<br> 
+            <em>(Setup: $x - y = 26$ and $x = 3y$ $\rightarrow$ Ans: 39 and 13)</em><br><br>
+            2. Two numbers are in the ratio 5:6. If 8 is subtracted from each of the numbers, the ratio becomes 4:5. Find the numbers.<br> 
+            <em>(Setup: $\frac{x}{y} = \frac{5}{6}$ and $\frac{x-8}{y-8} = \frac{4}{5}$ $\rightarrow$ Ans: 40 and 48)</em>
+        </div>
+
+        <h3>Type J: Coins and Denominations (Currency)</h3>
+        <p><strong>Golden Rule:</strong> Let the number of coins/notes of the first denomination be $x$ and the second be $y$. Total items = $x + y$. Total Value = $(\text{Value}_1 \times x) + (\text{Value}_2 \times y)$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. Meena went to a bank to withdraw Rs 2000. She asked the cashier to give her Rs 50 and Rs 100 notes only. Meena got 25 notes in all. Find how many notes of Rs 50 and Rs 100 she received.<br> 
+            <em>(Setup: Total notes $x + y = 25$. Total value $50x + 100y = 2000$ $\rightarrow$ Ans: 10 notes of Rs 50, 15 notes of Rs 100)</em>
+        </div>
+
+        <h3>Type K: Profit, Loss, and Sales (Commercial)</h3>
+        <p><strong>Golden Rule:</strong> Let Cost Price (CP) be $x$ and $y$. Profit = $\frac{P\%}{100} \times CP$. Selling Price (SP) = $CP + Profit$.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. A man sold a chair and a table together for Rs 1520, thereby making a profit of 25% on the chair and 10% on the table. By selling them together for Rs 1535, he would have made a profit of 10% on the chair and 25% on the table. Find the CP of each.<br> 
+            <em>(Setup: $1.25x + 1.10y = 1520$ and $1.10x + 1.25y = 1535$ $\rightarrow$ Ans: Chair = Rs 600, Table = Rs 700)</em>
+        </div>
+
+        <h3>Type L: Mixtures and Solutions (NCERT Exemplar Level)</h3>
+        <p><strong>Golden Rule:</strong> Let $x$ liters of the first mixture and $y$ liters of the second mixture be taken. First equation is total volume. Second equation tracks the volume of the specific solute (acid/copper/etc.) transferred.</p>
+        <div class="blue-box">
+            <span class="box-label">Classroom Practice</span>
+            1. A chemist has one solution which is 50% acid and a second which is 25% acid. How much of each should be mixed to make 10 litres of a 40% acid solution?<br> 
+            <em>(Setup: Total Vol $x + y = 10$. Acid Vol $0.50x + 0.25y = 0.40(10)$ $\rightarrow$ Ans: 6L of 50%, 4L of 25%)</em>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
         }
 
-        </script></body></html>
+        // CHART.JS GRAPH RENDERING
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('linesChart').getContext('2d');
+            
+            // Equation 1: x + y = 5  => y = 5 - x
+            // Equation 2: 2x - y = 4 => y = 2x - 4
+            // Intersection at (3, 2)
+            
+            const xValues = [0, 1, 2, 3, 4, 5];
+            const yValuesEq1 = xValues.map(x => 5 - x);
+            const yValuesEq2 = xValues.map(x => 2 * x - 4);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [
+                        {
+                            label: 'x + y = 5',
+                            data: yValuesEq1,
+                            borderColor: 'rgba(30, 136, 229, 1)', // Blue border
+                            backgroundColor: 'rgba(30, 136, 229, 0.2)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0
+                        },
+                        {
+                            label: '2x - y = 4',
+                            data: yValuesEq2,
+                            borderColor: 'rgba(216, 27, 96, 1)', // Pink border
+                            backgroundColor: 'rgba(216, 27, 96, 0.2)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'X - Axis' },
+                            grid: { color: 'rgba(200, 200, 200, 0.3)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Y - Axis' },
+                            grid: { color: 'rgba(200, 200, 200, 0.3)' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `(${context.parsed.x}, ${context.parsed.y})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
