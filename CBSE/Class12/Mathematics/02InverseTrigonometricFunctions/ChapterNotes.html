@@ -226,12 +226,33 @@
             margin: 20px 0;
         }
         .graph-container {
-            width: 100%;
-            max-width: 320px;
+            flex: 1 1 calc(50% - 20px);
+            min-width: 300px;
+            max-width: 600px;
             background: var(--paper-bg);
             border: 1px solid var(--toggle-border);
             border-radius: 8px;
-            padding: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .graph-container canvas {
+            width: 100% !important;
+            height: auto !important;
+            aspect-ratio: 1 / 1;
+        }
+        .educational-image {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 25px auto;
+            mix-blend-mode: multiply;
+        }
+        html.dark-mode .educational-image {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
         }
         .image-placeholder {
             border: 2px dashed var(--blue-border);
@@ -282,7 +303,7 @@
             .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; background: transparent !important; position: relative !important; z-index: 1 !important; }
             .theme-toggle, .branding-footer { display: none !important; }
             .contact-info { display: flex !important; }
-            .watermark-overlay { display: flex !important; position: fixed !important; z-index: 0 !important; opacity: 0.12 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: 9999 !important; opacity: 0.12 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
             .watermark-image { filter: none !important; max-width: 80% !important; }
             @page {
                 size: A4; margin: 2cm;
@@ -291,7 +312,8 @@
                 @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
             }
         }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.95rem; }
+        .table-responsive { width: 100%; overflow-x: auto; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 0; font-size: 0.95rem; word-break: break-word; }
         th, td { border: 1px solid var(--toggle-border); padding: 12px; text-align: center; }
         th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; }
     </style>
@@ -330,6 +352,19 @@
 
         <p><strong>The Solution - Restricting the Domain:</strong> To make trigonometric functions invertible, we mathematically "chop off" their repeating parts. We restrict their domains to a specific interval where the function is strictly increasing or strictly decreasing (making it One-One) and covers its entire range (making it Onto). This restricted domain allows the inverse to exist uniquely.</p>
 
+        <img src="Images/itf_domain_storyboard.png" alt="Domain Restriction Storyboard (Original Trig to Inverse Trig)" class="educational-image">
+
+        <div class="practice-box">
+            <span class="box-label">Concept Check (Existence)</span>
+            <strong>Question:</strong> Discuss the existence of $\cos^{-1}(x)$ for $x = 2$ and $x = -1/2$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                For $\cos^{-1}(x)$ to be defined, the input $x$ must lie in its domain, which is $[-1, 1]$.<br>
+                - For $x = 2$: Since $2 \notin [-1, 1]$, $\cos^{-1}(2)$ <strong>does not exist</strong>.<br>
+                - For $x = -1/2$: Since $-1/2 \in [-1, 1]$, $\cos^{-1}(-1/2)$ exists and its principal value can be calculated.
+            </div>
+        </div>
+
         <div class="practice-box">
             <span class="box-label">Practice Problem 1</span>
             <strong>Question:</strong> Why is the domain of $y = \sin x$ restricted to $[-\pi/2, \pi/2]$ to define its inverse, even though restricting it to $[\pi/2, 3\pi/2]$ would also make it bijective?
@@ -339,46 +374,96 @@
             </div>
         </div>
 
+        <h3>1.1 Review of Original Trigonometric Graphs</h3>
+        <p>Before jumping into inverse functions, let's visually review the 6 original trigonometric functions. Notice their repeating, periodic nature and observe the <strong>principal branch</strong> (highlighted), which we must "chop off" to make them invertible.</p>
+
+        <div class="graph-wrapper">
+            <div class="graph-container">
+                <h4 style="text-align: center; color: var(--blue-border); margin-top: 0; margin-bottom: 5px;">y = sin(x)</h4>
+                <img src="Images/trig_sin_graph.png" alt="Graph of y = sin(x)" class="educational-image" style="margin: 0; width: 100%;">
+            </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: var(--green-border); margin-top: 0; margin-bottom: 5px;">y = cos(x)</h4>
+                <img src="Images/trig_cos_graph.png" alt="Graph of y = cos(x)" class="educational-image" style="margin: 0; width: 100%;">
+            </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: var(--pink-border); margin-top: 0; margin-bottom: 5px;">y = tan(x)</h4>
+                <img src="Images/trig_tan_graph.png" alt="Graph of y = tan(x)" class="educational-image" style="margin: 0; width: 100%;">
+            </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: #f9a825; margin-top: 0; margin-bottom: 5px;">y = cot(x)</h4>
+                <img src="Images/trig_cot_graph.png" alt="Graph of y = cot(x)" class="educational-image" style="margin: 0; width: 100%;">
+            </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: var(--accent-purple); margin-top: 0; margin-bottom: 5px;">y = sec(x)</h4>
+                <img src="Images/trig_sec_graph.png" alt="Graph of y = sec(x)" class="educational-image" style="margin: 0; width: 100%;">
+            </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: #ff5722; margin-top: 0; margin-bottom: 5px;">y = csc(x)</h4>
+                <img src="Images/trig_csc_graph.png" alt="Graph of y = csc(x)" class="educational-image" style="margin: 0; width: 100%;">
+            </div>
+        </div>
+
         <h2>2. Principal Value Branches (The Foundation)</h2>
         <p>This is the most critical table in the entire chapter. <strong>Memorize it completely.</strong> Any answer you calculate for an inverse trigonometric function MUST lie within its Principal Value Range.</p>
 
-        <table>
-            <tr>
-                <th>Function ($y = f(x)$)</th>
-                <th>Domain (Valid inputs for $x$)</th>
-                <th>Range / Principal Value Branch (Output $y$)</th>
-            </tr>
-            <tr>
-                <td>$y = \sin^{-1} x$ (Arcsine)</td>
-                <td>$[-1, 1]$</td>
-                <td>$\mathbf{[-\frac{\pi}{2}, \frac{\pi}{2}]}$</td>
-            </tr>
-            <tr>
-                <td>$y = \cos^{-1} x$ (Arccosine)</td>
-                <td>$[-1, 1]$</td>
-                <td>$\mathbf{[0, \pi]}$</td>
-            </tr>
-            <tr>
-                <td>$y = \tan^{-1} x$ (Arctangent)</td>
-                <td>$\mathbb{R}$ (All real numbers)</td>
-                <td>$\mathbf{(-\frac{\pi}{2}, \frac{\pi}{2})}$ <em>(Open brackets)</em></td>
-            </tr>
-            <tr>
-                <td>$y = \cot^{-1} x$ (Arccotangent)</td>
-                <td>$\mathbb{R}$</td>
-                <td>$\mathbf{(0, \pi)}$ <em>(Open brackets)</em></td>
-            </tr>
-            <tr>
-                <td>$y = \sec^{-1} x$ (Arcsecant)</td>
-                <td>$\mathbb{R} - (-1, 1)$ or $(-\infty, -1] \cup [1, \infty)$</td>
-                <td>$\mathbf{[0, \pi] - \{\frac{\pi}{2}\}}$</td>
-            </tr>
-            <tr>
-                <td>$y = \csc^{-1} x$ (Arccosecant)</td>
-                <td>$\mathbb{R} - (-1, 1)$ or $(-\infty, -1] \cup [1, \infty)$</td>
-                <td>$\mathbf{[-\frac{\pi}{2}, \frac{\pi}{2}] - \{0\}}$</td>
-            </tr>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>Function ($y = f(x)$)</th>
+                    <th>Domain (Valid inputs for $x$)</th>
+                    <th>Range / Principal Value Branch (Output $y$)</th>
+                </tr>
+                <tr>
+                    <td>$y = \sin^{-1} x$ (Arcsine)</td>
+                    <td>$[-1, 1]$</td>
+                    <td>$\mathbf{[-\frac{\pi}{2}, \frac{\pi}{2}]}$</td>
+                </tr>
+                <tr>
+                    <td>$y = \cos^{-1} x$ (Arccosine)</td>
+                    <td>$[-1, 1]$</td>
+                    <td>$\mathbf{[0, \pi]}$</td>
+                </tr>
+                <tr>
+                    <td>$y = \tan^{-1} x$ (Arctangent)</td>
+                    <td>$\mathbb{R}$ (All real numbers)</td>
+                    <td>$\mathbf{(-\frac{\pi}{2}, \frac{\pi}{2})}$ <em>(Open brackets)</em></td>
+                </tr>
+                <tr>
+                    <td>$y = \cot^{-1} x$ (Arccotangent)</td>
+                    <td>$\mathbb{R}$</td>
+                    <td>$\mathbf{(0, \pi)}$ <em>(Open brackets)</em></td>
+                </tr>
+                <tr>
+                    <td>$y = \sec^{-1} x$ (Arcsecant)</td>
+                    <td>$\mathbb{R} - (-1, 1)$ or $(-\infty, -1] \cup [1, \infty)$</td>
+                    <td>$\mathbf{[0, \pi] - \{\frac{\pi}{2}\}}$</td>
+                </tr>
+                <tr>
+                    <td>$y = \csc^{-1} x$ (Arccosecant)</td>
+                    <td>$\mathbb{R} - (-1, 1)$ or $(-\infty, -1] \cup [1, \infty)$</td>
+                    <td>$\mathbf{[-\frac{\pi}{2}, \frac{\pi}{2}] - \{0\}}$</td>
+                </tr>
+            </table>
+        </div>
+
+        <img src="Images/itf_principal_mapping.png" alt="Principal Value Mapping Diagram for All 6 ITFs" class="educational-image">
+
+        <div class="practice-box">
+            <span class="box-label">Standard Practice (R.S. Aggarwal)</span>
+            <strong>Question:</strong> Find the principal value of $\cos^{-1}\left(\cos \frac{13\pi}{6}\right)$ and $\sin^{-1}\left(\sin \frac{3\pi}{5}\right)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>(i) $\cos^{-1}\left(\cos \frac{13\pi}{6}\right)$:</strong><br>
+                $\frac{13\pi}{6}$ is not in the principal branch $[0, \pi]$.<br>
+                $\cos(\frac{13\pi}{6}) = \cos(2\pi + \frac{\pi}{6}) = \cos(\frac{\pi}{6})$.<br>
+                $\cos^{-1}(\cos \frac{\pi}{6}) = \mathbf{\frac{\pi}{6}}$.<br><br>
+                <strong>(ii) $\sin^{-1}\left(\sin \frac{3\pi}{5}\right)$:</strong><br>
+                $\frac{3\pi}{5} = 108^\circ$, which is outside $[-\frac{\pi}{2}, \frac{\pi}{2}]$.<br>
+                $\sin(\frac{3\pi}{5}) = \sin(\pi - \frac{2\pi}{5}) = \sin(\frac{2\pi}{5})$.<br>
+                $\sin^{-1}(\sin \frac{2\pi}{5}) = \mathbf{\frac{2\pi}{5}}$.
+            </div>
+        </div>
 
         <div class="practice-box">
             <span class="box-label">Practice Problem 2</span>
@@ -417,6 +502,21 @@
                 <canvas id="arctanChart"></canvas>
                 <p style="font-size: 0.8rem; text-align: center;">Domain: R | Range: (-π/2, π/2)<br><em>Asymptotes at y = ±π/2</em></p>
             </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: #f9a825; margin-top: 0;">y = cot⁻¹(x)</h4>
+                <canvas id="arccotChart"></canvas>
+                <p style="font-size: 0.8rem; text-align: center;">Domain: R | Range: (0, π)<br><em>Asymptotes at y = 0, π</em></p>
+            </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: var(--accent-purple); margin-top: 0;">y = sec⁻¹(x)</h4>
+                <canvas id="arcsecChart"></canvas>
+                <p style="font-size: 0.8rem; text-align: center;">Domain: (-∞, -1] ∪ [1, ∞) | Range: [0, π] - {π/2}<br><em>Two Branches</em></p>
+            </div>
+            <div class="graph-container">
+                <h4 style="text-align: center; color: #ff5722; margin-top: 0;">y = csc⁻¹(x)</h4>
+                <canvas id="arccscChart"></canvas>
+                <p style="font-size: 0.8rem; text-align: center;">Domain: (-∞, -1] ∪ [1, ∞) | Range: [-π/2, π/2] - {0}<br><em>Two Branches</em></p>
+            </div>
         </div>
 
         <div class="practice-box">
@@ -439,7 +539,7 @@
         <h2>4. Properties of ITF - Part 1 (Self-Adjusting & Basic Relations)</h2>
 
         <h3>A. Self-Adjusting Properties</h3>
-        <p>These properties are the most common source of errors in Boards because students blindly cancel the functions without checking the domain.</p>
+        <p>These properties are the most common source of errors in exams because students blindly cancel the functions without checking the domain.</p>
         
         <div class="green-box">
             <span class="box-label">Property 1 & 2 (Check the Domain!)</span>
@@ -498,6 +598,19 @@
             </div>
         </div>
 
+        <div class="practice-box">
+            <span class="box-label">Advanced Practice (R.D. Sharma)</span>
+            <strong>Question:</strong> Evaluate $\sin(\cot^{-1} x)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Let $\cot^{-1} x = \theta \implies \cot \theta = x = \frac{x}{1}$.<br>
+                Using a right-angled triangle, Base $= x$ and Perpendicular $= 1$.<br>
+                Hypotenuse $= \sqrt{x^2 + 1^2} = \sqrt{x^2 + 1}$.<br>
+                We need $\sin(\theta)$. From the triangle, $\sin \theta = \frac{\text{Perpendicular}}{\text{Hypotenuse}} = \frac{1}{\sqrt{x^2 + 1}}$.<br>
+                Therefore, $\sin(\cot^{-1} x) = \mathbf{\frac{1}{\sqrt{x^2 + 1}}}$.
+            </div>
+        </div>
+
         <h3>C. Negative Argument Properties (Even/Odd Nature)</h3>
         <div class="blue-box">
             <span class="box-label">Negative Argument Groups</span>
@@ -534,6 +647,24 @@
 
             <strong>For $\tan^{-1} x - \tan^{-1} y$:</strong><br>
             - $\tan^{-1} x - \tan^{-1} y = \mathbf{\tan^{-1}\left(\frac{x - y}{1 + xy}\right)}$ &nbsp;&nbsp; (Valid if $xy > -1$)
+        </div>
+
+        <img src="Images/itf_formula_tree.png" alt="Formula-Case Decision Tree for tan⁻¹x ± tan⁻¹y" class="educational-image">
+
+        <div class="practice-box">
+            <span class="box-label">Board Practice (R.S. Aggarwal)</span>
+            <strong>Question:</strong> Prove that $\tan^{-1}\left(\frac{1}{4}\right) + \tan^{-1}\left(\frac{2}{9}\right) = \frac{1}{2}\cos^{-1}\left(\frac{3}{5}\right)$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>LHS:</strong> Here $xy = \frac{1}{4} \times \frac{2}{9} = \frac{2}{36} = \frac{1}{18} < 1$. Use standard case.<br>
+                $\tan^{-1}\left(\frac{1/4 + 2/9}{1 - (1/4)(2/9)}\right) = \tan^{-1}\left(\frac{\frac{9+8}{36}}{\frac{36-2}{36}}\right) = \tan^{-1}\left(\frac{17}{34}\right) = \tan^{-1}\left(\frac{1}{2}\right)$.<br><br>
+                Now we must prove $\tan^{-1}\left(\frac{1}{2}\right) = \frac{1}{2}\cos^{-1}\left(\frac{3}{5}\right)$.<br>
+                Let $\tan^{-1}\left(\frac{1}{2}\right) = \theta \implies \tan \theta = \frac{1}{2}$.<br>
+                We know the identity: $\cos 2\theta = \frac{1 - \tan^2\theta}{1 + \tan^2\theta}$.<br>
+                $\cos 2\theta = \frac{1 - (1/2)^2}{1 + (1/2)^2} = \frac{1 - 1/4}{1 + 1/4} = \frac{3/4}{5/4} = \frac{3}{5}$.<br>
+                So, $2\theta = \cos^{-1}\left(\frac{3}{5}\right) \implies \theta = \frac{1}{2}\cos^{-1}\left(\frac{3}{5}\right)$.<br>
+                Therefore, LHS = RHS. (Proved).
+            </div>
         </div>
 
         <div class="practice-box">
@@ -628,6 +759,22 @@
             </div>
         </div>
 
+        <div class="practice-box">
+            <span class="box-label">Important Simplification (R.D. Sharma)</span>
+            <strong>Question:</strong> Simplify $\tan^{-1}\left(\frac{\cos x - \sin x}{\cos x + \sin x}\right)$ for $-\frac{\pi}{4} < x < \frac{3\pi}{4}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Divide the numerator and denominator inside the bracket by $\cos x$:<br>
+                $\tan^{-1}\left(\frac{1 - \tan x}{1 + \tan x}\right)$.<br>
+                2. We can rewrite $1$ as $\tan(\frac{\pi}{4})$:<br>
+                $\tan^{-1}\left(\frac{\tan(\frac{\pi}{4}) - \tan x}{1 + \tan(\frac{\pi}{4})\tan x}\right)$.<br>
+                3. This perfectly matches the formula for $\tan(A - B)$:<br>
+                $\tan^{-1}\left(\tan(\frac{\pi}{4} - x)\right)$.<br>
+                4. Since $-\frac{\pi}{4} < x < \frac{3\pi}{4}$, the angle $(\frac{\pi}{4} - x)$ falls inside the principal branch $(-\frac{\pi}{2}, \frac{\pi}{2})$.<br>
+                5. Therefore, we can safely cancel the functions: <strong>$\frac{\pi}{4} - x$</strong>.
+            </div>
+        </div>
+
         <h2>8. Solving Inverse Trigonometric Equations</h2>
         <p>An equation involving an unknown variable $x$ inside an ITF is solved by applying properties to combine terms into a single ITF, then applying normal trigonometric functions to both sides to "unlock" the variable.</p>
 
@@ -654,6 +801,30 @@
                    - If $x = -1$: LHS $= \tan^{-1}(-2) + \tan^{-1}(-3)$. This is the sum of two negative angles, which is negative. It cannot equal $+\frac{\pi}{4}$. So, $x = -1$ is rejected.<br>
                    - If $x = \frac{1}{6}$: $2x \cdot 3x = 6(\frac{1}{36}) = \frac{1}{6} < 1$. The formula condition holds, and the sum of positive angles equals $\pi/4$.<br>
                 8. Final Answer: <strong>$x = \frac{1}{6}$</strong>.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Crucial Equation (R.S. Aggarwal)</span>
+            <strong>Question:</strong> Solve $\sin^{-1}(1-x) - 2\sin^{-1}x = \frac{\pi}{2}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                1. Rearrange to avoid a messy subtraction formula:<br>
+                   $\sin^{-1}(1-x) = \frac{\pi}{2} + 2\sin^{-1}x$.<br>
+                2. Take sine on both sides:<br>
+                   $1 - x = \sin(\frac{\pi}{2} + 2\sin^{-1}x)$.<br>
+                3. We know $\sin(\frac{\pi}{2} + \theta) = \cos\theta$. So:<br>
+                   $1 - x = \cos(2\sin^{-1}x)$.<br>
+                4. Let $\sin^{-1}x = \theta \implies \sin\theta = x$. Then we have $\cos(2\theta)$.<br>
+                5. Apply the identity $\cos(2\theta) = 1 - 2\sin^2\theta$:<br>
+                   $1 - x = 1 - 2x^2$.<br>
+                6. Simplify the equation:<br>
+                   $2x^2 - x = 0 \implies x(2x - 1) = 0$.<br>
+                7. Roots are $x = 0$ and $x = \frac{1}{2}$.<br>
+                8. <strong>Checking Roots:</strong><br>
+                   - If $x = 0$: $\sin^{-1}(1) - 2\sin^{-1}(0) = \frac{\pi}{2} - 0 = \frac{\pi}{2}$. (Valid).<br>
+                   - If $x = \frac{1}{2}$: $\sin^{-1}(\frac{1}{2}) - 2\sin^{-1}(\frac{1}{2}) = -\sin^{-1}(\frac{1}{2}) = -\frac{\pi}{6} \neq \frac{\pi}{2}$. (Rejected).<br>
+                9. Final Answer: <strong>$x = 0$</strong>.
             </div>
         </div>
 
@@ -715,20 +886,11 @@
             </table>
         </div>
 
-        <div class="image-placeholder">
-            <strong>Image Placeholder 1: Principal-Branch Graph of $y=\sin^{-1}x$ with Reflection Logic</strong>
-            <code>Create a high-resolution mathematics graph image, fully white background, landscape orientation (16:9). Show side-by-side panels: left panel is y = sin x restricted to x in [-pi/2, pi/2], right panel is y = sin^{-1}(x). Draw coordinate axes with arrowheads, light gray grid, tick labels in radians and key numeric x-values. Mark key points: (-1,-pi/2), (0,0), (1,pi/2) on y=sin^{-1}x. Add dashed mirror line y=x across both panels and show mirror correspondence arrows from restricted sin-curve to inverse curve. Use clear colors: original curve blue, inverse curve dark pink, mirror line gray dashed. Include text labels: "Domain [-1,1]", "Range [-pi/2, pi/2]", "Strictly Increasing", "Odd Function". Keep fonts clean and readable for Class 12 notes.</code>
-        </div>
+        <img src="Images/itf_sin_reflection.png" alt="Principal-Branch Graph of y=sin⁻¹x with Reflection Logic" class="educational-image">
 
-        <div class="image-placeholder">
-            <strong>Image Placeholder 2: Comparative Graph Sheet for $y=\cos^{-1}x$ and $y=\tan^{-1}x$</strong>
-            <code>Generate a two-panel educational graph image, fully white background, landscape orientation. Left panel: y = cos^{-1}(x), x from -1 to 1, y from 0 to pi, curve clearly decreasing, highlight points (-1,pi), (0,pi/2), (1,0). Right panel: y = tan^{-1}(x), x from -6 to 6, y from -pi/2 to pi/2, draw dashed horizontal asymptotes y=pi/2 and y=-pi/2, and mark point (0,0). Use consistent axis style, light grid, readable labels in radians. Add short annotations: "cos^{-1}x is decreasing", "tan^{-1}x is increasing", "Principal range boundaries not included for tan^{-1}". Keep design minimal, board-friendly, and mathematically precise.</code>
-        </div>
+        <img src="Images/itf_cos_tan_compare.png" alt="Comparative Graph Sheet for y=cos⁻¹x and y=tan⁻¹x" class="educational-image">
 
-        <div class="image-placeholder">
-            <strong>Image Placeholder 3: Branch Graphs of $\sec^{-1}x$, $\csc^{-1}x$, and $\cot^{-1}x$</strong>
-            <code>Create a clean 3-panel graph poster on fully white background in landscape mode. Panel 1: y = sec^{-1}(x), domain x<=-1 and x>=1, range [0,pi] excluding pi/2, two separate branches with endpoint markers at (-1,pi) and (1,0). Panel 2: y = csc^{-1}(x), domain x<=-1 and x>=1, range [-pi/2,pi/2] excluding 0, two branches with endpoint markers at (-1,-pi/2) and (1,pi/2). Panel 3: y = cot^{-1}(x), domain all real numbers, decreasing curve from near pi to near 0, dashed asymptotes y=pi and y=0. Add neat legends, axis labels, and principal-value intervals beside each panel. Ensure all symbols are sharp and mathematically correct.</code>
-        </div>
+        <img src="Images/itf_sec_csc_cot_branches.png" alt="Branch Graphs of sec⁻¹x, csc⁻¹x, and cot⁻¹x" class="educational-image">
 
         <h2>10. Value-Finding Toolkit (Most Asked in NCERT, R.S. Aggarwal, R.D. Sharma)</h2>
         <div class="green-box">
@@ -853,24 +1015,8 @@
             </div>
         </div>
 
-        <h2>13. Image Placeholders for Additional Visual Explanations</h2>
-        <div class="image-placeholder">
-            <strong>Image Placeholder 4: Principal Value Mapping Diagram for All 6 ITFs</strong>
-            <code>Create a pedagogical mapping chart with fully white background and landscape layout. Show six horizontal lanes (sin^{-1}, cos^{-1}, tan^{-1}, cot^{-1}, sec^{-1}, csc^{-1}). In each lane, include domain interval on x-axis style strip and output principal value interval on y-strip, with arrows mapping permissible inputs to principal outputs. Use color coding per function, exact interval notations with open/closed endpoints. Add warning markers near excluded points for sec^{-1} and csc^{-1}. Keep design exam-oriented, minimal decorative elements, very clear typography.</code>
-        </div>
-
-        <div class="image-placeholder">
-            <strong>Image Placeholder 5: Domain Restriction Storyboard (Original Trig to Inverse Trig)</strong>
-            <code>Generate a 4-step storyboard on fully white background, landscape mode. Step 1: periodic graph of y=sin x over multiple cycles showing many-to-one issue. Step 2: highlight restricted branch x in [-pi/2, pi/2]. Step 3: show this branch as one-to-one with horizontal line test. Step 4: show reflected inverse graph y=sin^{-1}x using mirror line y=x. Include concise annotations: "Periodic => not invertible", "Restrict domain", "Becomes bijective", "Inverse defined". All labels in mathematical notation with clean axis ticks.</code>
-        </div>
-
-        <div class="image-placeholder">
-            <strong>Image Placeholder 6: Formula-Case Decision Tree for $\tan^{-1}x \pm \tan^{-1}y$</strong>
-            <code>Create a decision tree infographic, fully white background, landscape orientation. Root node: "Expression type: arctan sum/difference". Branch 1 for sum with condition xy<1 leading to tan^{-1}((x+y)/(1-xy)); branch 2 for sum with x>0,y>0,xy>1 leading to pi + tan^{-1}((x+y)/(1-xy)); branch 3 for difference with condition xy>-1 leading to tan^{-1}((x-y)/(1+xy)). Add "Always verify principal range" box at bottom. Include two mini worked examples in side boxes. Use clean educational style and high readability.</code>
-        </div>
-
         <div class="yellow-box">
-            <span class="box-label">Final Board Revision Checklist</span>
+            <span class="box-label">Final Revision Checklist</span>
             1. Memorize principal ranges exactly (including open/closed interval brackets).<br>
             2. Never cancel inverse and direct trig without branch checking.<br>
             3. Handle $\tan^{-1}$ addition/subtraction with case logic (especially $xy>1$ corrections).<br>
@@ -894,7 +1040,7 @@
             renderCharts();
         }
 
-        let chart1, chart2, chart3;
+        let chart1, chart2, chart3, chart4, chart5, chart6;
 
         function renderCharts() {
             const isDark = document.documentElement.classList.contains('dark-mode');
@@ -904,6 +1050,7 @@
             const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: true,
+                aspectRatio: 1,
                 plugins: {
                     legend: { display: false }
                 },
@@ -925,19 +1072,13 @@
                 type: 'line',
                 data: {
                     labels: xAsin,
-                    datasets: [{
-                        data: yAsin,
-                        borderColor: '#1e88e5', /* Blue */
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.1
-                    }]
+                    datasets: [{ data: yAsin, borderColor: '#1e88e5', borderWidth: 2, pointRadius: 0, tension: 0.1 }]
                 },
                 options: {
                     ...commonOptions,
                     scales: {
-                        x: { ...commonOptions.scales.x, min: -1, max: 1, title: {display: true, text: 'x', color: textColor} },
-                        y: { ...commonOptions.scales.y, title: {display: true, text: 'y (radians)', color: textColor} }
+                        x: { ...commonOptions.scales.x, type: 'linear', min: -1.5, max: 1.5, title: {display: true, text: 'x', color: textColor} },
+                        y: { ...commonOptions.scales.y, min: -2, max: 2, title: {display: true, text: 'y (radians)', color: textColor} }
                     }
                 }
             });
@@ -946,7 +1087,6 @@
             const ctx2 = document.getElementById('arccosChart').getContext('2d');
             if (chart2) chart2.destroy();
             let xAcos = [], yAcos = [];
-            // Generating in reverse to keep x sorted from -1 to 1
             for (let y = Math.PI; y >= 0; y -= 0.05) {
                 xAcos.push(Math.cos(y).toFixed(2));
                 yAcos.push(y);
@@ -955,19 +1095,13 @@
                 type: 'line',
                 data: {
                     labels: xAcos,
-                    datasets: [{
-                        data: yAcos,
-                        borderColor: '#43a047', /* Green */
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.1
-                    }]
+                    datasets: [{ data: yAcos, borderColor: '#43a047', borderWidth: 2, pointRadius: 0, tension: 0.1 }]
                 },
                 options: {
                     ...commonOptions,
                     scales: {
-                        x: { ...commonOptions.scales.x, min: -1, max: 1, title: {display: true, text: 'x', color: textColor} },
-                        y: { ...commonOptions.scales.y, title: {display: true, text: 'y (radians)', color: textColor} }
+                        x: { ...commonOptions.scales.x, type: 'linear', min: -1.5, max: 1.5, title: {display: true, text: 'x', color: textColor} },
+                        y: { ...commonOptions.scales.y, min: -0.5, max: 3.5, title: {display: true, text: 'y (radians)', color: textColor} }
                     }
                 }
             });
@@ -975,45 +1109,112 @@
             // 3. y = arctan(x)
             const ctx3 = document.getElementById('arctanChart').getContext('2d');
             if (chart3) chart3.destroy();
-            let xAtan = [], yAtan = [], asympTop = [], asympBot = [];
+            let xAtan = [], yAtan = [], asympTop1 = [], asympBot1 = [];
             for (let x = -5; x <= 5; x += 0.2) {
                 xAtan.push(x.toFixed(1));
                 yAtan.push(Math.atan(x));
-                asympTop.push(Math.PI/2);
-                asympBot.push(-Math.PI/2);
+                asympTop1.push(Math.PI/2);
+                asympBot1.push(-Math.PI/2);
             }
             chart3 = new Chart(ctx3, {
                 type: 'line',
                 data: {
                     labels: xAtan,
                     datasets: [
-                        {
-                            data: yAtan,
-                            borderColor: '#d81b60', /* Pink */
-                            borderWidth: 2,
-                            pointRadius: 0,
-                            tension: 0.4
-                        },
-                        {
-                            data: asympTop,
-                            borderColor: textColor,
-                            borderDash: [5, 5],
-                            borderWidth: 1,
-                            pointRadius: 0
-                        },
-                        {
-                            data: asympBot,
-                            borderColor: textColor,
-                            borderDash: [5, 5],
-                            borderWidth: 1,
-                            pointRadius: 0
-                        }
+                        { data: yAtan, borderColor: '#d81b60', borderWidth: 2, pointRadius: 0, tension: 0.4 },
+                        { data: asympTop1, borderColor: textColor, borderDash: [5, 5], borderWidth: 1, pointRadius: 0 },
+                        { data: asympBot1, borderColor: textColor, borderDash: [5, 5], borderWidth: 1, pointRadius: 0 }
                     ]
                 },
                 options: {
                     ...commonOptions,
                     scales: {
-                        x: { ...commonOptions.scales.x, title: {display: true, text: 'x', color: textColor} },
+                        x: { ...commonOptions.scales.x, type: 'linear', min: -5, max: 5, title: {display: true, text: 'x', color: textColor} },
+                        y: { ...commonOptions.scales.y, min: -2.5, max: 2.5, title: {display: true, text: 'y (radians)', color: textColor} }
+                    }
+                }
+            });
+
+            // 4. y = arccot(x)
+            const ctx4 = document.getElementById('arccotChart').getContext('2d');
+            if (chart4) chart4.destroy();
+            let xAcot = [], yAcot = [], asympTop2 = [], asympBot2 = [];
+            for (let x = -5; x <= 5; x += 0.2) {
+                xAcot.push(x.toFixed(1));
+                yAcot.push(Math.PI/2 - Math.atan(x));
+                asympTop2.push(Math.PI);
+                asympBot2.push(0);
+            }
+            chart4 = new Chart(ctx4, {
+                type: 'line',
+                data: {
+                    labels: xAcot,
+                    datasets: [
+                        { data: yAcot, borderColor: '#f9a825', borderWidth: 2, pointRadius: 0, tension: 0.4 },
+                        { data: asympTop2, borderColor: textColor, borderDash: [5, 5], borderWidth: 1, pointRadius: 0 },
+                        { data: asympBot2, borderColor: textColor, borderDash: [5, 5], borderWidth: 1, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { ...commonOptions.scales.x, type: 'linear', min: -5, max: 5, title: {display: true, text: 'x', color: textColor} },
+                        y: { ...commonOptions.scales.y, min: -1, max: 4, title: {display: true, text: 'y (radians)', color: textColor} }
+                    }
+                }
+            });
+
+            // 5. y = arcsec(x)
+            const ctx5 = document.getElementById('arcsecChart').getContext('2d');
+            if (chart5) chart5.destroy();
+            let xAsec = [], yAsec = [];
+            for (let x = -5; x <= 5; x += 0.1) {
+                xAsec.push(x.toFixed(1));
+                if (x <= -1 || x >= 1) {
+                    yAsec.push(Math.acos(1/x));
+                } else {
+                    yAsec.push(null); // Disconnected branch
+                }
+            }
+            chart5 = new Chart(ctx5, {
+                type: 'line',
+                data: {
+                    labels: xAsec,
+                    datasets: [{ data: yAsec, borderColor: '#7e57c2', borderWidth: 2, pointRadius: 0, tension: 0.1 }]
+                },
+                options: {
+                    ...commonOptions,
+                    spanGaps: false, // ensures the branch stays disconnected
+                    scales: {
+                        x: { ...commonOptions.scales.x, type: 'linear', min: -5, max: 5, title: {display: true, text: 'x', color: textColor} },
+                        y: { ...commonOptions.scales.y, min: -0.5, max: 3.5, title: {display: true, text: 'y (radians)', color: textColor} }
+                    }
+                }
+            });
+
+            // 6. y = arccsc(x)
+            const ctx6 = document.getElementById('arccscChart').getContext('2d');
+            if (chart6) chart6.destroy();
+            let xAcsc = [], yAcsc = [];
+            for (let x = -5; x <= 5; x += 0.1) {
+                xAcsc.push(x.toFixed(1));
+                if (x <= -1 || x >= 1) {
+                    yAcsc.push(Math.asin(1/x));
+                } else {
+                    yAcsc.push(null);
+                }
+            }
+            chart6 = new Chart(ctx6, {
+                type: 'line',
+                data: {
+                    labels: xAcsc,
+                    datasets: [{ data: yAcsc, borderColor: '#ff5722', borderWidth: 2, pointRadius: 0, tension: 0.1 }]
+                },
+                options: {
+                    ...commonOptions,
+                    spanGaps: false,
+                    scales: {
+                        x: { ...commonOptions.scales.x, type: 'linear', min: -5, max: 5, title: {display: true, text: 'x', color: textColor} },
                         y: { ...commonOptions.scales.y, min: -2, max: 2, title: {display: true, text: 'y (radians)', color: textColor} }
                     }
                 }
