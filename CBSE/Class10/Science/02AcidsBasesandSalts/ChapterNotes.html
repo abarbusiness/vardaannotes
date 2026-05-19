@@ -18,7 +18,9 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
+            /* Light Mode Palette */
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
@@ -31,11 +33,15 @@
             --paper-bg: #ffffff;
             --accent-purple: #7e57c2;
             --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
             --toggle-bg: #eee;
             --toggle-border: #ccc;
             --icon-fill: #000;
+            --red-border: #d32f2f;
         }
 
+        /* --- DARK MODE VARIABLES --- */
         html.dark-mode {
             --yellow-bg: #3f3a00;
             --yellow-border: #fdd835;
@@ -49,88 +55,362 @@
             --paper-bg: #000000;
             --accent-purple: #d1c4e9;
             --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
             --toggle-bg: #333;
+            --toggle-border: #555;
             --icon-fill: #fff;
+            --red-border: #ff8a80;
         }
 
+        * { box-sizing: border-box; }
+
+        /* Prevent MathJax scrollbars on small equations */
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: visible !important;
+            overflow-y: hidden !important;
+            display: inline-block !important;
+            vertical-align: middle;
+        }
+
+        /* Hide scrollbars specifically for MathJax */
+        mjx-container::-webkit-scrollbar { display: none; }
+        mjx-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- GLOBAL LAYOUT --- */
         body {
             background-color: var(--paper-bg);
             margin: 0; padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
             transition: all 0.3s ease;
         }
 
-        .watermark-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            pointer-events: none; z-index: 9999; mix-blend-mode: multiply;
-        }
         html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
-        .watermark-image { opacity: 0.1; max-width: 80%; }
         html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
 
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
             background-color: var(--paper-bg);
-            width: 210mm; max-width: 100%;
-            margin: 0 auto; padding: 20mm;
-            position: relative;
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
+        /* --- BRANDING HEADER --- */
         .branding-header {
-            text-align: center; margin-bottom: 5px;
-            border-bottom: 3px double var(--blue-border); padding-bottom: 15px;
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
         }
-        .institute-name { font-size: 2.2rem; font-weight: 800; color: var(--blue-border); text-transform: uppercase; letter-spacing: 1px; }
-        .system-name { font-size: 1.1rem; color: var(--meta-text); letter-spacing: 3px; text-transform: uppercase; }
 
-        h1 { font-size: 2.2rem; color: var(--blue-border); text-align: center; margin-top: 5px; border-bottom: 2px solid var(--blue-border); padding-bottom: 10px; }
-        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
-        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; text-decoration: underline; text-underline-offset: 4px; }
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* Premium Vardaan Table */
+        .vardaan-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+        }
+
+        .vardaan-table th {
+            background-color: var(--blue-border);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .vardaan-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.95rem;
+        }
+
+        .vardaan-table tr:last-child td { border-bottom: none; }
+        .vardaan-table tr:nth-child(even) td { background-color: rgba(0, 0, 0, 0.01); }
+        html.dark-mode .vardaan-table tr:nth-child(even) td { background-color: rgba(255, 255, 255, 0.02); }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
 
         p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
+        ul { padding-left: 20px; }
         strong { color: var(--pink-border); }
 
-        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .pink-box { background-color: var(--pink-bg); border: 2px solid var(--pink-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        
-        .box-label { position: absolute; top: -12px; right: 20px; background: var(--paper-bg); padding: 2px 10px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; border: 2px solid; border-radius: 4px; }
+        /* --- INFO BOXES --- */
+        .blue-box, .green-box, .yellow-box, .pink-box {
+            border-radius: 8px; padding: 20px; margin: 25px 0; position: relative;
+        }
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); }
+        .pink-box { background-color: var(--pink-bg); border: 2px solid var(--pink-border); }
+
+        .box-label {
+            position: absolute; top: -12px; right: 20px;
+            background: var(--paper-bg); padding: 2px 10px;
+            font-weight: bold; font-size: 0.8rem;
+            text-transform: uppercase; border: 2px solid; border-radius: 4px;
+        }
         .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
         .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
         .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
         .pink-box .box-label { color: var(--pink-border); border-color: var(--pink-border); }
 
-        .question-box { background-color: var(--paper-bg); border: 2px solid var(--text-main); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .question-box .box-label { background-color: var(--text-main); color: var(--paper-bg); border: 2px solid var(--text-main); right: auto; left: 20px; }
+        .question-box {
+            background-color: var(--paper-bg); border: 2px solid var(--text-main);
+            border-radius: 8px; padding: 20px; margin: 25px 0; position: relative;
+        }
+        .question-box .box-label {
+            background-color: var(--text-main); color: var(--paper-bg);
+            border: 2px solid var(--text-main); right: auto; left: 20px;
+        }
 
-        .activity-box { border: 2px dashed var(--pink-border); border-radius: 10px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; background-color: rgba(216, 27, 96, 0.03); position: relative; }
-        .activity-label { position: absolute; top: -15px; left: 18px; background: var(--paper-bg); padding: 4px 15px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; color: var(--pink-border); border: 1.5px solid var(--pink-border); border-radius: 20px; }
+        /* --- EXAM INSIGHTS --- */
+        .exam-insight {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        .insight-tag {
+            position: absolute; top: -14px; left: 20px;
+            background-color: var(--blue-border); color: #ffffff;
+            padding: 2px 12px; font-weight: bold; font-size: 0.8rem;
+            text-transform: uppercase; border-radius: 4px;
+            border: 2px solid var(--blue-border); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .insight-tag::before { content: '💡'; margin-right: 8px; }
+        .insight-container { display: flex; flex-direction: column; gap: 15px; margin-top: 5px; }
+        .insight-card { padding: 5px 0; border-left: 3px solid var(--blue-border); padding-left: 15px; }
+        .insight-card.pink { border-left-color: var(--pink-border); }
+        .insight-card-title { margin: 0 0 5px 0; color: var(--blue-border); font-weight: 800; font-size: 1rem; }
+        .insight-card.pink .insight-card-title { color: var(--pink-border); }
+        .insight-card-content { margin: 0; font-size: 1.05rem; line-height: 1.6; }
+
+        .exam-q-answer {
+            background: var(--green-bg); border-left: 4px solid var(--green-border);
+            border-radius: 6px; padding: 12px 15px; margin-top: 10px;
+            font-size: 0.95rem; line-height: 1.6;
+        }
+        .exam-q-answer strong { color: var(--green-border); }
+
+        /* --- ACTIVITIES --- */
+        .activity-box {
+            border: 2px dashed var(--pink-border); border-radius: 10px;
+            padding: 1.2rem 1.5rem; margin: 1.5rem 0;
+            background-color: rgba(216, 27, 96, 0.03); position: relative;
+        }
+        .activity-label {
+            position: absolute; top: -15px; left: 18px;
+            background: var(--paper-bg); padding: 4px 15px;
+            font-weight: 700; font-size: 0.7rem; text-transform: uppercase;
+            color: var(--pink-border); border: 1.5px solid var(--pink-border);
+            border-radius: 20px;
+        }
         .activity-box h3 { margin-top: 8px; font-size: 1rem; color: var(--pink-border); text-transform: uppercase; }
+        .activity-img { max-width: 60%; height: auto; display: block; margin: 0 auto; border-radius: 6px; }
+        html.dark-mode .activity-img { filter: invert(1) hue-rotate(180deg); }
 
-        .vardaan-table { width: 100%; border-collapse: collapse; margin: 2rem 0; border: 1.5px solid var(--blue-border); table-layout: fixed; }
-        .vardaan-table th { background: linear-gradient(135deg, #1565c0, #1e88e5); color: white; padding: 12px 10px; font-size: 0.78rem; text-transform: uppercase; text-align: left; }
-        .vardaan-table td { padding: 12px 10px; border-bottom: 1px solid var(--toggle-border); border-right: 1px solid var(--toggle-border); font-size: 0.95rem; }
-        .vardaan-table tr:nth-child(even) { background-color: rgba(30,136,229,0.03); }
-
-        .theme-toggle { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--toggle-bg); border: none; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute; top: 20px; right: 20px;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--toggle-bg); border: none;
+            cursor: pointer; z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
         .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
         .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
         html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
         html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        .activity-img { max-width: 60%; height: auto; display: block; margin: 0 auto; border-radius: 6px; }
-        html.dark-mode .activity-img { filter: invert(1) hue-rotate(180deg); }
-
-        .branding-footer { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--toggle-border); color: var(--meta-text); }
-        .created-by { font-size: 1rem; font-weight: bold; }
-        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
-
+        /* --- STRICT PRINT CONFIGURATION --- */
         @media print {
-            .paper-sheet { width: 100%; margin: 0; padding: 0; }
-            .theme-toggle { display: none; }
-            .vardaan-table { font-size: 0.72rem !important; }
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .branding-header {
+                background-color: white !important;
+                border-bottom: 2px solid var(--blue-border) !important;
+                padding: 10px 0 !important; margin: 0 !important;
+                margin-bottom: 20px !important;
+                display: flex; flex-direction: column;
+                justify-content: center; align-items: center;
+            }
+            .paper-sheet {
+                width: 100% !important; margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+
+            /* 4. Force Watermark Visibility in Print */
+            .watermark-overlay {
+                display: flex !important; position: fixed !important;
+                z-index: 999 !important; opacity: 0.8 !important;
+                mix-blend-mode: multiply !important; left: 0 !important;
+                top: 0 !important; width: 100% !important; height: 100% !important;
+                pointer-events: none !important; -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .watermark-image {
+                filter: none !important; max-width: 70% !important;
+                opacity: 0.2 !important; -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* 5. Configure PDF/Print Page Numbers */
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+                @bottom-center {
+                    content: counter(page); display: block;
+                    width: 30px; height: 30px; background-color: #d81b60; 
+                    color: #ffffff; border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif; font-size: 11pt;
+                    font-weight: bold; text-align: center; line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+        .formula-badge {
+            display: inline-block;
+            background: #fff176; /* Natural Highlighter Yellow */
+            border-left: 5px solid #fbc02d; /* Marker Accent */
+            color: #212121;
+            padding: 8px 20px;
+            border-radius: 2px;
+            font-weight: 700;
+            margin: 12px 0;
+            font-family: var(--font-secondary);
+            font-size: 1rem;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+            line-height: 1.4;
+        }
+
+        .dark-mode .formula-badge {
+            background: #fbc02d; /* Deeper for contrast */
+            color: #000;
         }
     </style>
 </head>
@@ -149,17 +429,28 @@
         <div class="branding-header">
             <div class="institute-name">Vardaan Learning Institute</div>
             <div class="system-name">Class 10 Science • Chapter Notes</div>
+            
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+                <span>Team Vardaan ❤️</span>
+            </div>
         </div>
 
         <h1>ACIDS, BASES AND SALTS</h1>
         <p style="text-align: center; color: var(--meta-text);">Chapter 02 | High-Fidelity Board Study Module</p>
 
-        <h2>1. The Visual Chemistry: Indicators</h2>
-        <p>Indicators are substances that change their color (or smell) in the presence of an acid or a base. For board exams, focus on the <strong>3 categories</strong>:</p>
+        <h2>1. The Chemistry of Indicators</h2>
+        <p>Indicators are chemical substances that change their properties (color or smell) when exposed to an acid or a base. 
+            <br><em>Deep-Cut Fact:</em> <strong>Litmus</strong> is a purple dye extracted from <strong>Lichen</strong>, a plant belonging to the <strong>Thallophyta</strong> division.
+        </p>
 
-        <div class="activity-box"><span class="activity-label">Activity 2.1: Lab Indicators</span>
-            <p><strong>Procedure:</strong> Collect samples of $HCl, H_2SO_4, HNO_3, CH_3COOH$ (Acids) and $NaOH, Ca(OH)_2, KOH, Mg(OH)_2, NH_4OH$ (Bases). Test each with Litmus, Phenolphthalein, and Methyl Orange.</p>
-            <p><strong>Observation Summary:</strong> Acids turn Blue Litmus Red. Bases turn Red Litmus Blue and Phenolphthalein <strong>Pink</strong>.</p>
+        <div class="activity-box"><span class="activity-label">Activity 2.1: Laboratory Indicators</span>
+            <p><strong>Procedure:</strong> Test various acid and base samples (HCl, NaOH, etc.) with different indicators.</p>
+            <p><strong>Observation:</strong> 
+                <br>• <strong>Acids:</strong> Blue Litmus → Red; Phenolphthalein → Colorless.
+                <br>• <strong>Bases:</strong> Red Litmus → Blue; Phenolphthalein → <strong>Pink</strong>.
+            </p>
         </div>
 
         <div class="vardaan-table-container">
@@ -168,44 +459,60 @@
                     <tr>
                         <th style="width: 25%;">Indicator Type</th>
                         <th style="width: 25%;">Example</th>
-                        <th style="width: 25%;">In Acid</th>
-                        <th style="width: 25%;">In Base</th>
+                        <th style="width: 25%;">Color in Acid</th>
+                        <th style="width: 25%;">Color in Base</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>Natural</strong></td>
-                        <td>Litmus</td>
+                        <td>Litmus Solution</td>
                         <td><strong>Red</strong></td>
                         <td><strong>Blue</strong></td>
                     </tr>
                     <tr>
                         <td><strong>Natural</strong></td>
                         <td>Turmeric</td>
-                        <td>No Change (Yellow)</td>
+                        <td>Yellow (No Change)</td>
                         <td><strong>Reddish-Brown</strong></td>
                     </tr>
                     <tr>
                         <td><strong>Synthetic</strong></td>
                         <td>Phenolphthalein</td>
                         <td>Colorless</td>
-                        <td><strong>Pink</strong></td>
+                        <td><strong>Deep Pink</strong></td>
                     </tr>
                     <tr>
                         <td><strong>Synthetic</strong></td>
                         <td>Methyl Orange</td>
-                        <td><strong>Red</strong></td>
+                        <td><strong>Red/Pink</strong></td>
                         <td><strong>Yellow</strong></td>
                     </tr>
-                
-                <tr>
-                    <td><strong>Natural</strong></td>
-                    <td>Flowers (Hydrangea/Petunia)</td>
-                    <td>Blue</td>
-                    <td>Pink/Red</td>
-                </tr>
+                    <tr>
+                        <td><strong>Natural (Flowers)</strong></td>
+                        <td>Hydrangea</td>
+                        <td><strong>Blue</strong></td>
+                        <td><strong>Pink</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Natural (Flowers)</strong></td>
+                        <td>Petunia / Geranium</td>
+                        <td>Reddish/Violet</td>
+                        <td><strong>Blue</strong></td>
+                    </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="activity-box"><span class="activity-label">Activity 2.2: Olfactory Indicators</span>
+            <p><strong>Definition:</strong> Substances whose **odour (smell)** changes in acidic or basic media.</p>
+            <p><strong>Procedure:</strong> Test finely chopped onions, vanilla essence, and clove oil with dilute HCl and NaOH.</p>
+            <p><strong>Key Observations (Board Favorite):</strong></p>
+            <ul>
+                <li><strong>Onion:</strong> Characteristic smell <strong>disappears</strong> in basic solution (NaOH).</li>
+                <li><strong>Vanilla Essence:</strong> Smell <strong>disappears</strong> in NaOH; retained in HCl.</li>
+                <li><strong>Clove Oil:</strong> Smell <strong>disappears</strong> in NaOH.</li>
+            </ul>
         </div>
 
         <div style="text-align: center; margin: 25px 0;">
@@ -213,236 +520,337 @@
             <p style="font-size: 0.85rem; color: var(--meta-text); font-style: italic;">Fig: Color variations in common indicators</p>
         </div>
 
-        <div class="pink-box"><span class="box-label">Classification</span>
-            <h3>Olfactory Indicators</h3>
-            <p>Substances whose <strong>odour (smell)</strong> changes in acidic or basic media. Examples: <strong>Onion, Vanilla, Clove Oil</strong>.</p>
-            <p><em>Board Tip:</em> In basic media (like NaOH), the smell of onion or vanilla <strong>vanishes</strong> completely.</p>
-        </div>
-
         <h2>2. Chemical Properties (Reaction Mechanics)</h2>
+        <p>Understanding how acids and bases interact with different substances is crucial for predicting products and identifying unknown compounds.</p>
 
-        <div class="activity-box"><span class="activity-label">Activity 2.3: Acid + Metal</span>
-            <p><strong>Procedure:</strong> Add Zinc granules to dilute $H_2SO_4$.</p>
-            <p><strong>Observation:</strong> Gas bubbles evolve. When a burning candle is brought near the gas, it burns with a <strong>'Pop' sound</strong>.</p>
-            <p><strong>Equation:</strong> $Zn + H_2SO_4 \rightarrow ZnSO_4 + H_2\uparrow$</p>
-            <p><strong>Conclusion:</strong> Acid + Metal $\rightarrow$ Salt + Hydrogen gas.</p>
-            <img src="./images/hydrogen_pop_test.png" alt="Hydrogen Pop Test" class="activity-img" style="margin-top: 15px;">
-        </div>
-
-        <div class="activity-box"><span class="activity-label">Activity 2.4: Base + Metal</span>
-            <p><strong>Reaction:</strong> $Zn + 2NaOH \rightarrow Na_2ZnO_2 + H_2\uparrow$</p>
-            <p><strong>Key Product:</strong> <strong>Sodium Zincate</strong>. Note that such reactions are NOT possible with all metals.</p>
-        </div>
-
-        <div class="activity-box"><span class="activity-label">Activity 2.5: Acid + Carbonate</span>
-            <p><strong>Reaction:</strong> $Na_2CO_3 + 2HCl \rightarrow 2NaCl + H_2O + CO_2\uparrow$</p>
-            <p><strong>The Lime Water Test:</strong> Pass $CO_2$ through lime water $Ca(OH)_2$:<br>
-            • <strong>Short duration:</strong> Turns milky ($CaCO_3$ white precipitate forms).<br>
-            • <strong>Excess $CO_2$:</strong> Milkiness disappears due to soluble $Ca(HCO_3)_2$ formation.</p>
-            <div style="text-align: center; margin: 15px 0;">
-                <p style="font-size: 0.9rem; color: var(--pink-border); font-weight: bold;">[IMAGE PLACEHOLDER: Activity 2.5 Setup - $CO_2$ through Lime Water]</p>
-            </div>
-        </div>
-
-        <div class="activity-box"><span class="activity-label">Activity 2.6: Neutralization Dynamics</span>
-            <p><strong>Procedure:</strong> Add Phenolphthalein to $NaOH$ (turns pink). Add $HCl$ drop by drop until color vanishes. Then add $NaOH$ again.</p>
-            <p><strong>Result:</strong> Pink color reappears when base is in excess. This shows the reversible nature of indicator color change during neutralization.</p>
-        </div>
-
-        <div class="activity-box"><span class="activity-label">Activity 2.7: Metal Oxide + Acid</span>
-            <p><strong>Reaction:</strong> $CuO (\text{Black}) + 2HCl \rightarrow CuCl_2 (\text{Blue-Green}) + H_2O$</p>
-            <p><strong>Inference:</strong> Since metallic oxides react with acids to give salt and water, they are <strong>Basic Oxides</strong>.</p>
-        </div>
-
-        <div class="blue-box"><span class="box-label">Concept</span>
-            <h3>Neutralization Reaction</h3>
-            <p>When an acid and a base react, they cancel each other out to form <strong>Salt and Water</strong>.</p>
-            <p><strong>General Formula:</strong> $Acid + Base \rightarrow Salt + Water + Heat$</p>
-            <p><strong>Example:</strong> $NaOH(aq) + HCl(aq) \rightarrow NaCl(aq) + H_2O(l)$</p>
-        </div>
-
-        <div class="yellow-box"><span class="box-label">Board Favorite</span>
-            <h3>Reaction with Oxides</h3>
+        <div class="activity-box"><span class="activity-label">Activity 2.3 & 2.4: Reaction with Metals</span>
+            <p><strong>Procedure:</strong> Add Zinc granules to dilute $H_2SO_4$ (Acid) and then to $NaOH$ (Base).</p>
+            <p><strong>Key Observations:</strong></p>
             <ul>
-                <li><strong>Metallic Oxides + Acid:</strong> Metallic oxides (like $CuO$) are <strong>Basic</strong>. Reaction gives Salt + Water.<br>
-                $CuO (\text{Black}) + 2HCl \rightarrow CuCl_2 (\text{Blue-Green}) + H_2O$</li>
-                <li><strong>Non-Metallic Oxides + Base:</strong> Non-metallic oxides (like $CO_2$) are <strong>Acidic</strong>. Reaction gives Salt + Water.</li>
+                <li><strong>With Acid:</strong> Hydrogen gas evolves. It burns with a <strong>'Pop' sound</strong> when tested with a candle.
+                    <br><em>Equation:</em> $Zn(s) + H_2SO_4(aq) \rightarrow ZnSO_4(aq) + H_2(g)\uparrow$
+                    <div class="formula-badge">Acid + Metal $\rightarrow$ Salt + Hydrogen gas</div>
+                </li>
+                <img src="./images/hydrogen_pop_test.png" alt="Hydrogen Pop Test" class="activity-img" style="margin: 15px auto; max-width: 50%;">
+                <li><strong>With Base:</strong> Zinc reacts with Sodium Hydroxide to form <strong>Sodium Zincate</strong> and Hydrogen.
+                    <br><em>Equation:</em> $2NaOH(aq) + Zn(s) \rightarrow Na_2ZnO_2(aq) + H_2(g)\uparrow$
+                    <div class="formula-badge">Base + Metal $\rightarrow$ Salt + Hydrogen gas</div>
+                    <br><em>Note:</em> Such reactions are <strong>not possible with all metals</strong>.
+                </li>
             </ul>
         </div>
 
-        <h2>3. The Secret of $H^+$ and $OH^-$ Ions</h2>
+        <div class="activity-box"><span class="activity-label">Activity 2.5: Carbonates & Bicarbonates</span>
+            <p><strong>Procedure:</strong> Add HCl to Sodium Carbonate (Test Tube A) and Sodium Bicarbonate (Test Tube B). Pass the gas through Lime Water.</p>
+            
+            <p><strong>The Chemical Reactions:</strong></p>
+            <ul>
+                <li><strong>Test Tube A:</strong> $Na_2CO_3(s) + 2HCl(aq) \rightarrow 2NaCl(aq) + H_2O(l) + CO_2(g)$</li>
+                <li><strong>Test Tube B:</strong> $NaHCO_3(s) + HCl(aq) \rightarrow NaCl(aq) + H_2O(l) + CO_2(g)$</li>
+            </ul>
 
-        <div class="green-box"><span class="box-label">Key Knowledge</span>
-            <p><strong>All Acids</strong> generate $H^+(aq)$ ions in water. These ions combine with water to form <strong>Hydronium ions</strong> ($H_3O^+$).<br>
-            $HCl + H_2O \rightarrow H_3O^+ + Cl^-$</p>
-            <p><strong>All Bases</strong> generate $OH^-$ ions in water. Bases that are soluble in water are called <strong>Alkalis</strong>.</p>
-        </div>
+            <p><strong>The Lime Water Test (CBSE Classic):</strong></p>
+            <img src="./images/lime_water_test_correct.png" alt="Lime Water Test Setup" class="activity-img" style="margin: 15px auto;">
+            <ul>
+                <li><strong>Step 1 (Milky):</strong> Lime water turns <strong>milky</strong> due to the formation of a white precipitate of Calcium Carbonate.
+                    <br><em>Reaction:</em> $Ca(OH)_2(aq) + CO_2(g) \rightarrow CaCO_3(s) \text{ (White ppt)} + H_2O(l)$
+                </li>
+                <li><strong>Step 2 (Soluble):</strong> On passing <strong>excess</strong> $CO_2$, the milkiness disappears as soluble Calcium Bicarbonate is formed.
+                    <br><em>Reaction:</em> $CaCO_3(s) + H_2O(l) + CO_2(g) \rightarrow Ca(HCO_3)_2(aq) \text{ (Soluble in water)}$
+                </li>
+            </ul>
 
-        <div class="question-box"><span class="box-label">Q &amp; A</span>
-            <strong>Q1. Why does dry HCl gas not change the color of dry litmus paper? (Board 2020)</strong><br>
-            <strong>Ans:</strong> Dry HCl gas does not contain $H^+$ ions. Acidic behavior is only shown in the presence of moisture/water where the gas dissociates into ions. Since no ions are present in dry conditions, it doesn't change the litmus color.
-        </div>
-
-            <p>Always add <strong>Acid to Water</strong> slowly with constant stirring. <strong>Never</strong> add water to concentrated acid. The reaction is highly <strong>exothermic</strong>; adding water can cause the mixture to splash out and cause severe burns.</p>
-            <div style="text-align: center; margin: 15px 0;">
-                <p style="font-size: 0.9rem; color: var(--pink-border); font-weight: bold;">[IMAGE PLACEHOLDER: Activity 2.10 - Correct way of Dilution (Acid to Water)]</p>
+            <div class="blue-box"><span class="box-label">Summary Reaction</span>
+                <div class="formula-badge">Metal carbonate/hydrogencarbonate + Acid $\rightarrow$ Salt + CO2 + H2O</div>
+                <p><em>Note:</em> <strong>Limestone, chalk and marble</strong> are different forms of Calcium Carbonate ($CaCO_3$).</p>
             </div>
         </div>
 
-        <div class="activity-box"><span class="activity-label">Activity 2.8: Conductivity</span>
-            <p><strong>Experiment:</strong> Test conductivity of Glucose, Alcohol, $HCl, NaOH$.</p>
-            <p><strong>Result:</strong> Bulb glows for $HCl$ and $NaOH$. It does <strong>NOT glow</strong> for Glucose and Alcohol (as they do not produce ions).</p>
-            <div style="text-align: center; margin: 15px 0;">
-                <p style="font-size: 0.9rem; color: var(--pink-border); font-weight: bold;">[IMAGE PLACEHOLDER: Activity 2.8 - Acid/Base Conductivity Circuit]</p>
-            </div>
+        <div class="activity-box"><span class="activity-label">Activity 2.6: Neutralization Reaction</span>
+            <p><strong>Concept:</strong> When an acid and a base react, they cancel each other's effects to form <strong>Salt and Water</strong>.</p>
+            <p><strong>Reaction:</strong> $NaOH(aq) + HCl(aq) \rightarrow NaCl(aq) + H_2O(l) + \text{Heat}$</p>
+            <div class="formula-badge">Base + Acid $\rightarrow$ Salt + Water</div>
+            <p><strong>Observation:</strong> The reaction is <strong>exothermic</strong>. Using phenolphthalein, the pink color disappears when the acid neutralizes the base.</p>
         </div>
 
-        <div class="activity-box"><span class="activity-label">Activity 2.9: The Moisture Factor</span>
-            <p><strong>Experiment:</strong> Prepare $HCl$ gas. Test with dry and wet litmus paper.</p>
-            <p><strong>Result:</strong> Only <strong>Wet Litmus</strong> changes color. This proves that $H^+$ ions are only produced in the presence of water.</p>
-            <div style="text-align: center; margin: 15px 0;">
-                <p style="font-size: 0.9rem; color: var(--pink-border); font-weight: bold;">[IMAGE PLACEHOLDER: Activity 2.9 - Preparation of $HCl$ gas]</p>
-            </div>
+        <div class="activity-box"><span class="activity-label">Activity 2.7: Metallic Oxide + Acid</span>
+            <p><strong>Observation:</strong> Black Copper Oxide ($CuO$) dissolves in HCl to form a <strong>blue-green</strong> solution of Copper Chloride ($CuCl_2$).</p>
+            <div class="formula-badge">Metal Oxide + Acid $\rightarrow$ Salt + Water</div>
+            <p><strong>Conclusion:</strong> Since metallic oxides react with acids to give salt and water, they are <strong>Basic in nature</strong>.</p>
         </div>
 
-        <h2>4. The pH Scale & Its Importance</h2>
-        <p>The pH scale measures the strength of acids and bases from <strong>0 (highly acidic) to 14 (highly alkaline)</strong>. 7 is Neutral.</p>
+        <div class="yellow-box"><span class="box-label">Board Favorite</span>
+            <h3>Nature of Oxides</h3>
+            <ul>
+                <li><strong>Metallic Oxides (e.g., $MgO, CuO$):</strong> Basic in nature. (Metal Oxide + Acid $\rightarrow$ Salt + Water)</li>
+                <li><strong>Non-Metallic Oxides (e.g., $CO_2$):</strong> Acidic in nature. (Non-metal Oxide + Base $\rightarrow$ Salt + Water)</li>
+            </ul>
+        </div>
+
+        <h2>3. What Happens to an Acid or a Base in a Water Solution?</h2>
+        <p>This section explores the behavior of acids and bases at the molecular level, focusing on ion formation.</p>
+
+        <div class="activity-box"><span class="activity-label">Activity 2.8: Do all compounds containing hydrogen show acidic behavior?</span>
+            <p><strong>Experiment:</strong> Test conductivity of Glucose, Alcohol, HCl, and NaOH solutions.</p>
+            <p><strong>Result:</strong> 
+                <br>• The bulb <strong>glows</strong> for HCl and NaOH because they dissociate into ions ($H^+$ and $OH^-$).
+                <br>• The bulb <strong>does NOT glow</strong> for Glucose ($C_6H_{12}O_6$) and Alcohol ($C_2H_5OH$) as they do not form ions.
+            </p>
+            <p><strong>Inference:</strong> Only substances that ionize in water act as acids or bases.</p>
+        </div>
+
+        <div class="activity-box"><span class="activity-label">Activity 2.9: Is water necessary for acidity?</span>
+            <p><strong>Experiment:</strong> Test dry HCl gas with dry and wet blue litmus paper.</p>
+            <p><strong>Observation:</strong> 
+                <br>• <strong>Dry Litmus:</strong> No color change.
+                <br>• <strong>Wet Litmus:</strong> Turns <strong>Red</strong>.
+            </p>
+            <p><strong>Conclusion (Board Exam Point):</strong> HCl dissociates into $H^+$ ions only in the presence of water. Separation of $H^+$ ions from $HCl$ molecules cannot occur in the absence of water.</p>
+            
+            <p><strong>Formation of Hydronium Ions:</strong></p>
+            <ul>
+                <li>$HCl + H_2O \rightarrow H_3O^+ + Cl^-$</li>
+                <li>Hydrogen ions cannot exist alone; they exist after combining with water molecules: 
+                    <br>$H^+ + H_2O \rightarrow H_3O^+$
+                </li>
+            </ul>
+        </div>
+
+        <div class="green-box"><span class="box-label">Dissociation of Bases</span>
+            <p>When a base is dissolved in water, it generates <strong>Hydroxide ($OH^-$) ions</strong>:</p>
+            <ul>
+                <li>$NaOH(s) \xrightarrow{H_2O} Na^+(aq) + OH^-(aq)$</li>
+                <li>$KOH(s) \xrightarrow{H_2O} K^+(aq) + OH^-(aq)$</li>
+                <li>$Mg(OH)_2(s) \xrightarrow{H_2O} Mg^{2+}(aq) + 2OH^-(aq)$</li>
+            </ul>
+            <div class="formula-badge" style="border-left-color: var(--green-border); background: #e8f5e9; border-color: var(--green-border);">Bases generate hydroxide (OH-) ions in water. Bases which are soluble in water are called alkalis.</div>
+        </div>
+
+        <div class="activity-box"><span class="activity-label">Activity 2.10: The Safety Protocol (Dilution)</span>
+            <p><strong>Concept:</strong> Dissolving an acid or a base in water is highly <strong>Exothermic</strong>.</p>
+            <p><strong>The Rule:</strong> Always add <strong>Acid to Water</strong> slowly with constant stirring. 
+                <br><strong>Warning:</strong> Never add water to acid! The extreme heat generated can cause the mixture to splash out (causing burns) or break the glass container.
+            </p>
+        </div>
+
+        <div class="blue-box"><span class="box-label">Concept</span>
+            <h3>Dilution</h3>
+            <p>Mixing an acid or base with water results in a decrease in the concentration of ions ($H_3O^+$ or $OH^-$) per unit volume. This process is called <strong>Dilution</strong>.</p>
+        </div>
+
+        <h2>4. The pH Scale: Strength of Acids & Bases</h2>
+        <p>A scale for measuring hydrogen ion concentration in a solution, called <strong>pH scale</strong>, has been developed. The 'p' in pH stands for <em>potenz</em> in German, meaning power.</p>
         
         <div style="text-align: center; margin: 25px 0;">
-            <img src="./images/ph_scale.png" alt="pH Scale Gradient" class="activity-img">
+            <img src="./images/ph_scale.png" alt="pH Scale Gradient" class="activity-img" style="max-width: 85%;">
             <p style="font-size: 0.85rem; color: var(--meta-text); font-style: italic;">Fig: The Universal pH Scale Gradient</p>
         </div>
-
-        <div class="yellow-box"><span class="box-label">Reference</span>
-            <h3>Standard pH Values (NCERT)</h3>
-            <table class="vardaan-table" style="margin-top: 10px;">
-                <tr><td>Gastric Juice</td><td>~1.2 (Highly Acidic)</td></tr>
-                <tr><td>Lemon Juice</td><td>~2.2</td></tr>
-                <tr><td>Pure Water / Blood</td><td>7.4 (Slightly Basic)</td></tr>
-                <tr><td>Milk of Magnesia</td><td>10.0 (Basic)</td></tr>
-                <tr><td>Sodium Hydroxide</td><td>~14.0 (Strongly Alkaline)</td></tr>
-            </table>
+        <div class="activity-box"><span class="activity-label">Activity 2.11: Testing pH</span>
+            <p><strong>Procedure:</strong> Test various solutions with Universal Indicator paper.</p>
+            <div class="vardaan-table-container">
+                <table class="vardaan-table" style="margin-top: 10px;">
+                    <thead><tr><th>Substance</th><th>Approx. pH</th><th>Nature</th></tr></thead>
+                    <tbody>
+                        <tr><td>Gastric Juice</td><td>1.2</td><td>Highly Acidic</td></tr>
+                        <tr><td>Lemon Juice</td><td>2.2</td><td>Acidic</td></tr>
+                        <tr><td>Pure Water/Blood</td><td>7.4</td><td>Slightly Basic</td></tr>
+                        <tr><td>Milk of Magnesia</td><td>10.0</td><td>Basic</td></tr>
+                        <tr><td>Sodium Hydroxide</td><td>14.0</td><td>Highly Basic</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
+        <div class="activity-box"><span class="activity-label">Activity 2.12: pH of Soil</span>
+            <p><strong>Concept:</strong> Plants require a specific pH range for healthy growth. If soil is too acidic, it is treated with <strong>Quick Lime ($CaO$)</strong> or <strong>Slaked Lime ($Ca(OH)_2$)</strong>. If too basic, organic matter is added.</p>
+        </div>
+
+        <div class="pink-box"><span class="box-label">Science Trivia</span>
+            <h3>The Atmosphere of Venus</h3>
+            <p>Did you know? The atmosphere of <strong>Venus</strong> is made of thick white and yellowish clouds of <strong>Sulphuric Acid</strong>. Survival of life is impossible there!</p>
+        </div>
+
+        <h3>Importance of pH in Everyday Life</h3>
         <div class="vardaan-table-container">
             <table class="vardaan-table">
                 <thead>
                     <tr>
-                        <th>Context</th>
-                        <th>pH Level / Importance</th>
+                        <th style="width: 30%;">Context</th>
+                        <th style="width: 70%;">Board Importance & Facts</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Human Body</strong></td>
-                        <td>Functions within <strong>7.0 to 7.8</strong>.</td>
-                    </tr>
-                    <tr>
                         <td><strong>Acid Rain</strong></td>
-                        <td>pH of rain water falls below <strong>5.6</strong>.</td>
+                        <td>When rain water pH is less than <strong>5.6</strong>. It makes survival of aquatic life difficult.</td>
                     </tr>
                     <tr>
                         <td><strong>Digestive System</strong></td>
-                        <td>Stomach produces <strong>HCl</strong>. Use Antacids (Milk of Magnesia) to neutralize excess.</td>
+                        <td>Stomach produces <strong>HCl</strong>. During indigestion, excess acid causes pain. <strong>Antacids</strong> (like Milk of Magnesia) are mild bases used to neutralize it.</td>
                     </tr>
                     <tr>
                         <td><strong>Tooth Decay</strong></td>
-                        <td>Starts when mouth pH is lower than <strong>5.5</strong>. Use basic toothpaste.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Soil pH</strong></td>
-                        <td>Plants require a specific pH range for healthy growth. Test soil pH and treat with Lime (Basic) if too acidic.</td>
+                        <td>Starts when mouth pH falls below <strong>5.5</strong>. Tooth enamel is made of <strong>Calcium hydroxyapatite</strong> (crystalline calcium phosphate)—the hardest substance in the body. It doesn't dissolve in water but corrodes when pH is low.</td>
                     </tr>
                     <tr>
                         <td><strong>Self Defense</strong></td>
-                        <td>Bee/Ant sting injects <strong>Methanoic Acid</strong>. Use mild base like Baking Soda.</td>
+                        <td>Honey-bee sting leaves <strong>Methanoic Acid</strong>. Rubbing a mild base like <strong>Baking Soda</strong> provides relief.</td>
                     </tr>
                     <tr>
-                        <td><strong>Nettle Leaves</strong></td>
-                        <td>Sting causes burning pain due to Methanoic Acid. Remedy: Rub leaf of <strong>Dock Plant</strong> (found nearby in wild).</td>
+                        <td><strong>Nettle Sting</strong></td>
+                        <td>Nettle leaves inject Methanoic acid. Traditional remedy: Rubbing the leaf of a <strong>Dock Plant</strong> (Basic) which often grows beside Nettle in the wild.</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <h2>5. The Magnificent Salts (Chemicals from Common Salt)</h2>
-        <p>Common Salt ($NaCl$) is the "Raw Material" for many important industrial chemicals. In nature, it is found as **Rock Salt** (large brown crystals due to impurities), which is mined like coal.</p>
+        <div class="yellow-box"><span class="box-label">Nature's Chemistry</span>
+            <h3>Naturally Occurring Acids</h3>
+            <p>For board exams, you must memorize the source and the specific acid present in these natural substances:</p>
+            <div class="vardaan-table-container">
+                <table class="vardaan-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Natural Source</th>
+                            <th style="width: 25%;">Acid</th>
+                            <th style="width: 25%;">Natural Source</th>
+                            <th style="width: 25%;">Acid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Vinegar</strong></td><td>Acetic acid</td><td><strong>Curd (Sour Milk)</strong></td><td>Lactic acid</td></tr>
+                        <tr><td><strong>Orange</strong></td><td>Citric acid</td><td><strong>Lemon</strong></td><td>Citric acid</td></tr>
+                        <tr><td><strong>Tamarind</strong></td><td>Tartaric acid</td><td><strong>Ant sting</strong></td><td>Methanoic acid</td></tr>
+                        <tr><td><strong>Tomato</strong></td><td>Oxalic acid</td><td><strong>Nettle sting</strong></td><td>Methanoic acid</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
+        <div class="pink-box"><span class="box-label">Do You Know?</span>
+            <h3>Nature Provides Neutralisation Options</h3>
+            <p><strong>Nettle</strong> is a herbaceous plant which grows in the wild. Its leaves have stinging hair, which cause painful stings when touched accidentally. This is due to the <strong>Methanoic acid</strong> secreted by them.</p>
+            <p><strong>Traditional Remedy:</strong> Rubbing the area with the leaf of the <strong>Dock Plant</strong>, which often grows beside the nettle in the wild. Since it cures the sting, we can guess that the dock plant is <strong>Basic</strong> in nature.</p>
+        </div>
+
+        <h2>5. More About Salts</h2>
+        <p>Salts are formed by the neutralization of an acid and a base. 
+            <br><em>NCERT Note:</em> <strong>Rock Salt</strong> crystals are often <strong>brown</strong> due to impurities. These salt beds were formed when seas of "bygone ages" dried up. It is <strong>mined like coal</strong>.
+        </p>
+
+        <div class="activity-box"><span class="activity-label">Activity 2.13 & 2.14: Families & pH</span>
+            <p><strong>Concept:</strong> Salts can be classified into families based on their radicals (e.g., Chloride family, Sulphate family).</p>
+            <div class="vardaan-table-container">
+                <table class="vardaan-table">
+                    <thead><tr><th>Salt Combination</th><th>Nature</th><th>pH</th></tr></thead>
+                    <tbody>
+                        <tr><td>Strong Acid + Strong Base</td><td>Neutral</td><td>7</td></tr>
+                        <tr><td>Strong Acid + Weak Base</td><td>Acidic</td><td>< 7</td></tr>
+                        <tr><td>Weak Acid + Strong Base</td><td>Basic</td><td>> 7</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>Chemicals from Common Salt ($NaCl$)</h3>
+        <p>Common salt is a critical raw material for various chemicals used in daily life and industry.</p>
+        
         <div style="text-align: center; margin: 25px 0;">
             <img src="./images/salt_family_mindmap.png" alt="Salt Family Mindmap" class="activity-img" style="max-width: 95%;">
             <p style="font-size: 0.85rem; color: var(--meta-text); font-style: italic;">Fig: The NaCl Derivative Ecosystem (The Salt Family)</p>
         </div>
 
         <div class="activity-box"><span class="activity-label">1. Chlor-Alkali Process</span>
-            <h3>Sodium Hydroxide ($NaOH$)</h3>
-            <p>Electrolysis of aqueous sodium chloride (Brine).</p>
+            <p><strong>Method:</strong> Electrolysis of aqueous solution of $NaCl$ (called <strong>Brine</strong>).</p>
             <p><strong>Equation:</strong> $2NaCl(aq) + 2H_2O(l) \rightarrow 2NaOH(aq) + Cl_2(g) + H_2(g)$</p>
-            <p>• <strong>Anode ($Cl_2$):</strong> Used in water treatment, PVC, disinfectants.<br>
-            • <strong>Cathode ($H_2$):</strong> Used in fuels, margarine, ammonia for fertilizers.<br>
-            • <strong>NaOH:</strong> Used in soaps, paper making, degreasing metals.</p>
-            <img src="./images/chlor_alkali.png" alt="Chlor-Alkali Diagram" class="activity-img" style="margin-top: 15px;">
+            
+            <div style="text-align: center; margin: 15px -20px;">
+                <img src="./images/chlor_alkali.jpg" alt="Chlor-Alkali Process" style="width: 100%;">
+            </div>
+
+            <ul>
+                <li><strong>At Anode (+):</strong> Chlorine gas ($Cl_2$) - Used for water treatment, PVC, disinfectants.</li>
+                <li><strong>At Cathode (-):</strong> Hydrogen gas ($H_2$) - Used as fuel, margarine, ammonia for fertilizers.</li>
+                <li><strong>Near Cathode:</strong> $NaOH$ solution - Used for degreasing metals, soaps, paper making.</li>
+            </ul>
         </div>
 
-        <div class="blue-box"><span class="box-label">Chemical</span>
-            <h3>2. Bleaching Powder ($CaOCl_2$)</h3>
-            <p>Produced by action of chlorine on <strong>dry slaked lime</strong>.</p>
+        <div class="blue-box"><span class="box-label">Chemical 02</span>
+            <h3>Bleaching Powder ($CaOCl_2$)</h3>
+            <p><strong>Preparation:</strong> Action of chlorine on dry slaked lime [$Ca(OH)_2$].</p>
             <p><strong>Equation:</strong> $Ca(OH)_2 + Cl_2 \rightarrow CaOCl_2 + H_2O$</p>
             <p><strong>Uses:</strong> 
-                <br>• Bleaching cotton and linen in textile industry.
-                <br>• Bleaching wood pulp in paper factories.
-                <br>• Oxidizing agent in many chemical industries.
-                <br>• Disinfecting drinking water to make it germ-free.
+                <br>• Bleaching cotton/linen in textiles and wood pulp in paper.
+                <br>• Oxidizing agent in chemical industries.
+                <br>• Disinfecting drinking water.
             </p>
         </div>
 
-        <div class="green-box"><span class="box-label">Chemical</span>
-            <h3>3. Baking Soda ($NaHCO_3$)</h3>
-            <p><strong>Sodium Hydrogen Carbonate.</strong> A mild, non-corrosive basic salt.</p>
-            <p><strong>Preparation (Solvay Process):</strong> 
-                <br>$NaCl + H_2O + CO_2 + NH_3 \rightarrow NH_4Cl + NaHCO_3$
-            </p>
-            <p><strong>On Heating:</strong> $2NaHCO_3 \xrightarrow{\Delta} Na_2CO_3 + H_2O + CO_2\uparrow$</p>
-            <p><strong>Uses:</strong> Making Baking Powder (mixture of soda and tartaric acid), Antacid, Soda-acid fire extinguishers.</p>
+        <div class="green-box"><span class="box-label">Chemical 03</span>
+            <h3>Baking Soda ($NaHCO_3$)</h3>
+            <p><strong>Chemical Name:</strong> Sodium Hydrogen Carbonate.</p>
+            <p><strong>Preparation:</strong> $NaCl + H_2O + CO_2 + NH_3 \rightarrow NH_4Cl + NaHCO_3$</p>
+            <p><strong>Heating Effect:</strong> $2NaHCO_3 \xrightarrow{\text{Heat}} Na_2CO_3 + H_2O + CO_2\uparrow$</p>
+            <p><strong>Uses:</strong> Making baking powder (Soda + Tartaric acid), Antacid, Soda-acid fire extinguishers.</p>
         </div>
 
-        <div class="yellow-box"><span class="box-label">Chemical</span>
-            <h3>4. Washing Soda ($Na_2CO_3 \cdot 10H_2O$)</h3>
-            <p>Recrystallization of sodium carbonate gives washing soda.</p>
+        <div class="yellow-box"><span class="box-label">Chemical 04</span>
+            <h3>Washing Soda ($Na_2CO_3 \cdot 10H_2O$)</h3>
+            <p><strong>Preparation:</strong> Recrystallization of Sodium Carbonate.</p>
             <p><strong>Equation:</strong> $Na_2CO_3 + 10H_2O \rightarrow Na_2CO_3 \cdot 10H_2O$</p>
             <p><strong>Uses:</strong> 
-                <br>• Glass, soap, and paper industries. 
-                <br>• Manufacture of sodium compounds like <strong>Borax</strong>. 
-                <br>• Cleaning agent for domestic purposes.
-                <br>• Removing **permanent hardness** of water.
+                <br>• Glass, soap, and paper industries.
+                <br>• Manufacture of <strong>Borax</strong>.
+                <br>• Removing <strong>permanent hardness</strong> of water.
             </p>
         </div>
 
-        <div class="pink-box"><span class="box-label">Chemical</span>
-            <h3>5. Plaster of Paris ($CaSO_4 \cdot \frac{1}{2}H_2O$)</h3>
-            <p>Chemical name: **Calcium Sulphate Hemihydrate**. Obtained by heating Gypsum ($CaSO_4 \cdot 2H_2O$) at **373 K** (100°C). </p>
-            <p><strong>Reaction:</strong> $CaSO_4 \cdot \frac{1}{2}H_2O + 1\frac{1}{2}H_2O \rightarrow CaSO_4 \cdot 2H_2O$ (Sets into hard solid mass).</p>
-            <p><strong>Uses:</strong> Doctors use it for supporting fractured bones in the right position, making toys, materials for decoration, and for making surfaces smooth.</p>
-        </div>
-
-        <h2>6. Water of Crystallization</h2>
-            <p><strong>Reason:</strong> Water of crystallization is the fixed number of water molecules present in one formula unit of salt.</p>
-            <p><strong>Hydrated CuSO4:</strong> $CuSO_4 \cdot 5H_2O$</p>
-            <div style="text-align: center; margin: 15px 0;">
-                <p style="font-size: 0.9rem; color: var(--pink-border); font-weight: bold;">[IMAGE PLACEHOLDER: Activity 2.15 - Heating Copper Sulphate]</p>
+        <div class="pink-box"><span class="box-label">Chemical 05</span>
+            <h3>Plaster of Paris (P.O.P)</h3>
+            <p><strong>Chemical Name:</strong> Calcium Sulphate Hemihydrate ($CaSO_4 \cdot \frac{1}{2}H_2O$).</p>
+            <p><strong>Preparation:</strong> Heating Gypsum ($CaSO_4 \cdot 2H_2O$) at <strong>373 K</strong>.</p>
+            
+            <p><strong>The "Half Molecule" Logic:</strong></p>
+            <div class="question-box" style="margin-top: 10px; background: rgba(255, 255, 255, 0.5);">
+                <p><strong>Q. How can you get half a water molecule?</strong></p>
+                <p><strong>Ans:</strong> It is written in this form because <strong>two formula units of $CaSO_4$ share one molecule of water</strong> . This is why it's called a hemihydrate.</p>
             </div>
+
+            <p><strong>Setting (Reaction with Water):</strong> On mixing with water, it changes back to Gypsum, giving a hard solid mass.</p>
+            <div class="formula-badge">$CaSO_4 \cdot \frac{1}{2}H_2O + 1\frac{1}{2}H_2O \rightarrow CaSO_4 \cdot 2H_2O \text{ (Gypsum)}$</div>
+
+            <p><strong>Uses:</strong> Supporting fractured bones, making toys, decoration, smooth surfaces.</p>
         </div>
 
-        <div class="blue-box"><span class="box-label">Salt Family</span>
-            <h3>Classification of Salts</h3>
-            <ul>
-                <li><strong>Chloride Family:</strong> $NaCl, KCl, CaCl_2$</li>
-                <li><strong>Sulphate Family:</strong> $Na_2SO_4, MgSO_4, CuSO_4$</li>
-                <li><strong>pH of Salt Solutions:</strong>
-                    <br>• Strong Acid + Strong Base $\rightarrow$ <strong>Neutral (pH 7)</strong>
-                    <br>• Strong Acid + Weak Base $\rightarrow$ <strong>Acidic (pH < 7)</strong>
-                    <br>• Weak Acid + Strong Base $\rightarrow$ <strong>Basic (pH > 7)</strong>
-                </li>
-            </ul>
+        <h2>6. Are the Crystals of Salts really Dry?</h2>
+        <div class="activity-box" style="display: flow-root;"><span class="activity-label">Activity 2.15: Water of Crystallization</span>
+            <img src="./images/heating_cu_sulphate.png" alt="Heating Copper Sulphate Setup" class="activity-img" style="float: right; width: 40%; margin-left: 20px;">
+            <p><strong>Experiment:</strong> Heat crystals of Copper Sulphate in a dry test tube.</p>
+            <p><strong>Observation:</strong> 
+                <br>• Blue color of crystals turns <strong>White</strong>.
+                <br>• Water droplets appear on the sides of the tube.
+                <br>• On adding water again, the <strong>Blue color reappears</strong>.
+            </p>
+            <p><strong>Definition:</strong> <strong>Water of Crystallization</strong> is the <strong>fixed number of water molecules</strong> present in <strong>one formula unit</strong> of a salt.</p>
+            <p><strong>Example:</strong> Hydrated Copper Sulphate ($CuSO_4 \cdot 5H_2O$).</p>
+        </div>
+
+        <div class="exam-insight">
+            <div class="insight-tag">Senior Teacher's Desk</div>
+            <div class="insight-container">
+                <div class="insight-card">
+                    <p class="insight-card-title">Sure-Shot Board Topic: The Lime Water Test</p>
+                    <p class="insight-card-content">Expect a question on why milkiness disappears with excess $CO_2$. Always mention the formation of soluble <strong>Calcium Bicarbonate</strong> [$Ca(HCO_3)_2$].</p>
+                </div>
+                <div class="insight-card pink">
+                    <p class="insight-card-title">Common Confusion: Alkali vs Base</p>
+                    <p class="insight-card-content">Remember: "All Alkalis are Bases, but all Bases are not Alkalis." Only water-soluble bases like $NaOH, KOH, Ca(OH)_2$ are alkalis.</p>
+                </div>
+                <div class="insight-card">
+                    <p class="insight-card-title">Conceptual Logic: Ionization</p>
+                    <p class="insight-card-content">Acids do NOT show acidic behavior in organic solvents like Toluene or Alcohol because they don't produce $H^+$ ions there. Water is a MUST.</p>
+                </div>
+            </div>
         </div>
 
         <h2>7. Vardaan Practice Zone (Board-Exam Focused)</h2>
@@ -531,7 +939,7 @@
         </div>
 
         <div class="branding-footer">
-            <p class="created-by">Created by Team Vardaan </p>
+            <p class="created-by">Created by Team Vardaan ❤️</p>
             <p class="powered-by">Powered by Vardaan Comet</p>
         </div>
 
