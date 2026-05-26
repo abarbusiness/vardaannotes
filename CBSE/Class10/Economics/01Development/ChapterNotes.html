@@ -1,139 +1,274 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 01: Development - Vardaan Master Notes</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- MathJax Configuration -->
-    <script>
-        MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                processEscapes: true
-            },
-            chtml: {
-                mtextInheritFont: true,
-                scale: 1.05
-            },
-            options: {
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-            }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Development - Economics - Vardaan Learning Institute</title>
     <style>
-        /* --- CSS VARIABLES & THEME --- */
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            /* Core Colors */
-            --paper-bg: #ffffff;
-            --ink-color: #000000;
-            --accent-color: #000000;
-
-            /* Theme Palettes (Economics Style: Green/Money Tones) */
-            --yellow-bg: #fffde7;
-            --yellow-border: #fdd835;
-
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
             --green-border: #43a047;
-            /* Primary Economics Color */
-
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
-
             --pink-bg: #fce4ec;
             --pink-border: #d81b60;
-
-            --red-border: #d32f2f;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
 
-        /* --- GLOBAL RESET & TYPOGRAPHY --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
         }
 
+        /* --- GLOBAL LAYOUT --- */
         body {
             background-color: var(--paper-bg);
-            color: var(--ink-color);
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* --- DARK MODE (FILTER INVERSION) --- */
-        html,
-        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
             overflow-x: hidden;
-            width: 100%;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            transition: filter 0.3s ease;
-        }
-
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg);
-        }
-
-        /* --- ADAPTIVE WATERMARK --- */
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.15;
             max-width: 80%;
-            height: auto;
-            opacity: 0.05;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important;
+            filter: invert(1);
+            opacity: 0.15;
         }
 
-        /* --- PAPER SHEET LAYOUT --- */
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
             background-color: var(--paper-bg);
-            box-shadow: none;
-            border: none;
             width: 210mm;
             max-width: 100%;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
-        @media screen and (max-width: 800px) {
-            .paper-sheet {
-                width: 100%;
-                padding: 20px;
-            }
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
         }
 
-        /* --- THEME TOGGLE BUTTON --- */
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+            clear: both;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; display: flow-root; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; display: flow-root; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; display: flow-root; }
+        .pink-box { background-color: var(--pink-bg); border: 2px solid var(--pink-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; display: flow-root; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+        .pink-box .box-label { color: var(--pink-border); border-color: var(--pink-border); }
+
+        /* --- DATA TABLE --- */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            background-color: var(--blue-border);
+            color: #ffffff;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .data-table td {
+            padding: 9px 14px;
+            border-bottom: 1px solid var(--toggle-border);
+            vertical-align: top;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: var(--blue-bg);
+        }
+
+        html.dark-mode .data-table th {
+            background-color: #1565c0;
+        }
+
+        /* --- THEME TOGGLE --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -141,7 +276,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--toggle-bg);
             border: none;
             cursor: pointer;
             z-index: 1000;
@@ -150,180 +285,102 @@
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
-        }
-
-        .icon-sun,
-        .icon-moon {
+        .icon-sun, .icon-moon {
             position: absolute;
-            width: 24px;
-            height: 24px;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
         }
 
-        .icon-moon {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
-        }
-
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
-        }
-
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        /* --- CONTENT STYLING --- */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            border-bottom: 2px solid var(--ink-color);
-            padding-bottom: 0.5rem;
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-        }
-
-        p,
-        li {
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        ul,
-        ol {
-            padding-left: 25px;
-            margin-bottom: 1rem;
-        }
-
-        /* --- SPECIAL COMPONENTS --- */
-        .eco-box {
-            background-color: var(--green-bg);
-            border-left: 4px solid var(--green-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .data-box {
-            background-color: var(--blue-bg);
-            border-left: 4px solid var(--blue-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-        }
-
-        .master-tip {
-            border: 2px dashed var(--red-border);
-            background-color: #fffaf0;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-            font-style: italic;
-        }
-
-        .tip-header {
-            font-weight: 700;
-            color: var(--red-border);
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Image Placeholder */
-        .img-placeholder {
-            width: 100%;
-            height: 300px;
-            background-color: #f0f0f0;
-            border: 2px dashed #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 1.5rem 0;
-            flex-direction: column;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .img-prompt {
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #555;
-            background: #e0e0e0;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-            max-width: 90%;
-        }
-
-        /* --- PRINT OPTIMIZATION --- */
+        /* --- STRICT PRINT CONFIGURATION --- */
         @media print {
             body {
-                background-color: #fff;
-            }
-
-            html.dark-mode {
-                filter: none !important;
-            }
-
-            .theme-toggle {
-                display: none;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
             .paper-sheet {
-                width: 100%;
-                margin: 0;
-                padding: 0;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 box-shadow: none !important;
-                border: none !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
             }
 
             .watermark-overlay {
-                position: fixed;
-                opacity: 0.05 !important;
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                mix-blend-mode: multiply !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+                opacity: 0.15 !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
             }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- ADAPTIVE WATERMARK -->
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
     <div class="watermark-overlay">
-        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            alt="Vardaan Watermark" class="watermark-image">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
     </div>
 
-    <!-- THEME TOGGLE -->
+    <!-- COMPONENT: Dark Mode Toggle -->
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -336,118 +393,638 @@
         </svg>
     </button>
 
-    <!-- CONTENT PAPER -->
+    <!-- MAIN CONTAINER -->
     <div class="paper-sheet">
-        <h1>Development</h1>
-        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Economics • Chapter 01</p>
 
-        <h2>1. What Development Promises?</h2>
-        <p>Values concerning development are subjective. Different people have different developmental goals.</p>
-        <ul>
-            <li><strong>Different Goals:</strong> Landless labourers want more days of work and better wages. Prosperous
-                farmers want high support prices.</li>
-            <li><strong>Conflicting Goals:</strong> A dam may be development for industrialist (electricity) but
-                disaster for tribals living in that area (submersion of land).</li>
-        </ul>
-        <div class="master-tip">
-            <span class="tip-header">KEY TAKEAWAY</span>
-            Thinking about development involves the question of how to achieve these goals with minimal conflict.
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 10 Economics • Chapter Notes</div>
+
+            <!-- CONTACT INFO ROW -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+                <span>Team Vardaan ❤️</span>
+            </div>
         </div>
 
-        <h2>2. Income and Other Goals</h2>
-        <p>People want more income. But they also seek:</p>
-        <div class="eco-box">
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>CHAPTER 1: DEVELOPMENT</h1>
+
+        <p>This chapter introduces the idea of <strong>development</strong> — what it means, how different people understand it differently, and how we measure it. It teaches us that development is not just about earning more money, but also about living a better, fairer, and more secure life. This chapter is the foundation of Class 10 Economics.</p>
+
+        <div class="green-box">
+            <span class="box-label">Key Idea</span>
+            <strong>The Big Question of this Chapter:</strong> What should a country aim for? Only earning more money, or also ensuring that people live healthy, educated, equal, and dignified lives? This chapter explores that question step by step.
+        </div>
+
+        <!-- ============================== -->
+        <h2>1. What Development Promises — Different People, Different Goals</h2>
+
+        <p>The word <strong>"development"</strong> usually means improvement or progress. But improvement for whom? And in what way? Different people living in different situations have very different ideas about what development means to them.</p>
+
+        <h3>1.1 Different Goals for Different People</h3>
+        <p>Let us look at three different people and what they want from development:</p>
+
+        <div class="blue-box">
+            <span class="box-label">NCERT Example</span>
             <ul>
-                <li>Equal Treatment</li>
-                <li>Freedom</li>
-                <li>Security</li>
-                <li>Respect of others</li>
+                <li><strong>A landless rural labourer:</strong> Wants more days of work at better wages, local schools and hospitals, and no social discrimination. His development goal is about basic security and dignity.</li>
+                <li><strong>A prosperous farmer from Punjab:</strong> Wants a good price for his crops and reliable electricity and irrigation. His goal is about profits and better farming conditions.</li>
+                <li><strong>A young girl from a rich urban family:</strong> Wants to be as educated as her brother and have equal opportunities for a career. Her goal is about gender equality and freedom.</li>
             </ul>
         </div>
-        <p><strong>Example:</strong> A job in a far-off place (with high pay) may offer less time for family and less
-            security, so one might prefer a lower paying job closer to home (better quality of life).</p>
 
-        <h2>3. National Development (Comparing Countries)</h2>
-        <p>How to compare? We use averages.</p>
+        <p>This shows us that <strong>development goals are not the same for everyone</strong>. They depend on a person's income level, gender, social status, occupation, and where they live.</p>
 
-        <div class="data-box">
-            <h4>Average Income (Per Capita Income)</h4>
-            <p>It is the total income of the country divided by its total population.</p>
-            $$ \text{Per Capita Income} = \frac{\text{Total Income of Country}}{\text{Total Population}} $$
+        <h3>1.2 Conflicting Goals — Development for One can be Destruction for Another</h3>
+        <p>Sometimes, what is development for one person or group can be harmful for another.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Important Example</span>
+            <strong>The Dam Example:</strong> Building a big dam on a river can be a development goal for industries and cities (they get electricity and water). But for the <strong>tribal people and farmers who live near that river</strong>, the same dam means their villages, farms, and forests will be flooded — their entire lives will be destroyed. So the same project is development for some and destruction for others.
+            <br><br>
+            <strong>Conclusion:</strong> Development for some may create problems for others. We must think about goals that are not in conflict and benefit the majority of people.
         </div>
 
-        <p><strong>World Bank Criterion (WDR):</strong></p>
+        <h3>1.3 What People Look For in Development</h3>
+        <p>People seek two types of goals in development:</p>
         <ul>
-            <li><strong>Rich Countries:</strong> PCI > US$ 49,300 per annum (2019).</li>
-            <li><strong>Low Income Countries:</strong> PCI < US$ 2500 per annum.</li>
-            <li><strong>India:</strong> Lower Middle Income Country (PCI approx US$ 6700).</li>
+            <li><strong>Material Goals:</strong> Higher income, more money, better paying jobs, more things to buy.</li>
+            <li><strong>Non-Material Goals:</strong> Equal treatment, freedom from fear, security, respect from others, a clean environment, good education, and good health.</li>
         </ul>
-        <p><strong>Limitation of Average:</strong> Hides disparities. A country may have high average but very rich few
-            and very poor masses.</p>
 
-        <h2>4. Income and Other Criteria (HDI)</h2>
-        <p>Money in pocket cannot buy all goods and services (e.g., Pollution free environment, Protection from
-            diseases). <br>
-            <strong>UNDP (United Nations Development Programme)</strong> publishes <strong>Human Development Report
-                (HDR)</strong>.
-        </p>
+        <div class="green-box">
+            <span class="box-label">Key Point</span>
+            Money is important, but it is only <strong>one</strong> of the many things that make life better. A person may have a high income but still feel unsafe, disrespected, or unhealthy. Money alone <strong>cannot buy</strong> a pollution-free environment, an absence of infectious diseases in the community, or equal treatment in society. These things require collective effort and good governance.
+        </div>
 
-        <div class="eco-box">
-            <h4>Human Development Index (HDI) Components:</h4>
+        <!-- ============================== -->
+        <h2>2. National Development</h2>
+
+        <p><strong>National Development</strong> means thinking about what is good for the entire nation as a whole — not just for a few individuals or groups. It involves asking the question: <em>"What kind of path should we choose for our country?"</em></p>
+
+        <h3>2.1 What Makes a Path Better for the Nation?</h3>
+        <ul>
+            <li>A path is better if it ensures <strong>benefits reach the maximum number of people</strong>.</li>
+            <li>It should not damage the environment for future generations.</li>
+            <li>It should be <strong>fair and just</strong> — people should not be deprived of their basic rights and needs.</li>
+            <li>It must provide for both material things (income, goods) and non-material things (security, equality, dignity).</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>National Development</strong> is a balance between economic growth AND human well-being. A country that only focuses on increasing production or GDP but ignores the health, education, and equality of its people has NOT truly developed.<br><br>
+            <strong>Example:</strong> A country might have huge oil wealth but if most people remain poor, uneducated, and without rights — it cannot be called a developed nation.
+        </div>
+
+        <!-- ============================== -->
+        <h2>3. How to Compare Different Countries or States?</h2>
+
+        <p>How do we know which country or state is "more developed" than another? We need some way to measure and compare. The most common measure used is <strong>income</strong>.</p>
+
+        <h3>3.1 Average Income (Per Capita Income)</h3>
+
+        <div class="yellow-box">
+            <span class="box-label">Definition — Must Know</span>
+            <strong>Per Capita Income</strong> = Total Income of a Country ÷ Total Population of the Country<br><br>
+            It is also called <strong>Average Income</strong>. It tells us how much income each person would get if the total income of the country were divided equally among all citizens.<br><br>
+            <strong>The World Bank</strong> uses <em>per capita income</em> as the main criterion to classify countries as:<br>
+            <ul>
+                <li><strong>Rich (High Income) countries:</strong> Per capita income of US$ 12,736 per annum or more.</li>
+                <li><strong>Low Income countries:</strong> Per capita income of US$ 1,085 per annum or less.</li>
+                <li>India falls in the category of <strong>Low Middle Income</strong> countries.</li>
+            </ul>
+        </div>
+
+        <h3>3.2 Limitation of Per Capita Income — It Hides Inequality</h3>
+        <p>Per capita income is useful for a basic comparison, but it has a very important <strong>limitation</strong>: it does not tell us how income is distributed among people. It can hide inequality.</p>
+
+        <div class="blue-box">
+            <span class="box-label">NCERT Example</span>
+            <strong>The 5-Person Country Example:</strong> Imagine a small country with 5 people. Their monthly incomes (in rupees) are:<br><br>
+            <strong>Country A:</strong> 9000, 7000, 10000, 8000, 11000 — Average = ₹9,000<br>
+            <strong>Country B:</strong> 500, 500, 500, 500, 44500 — Average = ₹9,000<br><br>
+            Both countries have the same <em>average income</em> of ₹9,000. But in Country B, <strong>4 out of 5 people earn only ₹500</strong> while one person earns ₹44,500. Country B is clearly much more unequal. The average income hides this reality.<br><br>
+            <strong>Conclusion:</strong> Two countries can have the same per capita income but very different levels of inequality. Per capita income alone is an inadequate measure.
+        </div>
+
+        <!-- ============================== -->
+        <h2>4. Income and Other Criteria — Better Ways to Measure Development</h2>
+
+        <p>Since per capita income alone is not enough, economists and development experts look at other important factors that reflect the quality of life of people.</p>
+
+        <h3>4.1 Health Indicators</h3>
+
+        <div class="green-box">
+            <span class="box-label">Key Indicator</span>
+            <strong>Infant Mortality Rate (IMR):</strong> The number of children who die before reaching the age of <strong>one year</strong> per 1,000 live births in a given year.<br><br>
+            👉 A <strong>lower IMR</strong> means better healthcare facilities, better nutrition for mothers and children, and a higher standard of living. It is a very important indicator of development.<br><br>
+            <strong>Literacy Rate:</strong> The proportion of the population aged 7 years and above that can read and write. A higher literacy rate reflects better educational facilities and opportunities.
+        </div>
+
+        <h3>4.2 Net Attendance Ratio</h3>
+        <p>This is the total number of children in the age group of <strong>6–10 years or 14–15 years</strong> attending school as a percentage of the total number of children in that age group. It tells us how many children are actually going to school.</p>
+
+        <h3>4.3 Comparing States in India — The NCERT Table</h3>
+        <p>The NCERT textbook gives us a very important table comparing different states in India. This table is extremely important for board exams. Study it carefully:</p>
+
+        <table class="data-table">
+            <tr>
+                <th>State</th>
+                <th>Per Capita Income (₹/year, approx.)</th>
+                <th>Literacy Rate (%)</th>
+                <th>Infant Mortality Rate (per 1000)</th>
+                <th>Net Attendance Ratio (14–15 yrs)</th>
+            </tr>
+            <tr>
+                <td><strong>Punjab</strong></td>
+                <td>High</td>
+                <td>~76%</td>
+                <td>~30</td>
+                <td>~61%</td>
+            </tr>
+            <tr>
+                <td><strong>Kerala</strong></td>
+                <td>Medium</td>
+                <td>~94%</td>
+                <td>~12</td>
+                <td>~83%</td>
+            </tr>
+            <tr>
+                <td><strong>Bihar</strong></td>
+                <td>Low (lowest)</td>
+                <td>~62%</td>
+                <td>~48</td>
+                <td>~43%</td>
+            </tr>
+        </table>
+
+        <div class="yellow-box">
+            <span class="box-label">BOARD EXAM CRITICAL</span>
+            <strong>The Kerala vs. Punjab Lesson:</strong><br>
+            <ul>
+                <li><strong>Punjab</strong> has a much higher per capita income than Kerala.</li>
+                <li>But <strong>Kerala</strong> has a far better Literacy Rate, far lower Infant Mortality Rate, and better school attendance.</li>
+                <li>This proves that <strong>per capita income alone is not enough</strong> to measure development. Kerala has invested more in education and healthcare, making its people's lives better even with a lower average income.</li>
+                <li><strong>Bihar</strong> has both the lowest income AND the worst human development indicators — showing how poverty and poor public services reinforce each other.</li>
+            </ul>
+        </div>
+
+        <h3>4.4 Public Facilities — What Money Cannot Buy</h3>
+        <p>Some essential things cannot be purchased individually with money — they require <strong>collective action by the government</strong>. These are called <strong>public facilities</strong>.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>What are Public Facilities?</strong> These are services provided by the government for the common good of all citizens. Examples include:<br>
+            <ul>
+                <li>Schools and colleges</li>
+                <li>Hospitals and healthcare centres</li>
+                <li>Clean drinking water supply</li>
+                <li>Drainage and sanitation</li>
+                <li>Public roads and transport</li>
+                <li>Electricity supply</li>
+                <li>Public safety (police)</li>
+            </ul>
+            <strong>Why can't individuals buy these on their own?</strong> Because:<br>
+            (a) They are very expensive — no single family can afford to build a hospital.<br>
+            (b) They benefit everyone in the community, not just one person.<br>
+            (c) Their benefits are shared — clean air and disease-free environment cannot be kept only for one person.
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">NCERT Example — Sri Lanka</span>
+            <strong>Sri Lanka:</strong> Sri Lanka has a <em>lower per capita income</em> than many countries, yet it has achieved very high levels of literacy, life expectancy, and low infant mortality. This is because the Sri Lankan government has invested heavily in <strong>public facilities</strong> — especially education and healthcare — making them available to all citizens.<br><br>
+            This example proves that how a country <em>spends</em> its income is as important as how much income it earns. When the government provides good public services, the quality of life improves even for the poor.
+        </div>
+
+        <p><strong>The "Money Can't Buy Everything" Concept:</strong> A person with a lot of money might still suffer from:</p>
+        <ul>
+            <li>Air pollution (if the city's air is dirty, money cannot give you clean air)</li>
+            <li>Epidemics and infectious diseases (money can't stop a disease from spreading if no public health system exists)</li>
+            <li>Unsafe roads and social unrest</li>
+        </ul>
+        <p>These things can only be solved through good government policies and public action — not individual wealth.</p>
+
+        <!-- ============================== -->
+        <h2>5. Human Development Report and the Human Development Index (HDI)</h2>
+
+        <p>The world recognised that income alone is an incomplete measure of development. This led to the creation of a more comprehensive measure called the <strong>Human Development Index (HDI)</strong>.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Must Know — HDI</span>
+            <strong>Human Development Report (HDR)</strong> is published every year by the <strong>UNDP — United Nations Development Programme</strong>.<br><br>
+            It measures development using a composite index called the <strong>Human Development Index (HDI)</strong>, which considers THREE main dimensions:<br>
             <ol>
-                <li><strong>Per Capita Income:</strong> Standard of living.</li>
-                <li><strong>Life Expectancy at Birth:</strong> Health status.</li>
-                <li><strong>Mean Years of Schooling:</strong> Educational levels.</li>
+                <li><strong>Health</strong> — Measured by <em>Life Expectancy at Birth</em> (How long a person is expected to live).</li>
+                <li><strong>Education</strong> — Measured by <em>Mean Years of Schooling</em> and <em>Expected Years of Schooling</em>.</li>
+                <li><strong>Standard of Living</strong> — Measured by <em>Per Capita Income (GNI per capita)</em>.</li>
+            </ol>
+            <br>
+            <strong>Key Difference:</strong><br>
+            <ul>
+                <li><strong>World Bank</strong> classifies countries based on <em>per capita income alone</em>.</li>
+                <li><strong>UNDP (HDR)</strong> classifies countries based on <em>health + education + income</em> together (HDI).</li>
+            </ul>
+        </div>
+
+        <h3>5.1 Why is HDI a Better Measure than Per Capita Income?</h3>
+        <ul>
+            <li>HDI considers <strong>multiple dimensions</strong> of a person's life, not just money.</li>
+            <li>A country could have high income but poor health (e.g., oil-rich countries with poor healthcare).</li>
+            <li>Or a country could have moderate income but excellent health and education (e.g., Sri Lanka, Kerala).</li>
+            <li>HDI captures these differences. It gives a more <strong>complete and fair picture</strong> of development.</li>
+        </ul>
+
+        <div class="blue-box">
+            <span class="box-label">Comparison Table</span>
+            <table class="data-table">
+                <tr>
+                    <th>Criteria</th>
+                    <th>World Bank Measure</th>
+                    <th>UNDP (HDI) Measure</th>
+                </tr>
+                <tr>
+                    <td>Focus</td>
+                    <td>Per Capita Income only</td>
+                    <td>Income + Health + Education</td>
+                </tr>
+                <tr>
+                    <td>Example</td>
+                    <td>Classifies India as Low-Middle Income</td>
+                    <td>India ranks lower in HDI than countries with similar income due to poor health/education</td>
+                </tr>
+                <tr>
+                    <td>Limitation</td>
+                    <td>Ignores quality of life</td>
+                    <td>More comprehensive but harder to calculate</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ============================== -->
+        <h2>6. Body Mass Index (BMI) — A Health Indicator</h2>
+
+        <div class="green-box">
+            <span class="box-label">Key Formula</span>
+            <strong>BMI (Body Mass Index)</strong> is used to determine whether a person is undernourished (too thin) or not.<br><br>
+            <strong>Formula:</strong> BMI = Weight (in kg) ÷ [Height (in metres)]²<br><br>
+            <strong>Interpretation:</strong>
+            <ul>
+                <li>If BMI is <strong>less than 18.5</strong> → Person is <strong>undernourished</strong> (at risk of health problems)</li>
+                <li>If BMI is <strong>between 18.5 and 24.9</strong> → Person is <strong>normal / healthy</strong></li>
+                <li>If BMI is <strong>25 or more</strong> → Person is <strong>overweight</strong></li>
+            </ul>
+            BMI helps in assessing the nutritional status of people in a country, which is an important part of health development.
+        </div>
+
+        <!-- ============================== -->
+        <h2>7. Sustainability of Development</h2>
+
+        <p>Even if a country is growing economically today, we must ask: <em>"Can this growth continue in the future? Will future generations also be able to meet their needs?"</em> This is the concept of <strong>Sustainable Development</strong>.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Definition — Board Exam Favourite</span>
+            <strong>Sustainable Development</strong> means development that meets the needs of the present generation <strong>without compromising the ability of future generations to meet their own needs.</strong><br><br>
+            In simple words: We should use resources carefully so that there is enough left for our children and grandchildren too.
+        </div>
+
+        <h3>7.1 Why is Sustainability Important?</h3>
+        <p>Many resources that drive development today are <strong>non-renewable</strong> — they will run out if used carelessly.</p>
+
+        <div class="blue-box">
+            <span class="box-label">Examples of Unsustainable Development</span>
+            <ul>
+                <li><strong>Groundwater:</strong> If we pump out groundwater faster than rain can refill it, the water table will fall. Future generations may have no water for farming or drinking. <em>Example: In Punjab and Haryana, excessive irrigation has led to a dangerously falling water table.</em></li>
+                <li><strong>Crude Oil (Petroleum):</strong> Oil is formed over millions of years. If we burn all the oil today for factories and cars, there will be none left for future generations who may need it for other uses.</li>
+                <li><strong>Forests:</strong> Cutting down forests for quick profit destroys biodiversity, causes soil erosion, and increases global warming. Replanting trees (afforestation) is essential for sustainability.</li>
+            </ul>
+        </div>
+
+        <h3>7.2 Environment and Development — A Conflict?</h3>
+        <p>Industrialisation and economic growth often damage the environment. The challenge is to grow the economy <em>while</em> protecting the environment. This is why sustainable development is not just an economic goal — it is also an environmental and moral responsibility.</p>
+
+        <div class="green-box">
+            <span class="box-label">The Core Idea</span>
+            <ul>
+                <li>We must not think only of <strong>today's growth</strong>. We must think of <strong>tomorrow's needs</strong>.</li>
+                <li>Sustainable development means using <strong>renewable resources</strong> (like solar power, wind energy) instead of exhausting non-renewable ones.</li>
+                <li>It also means <strong>reducing pollution</strong> so that the planet remains healthy for future generations.</li>
+                <li>The goal is a development model where <strong>economic growth + social equity + environmental protection</strong> go hand-in-hand.</li>
+            </ul>
+        </div>
+
+        <!-- ============================== -->
+        <h2>8. Key Terms and Definitions (Glossary)</h2>
+        <p>Memorise these terms. They are frequently asked in board exams as 1-mark questions.</p>
+
+        <table class="data-table">
+            <tr>
+                <th>Term</th>
+                <th>Definition (in Simple Words)</th>
+            </tr>
+            <tr>
+                <td><strong>Development</strong></td>
+                <td>A process of improvement and progress in the quality of life — including income, health, education, equality, and freedom.</td>
+            </tr>
+            <tr>
+                <td><strong>Per Capita Income (Average Income)</strong></td>
+                <td>Total income of a country divided by its total population. It shows the average share of income per person.</td>
+            </tr>
+            <tr>
+                <td><strong>Infant Mortality Rate (IMR)</strong></td>
+                <td>Number of children (per 1,000 live births) who die before completing one year of age.</td>
+            </tr>
+            <tr>
+                <td><strong>Literacy Rate</strong></td>
+                <td>Percentage of people aged 7 years and above who can read and write.</td>
+            </tr>
+            <tr>
+                <td><strong>Net Attendance Ratio</strong></td>
+                <td>Percentage of children in a certain age group who are actually attending school.</td>
+            </tr>
+            <tr>
+                <td><strong>Human Development Index (HDI)</strong></td>
+                <td>A composite index measuring development using Health (life expectancy), Education (mean years of schooling), and Standard of Living (per capita income).</td>
+            </tr>
+            <tr>
+                <td><strong>UNDP</strong></td>
+                <td>United Nations Development Programme — the body that publishes the Human Development Report (HDR) every year.</td>
+            </tr>
+            <tr>
+                <td><strong>BMI (Body Mass Index)</strong></td>
+                <td>A measure of nutritional status. BMI = Weight (kg) ÷ Height² (m²). Below 18.5 means undernourished.</td>
+            </tr>
+            <tr>
+                <td><strong>Public Facilities</strong></td>
+                <td>Essential services provided by the government for all citizens, like schools, hospitals, clean water, roads, and sanitation.</td>
+            </tr>
+            <tr>
+                <td><strong>Sustainable Development</strong></td>
+                <td>Development that meets present needs without harming the ability of future generations to meet their own needs.</td>
+            </tr>
+            <tr>
+                <td><strong>Non-Renewable Resources</strong></td>
+                <td>Resources that cannot be replenished once used up — such as coal, petroleum, and natural gas.</td>
+            </tr>
+            <tr>
+                <td><strong>Renewable Resources</strong></td>
+                <td>Resources that can be replenished naturally — like solar energy, wind energy, and water (when managed well).</td>
+            </tr>
+        </table>
+
+        <!-- ============================== -->
+        <h2>9. Quick Revision — Chapter Summary</h2>
+
+        <div class="pink-box">
+            <span class="box-label">Chapter at a Glance</span>
+            <ul>
+                <li>Different people have <strong>different developmental goals</strong> based on their situation. Goals can conflict.</li>
+                <li>Development includes both <strong>material</strong> (income) and <strong>non-material</strong> (equality, security, dignity) goals.</li>
+                <li>National development must benefit the <strong>majority</strong> and not harm others.</li>
+                <li><strong>Per capita income</strong> is the main tool of the <strong>World Bank</strong> to compare countries. But it hides inequality.</li>
+                <li>Better indicators include <strong>Literacy Rate, IMR, Net Attendance Ratio</strong>, and <strong>public facilities</strong>.</li>
+                <li>Kerala has lower income than Punjab but better human development — proving income is not enough.</li>
+                <li><strong>UNDP's HDI</strong> is a better measure: Health + Education + Income.</li>
+                <li><strong>BMI</strong> measures nutritional health: Below 18.5 = undernourished.</li>
+                <li><strong>Sustainable Development</strong>: Use resources wisely today so future generations also have enough.</li>
+                <li>Groundwater and fossil fuels are being overused — this threatens future development.</li>
+            </ul>
+        </div>
+
+        <!-- ============================== -->
+        <h2>10. Important Previous Year Questions (PYQs)</h2>
+        <p>These questions have been asked in CBSE Board Examinations from 2015 to 2024. Practice them thoroughly.</p>
+
+        <!-- 1-Mark Questions -->
+        <h3>1-Mark Questions (MCQ / Fill in the Blank / One Word)</h3>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q1. Which organisation publishes the Human Development Report?</strong><br>
+            <strong>Ans:</strong> <strong>UNDP</strong> — United Nations Development Programme.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q2. What is the main criterion used by the World Bank to classify different countries?</strong><br>
+            <strong>Ans:</strong> <strong>Per Capita Income (Average Income)</strong>.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q3. Which of the following cannot be purchased through money — a car, pollution-free environment, or a mobile phone?</strong><br>
+            <strong>Ans:</strong> <strong>Pollution-free environment</strong>. It requires collective public action, not just individual wealth.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q4. Define Infant Mortality Rate (IMR). [1 mark]</strong><br>
+            <strong>Ans:</strong> IMR is the number of children who die before reaching the age of <strong>one year</strong>, per 1,000 live births in a given year.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q5. What is the BMI formula and what does a BMI below 18.5 indicate?</strong><br>
+            <strong>Ans:</strong> BMI = Weight (kg) ÷ Height² (m²). A BMI below 18.5 indicates that a person is <strong>undernourished</strong>.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q6. Give one example of a renewable and one example of a non-renewable resource.</strong><br>
+            <strong>Ans:</strong> Renewable — Solar energy. Non-renewable — Crude oil (petroleum).
+        </div>
+
+        <!-- 3-Mark Questions -->
+        <h3>3-Mark Questions</h3>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q7. "Though the level of income is important, it is an inadequate measure of development." Justify the statement with three points. [3 marks] (PYQ - Repeated Multiple Times)</strong><br>
+            <strong>Ans:</strong>
+            <ul>
+                <li><strong>Hides inequality:</strong> Two countries with the same average income can have very different income distributions. In one, income may be concentrated in a few hands while the majority remains poor.</li>
+                <li><strong>Ignores non-material needs:</strong> People also need security, dignity, freedom from fear, and a clean environment — things money cannot always buy.</li>
+                <li><strong>Ignores public services:</strong> A country with high average income but poor healthcare and education is not truly developed. States like Kerala prove that good public services matter more than just high income.</li>
+            </ul>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q8. Why do different persons have different notions of development? Explain with examples. [3 marks]</strong><br>
+            <strong>Ans:</strong> Different people have different notions of development because their needs, life situations, and aspirations differ:
+            <ul>
+                <li>A <strong>landless labourer</strong> wants more days of work and fair wages for survival.</li>
+                <li>A <strong>prosperous farmer</strong> wants better prices for his crops and good irrigation facilities.</li>
+                <li>A <strong>girl in a rich family</strong> wants equal educational and career opportunities as boys.</li>
+            </ul>
+            Since each person faces a different reality, their idea of what "better life" means is also different.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q9. What are public facilities? Why are they important for development? Give two examples. [3 marks]</strong><br>
+            <strong>Ans:</strong> <strong>Public facilities</strong> are essential services provided by the government to all citizens collectively — such as schools, hospitals, clean drinking water, and roads.<br><br>
+            <strong>Importance:</strong>
+            <ul>
+                <li>They ensure that even the poor can access health and education, improving overall development.</li>
+                <li>They provide services that individuals cannot afford on their own (e.g., no single family can build a hospital).</li>
+                <li>They help reduce inequality and improve human development indicators like literacy rate and IMR.</li>
+            </ul>
+            <strong>Examples:</strong> Government schools (improve literacy), Primary Health Centres (reduce IMR).
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q10. Differentiate between the criteria used by the World Bank and UNDP to measure development. [3 marks] (PYQ - Very Frequently Asked)</strong><br>
+            <strong>Ans:</strong>
+            <table class="data-table">
+                <tr>
+                    <th>World Bank</th>
+                    <th>UNDP (Human Development Report)</th>
+                </tr>
+                <tr>
+                    <td>Uses <strong>Per Capita Income</strong> as the only criterion.</td>
+                    <td>Uses <strong>HDI</strong> — a composite of Health, Education, and Income.</td>
+                </tr>
+                <tr>
+                    <td>Countries with higher income = more developed.</td>
+                    <td>Countries with better health, education, and income = more developed.</td>
+                </tr>
+                <tr>
+                    <td>Simpler but incomplete picture.</td>
+                    <td>More comprehensive and fair picture of development.</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 5-Mark Questions -->
+        <h3>5-Mark Questions (Long Answer)</h3>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q11. "Kerala has a better human development ranking than Punjab despite having a lower per capita income." Explain why. [5 marks] (PYQ — Classic Board Question)</strong><br>
+            <strong>Ans:</strong> Despite having a lower per capita income than Punjab, Kerala ranks better in human development because of the following reasons:<br>
+            <ul>
+                <li><strong>Higher Literacy Rate:</strong> Kerala has a literacy rate of around 94%, which is the highest in India. Punjab's literacy rate is significantly lower (~76%). A literate population is more productive and leads better lives.</li>
+                <li><strong>Lower Infant Mortality Rate:</strong> Kerala has an IMR of around 12 per 1,000 live births — one of the lowest in India. Punjab's IMR is around 30. This shows Kerala's healthcare system is far superior.</li>
+                <li><strong>Better Public Facilities:</strong> Kerala's government has invested heavily in public schools, hospitals, and primary health centres, making these accessible to even the poorest citizens.</li>
+                <li><strong>Higher Net Attendance Ratio:</strong> More children in Kerala actually attend school (around 83%) compared to Punjab (~61%), meaning education reaches more people.</li>
+                <li><strong>Greater Focus on Human Development:</strong> Kerala has historically focused on social development — land reforms, education for women, and healthcare — as government priorities.</li>
+            </ul>
+            <strong>Conclusion:</strong> This example proves that the <em>way income is spent</em> on public services matters more than the <em>amount</em> of income. Human development depends on health and education, not just money.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q12. What is Sustainable Development? Why is it necessary? Explain with examples. [5 marks]</strong><br>
+            <strong>Ans:</strong> <strong>Sustainable Development</strong> is development that meets the needs of the present generation without compromising the ability of future generations to meet their own needs.<br><br>
+            <strong>Why is it necessary?</strong>
+            <ul>
+                <li><strong>Finite Resources:</strong> Resources like coal, petroleum, and natural gas are non-renewable. Once used, they are gone forever. Overusing them today will leave nothing for tomorrow.</li>
+                <li><strong>Environmental Damage:</strong> Rapid industrialisation and deforestation damage the environment — causing climate change, pollution, and loss of biodiversity, making life worse for future generations.</li>
+                <li><strong>Groundwater Crisis:</strong> In many parts of India, groundwater is being pumped out faster than it is replenished by rain. This threatens future agricultural output and drinking water supply.</li>
+            </ul>
+            <strong>Examples of Unsustainable Development:</strong>
+            <ul>
+                <li>Burning fossil fuels at an increasing rate causes global warming — threatening coastal cities, farming, and human health globally.</li>
+                <li>Over-fishing in oceans has reduced fish populations below sustainable levels in many regions.</li>
+            </ul>
+            <strong>Steps for Sustainable Development:</strong>
+            <ul>
+                <li>Use renewable energy sources like solar and wind power.</li>
+                <li>Plant more trees to offset deforestation (afforestation).</li>
+                <li>Use water efficiently and manage groundwater sustainably.</li>
+                <li>Reduce industrial pollution through stricter environmental laws.</li>
+            </ul>
+            <strong>Conclusion:</strong> Sustainable development is not a choice — it is a <em>necessity</em>. Without it, the gains of today will be paid for by the suffering of tomorrow.
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Q &amp; A</span>
+            <strong>Q13. What do you understand by 'development'? Why do different people have different development goals? Explain with suitable examples. [5 marks]</strong><br>
+            <strong>Ans:</strong> <strong>Development</strong> means improvement in the quality of life of people. It includes not just higher income but also better health, education, security, equality, dignity, and a clean environment.<br><br>
+            Different people have different development goals because:<br>
+            <ul>
+                <li><strong>Different income levels:</strong> A poor labourer wants basic survival needs (food, work, shelter). A wealthy businessperson wants infrastructure and market access.</li>
+                <li><strong>Different social situations:</strong> A woman may prioritise gender equality and safety. A farmer may prioritise irrigation and crop prices.</li>
+                <li><strong>Conflicting interests:</strong> An industrialist may want a dam to get electricity. A tribal person living near the river may oppose the dam as it will destroy their home and livelihood. The <em>same project</em> is development for one and destruction for another.</li>
+                <li><strong>Different occupations:</strong> A daily wage worker wants regular employment. A government employee wants job security. A student wants quality education.</li>
+            </ul>
+            <strong>Conclusion:</strong> Since every person's life situation is unique, their dreams and goals for a better life are also unique. A good national development plan must try to accommodate the needs of all — especially the most vulnerable.
+        </div>
+
+        <!-- Assertion-Reasoning Type -->
+        <h3>Assertion-Reasoning Questions (New Pattern)</h3>
+
+        <div class="green-box">
+            <span class="box-label">A-R Type</span>
+            <strong>Q14. Assertion (A):</strong> Kerala has a better quality of life than Punjab despite having a lower per capita income.<br>
+            <strong>Reason (R):</strong> Kerala has invested heavily in public facilities like education and healthcare.<br><br>
+            <strong>Options:</strong><br>
+            (a) Both A and R are true, and R is the correct explanation of A.<br>
+            (b) Both A and R are true, but R is not the correct explanation of A.<br>
+            (c) A is true but R is false.<br>
+            (d) A is false but R is true.<br><br>
+            <strong>Ans: (a)</strong> — Both A and R are true, and R correctly explains why Kerala has a better quality of life despite lower income. Government investment in schools, hospitals, and public services has raised human development in Kerala significantly.
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">A-R Type</span>
+            <strong>Q15. Assertion (A):</strong> Per capita income is considered an inadequate indicator of development.<br>
+            <strong>Reason (R):</strong> It does not reflect the distribution of income among people and ignores non-economic factors like health and education.<br><br>
+            <strong>Ans: (a)</strong> — Both A and R are true, and R is the correct explanation. Per capita income hides inequality (rich-poor gap) and ignores health, literacy, and quality of life. This is why the HDI is considered a more comprehensive measure.
+        </div>
+
+        <!-- Case Study / Source Based -->
+        <h3>Source-Based / Case Study Questions</h3>
+
+        <div class="green-box">
+            <span class="box-label">Case Study</span>
+            <strong>Read the following and answer the questions:</strong><br><br>
+            <em>"Farmers in a district have been pumping groundwater to irrigate their fields every season. Crop production has been good for the past 10 years. But now, the water level is falling 2 metres every year. Scientists warn that if this continues, the wells will dry up within 20 years."</em><br><br>
+            <strong>Q(i): What concept of economics does this situation illustrate? [1 mark]</strong><br>
+            <strong>Ans:</strong> <strong>Unsustainable Development</strong> — using a resource (groundwater) faster than it can be replenished, threatening future generations' ability to farm.<br><br>
+            <strong>Q(ii): What should the farmers do to make their farming practices sustainable? [3 marks]</strong><br>
+            <strong>Ans:</strong>
+            <ul>
+                <li>Adopt <strong>drip irrigation</strong> — uses far less water than traditional flood irrigation.</li>
+                <li>Choose <strong>crops that need less water</strong> (like millets) instead of water-intensive crops like rice or sugarcane.</li>
+                <li>Practise <strong>rainwater harvesting</strong> to recharge the groundwater level.</li>
+                <li>Follow government guidelines on <strong>regulated groundwater usage</strong>.</li>
+            </ul>
+        </div>
+
+        <!-- ============================== -->
+        <h2>11. Common Mistakes to Avoid in Board Exams</h2>
+
+        <div class="yellow-box">
+            <span class="box-label">Exam Tips</span>
+            <ol>
+                <li><strong>Do NOT confuse HDI with HDR.</strong> HDR is the <em>report</em>; HDI is the <em>index</em> within that report. The HDR is published by UNDP.</li>
+                <li><strong>Do NOT say IMR is deaths per 100.</strong> It is per <em>1,000 live births</em>.</li>
+                <li><strong>Do NOT say literacy rate is for ALL ages.</strong> It is for people aged <em>7 years and above</em>.</li>
+                <li><strong>Do NOT confuse Per Capita Income with Total National Income.</strong> Per capita = total income ÷ total population.</li>
+                <li><strong>Always mention the BMI formula correctly:</strong> Weight (kg) ÷ Height² (m²). Below 18.5 = undernourished.</li>
+                <li><strong>Sustainable development definition must include TWO parts:</strong> (1) present needs (2) without harming future generations' needs.</li>
+                <li><strong>In compare-contrast questions</strong> (World Bank vs UNDP), always use a table format — it earns more marks and is easier to read.</li>
             </ol>
         </div>
-        <p><strong>India's Rank:</strong> 132 (out of 191 countries in 2021-22). Sri Lanka is ahead of India.</p>
 
-        <h3>Body Mass Index (BMI)</h3>
-        $$ \text{BMI} = \frac{\text{Weight (kg)}}{\text{Height}^2 (\text{m}^2)} $$
-        <ul>
-            <li>If BMI < 18.5: Undernourished.</li>
-            <li>If BMI > 25: Overweight.</li>
-        </ul>
-
-        <h2>5. Sustainability of Development</h2>
-        <p>We have not inherited the world from our forefathers, we have borrowed it from our children.</p>
-        <ul>
-            <li><strong>Groundwater Overuse:</strong> In Punjab/Haryana, water table has fallen drastically. Renewable
-                resource but can be exhausted if used faster than rain replenishment.</li>
-            <li><strong>Exhaustion of Natural Resources:</strong> Crude Oil (Non-renewable). We may run out of stock in
-                50 years.</li>
-        </ul>
-        <p><strong>Solution:</strong> Focus on renewable energy (Solar/Wind) and sustainable practices.</p>
-
-        <div class="img-placeholder">
-            <span>[IMAGE PLACEHOLDER: BMI CHART & HDI TABLE]</span>
-            <div class="img-prompt">
-                1. A visual BMI Chart showing ranges for Underweight, Normal, Overweight.
-                2. A Table comparing India with neighbours (Sri Lanka, Myanmar, Pakistan, Nepal) on HDI, Life
-                Expectancy, and PCI.
-            </div>
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
         </div>
 
     </div>
 
-    <!-- SCRIPT FOR TOGGLE -->
+    <!-- THEME TOGGLE SCRIPT -->
     <script>
         function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-
-            if (html.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        // Initialize Theme
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark-mode');
+            document.documentElement.classList.toggle('dark-mode');
         }
     </script>
 </body>
-
 </html>

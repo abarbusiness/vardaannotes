@@ -1,0 +1,330 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastersheet: Control and Coordination</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    chtml: {
+      mtextInheritFont: true,
+      scale: 1.0,
+      linebreaks: { automatic: true, width: '95%' }
+    },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+  @page { size: A4; margin: 15mm; }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { max-width: 100%; overflow-x: hidden; }
+
+  :root {
+    --primary-color: #e65100;
+    --bg-color: #fff3e0;
+    --body-bg: #fff;
+    --text-main: #000;
+    --text-secondary: #333;
+    --text-muted: #555;
+    --border-color: #ccc;
+  }
+
+  html.dark-mode {
+    --primary-color: #ffb74d;
+    --bg-color: #000000;
+    --body-bg: #000000;
+    --text-main: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #888;
+    --border-color: #444;
+  }
+
+  body {
+    font-family: "Times New Roman", Times, serif;
+    background-color: var(--body-bg);
+    color: var(--text-main);
+    line-height: 1.4; margin: 0; padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+    overflow-x: hidden; width: 100%; max-width: 100vw;
+  }
+  .container {
+    width: 100%; max-width: 210mm; margin: 0 auto;
+    padding: 20px 15px; overflow: hidden;
+  }
+
+  .header {
+    text-align: center;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 15px; margin-bottom: 20px; position: relative;
+  }
+  .institute-name {
+    font-size: 24pt; font-weight: bold; text-transform: uppercase;
+    letter-spacing: 0.5px; margin: 0; color: var(--primary-color); word-break: break-word;
+  }
+  .tagline {
+    font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+    color: var(--text-secondary);
+  }
+  .tagline a { text-decoration: none; color: inherit; }
+  .worksheet-title {
+    font-size: 16pt; font-weight: bold; text-decoration: underline;
+    margin-top: 5px; color: var(--text-secondary);
+  }
+  .meta-info {
+    display: flex; justify-content: space-between; font-weight: bold;
+    margin-top: 15px; font-size: 11pt; background-color: var(--bg-color);
+    padding: 10px 15px; border-radius: 5px; border: 1px solid var(--primary-color);
+    color: var(--primary-color); flex-wrap: wrap; gap: 10px;
+  }
+  .meta-info span { white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .student-name-container { display: inline-flex; align-items: flex-end; flex: 1 1 300px; max-width: 100%; }
+  .student-name-underline {
+    border-bottom: 1.5px dotted var(--primary-color);
+    flex-grow: 1; margin-left: 5px; margin-bottom: 3px; min-width: 120px; height: 1px;
+  }
+  .q-content, .ans-details, .case-text, .chapter-header, .institute-name, .tagline, .worksheet-title {
+    word-wrap: break-word; overflow-wrap: break-word;
+  }
+
+  .chapter-header {
+    background-color: var(--bg-color); color: var(--primary-color); font-weight: bold;
+    padding: 8px 10px; margin-top: 25px; margin-bottom: 15px;
+    border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color);
+    font-size: 13pt; text-transform: uppercase; page-break-after: avoid;
+  }
+  .questions-container { display: flex; flex-direction: column; gap: 12px; }
+  .question-item {
+    display: flex; align-items: baseline; margin-bottom: 5px;
+    font-size: 11pt; page-break-inside: avoid; text-align: left;
+  }
+  .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); flex-shrink: 0; }
+  .q-content { flex: 1; min-width: 0; }
+  .q-content ol { margin-top: 5px; margin-left: 20px; list-style-type: lower-alpha; }
+  .q-content li { margin-bottom: 3px; }
+
+  .footer {
+    margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color);
+    text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color);
+    page-break-before: auto; line-height: 1.6;
+  }
+
+  .watermark {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 70%; opacity: 0.08; z-index: 999; pointer-events: none;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+  html.dark-mode .watermark { filter: invert(1); opacity: 0.05; }
+
+  .theme-toggle {
+    position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+    border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+    z-index: 999; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  html.dark-mode .theme-toggle { filter: invert(1) hue-rotate(180deg); background: #e0e0e0; }
+  .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+  .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+  .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+  html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+  html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+  .back-btn {
+    position: fixed; bottom: 20px; left: 20px; background: var(--bg-color);
+    color: var(--primary-color); border: 1px solid var(--primary-color);
+    padding: 8px 15px; border-radius: 20px; text-decoration: none;
+    font-weight: bold; font-size: 11pt; z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease;
+  }
+  .back-btn:hover { background: var(--primary-color); color: #fff; }
+
+  .case-header { font-weight: bold; color: var(--primary-color); margin-top: 15px; margin-bottom: 5px; font-size: 11.5pt; }
+  .case-text { font-style: italic; color: var(--text-secondary); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--primary-color); font-size: 10.5pt; }
+
+  mjx-container { max-width: 100% !important; overflow: visible; display: inline-block; vertical-align: middle; padding: 2px 0; }
+  mjx-container[display="true"] { display: block !important; padding: 6px 0; text-align: left; max-width: 100% !important; overflow: visible; }
+
+  @media screen and (max-width: 768px) {
+    html, body { overflow-x: hidden !important; max-width: 100% !important; }
+    .container { padding: 15px 10px; max-width: 100% !important; overflow: hidden; }
+    .header { padding-bottom: 10px; margin-bottom: 15px; padding-right: 50px; }
+    .institute-name { font-size: 16pt; letter-spacing: 0; }
+    .tagline { font-size: 10pt; }
+    .worksheet-title { font-size: 11pt; }
+    .meta-info { flex-direction: column; gap: 6px; font-size: 10pt; padding: 8px 10px; }
+    .meta-info span { white-space: normal; word-break: break-word; overflow-wrap: break-word; }
+    .student-name-container { flex: 1 1 auto; width: 100%; }
+    .student-name-underline { min-width: 60px; }
+    .chapter-header { font-size: 10pt; margin-top: 15px; margin-bottom: 10px; padding: 5px 8px; white-space: normal; overflow-wrap: break-word; }
+    .question-item { font-size: 10pt; margin-bottom: 8px; }
+    .q-num { min-width: 20px; margin-right: 6px; flex-shrink: 0; }
+    .q-content { overflow: visible; }
+    .footer { margin-top: 25px; font-size: 8pt; padding-bottom: 55px; }
+    .back-btn { padding: 6px 10px; font-size: 9pt; bottom: 12px; left: 12px; max-width: calc(50vw - 24px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .theme-toggle { width: 36px; height: 36px; top: 12px; right: 12px; }
+    .case-header, .case-text { font-size: 10pt; }
+  }
+  @media screen and (max-width: 420px) {
+    .institute-name { font-size: 13pt !important; letter-spacing: 0 !important; }
+    .tagline { font-size: 9.5pt !important; }
+    .worksheet-title { font-size: 10pt !important; }
+    .chapter-header { font-size: 9.5pt !important; padding: 4px 6px !important; }
+    .meta-info { padding: 6px 8px !important; font-size: 9pt !important; }
+    .student-name-underline { min-width: 50px !important; }
+    .question-item { font-size: 9.5pt !important; }
+  }
+  @media print {
+    .theme-toggle, .back-btn { display: none; }
+    .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+    .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+  }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+  </button>
+  <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+
+  <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+  <a href="Practice.html" class="back-btn">&larr; Back to Practice Arena</a>
+
+  <div class="container">
+    <div class="header">
+      <h1 class="institute-name">Vardaan Learning Institute</h1>
+      <div class="tagline"><a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336</div>
+      <div class="worksheet-title">Mastersheet: Control and Coordination</div>
+      <div class="meta-info">
+        <span class="student-name-container">Student Name: <span class="student-name-underline"></span></span>
+        <span>Class: 10 CBSE</span>
+        <span>Subject: Science (Biology)</span>
+      </div>
+    </div>
+
+    <!-- Topic 1 -->
+    <div class="chapter-header">Topic 1: Animals — Nervous System and Reflex Action</div>
+    <div class="questions-container">
+      <div class="question-item"><span class="q-num">1.</span><div class="q-content">What is a stimulus? Give three examples of external stimuli that animals respond to, and explain why response is vital for survival.</div></div>
+      <div class="question-item"><span class="q-num">2.</span><div class="q-content">Draw a neat, labelled diagram of a <strong>neuron</strong> (nerve cell). Label the dendrite, cell body (cyton), axon, and nerve endings. Explain the direction of nerve impulse flow.</div></div>
+      <div class="question-item"><span class="q-num">3.</span><div class="q-content">What is a <strong>synapse</strong>? Explain how electrical impulses are converted into chemical signals at a synapse to cross the gap between two neurons.</div></div>
+      <div class="question-item"><span class="q-num">4.</span><div class="q-content">Differentiate between sensory neurons, motor neurons, and relay (association) neurons in terms of their location and function.</div></div>
+      <div class="question-item"><span class="q-num">5.</span><div class="q-content">What are receptors? Name the five key receptors present in our sense organs and specify the stimulus each receptor detects.</div></div>
+      <div class="question-item"><span class="q-num">6.</span><div class="q-content">Define <strong>reflex action</strong>. Why is a reflex action called an involuntary, spontaneous response? Explain with two daily-life examples.</div></div>
+      <div class="question-item"><span class="q-num">7.</span><div class="q-content">What is a <strong>reflex arc</strong>? Draw a neat flowchart or block diagram showing the path of a nerve impulse during a reflex action starting from the receptor to the effector.</div></div>
+      <div class="question-item"><span class="q-num">8.</span><div class="q-content">Why have reflex arcs evolved in animals, when the thinking process of the brain is already present? Explain the evolutionary advantage.</div></div>
+      <div class="question-item"><span class="q-num">9.</span><div class="q-content">Describe the neuromuscular junction. Explain how the electrical impulse in a motor neuron is translated into muscle contraction (movement).</div></div>
+      <div class="question-item"><span class="q-num">10.</span><div class="q-content">How does the nervous tissue cause action? Explain in detail the role of specialized muscle proteins and changes in shape of muscle cells.</div></div>
+      <div class="question-item"><span class="q-num">11.</span><div class="q-content">What are the three major parts of the human brain? List their sub-divisions and describe their functions.</div></div>
+      <div class="question-item"><span class="q-num">12.</span><div class="q-content">What is the role of the <strong>cerebellum</strong> in our body? Explain how it helps in maintaining posture, balance, and precision of voluntary movements (like riding a bicycle).</div></div>
+      <div class="question-item"><span class="q-num">13.</span><div class="q-content">Name the part of the hindbrain that controls involuntary actions like salivation, vomiting, and blood pressure. State how this part is structured.</div></div>
+      <div class="question-item"><span class="q-num">14.</span><div class="q-content">How are the brain and the spinal cord protected from mechanical shocks and injuries? Discuss the role of cranium, vertebral column, and cerebrospinal fluid (CSF).</div></div>
+      <div class="question-item"><span class="q-num">15.</span><div class="q-content">Differentiate between voluntary actions, involuntary actions, and reflex actions, giving one suitable example of each.</div></div>
+    </div>
+
+    <!-- Topic 2 -->
+    <div class="chapter-header">Topic 2: Coordination in Plants and Movement</div>
+    <div class="questions-container">
+      <div class="question-item"><span class="q-num">16.</span><div class="q-content">Why do plants lack a nervous system and muscular tissue, yet are capable of coordinating their responses? Explain.</div></div>
+      <div class="question-item"><span class="q-num">17.</span><div class="q-content">Differentiate between <strong>nastic movements</strong> (non-directional) and <strong>tropic movements</strong> (directional) in plants, giving one example of each.</div></div>
+      <div class="question-item"><span class="q-num">18.</span><div class="q-content">Describe the movement of leaves in the "touch-me-not" plant (<em>Mimosa pudica</em>) when touched. Explain the electrical-chemical means and water loss (turgor changes) involved.</div></div>
+      <div class="question-item"><span class="q-num">19.</span><div class="q-content">Define <strong>phototropism</strong>. Explain with a neat description or experiment how shoots show positive phototropism and roots show negative phototropism.</div></div>
+      <div class="question-item"><span class="q-num">20.</span><div class="q-content">Explain the mechanism of <strong>geotropism</strong>. How do roots and shoots respond to gravity? Describe an experiment with a potted plant placed horizontally.</div></div>
+      <div class="question-item"><span class="q-num">21.</span><div class="q-content">Define <strong>chemotropism</strong>. Give a classic example of chemotropism in plants that occurs during the fertilization process.</div></div>
+      <div class="question-item"><span class="q-num">22.</span><div class="q-content">What is <strong>hydrotropism</strong>? Describe a simple laboratory experiment to demonstrate positive hydrotropism in germinating pea seeds.</div></div>
+      <div class="question-item"><span class="q-num">23.</span><div class="q-content">How does a climbing tendril of a pea plant circle and cling to a support? Explain in terms of hormone concentration on the side in contact vs the free side.</div></div>
+      <div class="question-item"><span class="q-num">24.</span><div class="q-content">Why are plant movements in response to stimuli generally slower than animal movements? Discuss in terms of growth vs muscular contraction.</div></div>
+      <div class="question-item"><span class="q-num">25.</span><div class="q-content">How do plant cells communicate information about external stimuli to other parts of the plant body, given the absence of synapses?</div></div>
+    </div>
+
+    <!-- Topic 3 -->
+    <div class="chapter-header">Topic 3: Plant Hormones (Phytohormones)</div>
+    <div class="questions-container">
+      <div class="question-item"><span class="q-num">26.</span><div class="q-content">What are <strong>phytohormones</strong> (plant hormones)? State their general chemical nature and how they are transported to their target sites.</div></div>
+      <div class="question-item"><span class="q-num">27.</span><div class="q-content">Name the hormone synthesized at the shoot tips. Explain how this hormone helps the plant stem to bend towards a light source (phototropic bending).</div></div>
+      <div class="question-item"><span class="q-num">28.</span><div class="q-content">State the main physiological function of <strong>gibberellins</strong> in plants. How do they affect stem elongation?</div></div>
+      <div class="question-item"><span class="q-num">29.</span><div class="q-content">What is the function of <strong>cytokinins</strong>? Why are they present in high concentrations in areas of rapid cell division, such as fruits and seeds?</div></div>
+      <div class="question-item"><span class="q-num">30.</span><div class="q-content">Name the plant hormone that acts as a growth inhibitor. List two physiological effects of this hormone (e.g., wilting of leaves, seed dormancy).</div></div>
+      <div class="question-item"><span class="q-num">31.</span><div class="q-content">Match the following plant hormones with their primary roles:<ol><li>Auxin</li><li>Gibberellin</li><li>Cytokinin</li><li>Abscisic Acid</li></ol></div></div>
+      <div class="question-item"><span class="q-num">32.</span><div class="q-content">Why is ethylene considered a unique plant hormone? State its role in the ripening of fruits and leaf abscission.</div></div>
+      <div class="question-item"><span class="q-num">33.</span><div class="q-content">How do plant growth regulators work in synergy and antagonism? Explain with the example of seed germination (gibberellins vs abscisic acid).</div></div>
+    </div>
+
+    <!-- Topic 4 -->
+    <div class="chapter-header">Topic 4: Hormones in Animals — Endocrine System</div>
+    <div class="questions-container">
+      <div class="question-item"><span class="q-num">34.</span><div class="q-content">What is the endocrine system? How does endocrine coordination differ from nervous coordination in terms of speed, coverage, and duration?</div></div>
+      <div class="question-item"><span class="q-num">35.</span><div class="q-content">Define hormones. State three general characteristics of animal hormones and why they are called "chemical messengers".</div></div>
+      <div class="question-item"><span class="q-num">36.</span><div class="q-content">Identify the gland called the "master gland" of the endocrine system. Name three hormones secreted by it and their functions.</div></div>
+      <div class="question-item"><span class="q-num">37.</span><div class="q-content">What is the role of <strong>thyroxine</strong> hormone in our body? Why is iodine essential in our diet for the synthesis of thyroxine? Name the disease caused by its deficiency.</div></div>
+      <div class="question-item"><span class="q-num">38.</span><div class="q-content">Explain how <strong>adrenaline</strong> prepares our body for emergency situations (fight-or-flight response). List four physiological changes that occur when adrenaline is released.</div></div>
+      <div class="question-item"><span class="q-num">39.</span><div class="q-content">Which hormone is responsible for regulating blood sugar levels in humans? Name the gland that secretes it, and discuss the health condition associated with its deficiency.</div></div>
+      <div class="question-item"><span class="q-num">40.</span><div class="q-content">Explain the <strong>feedback mechanism</strong> of hormone secretion using the regulation of blood glucose levels by insulin as an illustrative example.</div></div>
+    </div>
+
+    <!-- Topic 5 -->
+    <div class="chapter-header">Topic 5: Competency-Based Case Studies & Integrated Questions</div>
+    <div class="questions-container">
+      <div class="case-header">Case Study 1: The Reflex Action Experiment</div>
+      <div class="case-text">In a practical class, a student accidentally touches a hot glass beaker. Immediately, without thinking, his hand pulls away. The teacher explains that this is a reflex action designed to prevent tissue damage, mediated by a pathway in the spinal cord before the signal reaches the brain.</div>
+      <div class="question-item"><span class="q-num">41.</span><div class="q-content">Based on Case Study 1, answer the following:<ol><li>Identify the receptor, effector, and the organ acting as the coordinator in this reflex action.</li><li>Trace the pathway of the electrical impulse from the skin to the muscle using a simple text flow scheme.</li><li>If the spinal cord of a person is injured, which signals will be disrupted, and will the person still show this reflex action?</li></ol></div></div>
+
+      <div class="case-header">Case Study 2: The Phototropic Bending Project</div>
+      <div class="case-text">Anika grows a plant inside a closed cardboard box with a single small opening on the left side that allows sunlight to enter. After 5 days, she observes that the stem of the seedling has bent significantly towards the left opening, while the roots have grown away from it.</div>
+      <div class="question-item"><span class="q-num">42.</span><div class="q-content">Based on Case Study 2, answer the following:<ol><li>Identify the plant hormone responsible for this directional bending. Where is it synthesized?</li><li>Explain the exact cellular mechanism that causes the stem to bend towards the light source. (Mention shaded vs lit sides).</li><li>What is the biological significance or survival advantage of this phototropic response for shoots?</li></ol></div></div>
+
+      <div class="case-header">Case Study 3: The Iodine Diet Campaign</div>
+      <div class="case-text">In a rural health camp, a doctor diagnoses several villagers with swollen necks, a condition called goitre. He learns that the local soil and water are highly deficient in iodine, and the villagers use non-iodized sea salt for cooking. He initiates a campaign to distribute iodized salt.</div>
+      <div class="question-item"><span class="q-num">43.</span><div class="q-content">Based on Case Study 3, answer the following:<ol><li>Why is iodine necessary for our body? Which gland requires iodine, and what hormone does it produce?</li><li>Explain the metabolic consequences of thyroxine deficiency. Why does this deficiency cause goitre?</li><li>Why did the doctor recommend iodized salt instead of pure chemical iodine? Explain in terms of daily nutrition.</li></ol></div></div>
+
+      <div class="case-header">Case Study 4: The Insulin Injection Mystery</div>
+      <div class="case-text">Mr. Verma has severe Type-1 diabetes. Every day, before eating his meals, he measures his blood glucose level and self-injects a calculated dose of insulin hormone. One day, he forgot to take his injection, and within hours, his blood glucose levels shot up to dangerous levels, causing extreme fatigue.</div>
+      <div class="question-item"><span class="q-num">44.</span><div class="q-content">Based on Case Study 4, answer the following:<ol><li>What is the biological function of insulin? Which cells in the pancreas secrete it?</li><li>Why cannot insulin be taken orally as a pill instead of an injection? Explain based on protein digestion.</li><li>Explain how Mr. Verma's body would normally regulate glucose levels using a feedback loop if he were healthy.</li></ol></div></div>
+
+      <div class="case-header">Case Study 5: The Geotropic Potted Plant Experiment</div>
+      <div class="case-text">A biology teacher places a healthy potted tomato plant horizontally on its side in a dark room. After 48 hours, she shows the class that the shoot tip has curved and grown upwards (defying gravity), while the root tips have curved downwards towards the soil.</div>
+      <div class="question-item"><span class="q-num">45.</span><div class="q-content">Based on Case Study 5, answer the following:<ol><li>Name the biological phenomenon demonstrated by the shoots and the roots in this experiment.</li><li>Explain why shoots bend upwards while roots bend downwards when placed horizontally. Discuss the differential effect of auxin on root vs shoot cell elongation.</li><li>Why was the experiment performed in a dark room? Explain the experimental control.</li></ol></div></div>
+
+      <div class="case-header">Competency Check: The Fight-or-Flight Encounter</div>
+      <div class="case-text">While walking in a forest, Rohan suddenly comes face-to-face with a wild bear. Immediately, Rohan's heart starts beating rapidly, his breathing quickens, his skin becomes pale, and he feels a sudden surge of energy that helps him climb a nearby tree quickly to safety.</div>
+      <div class="question-item"><span class="q-num">46.</span><div class="q-content">Based on the Fight-or-Flight Encounter, answer the following:<ol><li>Identify the emergency hormone released in Rohan's body. Which gland secreted it?</li><li>Explain the biological rationale behind: (a) rapid heartbeat, (b) quick breathing, and (c) pale skin (reduced blood flow to skin).</li><li>How does the release of this hormone help in sudden, intense physical action? Explain.</li></ol></div></div>
+
+      <div class="case-header">Integrated Puzzle: The Mystery Glands 'A' and 'B'</div>
+      <div class="case-text">A gland 'A' located on top of the kidneys secretes hormone 'X' which controls heart rate and blood pressure in stress. Another gland 'B' located in the neck secretes hormone 'Y' which regulates carbohydrate, protein, and fat metabolism. A master gland 'C' located at the base of the brain controls both 'A' and 'B'.</div>
+      <div class="question-item"><span class="q-num">47.</span><div class="q-content">Based on the puzzle description, answer the following:<ol><li>Identify glands 'A', 'B', 'C', and hormones 'X', 'Y'.</li><li>Explain the relationship between master gland 'C' and the thyroid gland. How does 'C' regulate thyroid activity?</li><li>What would happen to a child if master gland 'C' under-secretes growth hormone during early childhood?</li></ol></div></div>
+
+      <div class="question-item"><span class="q-num">48.</span><div class="q-content">Draw a schematic diagram of a synapse. Label the axon terminal, synaptic vesicles, neurotransmitters, synaptic cleft, and dendrite membrane. Explain the role of calcium ions in neurotransmitter release.</div></div>
+      <div class="question-item"><span class="q-num">49.</span><div class="q-content">What is the difference between a nerve and a tract? Explain the composition of a peripheral nerve.</div></div>
+      <div class="question-item"><span class="q-num">50.</span><div class="q-content">Describe the path of light reflex (pupil constriction in bright light). Trace the sensory and motor path through the midbrain.</div></div>
+      <div class="question-item"><span class="q-num">51.</span><div class="q-content">Why is the spinal cord considered the primary center for reflex actions? Discuss its structure (white matter and grey matter arrangement).</div></div>
+      <div class="question-item"><span class="q-num">52.</span><div class="q-content">What are the characteristics of a chemical signal compared to an electrical signal? State two limitations of electrical signals in nervous coordination.</div></div>
+      <div class="question-item"><span class="q-num">53.</span><div class="q-content">Explain how <strong>abscisic acid</strong> helps plants survive extreme drought conditions. (Stomatal closure mechanism).</div></div>
+      <div class="question-item"><span class="q-num">54.</span><div class="q-content">Explain photoperiodism in plants. How do plants coordinate their flowering times in response to seasonal changes in day length?</div></div>
+      <div class="question-item"><span class="q-num">55.</span><div class="q-content">Differentiate between exocrine glands and endocrine glands based on: (a) presence of ducts, (b) secretion products, and (c) mode of transport of secretion.</div></div>
+      <div class="question-item"><span class="q-num">56.</span><div class="q-content">What is the hypothalamus? Explain its role in acting as the crucial link between the nervous system and the endocrine system.</div></div>
+      <div class="question-item"><span class="q-num">57.</span><div class="q-content">Describe the location and secretion of the <strong>parathyroid glands</strong>. State the function of parathormone and the effects of its deficiency.</div></div>
+      <div class="question-item"><span class="q-num">58.</span><div class="q-content">Explain how the ovaries and testes act as dual-function organs (cytogenic and endocrine functions). Name the hormones they secrete.</div></div>
+      <div class="question-item"><span class="q-num">59.</span><div class="q-content">What is <strong>dwarfism</strong> and <strong>gigantism</strong>? Explain their endocrine causes.</div></div>
+      <div class="question-item"><span class="q-num">60.</span><div class="q-content">Why is goitre highly common in mountainous regions like the Himalayas? Explain based on geochemical factors.</div></div>
+      <div class="question-item"><span class="q-num">61.</span><div class="q-content">Describe the role of <strong>progesterone</strong> in the female reproductive cycle. Which temporary endocrine structure secretes it?</div></div>
+      <div class="question-item"><span class="q-num">62.</span><div class="q-content">How do local tissue hormones (like prostaglandins) differ from classic circulating hormones?</div></div>
+      <div class="question-item"><span class="q-num">63.</span><div class="q-content">What is the function of the hormone <strong>calcitonin</strong>? How does it coordinate with parathormone to maintain calcium homeostasis?</div></div>
+      <div class="question-item"><span class="q-num">64.</span><div class="q-content">Explain why patients with severe diabetes suffer from frequent urination (polyuria) and extreme thirst (polydipsia) based on blood sugar levels and kidney function.</div></div>
+      <div class="question-item"><span class="q-num">65.</span><div class="q-content">Explain the mechanism of action of non-steroid hormones (like insulin) via secondary messengers on the target cell membrane, compared to steroid hormones that enter the cell.</div></div>
+    </div>
+
+    <div class="footer">
+      Created by Team Vardaan | Powered by Vardaan Comet<br>
+      Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,2686 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions Interactive Lecture Slides - Vardaan Learning Institute</title>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MathJax for rendering Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CORE DESIGN SYSTEM --- */
+        :root {
+            /* Light Mode (Toggled via Theme switch) */
+            --yellow-bg: #fffbeb;
+            --yellow-border: #f59e0b;
+            --green-bg: #f0fdf4;
+            --green-border: #16a34a;
+            --blue-bg: #f0f7ff;
+            --blue-border: #2563eb;
+            --pink-bg: #fff1f2;
+            --pink-border: #e11d48;
+            --text-main: #0f172a;
+            --paper-bg: #ffffff;
+            --accent-purple: #7c3aed;
+            --meta-text: #64748b;
+            --example-bg: #f8fafc;
+            --example-text: #334155;
+            --toggle-bg: #e2e8f0;
+            --toggle-border: #cbd5e1;
+            --icon-fill: #1e293b;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --header-border: #cbd5e1;
+            
+            --viewport-bg: #0f172a;
+            --control-panel-bg: rgba(255, 255, 255, 0.9);
+            --control-panel-text: #1e293b;
+            --sidebar-bg: #ffffff;
+            
+            --grid-color: rgba(124, 58, 237, 0.06);
+            --board-bg: rgba(124, 58, 237, 0.02);
+        }
+
+        /* --- STUNNING DARK MODE (DEFAULT) --- */
+        html.dark-mode {
+            --yellow-bg: #1e1b10;
+            --yellow-border: #fbbf24;
+            --green-bg: #062f18;
+            --green-border: #4ade80;
+            --blue-bg: #0c203e;
+            --blue-border: #3b82f6;
+            --pink-bg: #3b0717;
+            --pink-border: #fb7185;
+            --text-main: #f1f5f9;
+            --paper-bg: #000000;
+            --accent-purple: #a78bfa;
+            --meta-text: #94a3b8;
+            --example-bg: #050505;
+            --example-text: #cbd5e1;
+            --toggle-bg: #334155;
+            --toggle-border: #475569;
+            --icon-fill: #f8fafc;
+            --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.55);
+            --header-border: #222222;
+            
+            --viewport-bg: #000000;
+            --control-panel-bg: rgba(0, 0, 0, 0.95);
+            --control-panel-text: #f8fafc;
+            --sidebar-bg: #000000;
+            
+            --grid-color: rgba(167, 139, 250, 0.05);
+            --board-bg: rgba(167, 139, 250, 0.01);
+        }
+
+        /* --- GLOBAL VIEWPORT SETTINGS --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--viewport-bg);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- RESPONSIVE 16:9 PRESENTATION WINDOW --- */
+        #presentation-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1920px;
+            height: 1080px;
+            transform-origin: center center;
+            background-color: var(--paper-bg);
+            color: var(--text-main);
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+            border-radius: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- BRANDING WATERMARK (IN THE GROUND) --- */
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.04;
+            max-width: 60%;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.06; }
+
+        /* --- SLIDE ANNOTATION CANVAS --- */
+        #annotation-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        #annotation-canvas.drawing-active {
+            pointer-events: auto;
+            cursor: crosshair;
+        }
+
+        #annotation-canvas.pointer-active {
+            pointer-events: auto;
+            cursor: none;
+        }
+
+        /* --- SLIDE COMPONENT --- */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            box-sizing: border-box;
+            padding: 130px 100px 90px 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            z-index: 2;
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(60px);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-60px);
+        }
+
+        /* --- SLIDE HEADER & FOOTER BRANDING --- */
+        .slide-header {
+            position: absolute;
+            top: 30px;
+            left: 100px;
+            right: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--header-border);
+            padding-bottom: 15px;
+            z-index: 10;
+        }
+
+        .slide-header .brand-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slide-header .chapter-meta {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .slide-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 100px;
+            right: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--header-border);
+            padding-top: 15px;
+            font-size: 0.95rem;
+            color: var(--meta-text);
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .slide-footer .footer-contact span {
+            margin-right: 25px;
+        }
+
+        .slide-footer .footer-page {
+            color: var(--pink-border);
+            font-weight: bold;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .slide h1 {
+            font-size: 2.8rem;
+            color: var(--blue-border);
+            margin: 0 0 25px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-left: 8px solid var(--blue-border);
+            padding-left: 20px;
+            line-height: 1.1;
+        }
+
+        .slide h2 {
+            font-size: 2rem;
+            color: var(--pink-border);
+            margin: 0 0 15px 0;
+            font-weight: 700;
+            border-left: 6px solid var(--pink-border);
+            padding-left: 15px;
+        }
+
+        .slide h3 {
+            font-size: 1.5rem;
+            color: var(--accent-purple);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 5px;
+        }
+
+        .slide p {
+            font-size: 1.35rem;
+            line-height: 1.6;
+            margin: 0 0 20px 0;
+            color: var(--text-main);
+        }
+
+        .slide ul {
+            padding-left: 30px;
+            margin: 0 0 20px 0;
+        }
+
+        .slide li {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .slide strong {
+            color: var(--pink-border);
+            font-weight: 700;
+        }
+
+        /* --- MULTI-COLUMN STRUCTURES --- */
+        .columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .columns-3-2 {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .flex-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            padding: 0 100px;
+        }
+
+        .flex-center h1 {
+            font-size: 4.8rem;
+            border: none;
+            padding: 0;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .flex-center p {
+            font-size: 2rem;
+            color: var(--meta-text);
+            max-width: 1200px;
+            margin-bottom: 40px;
+        }
+
+        /* --- STYLISH TEACHER'S DRAWING WORKSPACE (THE BOARD) --- */
+        .teacher-board {
+            border: 2px dashed var(--accent-purple);
+            background-color: var(--board-bg);
+            border-radius: 14px;
+            height: 540px;
+            position: relative;
+            box-shadow: var(--card-shadow);
+            padding: 24px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .teacher-board::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background-image: 
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        .teacher-board-label {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            z-index: 5;
+            position: relative;
+        }
+
+        /* --- THEMATIC CONTAINERS --- */
+        .blue-box, .green-box, .yellow-box, .pink-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: var(--card-shadow);
+        }
+
+        .green-box { background-color: var(--green-bg); border-color: var(--green-border); }
+        .yellow-box { background-color: var(--yellow-bg); border-color: var(--yellow-border); }
+        .pink-box { background-color: var(--pink-bg); border-color: var(--pink-border); }
+
+        .box-label {
+            position: absolute;
+            top: -14px;
+            right: 25px;
+            background: var(--paper-bg);
+            padding: 2px 14px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 6px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: var(--yellow-border); border-color: var(--yellow-border); }
+        .pink-box .box-label { color: var(--pink-border); border-color: var(--pink-border); }
+
+        /* --- PRACTICE PROBLEMS & SOLUTIONS --- */
+        .practice-container {
+            max-height: 700px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .practice-box {
+            background-color: var(--example-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: var(--card-shadow);
+        }
+
+        .practice-box .box-label {
+            color: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .practice-box strong.q-title {
+            font-size: 1.35rem;
+            color: var(--accent-purple);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .practice-box p.q-text {
+            font-size: 1.25rem;
+            margin: 0 0 15px 0;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .reveal-btn {
+            background-color: var(--accent-purple);
+            color: #ffffff;
+            border: none;
+            padding: 8px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(124, 58, 237, 0.4);
+        }
+
+        .solution-drawer {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            border-top: 1px dotted var(--toggle-border);
+            margin-top: 15px;
+            padding-top: 0;
+        }
+
+        .solution-drawer.open {
+            max-height: 400px;
+            opacity: 1;
+            padding-top: 15px;
+            overflow-y: auto;
+        }
+
+        .solution-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--example-text);
+        }
+
+        /* --- TABLE STYLING --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            box-shadow: var(--card-shadow);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        th {
+            background-color: var(--blue-bg);
+            color: var(--blue-border);
+            font-weight: 800;
+            text-align: center;
+        }
+
+        /* --- STUNNING INVERTED DIAGRAMS IN DARK MODE --- */
+        .slide-image-box {
+            text-align: center;
+            margin: 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            max-width: max-content;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .slide-image-box:hover {
+            border-color: rgba(167, 139, 250, 0.4);
+            transform: scale(1.02);
+            box-shadow: 0 16px 40px rgba(167, 139, 250, 0.1), 0 12px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .slide-image-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: transparent;
+        }
+
+        /* Automatically inverts black lines/text on white background for perfect dark mode viewing */
+        html.dark-mode .slide-image-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: transparent;
+        }
+        
+        /* Make sure mind map generated matches or preserves formatting if needed */
+        html.dark-mode .slide-image-box img.no-invert {
+            filter: none !important;
+            mix-blend-mode: normal !important;
+        }
+
+        /* --- TEACHER NAVIGATION CONTROL PANEL --- */
+        #control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--control-panel-bg);
+            border: 1px solid var(--toggle-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 50px;
+            padding: 10px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-right: 1px solid var(--toggle-border);
+            padding-right: 20px;
+        }
+
+        .control-group:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--control-panel-text);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background-color: var(--toggle-bg);
+            transform: scale(1.1);
+        }
+
+        .control-btn.active {
+            background-color: var(--accent-purple);
+            color: #ffffff;
+        }
+
+        .brush-color-picker {
+            display: flex;
+            gap: 6px;
+        }
+
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.1s ease;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .color-dot.active {
+            border-color: var(--control-panel-text);
+            transform: scale(1.2);
+        }
+
+        /* --- COLLAPSIBLE SLIDE INDEX SIDEBAR --- */
+        #slide-index-sidebar {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 380px;
+            height: 100%;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--toggle-border);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.25);
+            z-index: 200;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #slide-index-sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px 25px;
+            border-bottom: 1px solid var(--toggle-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            color: var(--blue-border);
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .slide-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .slide-list-item {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background 0.2s ease;
+        }
+
+        .slide-list-item:hover {
+            background-color: var(--blue-bg);
+            color: var(--blue-border);
+        }
+
+        .slide-list-item.active {
+            background-color: var(--accent-purple);
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .slide-list-item span.slide-num {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            opacity: 0.6;
+        }
+        
+        /* Laser pointer red dot overlay */
+        .laser-pointer-dot {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LASER POINTER GLOWING DOT -->
+    <div id="laser-dot" class="laser-pointer-dot"></div>
+
+    <!-- MAIN RESPONSIVE CONTAINER (16:9) -->
+    <div id="presentation-container">
+        
+        <!-- WATERMARK OVERLAY (IN THE GROUND) -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <!-- ANNOTATION DRAWING CANVAS -->
+        <canvas id="annotation-canvas" width="1920" height="1080"></canvas>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 1: TITLE SLIDE -->
+        <!-- ======================================== -->
+        <div class="slide active" data-title="Title Slide">
+            <div class="flex-center">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Logo" style="max-height: 140px; margin-bottom: 20px;" class="no-invert">
+                <h1 style="color: var(--accent-purple); font-size: 5.5rem; font-weight: 800; border: none; padding: 0;">CLASS 12 CHEMISTRY</h1>
+                <h2 style="font-size: 3.5rem; color: var(--blue-border); border: none; padding: 0; margin-bottom: 40px;">Chapter 1: Solutions</h2>
+                <div class="blue-box" style="padding: 15px 40px; font-size: 1.5rem; font-weight: 600; border-radius: 30px;">
+                    Comprehensive Lecture Slides • Master Formulas & Numerical Problems
+                </div>
+                <div style="font-size: 1.25rem; color: var(--meta-text); font-weight: 700; margin-top: 30px;">
+                    🌐 vardaanlearning.com &nbsp;&nbsp;|&nbsp;&nbsp; 📞 9508841336 &nbsp;&nbsp;|&nbsp;&nbsp; Vardaan Learning Institute
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 2: INTRODUCTION TO SOLUTIONS -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Introduction to Solutions">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>1. Introduction and Definitions</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>What is a Solution?</h2>
+                    <p>A <strong>solution</strong> is a homogeneous mixture of two or more chemically non-reacting substances whose composition can be varied within certain limits.</p>
+                    
+                    <div class="blue-box">
+                        <span class="box-label">Key Property</span>
+                        <strong>Homogeneous Mixture:</strong> Its composition and physical properties are completely uniform throughout the entire volume of the mixture.
+                    </div>
+                    
+                    <h2>Components of a Binary Solution</h2>
+                    <ul>
+                        <li><strong>Solvent:</strong> The component present in the <em>largest quantity</em>. It determines the final physical state of the solution.</li>
+                        <li><strong>Solute:</strong> The component(s) present in a <em>lesser quantity</em>, which are dissolved inside the solvent.</li>
+                    </ul>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 2 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 3: TYPES OF SOLUTIONS MATRIX -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Types of Solutions Matrix">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Types of Solutions Matrix</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Solute</th>
+                                <th>Solvent</th>
+                                <th>Examples</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="3"><strong>Gaseous</strong></td>
+                                <td>Gas</td>
+                                <td>Gas</td>
+                                <td>Air</td>
+                            </tr>
+                            <tr>
+                                <td>Liquid</td>
+                                <td>Gas</td>
+                                <td>Chloroform in $N_2$</td>
+                            </tr>
+                            <tr>
+                                <td>Solid</td>
+                                <td>Gas</td>
+                                <td>Camphor in $N_2$</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3"><strong>Liquid</strong></td>
+                                <td>Gas</td>
+                                <td>Liquid</td>
+                                <td>Soda Water ($CO_2$)</td>
+                            </tr>
+                            <tr>
+                                <td>Liquid</td>
+                                <td>Liquid</td>
+                                <td>Ethanol in water</td>
+                            </tr>
+                            <tr>
+                                <td>Solid</td>
+                                <td>Liquid</td>
+                                <td>Sugar in water</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3"><strong>Solid</strong></td>
+                                <td>Gas</td>
+                                <td>Solid</td>
+                                <td>$H_2$ in Palladium</td>
+                            </tr>
+                            <tr>
+                                <td>Liquid</td>
+                                <td>Solid</td>
+                                <td>Hg in Na (Amalgam)</td>
+                            </tr>
+                            <tr>
+                                <td>Solid</td>
+                                <td>Solid</td>
+                                <td>Copper in Gold</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="slide-image-box" style="margin: 20px 0;">
+                        <img src="Images/C01_TypesOfSolutionsMatrix.png.jpg" alt="Types of Solutions Matrix Diagram" style="max-height: 380px;">
+                    </div>
+                    
+                    <div class="practice-box" style="margin-top: 15px;">
+                        <span class="box-label">Practice Problem 1</span>
+                        <strong class="q-title">Binary Solution Identification</strong>
+                        <p class="q-text" style="font-size: 1.15rem;">In an amalgam of mercury with sodium, which substance is the solute and which is the solvent? What type of solution is this?</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Since the final state of the amalgam is solid, the solid metal (<strong>Sodium</strong>) is the <strong>solvent</strong>, and the liquid metal (<strong>Mercury</strong>) is the <strong>solute</strong>.<br>
+                                Type: <strong>Liquid in Solid</strong> (Solid Solution).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 3 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 4: EXPRESSING CONCENTRATION - BASICS -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Concentration - Basics">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>2. Expressing Concentration (Basics)</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>Mass & Volume Percentage</h2>
+                    <ul>
+                        <li>
+                            <strong>Mass Percentage (w/w):</strong> Mass of solute per 100 grams of solution.<br>
+                            $$ \text{Mass \%} = \frac{\text{Mass of Solute } (w_2)}{\text{Total Mass of Solution } (w_1 + w_2)} \times 100 $$
+                        </li>
+                        <li>
+                            <strong>Volume Percentage (v/v):</strong> Volume of solute per 100 parts by volume of solution.<br>
+                            $$ \text{Volume \%} = \frac{\text{Volume of Solute } (V_2)}{\text{Total Volume of Solution }} \times 100 $$
+                        </li>
+                        <li>
+                            <strong>Mass by Volume Percentage (w/v):</strong> Mass of solute dissolved in 100 mL of the solution.
+                        </li>
+                        <li>
+                            <strong>Parts Per Million (ppm):</strong> Used when a solute is present in <em>trace quantities</em>.<br>
+                            $$ \text{ppm} = \frac{\text{Parts of Component}}{\text{Total Parts of All Components}} \times 10^6 $$
+                        </li>
+                    </ul>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 4 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 5: CONCENTRATION - CORE METRICS -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Concentration - Core Metrics">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Molarity, Molality & Mole Fraction</h1>
+            <div class="columns-3-2">
+                <div>
+                    <div class="green-box">
+                        <span class="box-label">1. Molarity ($M$)</span>
+                        <p>Number of moles of solute dissolved in exactly 1 Litre of solution.</p>
+                        $$ M = \frac{w_2 \times 1000}{M_2 \times V(\text{in mL})} \quad [\text{mol/L}] $$
+                    </div>
+                    <div class="yellow-box">
+                        <span class="box-label">2. Molality ($m$)</span>
+                        <p>Number of moles of solute dissolved in exactly 1 kg ($1000\text{ g}$) of the <strong>solvent</strong>.</p>
+                        $$ m = \frac{w_2 \times 1000}{M_2 \times W_1(\text{in grams})} \quad [\text{mol/kg}] $$
+                    </div>
+                    <div class="blue-box">
+                        <span class="box-label">3. Mole Fraction ($x$)</span>
+                        For binary mixture of component 1 and 2:
+                        $$ x_2 = \frac{n_2}{n_1 + n_2} \quad \text{and} \quad x_1 = \frac{n_1}{n_1 + n_2} $$
+                        <em>Sum is always 1 ($x_1 + x_2 = 1$). Dimensionless.</em>
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 5 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 6: TEMPERATURE DEPENDENCE & INTERCONVERSION -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Temperature & Conversions">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Temperature Effects & Conversion</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>Temperature Dependence</h2>
+                    <div class="pink-box">
+                        <span class="box-label">Crucial Concept</span>
+                        <ul>
+                            <li><strong>Molarity ($M$), Volume %, w/v %</strong> depend on the <em>volume</em> of the solution. Since volume expands/contracts with temperature, <strong>these values change with temperature</strong>.</li>
+                            <li><strong>Molality ($m$), Mass %, Mole Fraction ($x$)</strong> depend strictly on the <em>mass</em> of the components. Mass is invariant, making these values **independent of temperature**. Preferred in precise calculations!</li>
+                        </ul>
+                    </div>
+                    <h2>Molarity to Molality Interconversion</h2>
+                    <p>Using density ($d$) in $\text{g/mL}$ and solute molar mass ($M_2$) in $\text{g/mol}$:</p>
+                    <div class="blue-box" style="font-size: 1.4rem; text-align: center; font-weight: 700; padding: 20px;">
+                        $$ m = \frac{1000 \times M}{(1000 \times d) - (M \times M_2)} $$
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 6 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 7: PRACTICE PROBLEMS - CONCENTRATION -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Practice: Concentration">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Practice: Concentration Numericals</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 2</span>
+                        <strong class="q-title">Mole Fraction Calculation</strong>
+                        <p class="q-text">Calculate the mole fraction of ethylene glycol ($\text{C}_2\text{H}_6\text{O}_2$) in a solution containing $20\%$ of $\text{C}_2\text{H}_6\text{O}_2$ by mass in water.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Assume $100\text{ g}$ of solution: Mass of glycol $= 20\text{ g}$, Mass of water $= 80\text{ g}$.<br>
+                                Molar Mass: Glycol $= 62\text{ g/mol}$, Water $= 18\text{ g/mol}$.<br>
+                                Moles of Glycol ($n_2$) $= 20 / 62 = 0.322\text{ mol}$. Moles of Water ($n_1$) $= 80 / 18 = 4.444\text{ mol}$.<br>
+                                Total Moles $= 0.322 + 4.444 = 4.766\text{ mol}$.<br>
+                                Mole fraction of glycol ($x_2$) $= 0.322 / 4.766 = \mathbf{0.068}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 3</span>
+                        <strong class="q-title">Molality from Molarity & Density</strong>
+                        <p class="q-text">The density of $3\text{ M}$ solution of $\text{NaCl}$ is $1.25\text{ g mL}^{-1}$. Calculate the molality of the solution.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                $3\text{ M}$ means $3\text{ moles}$ of $\text{NaCl}$ in $1\text{ L}$ ($1000\text{ mL}$) of solution.<br>
+                                Mass of $1\text{ L}$ solution $= 1000 \times 1.25 = 1250\text{ g}$.<br>
+                                Mass of $\text{NaCl}$ ($w_2$) $= 3 \text{ mol} \times 58.5 \text{ g/mol} = 175.5\text{ g}$.<br>
+                                Mass of Solvent ($w_1$) $= 1250 - 175.5 = 1074.5\text{ g} = 1.0745\text{ kg}$.<br>
+                                Molality ($m$) $= \text{moles} / \text{solvent kg} = 3 / 1.0745 = \mathbf{2.79\text{ m}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 11</span>
+                        <strong class="q-title">Mass Percentage</strong>
+                        <p class="q-text">A solution contains $10\text{ g}$ glucose in $90\text{ g}$ water. Find mass percentage of glucose.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Total mass $= 10 + 90 = 100\text{ g}$.<br>
+                                $w/w\% = (10 / 100) \times 100 = \mathbf{10\%}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 12</span>
+                        <strong class="q-title">Molarity Calculation</strong>
+                        <p class="q-text">Calculate the molarity of a solution containing $4.9\text{ g}$ of $\text{H}_2\text{SO}_4$ in $250\text{ mL}$ of solution.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                1. Molar mass of $\text{H}_2\text{SO}_4$ ($M_2$) $= (2 \times 1) + 32 + (4 \times 16) = 98\text{ g/mol}$.<br>
+                                2. Moles of solute ($n_2$) $= 4.9 / 98 = 0.05\text{ mol}$.<br>
+                                3. Volume of solution ($V$) $= 250\text{ mL} = 0.25\text{ L}$.<br>
+                                4. Molarity ($M$) $= \text{moles} / \text{volume in L} = 0.05 / 0.25 = \mathbf{0.20\text{ M}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 13</span>
+                        <strong class="q-title">Molality Calculation</strong>
+                        <p class="q-text">Find molality of a solution prepared by dissolving $9.2\text{ g}$ ethanol ($M=46$) in $200\text{ g}$ water.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Moles of ethanol $= 9.2 / 46 = 0.2\text{ mol}$.<br>
+                                Mass of solvent $= 200\text{ g} = 0.200\text{ kg}$.<br>
+                                Molality ($m$) $= 0.2 / 0.200 = \mathbf{1.0\text{ m}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 14</span>
+                        <strong class="q-title">Temperature effect True/False</strong>
+                        <p class="q-text">State whether each statement is True/False: (i) Molarity decreases on heating. (ii) Molality decreases on heating.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                (i) **True** (volume increases with temperature expansion, so $M$ decreases).<br>
+                                (ii) **False** (mass-based quantity, entirely independent of temperature).
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 7 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 8: SOLUBILITY OF A SOLID IN A LIQUID -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Solubility - Solids">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>3. Solubility of Solids in Liquids</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <h2>Core Principles</h2>
+                    <ul>
+                        <li><strong>Solubility:</strong> The maximum amount of solute that can be dissolved in a specified amount of solvent at a specific temperature to form a <em>saturated solution</em>.</li>
+                        <li><strong>Like Dissolves Like:</strong> Polar solutes (like $\text{NaCl}$) dissolve in polar solvents (like water). Non-polar solutes (like naphthalene) dissolve in non-polar solvents (like benzene).</li>
+                        <li>
+                            <strong>Effect of Temperature (Le Chatelier's Principle):</strong>
+                            <br>- If dissolution is **Endothermic** ($\Delta H > 0$): Solubility **increases** as temperature rises.
+                            <br>- If dissolution is **Exothermic** ($\Delta H < 0$): Solubility **decreases** as temperature rises.
+                        </li>
+                        <li>
+                            <strong>Effect of Pressure:</strong> Pressure has **practically no effect** on solid solubility in liquids because solids and liquids are highly incompressible.
+                        </li>
+                    </ul>
+                    <!-- INVERTED DIAGRAM -->
+                    <div class="slide-image-box" style="margin-top: 15px;">
+                        <img src="Images/C01_SolubilityWorkflow.png.jpg" alt="Solubility Workflow Diagram" style="max-height: 380px;">
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 8 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 9: SOLUBILITY OF A GAS IN A LIQUID (HENRY'S LAW) -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Henry's Law">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Solubility of Gases: Henry's Law</h1>
+            <div class="columns-3-2">
+                <div>
+                    <div class="green-box">
+                        <span class="box-label">Henry's Law Statement</span>
+                        <p style="font-size: 1.3rem; font-weight: 500;">"At a constant temperature, the solubility of a gas in a liquid is directly proportional to the partial pressure of the gas present above the surface of the liquid."</p>
+                        <div style="font-size: 2rem; text-align: center; font-weight: 700; margin: 15px 0;">
+                            $$ p = K_H \cdot x $$
+                        </div>
+                        Where $p$ is partial pressure of gas in vapour phase, $x$ is mole fraction of gas dissolved, and $K_H$ is **Henry's Law Constant**.
+                    </div>
+                    <h2>Key Conceptual Deductions</h2>
+                    <ul>
+                        <li>At a given pressure, a higher value of $K_H$ implies **lower solubility** ($x$) of the gas in the liquid.</li>
+                        <li>$K_H$ increases with temperature. Thus, **solubility of gases in liquids decreases with rising temperature**.</li>
+                    </ul>
+                    <div class="yellow-box">
+                        <span class="box-label">Conceptual Highlight</span>
+                        <strong>Aquatic Life Comfort:</strong> Aquatic species are significantly more comfortable in cold water than in warm water because cold water holds more dissolved oxygen (due to lower $K_H$ at low temperatures).
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 9 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 10: APPLICATIONS OF HENRY'S LAW -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Henry's Law Applications">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Applications of Henry's Law</h1>
+            <div class="columns-3-2">
+                <div>
+                    <div class="blue-box">
+                        <span class="box-label">1. Carbonated Beverages</span>
+                        <p style="margin-bottom: 5px;">To increase the solubility of $CO_2$ gas in carbonated soft drinks, sodas, and champagne, the bottles are sealed tightly under **extremely high pressure**.</p>
+                    </div>
+                    <div class="pink-box">
+                        <span class="box-label">2. Scuba Diving & The Bends</span>
+                        <p style="margin-bottom: 10px;">At high underwater pressures, atmospheric gases dissolve deeply in a diver's blood. If they ascend rapidly, pressure drops, and dissolved nitrogen forms painful, dangerous bubbles in the bloodstream, blocking capillaries (**"The Bends"**).</p>
+                        <p style="margin-bottom: 5px;"><strong>Prevention:</strong> Breathing tanks are diluted with Helium ($11.7\% \text{ He}$, $56.2\% \text{ N}_2$, $32.1\% \text{ O}_2$) because Helium has exceptionally low solubility in blood.</p>
+                    </div>
+                    <div class="yellow-box">
+                        <span class="box-label">3. High Altitudes & Anoxia</span>
+                        <p style="margin-bottom: 5px;">At high altitudes, the partial pressure of oxygen is much lower than at sea level. This leads to low concentrations of oxygen in the tissues and blood of climbers, causing physical weakness and cognitive impairment—a condition known as **Anoxia**.</p>
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 10 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 11: PRACTICE PROBLEMS - SOLUBILITY -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Practice: Solubility">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Practice: Solubility & Henry's Law</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 4</span>
+                        <strong class="q-title">Henry's Law Calculations</strong>
+                        <p class="q-text">If $N_2$ gas is bubbled through water at $293\text{ K}$, how many millimoles of $N_2$ gas would dissolve in $1\text{ Litre}$ of water? Assume $N_2$ exerts a partial pressure of $0.987\text{ bar}$. Given $K_H$ for $N_2$ at $293\text{ K}$ is $76.48\text{ kbar}$.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                1. Convert $K_H$ to bar: $K_H = 76.48\text{ kbar} = 76,480\text{ bar}$.<br>
+                                2. Find mole fraction ($x$): $x = p / K_H = 0.987 / 76480 = 1.29 \times 10^{-5}$.<br>
+                                3. Water in $1\text{ L} = 1000\text{ g} / 18\text{ g/mol} = 55.5\text{ moles}$.<br>
+                                4. Since $n_{N_2} \ll n_{\text{water}}$, $x \approx n_{N_2} / n_{\text{water}} \implies 1.29 \times 10^{-5} = n_{N_2} / 55.5$.<br>
+                                5. $n_{N_2} = 1.29 \times 10^{-5} \times 55.5 = 7.16 \times 10^{-4}\text{ moles}$.<br>
+                                6. Millimoles $= 7.16 \times 10^{-4} \times 1000 = \mathbf{0.716\text{ mmol}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 15</span>
+                        <strong class="q-title">Temperature & Solubility Relationship</strong>
+                        <p class="q-text">At constant pressure, if the Henry constant ($K_H$) for a gas doubles with temperature, what happens to its solubility (qualitatively)?</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                From Henry's Law: $x = p / K_H$.<br>
+                                At constant partial pressure ($p$), if $K_H$ doubles, the mole fraction ($x$) is halved.<br>
+                                Therefore, the solubility of the gas **decreases qualitatively by half**.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 11 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 12: VAPOUR PRESSURE & RAOULT'S LAW -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Raoult's Law">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>4. Vapour Pressure of Liquid Solutions</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <div class="blue-box">
+                        <span class="box-label">Vapour Pressure</span>
+                        <p style="margin-bottom: 5px;">The pressure exerted by vapours in thermodynamic equilibrium with its liquid phase at a constant temperature in a closed container.</p>
+                        <h2>Raoult's Law (Volatile Liquid-Liquid)</h2>
+                        <p style="margin-bottom: 10px;">"For a solution of volatile liquids, the partial vapour pressure of each component in the solution is directly proportional to its mole fraction present in the solution."</p>
+                        $$ p_1 = p_1^0 x_1 \quad \text{and} \quad p_2 = p_2^0 x_2 $$
+                    </div>
+                    <h2>Dalton's Law of Partial Pressures</h2>
+                    <p style="margin-bottom: 5px;">The total pressure ($P_{total}$) over the solution is the sum of the partial pressures:</p>
+                    <div class="green-box" style="font-weight: 700; padding: 15px 25px; margin-bottom: 10px;">
+                        $$ P_{total} = p_1 + p_2 = p_1^0 x_1 + p_2^0 x_2 $$
+                        $$ P_{total} = p_1^0 + (p_2^0 - p_1^0)x_2 $$
+                    </div>
+                    <p>Mole fraction in vapour phase: $ y_1 = p_1 / P_{total} $ and $ y_2 = p_2 / P_{total} $.</p>
+                    <!-- INVERTED DIAGRAM -->
+                    <div class="slide-image-box" style="margin-top: 15px;">
+                        <img src="Images/C01_RaoultsLawVapourPressure.png.jpg" alt="Raoult Law Vapour Pressure Diagram" style="max-height: 380px;">
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 12 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 13: VAPOUR PRESSURE OF SOLUTIONS OF SOLIDS IN LIQUIDS -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="VP lowering - Solids">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Vapour Pressure Lowering by Solid Solutes</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>Adding Non-Volatile Solutes</h2>
+                    <p>When a **non-volatile solute** (like sugar, salt, or urea) is added to a pure volatile solvent, the vapour pressure of the resulting solution is **always lower** than that of the pure solvent.</p>
+                    
+                    <div class="pink-box">
+                        <span class="box-label">Molecular Explanation</span>
+                        In a pure solvent, $100\%$ of the liquid surface is occupied by escape-ready solvent molecules. In a solution, solute particles occupy some of these surface sites. This decreases the surface mole fraction of the solvent, reducing the rate of evaporation and lowering the equilibrium vapour pressure.
+                    </div>
+                    
+                    <div class="blue-box" style="text-align: center; padding: 20px;">
+                        <span class="box-label">Key Takeaway</span>
+                        <h3 style="text-decoration: none; font-size: 2.5rem; color: var(--pink-border); margin: 0;">Vapour Pressure: Pure Solvent &gt; Solution</h3>
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 13 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 14: RAOULT'S LAW AS A SPECIAL CASE OF HENRY'S LAW -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Raoult as Henry Case">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Raoult's Law vs Henry's Law</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Raoult's Law is a Special Case of Henry's Law</h2>
+                    
+                    <div class="blue-box" style="padding: 20px; margin-bottom: 20px;">
+                        <span class="box-label">Raoult's Law Formula</span>
+                        For a volatile component in solution:
+                        <div style="font-size: 1.8rem; font-weight: 700; text-align: center; color: var(--blue-border);">
+                            $$ p_i = p_i^0 \cdot x_i $$
+                        </div>
+                    </div>
+                    
+                    <div class="green-box" style="padding: 20px; margin-bottom: 20px;">
+                        <span class="box-label">Henry's Law Formula</span>
+                        For a dissolved gas in liquid:
+                        <div style="font-size: 1.8rem; font-weight: 700; text-align: center; color: var(--green-border);">
+                            $$ p = K_H \cdot x $$
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.25rem; line-height: 1.6; margin: 0;">Both equations state that the partial pressure of the volatile component is proportional to its mole fraction in the solution. They differ only in the proportionality constant. **Raoult's law is a special case of Henry's law where $K_H = p_i^0$.**</p>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 14 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 15: IDEAL AND NON-IDEAL SOLUTIONS -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Ideal vs Non-Ideal">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>5. Ideal and Non-Ideal Solutions</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <h2>Ideal Solutions</h2>
+                    <p style="margin-bottom: 10px;">Obey Raoult's law precisely across the entire concentration range.</p>
+                    <div class="green-box" style="padding: 15px 25px; margin-bottom: 15px;">
+                        $$ \Delta H_{mix} = 0 \quad \text{and} \quad \Delta V_{mix} = 0 $$
+                        <em>Molecular Cause: A-B forces are identical to A-A and B-B forces.</em>
+                    </div>
+                    <p style="font-size: 1.15rem; margin-bottom: 20px;"><strong>Examples:</strong> Benzene+Toluene; n-Hexane+n-Heptane.</p>
+                    
+                    <h2>Non-Ideal Solutions</h2>
+                    <p style="margin-bottom: 10px;">Do not obey Raoult's law. Vapour pressure is either higher or lower.</p>
+                    <div class="pink-box" style="padding: 15px 25px; margin-bottom: 10px;">
+                        $$ \Delta H_{mix} \neq 0 \quad \text{and} \quad \Delta V_{mix} \neq 0 $$
+                        <em>Molecular Cause: A-B forces differ from A-A and B-B forces.</em>
+                    </div>
+                    <!-- INVERTED DIAGRAM -->
+                    <div class="slide-image-box" style="margin-top: 15px;">
+                        <img src="Images/C01_IdealVsNonIdealGraphs.png.jpg" alt="Ideal and Non-Ideal Solutions Graphs" style="max-height: 380px;">
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 15 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 16: NON-IDEAL: POSITIVE DEVIATION -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Positive Deviation">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Non-Ideal: Positive Deviation</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>Core Concept</h2>
+                    <p>The total vapour pressure of the mixture is **higher** than expected from Raoult's law calculations.</p>
+                    
+                    <div class="yellow-box">
+                        <span class="box-label">Thermodynamic Properties</span>
+                        $$ \Delta H_{mix} > 0 \quad \text{(Endothermic mixing - Heat absorbed)} $$
+                        $$ \Delta V_{mix} > 0 \quad \text{(Volume expansion - Expansion)} $$
+                    </div>
+                    
+                    <h2>Molecular Cause</h2>
+                    <ul>
+                        <li>The new solute-solvent (A-B) interactions are **weaker** than the original pure solute (B-B) or solvent (A-A) interactions.</li>
+                        <li><strong>Ethanol + Acetone:</strong> Acetone molecules break the extensive hydrogen bonding network of pure ethanol, increasing escaping tendency.</li>
+                    </ul>
+                    <p><strong>Examples:</strong> Ethanol + Acetone; $CS_2$ + Acetone.</p>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 16 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 17: NON-IDEAL: NEGATIVE DEVIATION -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Negative Deviation">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Non-Ideal: Negative Deviation</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>Core Concept</h2>
+                    <p>The total vapour pressure of the mixture is **lower** than expected from Raoult's law calculations.</p>
+                    
+                    <div class="pink-box">
+                        <span class="box-label">Thermodynamic Properties</span>
+                        $$ \Delta H_{mix} < 0 \quad \text{(Exothermic mixing - Heat released)} $$
+                        $$ \Delta V_{mix} < 0 \quad \text{(Volume contraction - Contraction)} $$
+                    </div>
+                    
+                    <h2>Molecular Cause</h2>
+                    <ul>
+                        <li>The new solute-solvent (A-B) interactions are **stronger** than the original pure solute (B-B) or solvent (A-A) interactions.</li>
+                        <li><strong>Chloroform + Acetone:</strong> Mixing triggers the formation of a highly stable **hydrogen bond** between the two components, reducing evaporation.</li>
+                    </ul>
+                    <p><strong>Examples:</strong> Chloroform + Acetone; Phenol + Aniline; $HNO_3$ + $H_2O$.</p>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 17 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 18: AZEOTROPES (CONSTANT BOILING MIXTURES) -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Azeotropes">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Azeotropes (Constant Boiling)</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>What is an Azeotrope?</h2>
+                    <p>A liquid mixture which has the **exact same composition** in both the liquid phase and the vapour phase at equilibrium. They boil at a single, constant temperature, behaving like a pure liquid. They cannot be separated by fractional distillation.</p>
+                    
+                    <h2>Types of Azeotropes</h2>
+                    <ul>
+                        <li>
+                            <strong>Minimum Boiling Azeotrope:</strong> Formed by non-ideal solutions showing large *positive* deviation. Vapour pressure is exceptionally high, so the boiling point is lower than either component.
+                            <br><em>Example: $95.5\%$ Ethanol + $4.5\%$ Water by volume.</em>
+                        </li>
+                        <li>
+                            <strong>Maximum Boiling Azeotrope:</strong> Formed by non-ideal solutions showing large *negative* deviation. Vapour pressure is low, so the boiling point is higher than either component.
+                            <br><em>Example: $68\%$ Nitric Acid + $32\%$ Water by mass.</em>
+                        </li>
+                    </ul>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 18 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 19: PRACTICE PROBLEMS - RAOULT'S LAW & AZEOTROPES -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Practice: Raoult & Deviation">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Practice: Raoult's Law & Deviations</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 5</span>
+                        <strong class="q-title">Raoult's Law Calculations</strong>
+                        <p class="q-text">Vapour pressures of pure chloroform ($\text{CHCl}_3$) and dichloromethane ($\text{CH}_2\text{Cl}_2$) at $298\text{ K}$ are $200\text{ mm Hg}$ and $415\text{ mm Hg}$ respectively. Calculate the vapour pressure of the solution prepared by mixing $25.5\text{ g}$ of $\text{CHCl}_3$ and $40\text{ g}$ of $\text{CH}_2\text{Cl}_2$ at $298\text{ K}$.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Moles: $\text{CHCl}_3 = 25.5 / 119.5 = 0.213\text{ mol}$. $\text{CH}_2\text{Cl}_2 = 40 / 85 = 0.470\text{ mol}$.<br>
+                                Total Moles $= 0.213 + 0.470 = 0.683\text{ mol}$.<br>
+                                Mole Fractions: $x_2(\text{CH}_2\text{Cl}_2) = 0.470 / 0.683 = 0.688$, $x_1(\text{CHCl}_3) = 1 - 0.688 = 0.312$.<br>
+                                Total Pressure ($P_{total}$) $= p_1^0 x_1 + p_2^0 x_2 = (200 \times 0.312) + (415 \times 0.688) = 62.4 + 285.5 = \mathbf{347.9\text{ mm Hg}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 6</span>
+                        <strong class="q-title">Volume Changes & Deviation</strong>
+                        <p class="q-text">When 50 mL of liquid A and 50 mL of liquid B are mixed, the volume of the resulting solution is found to be 99 mL. What type of deviation from Raoult's law does this solution show?</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Expected volume $= 50 + 50 = 100\text{ mL}$. Actual volume $= 99\text{ mL}$.<br>
+                                Change in volume on mixing: $\Delta V_{mix} = 99 - 100 = \mathbf{-1\text{ mL}}$.<br>
+                                Since $\Delta V_{mix} < 0$, the molecules are drawn closer together due to stronger A-B interactions compared to pure A-A and B-B interactions.<br>
+                                Therefore, this solution shows a **Negative Deviation** from Raoult's law.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 16</span>
+                        <strong class="q-title">Binary Ideal Solution Pressure</strong>
+                        <p class="q-text">For a binary ideal solution at $300\text{ K}$, $p_A^0=300\text{ mmHg}$, $p_B^0=150\text{ mmHg}$ and $x_A=0.40$. Find total vapour pressure.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Since it is binary: $x_B = 1 - x_A = 1 - 0.40 = 0.60$.<br>
+                                Total pressure ($P_{total}$) $= p_A^0 x_A + p_B^0 x_B = 300(0.40) + 150(0.60) = 120 + 90 = \mathbf{210\text{ mmHg}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 17</span>
+                        <strong class="q-title">Deviation Prediction</strong>
+                        <p class="q-text">A solution shows $\Delta H_{mix}&lt;0$ and $\Delta V_{mix}&lt;0$. Predict deviation from Raoult's law.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Since both parameters are negative (exothermic mixing and volume contraction), it means A-B molecular interactions are stronger than pure ones.<br>
+                                The solution shows a **Negative Deviation** from Raoult's law.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 18</span>
+                        <strong class="q-title">Azeotropic Distillation</strong>
+                        <p class="q-text">Why can ethanol-water mixture not be fully separated by fractional distillation?</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Because at $95.5\%$ ethanol concentration, it forms a **minimum boiling azeotrope**. At this point, the composition of both liquid and vapor phases becomes identical, meaning they boil together at a constant temperature.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 19 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 20: COLLIGATIVE PROPERTIES - INTRODUCTION -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Colligative Intro">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>6. Colligative Properties</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>What are Colligative Properties?</h2>
+                    <p style="font-size: 1.4rem; line-height: 1.7; margin-bottom: 25px;">"Properties of dilute solutions that depend strictly and solely on the **number of solute particles** (ions or molecules) present in the solution, and are completely **independent of their chemical identity or nature**."</p>
+                    
+                    <div class="blue-box" style="padding: 15px 25px; margin-bottom: 15px;">
+                        <strong>1. RLVP:</strong> Relative Lowering of Vapour Pressure
+                    </div>
+                    <div class="green-box" style="padding: 15px 25px; margin-bottom: 15px;">
+                        <strong>2. Elevation of BP:</strong> Elevation of Boiling Point ($\Delta T_b$)
+                    </div>
+                    <div class="yellow-box" style="padding: 15px 25px; margin-bottom: 15px;">
+                        <strong>3. Depression of FP:</strong> Depression of Freezing Point ($\Delta T_f$)
+                    </div>
+                    <div class="pink-box" style="padding: 15px 25px; margin-bottom: 15px;">
+                        <strong>4. Osmotic Pressure:</strong> Osmotic Pressure ($\pi$)
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 20 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 21: CP 1 - RELATIVE LOWERING OF VAPOUR PRESSURE -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="RLVP">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Relative Lowering of Vapour Pressure</h1>
+            <div class="columns-3-2">
+                <div>
+                    <div class="blue-box">
+                        <span class="box-label">RLVP Formula</span>
+                        Adding a non-volatile solute lowers vapour pressure. The relative lowering of vapour pressure is equal to the mole fraction of the solute:
+                        <div style="font-size: 2.2rem; font-weight: 700; text-align: center; margin: 20px 0;">
+                            $$ \frac{p_1^0 - p_1}{p_1^0} = x_2 = \frac{n_2}{n_1 + n_2} $$
+                        </div>
+                        Where $p_1^0$ is pure solvent vapour pressure, $p_1$ is solution pressure, and $x_2$ is solute mole fraction.
+                    </div>
+                    <h2>Dilute Solutions Simplification</h2>
+                    <p>For highly dilute solutions, moles of solute ($n_2$) are negligible compared to moles of solvent ($n_1$). Thus, $n_1 + n_2 \approx n_1$.</p>
+                    <div class="green-box" style="padding: 20px;">
+                        <span class="box-label">Molar Mass Determination</span>
+                        We can calculate the molar mass of the solute ($M_2$) directly:
+                        $$ \frac{p_1^0 - p_1}{p_1^0} \approx \frac{n_2}{n_1} = \frac{w_2 \times M_1}{M_2 \times w_1} $$
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 21 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 22: CP 2 - ELEVATION OF BOILING POINT -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Elevation of BP">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Elevation of Boiling Point</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <h2>Boiling Point Elevation ($\Delta T_b$)</h2>
+                    <p>A liquid boils when its vapour pressure equals atmospheric pressure. Since adding non-volatile solutes lowers vapour pressure, the solution must be heated to a *higher* temperature to boil.</p>
+                    <div class="green-box" style="font-weight: 700; font-size: 1.4rem;">
+                        $$ \Delta T_b = T_b - T_b^0 = K_b \cdot m $$
+                    </div>
+                    Where $m$ is the **molality** of the solution, and $K_b$ is the **Ebullioscopic Constant** (Molal Elevation Constant).
+                    <p><strong>Molar Mass ($M_2$) Formula:</strong> &nbsp;&nbsp; $ \Delta T_b = \frac{K_b \times w_2 \times 1000}{M_2 \times w_1} $</p>
+                    <p>Unit of $K_b$: $\text{K kg mol}^{-1}$. For water: $K_b = 0.52\text{ K kg mol}^{-1}$.</p>
+                    <!-- INVERTED DIAGRAM -->
+                    <div class="slide-image-box" style="margin-top: 15px;">
+                        <img src="Images/C01_ColligativePropertiesGraphs.png.jpg" alt="Colligative Properties Graphs Diagram" style="max-height: 380px;">
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 22 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 23: CP 3 - DEPRESSION OF FREEZING POINT -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Depression of FP">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Depression of Freezing Point</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>Freezing Point Depression ($\Delta T_f$)</h2>
+                    <p>Freezing point is the temperature at which the solid and liquid phases of a substance have identical vapour pressure. Since a solution has lower vapour pressure, it freezes at a *lower* temperature.</p>
+                    <div class="pink-box" style="font-weight: 700; font-size: 1.4rem;">
+                        $$ \Delta T_f = T_f^0 - T_f = K_f \cdot m $$
+                    </div>
+                    Where $m$ is the **molality**, and $K_f$ is the **Cryoscopic Constant** (Molal Depression Constant).
+                    <p><strong>Molar Mass ($M_2$) Formula:</strong> &nbsp;&nbsp; $ \Delta T_f = \frac{K_f \times w_2 \times 1000}{M_2 \times w_1} $</p>
+                    <p>Unit of $K_f$: $\text{K kg mol}^{-1}$. For water: $K_f = 1.86\text{ K kg mol}^{-1}$.</p>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 23 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 24: CP 4 - OSMOSIS AND OSMOTIC PRESSURE -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Osmosis & OP">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Osmosis & Osmotic Pressure</h1>
+            <div class="columns-3-2">
+                <div>
+                    <div class="blue-box">
+                        <span class="box-label">Osmosis & Osmotic Pressure</span>
+                        <p><strong>Osmosis:</strong> Spontaneous flow of solvent molecules through a Semi-Permeable Membrane (SPM) from pure solvent to solution (or from dilute to concentrated solution).</p>
+                        <p><strong>Osmotic Pressure ($\pi$):</strong> The excess external pressure that must be applied to the solution side to exactly halt osmosis.</p>
+                        <div style="font-size: 1.8rem; font-weight: 700; text-align: center; margin-top: 15px;">
+                            $$ \pi = C R T = \frac{w_2 R T}{M_2 V} $$
+                        </div>
+                    </div>
+                    <h2>Why OP is the Best Method for Polymers</h2>
+                    <ul>
+                        <li>It is measured at **room temperature** (biomolecules like proteins denature/degrade at boiling temperatures).</li>
+                        <li>Its magnitude is **large and easily measurable** even for highly dilute solutions of macromolecules, unlike freezing depression ($\Delta T_f$) or boiling elevation ($\Delta T_b$) which yield unmeasurably tiny differences.</li>
+                        <li>Uses Molarity ($C$) instead of molality.</li>
+                    </ul>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 24 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 25: TONICITY AND REVERSE OSMOSIS -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Tonicity & RO">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Tonicity & Reverse Osmosis</h1>
+            <div class="columns-3-2">
+                <div>
+                    <h2>Tonicity in Biological Systems</h2>
+                    <ul>
+                        <li><strong>Isotonic Solutions:</strong> Two solutions with identical osmotic pressures. Placed cell stays same ($0.9\% \text{ w/v } \text{NaCl}$ saline is isotonic with blood).</li>
+                        <li><strong>Hypertonic Solutions:</strong> Solution with higher concentration. Cell placed in it loses water and shrinks (**Plasmolysis**).</li>
+                        <li><strong>Hypotonic Solutions:</strong> Solution with lower concentration. Cell placed in it absorbs water and swells/bursts (**Hemolysis**).</li>
+                    </ul>
+                    <h2>Reverse Osmosis (RO)</h2>
+                    <p>If a pressure **greater than the osmotic pressure** ($\pi$) is applied directly to the solution side, the direction of flow reverses: pure solvent molecules are forced *out* of the solution through the semi-permeable membrane.</p>
+                    <div class="green-box" style="padding: 15px 25px;">
+                        <span class="box-label">Global Application</span>
+                        Reverse osmosis is used worldwide for the **desalination of seawater** to produce fresh drinking water.
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 25 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 26: PRACTICE PROBLEMS - COLLIGATIVE PROPERTIES -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Practice: Colligative">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Practice: Colligative Properties</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 7</span>
+                        <strong class="q-title">Boiling Point Elevation</strong>
+                        <p class="q-text">Boiling point of water at $750\text{ mm Hg}$ is $99.63^\circ\text{C}$. How much sucrose ($\text{C}_{12}\text{H}_{22}\text{O}_{11}$) must be added to $500\text{ g}$ of water such that it boils at $100^\circ\text{C}$? ($K_b$ for water $= 0.52\text{ K kg mol}^{-1}$).</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                1. Required elevation: $\Delta T_b = 100^\circ\text{C} - 99.63^\circ\text{C} = 0.37\text{ K}$.<br>
+                                2. Mass of solvent ($w_1$) $= 500\text{ g}$. Molar mass of sucrose ($M_2$) $= 342\text{ g/mol}$.<br>
+                                3. Apply BP elevation: $\Delta T_b = (K_b \times w_2 \times 1000) / (M_2 \times w_1)$.<br>
+                                4. $0.37 = (0.52 \times w_2 \times 1000) / (342 \times 500) = (1.04 \times w_2) / 342$.<br>
+                                5. $w_2 = (0.37 \times 342) / 1.04 = \mathbf{121.67\text{ g}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 8</span>
+                        <strong class="q-title">Osmotic Pressure & Molar Mass</strong>
+                        <p class="q-text">$200\text{ cm}^3$ of an aqueous solution of a protein contains $1.26\text{ g}$ of the protein. The osmotic pressure of such a solution at $300\text{ K}$ is found to be $2.57 \times 10^{-3}\text{ bar}$. Calculate the molar mass of the protein. ($R = 0.083\text{ L bar K}^{-1}\text{mol}^{-1}$).</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                1. Volume ($V$) $= 200\text{ cm}^3 = 0.200\text{ L}$. Solute mass ($w_2$) $= 1.26\text{ g}$. Temperature ($T$) $= 300\text{ K}$. Pressure ($\pi$) $= 2.57 \times 10^{-3}\text{ bar}$.<br>
+                                2. Formula: $M_2 = (w_2 R T) / (\pi V)$.<br>
+                                3. $M_2 = (1.26 \times 0.083 \times 300) / (2.57 \times 10^{-3} \times 0.200) = 31.374 / (5.14 \times 10^{-4}) = \mathbf{61,038\text{ g/mol}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 19</span>
+                        <strong class="q-title">RLVP Numerical</strong>
+                        <p class="q-text">Calculate RLVP when the vapour pressure of pure water is $31.8\text{ mmHg}$ and that of the solution is $31.0\text{ mmHg}$.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Formula: $\text{RLVP} = (p_1^0 - p_1) / p_1^0$.<br>
+                                $\text{RLVP} = (31.8 - 31.0) / 31.8 = 0.8 / 31.8 = \mathbf{0.0252}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 20</span>
+                        <strong class="q-title">Molality from Freezing Depression</strong>
+                        <p class="q-text">A solution of a non-volatile solute in water shows a freezing point depression of $0.93\text{ K}$. Calculate the molality of the solution. ($K_f \text{ for water} = 1.86\text{ K kg mol}^{-1}$).</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Formula: $\Delta T_f = K_f \cdot m$.<br>
+                                Given: $\Delta T_f = 0.93\text{ K}$, $K_f = 1.86\text{ K kg mol}^{-1}$.<br>
+                                Molality ($m$) $= \Delta T_f / K_f = 0.93 / 1.86 = \mathbf{0.50\text{ m}}$ (or $\text{mol/kg}$).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 21</span>
+                        <strong class="q-title">Osmotic Pressure Calculation</strong>
+                        <p class="q-text">A $0.01\text{ M}$ non-electrolyte solution at $300\text{ K}$ has what osmotic pressure? ($R = 0.083\text{ L bar mol}^{-1}\text{K}^{-1}$).</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Formula: $\pi = C R T$.<br>
+                                $\pi = 0.01 \text{ mol/L} \times 0.083 \text{ L bar/K mol} \times 300\text{ K} = \mathbf{0.249\text{ bar}}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 25</span>
+                        <strong class="q-title">Isotonic Saline Reason</strong>
+                        <p class="q-text">Explain why saline solution ($0.9\%$ w/v NaCl) is given in hospitals as isotonic fluid.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Saline is isotonic with blood plasma, meaning their osmotic pressures match. This prevents red blood cells from shrinking (plasmolysis/crenation) or swelling and bursting (hemolysis) when the fluid is injected.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 26 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 27: ABNORMAL MOLAR MASSES & VAN'T HOFF FACTOR -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Van't Hoff Factor">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>7. Abnormal Molar Masses</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <div class="blue-box">
+                        <span class="box-label">Why Calculation Fails</span>
+                        <p style="margin-bottom: 5px;">Colligative properties depend strictly on the number of solute particles. Ionic solutes **dissociate** in polar solvents, and organic solutes **associate** in non-polar solvents, changing the actual count of particles.</p>
+                        <h2>Van't Hoff Factor ($i$)</h2>
+                        $$ i = \frac{\text{Observed Colligative Property}}{\text{Calculated (Normal) Colligative Property}} $$
+                        $$ i = \frac{\text{Normal Molar Mass}}{\text{Abnormal (Calculated) Molar Mass}} $$
+                    </div>
+                    <h2>Modified Colligative Formulas</h2>
+                    <p>We multiply every colligative formula by $i$:</p>
+                    <div class="pink-box" style="font-weight: 700; padding: 15px 25px; margin-bottom: 20px;">
+                        <ul>
+                            <li>RLVP: $\frac{p_1^0 - p_1}{p_1^0} = \mathbf{i} \cdot x_2$</li>
+                            <li>Elevation: $\Delta T_b = \mathbf{i} \cdot K_b \cdot m$</li>
+                            <li>Depression: $\Delta T_f = \mathbf{i} \cdot K_f \cdot m$</li>
+                            <li>Osmotic: $\pi = \mathbf{i} \cdot C R T$</li>
+                        </ul>
+                    </div>
+                    <!-- INVERTED DIAGRAM -->
+                    <div class="slide-image-box">
+                        <img src="Images/C01_VantHoffDissociationAssociation.png.jpg" alt="Van't Hoff Dissociation & Association Diagram" style="max-height: 380px;">
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 27 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 28: DEGREE OF DISSOCIATION & ASSOCIATION -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Degree of Dissociation">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Degree of Dissociation & Association</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <div class="green-box">
+                        <span class="box-label">1. Dissociation degree ($\alpha$)</span>
+                        If an electrolyte molecule dissociates to give $n$ ions:
+                        <div style="font-size: 2rem; font-weight: 700; text-align: center; margin: 15px 0;">
+                            $$ \alpha = \frac{i - 1}{n - 1} $$
+                        </div>
+                        <em>For complete dissociation: $i = n$. $i &gt; 1$. Calculated molar mass is *lower* than normal.</em>
+                    </div>
+                    <div class="yellow-box" style="margin-bottom: 0;">
+                        <span class="box-label">2. Association degree ($\alpha$)</span>
+                        If $n$ simple solute molecules associate to form a single complex:
+                        <div style="font-size: 2rem; font-weight: 700; text-align: center; margin: 15px 0;">
+                            $$ \alpha = \frac{1 - i}{1 - \frac{1}{n}} $$
+                        </div>
+                        <em>For complete dimerization ($n=2$): $i = 0.5$. $i &lt; 1$. Calculated molar mass is *higher* than normal.</em>
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 28 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 29: PRACTICE PROBLEMS - VAN'T HOFF FACTOR -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Practice: Van't Hoff">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>Practice: Van't Hoff Factor & Abnormal Mass</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 9</span>
+                        <strong class="q-title">Dissociation calculations</strong>
+                        <p class="q-text">A $0.5\% \text{ w/w}$ aqueous solution of $\text{KCl}$ was found to freeze at $-0.24^\circ\text{C}$. Calculate the Van't Hoff factor and degree of dissociation of $\text{KCl}$. ($K_f \text{ for water} = 1.86\text{ K kg mol}^{-1}$, Molar mass of KCl $= 74.5$).</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                1. Molality ($m$) $= (0.5 \times 1000) / (74.5 \times 99.5) \approx 0.0674\text{ m}$.<br>
+                                2. Calculated $\Delta T_f$ (no dissociation) $= K_f \times m = 1.86 \times 0.0674 = 0.125^\circ\text{C}$.<br>
+                                3. Observed $\Delta T_f = 0.24^\circ\text{C}$ (given).<br>
+                                4. Van't Hoff factor ($i$) $= Observed / Calculated = 0.24 / 0.125 = \mathbf{1.92}$.<br>
+                                5. KCl gives 2 ions ($n=2$), so degree of dissociation ($\alpha$) $= (i - 1) / (n - 1) = (1.92 - 1) / (2 - 1) = 0.92 = \mathbf{92\%}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 10</span>
+                        <strong class="q-title">Association calculations</strong>
+                        <p class="q-text">$2\text{ g}$ of benzoic acid ($\text{C}_6\text{H}_5\text{COOH}$) dissolved in $25\text{ g}$ of benzene shows a freezing point depression of $1.62\text{ K}$. $K_f \text{ for benzene} = 4.9\text{ K kg mol}^{-1}$. Find percentage association if it dimerizes.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                1. Normal mass of benzoic acid $= 122\text{ g/mol}$.<br>
+                                2. Calculated Abnormal Mass: $M_{2(abnormal)} = (K_f \times w_2 \times 1000) / (\Delta T_f \times w_1) = (4.9 \times 2 \times 1000) / (1.62 \times 25) = 241.98\text{ g/mol}$.<br>
+                                3. $i = Normal / Abnormal = 122 / 241.98 = 0.504$.<br>
+                                4. Dimerization ($n=2$), so degree of association ($\alpha$) $= (1 - i) / (1 - 0.5) = (1 - 0.504) / 0.5 = 0.992 = \mathbf{99.2\%}$.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 22</span>
+                        <strong class="q-title">Theoretical vs Observed Colligative</strong>
+                        <p class="q-text">If observed colligative property is 2.7 times the theoretical value for $\text{AlCl}_3$, estimate the Van't Hoff factor and infer dissociation behavior.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                $i = Observed / Theoretical = \mathbf{2.7}$.<br>
+                                Since $i > 1$, the solute undergoes **dissociation**. Because complete dissociation would yield 4 ions ($Al^{3+}$ and $3Cl^-$) giving $i=4$, an experimental factor of $2.7$ shows partial dissociation ($\alpha \approx 57\%$).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 23</span>
+                        <strong class="q-title">Degree of Dissociation Calculation</strong>
+                        <p class="q-text">A salt $\text{AB}_2$ dissociates into $\text{A}^{2+}$ and $2\text{B}^-$. If the experimental Van't Hoff factor is $2.2$, calculate the degree of dissociation ($\alpha$) of the salt.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                Formula: $\alpha = \frac{i - 1}{n - 1}$.<br>
+                                Here, salt $\text{AB}_2$ dissociates into $1$ $\text{A}^{2+}$ ion and $2$ $\text{B}^-$ ions, so number of ions ($n$) $= 1 + 2 = 3$.<br>
+                                Given: $i = 2.2$.<br>
+                                $\alpha = \frac{2.2 - 1}{3 - 1} = \frac{1.2}{2} = \mathbf{0.60}$ (or $\mathbf{60\%}$).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-box">
+                        <span class="box-label">Practice Problem 24</span>
+                        <strong class="q-title">Association Degree Calculation</strong>
+                        <p class="q-text">For dimerization, if $i=0.80$, find the degree of association.</p>
+                        <button class="reveal-btn" onclick="toggleSolution(this)">
+                            <i class="fa-solid fa-eye"></i> Show Solution
+                        </button>
+                        <div class="solution-drawer">
+                            <div class="solution-content">
+                                For dimerization, $n=2$.<br>
+                                $\alpha = (1 - i) / (1 - 1/2) = (1 - 0.80) / 0.5 = 0.20 / 0.5 = \mathbf{0.40}$ ($40\%$ association).
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 29 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 30: NCERT DEEP-DIVE & REVISION -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="NCERT Deep-Dive">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <h1>8. NCERT Deep-Dive & Mind Map</h1>
+            <div class="columns-3-2">
+                <div class="practice-container">
+                    <h2>Deep-Dive Core Additions</h2>
+                    <ul>
+                        <li><strong>Saturated:</strong> Dynamic equilibrium exists between dissolved solute and undissolved crystals.</li>
+                        <li><strong>Supersaturated:</strong> Metastable state holding more solute than maximum solubility at that temperature. Seeding/shaking triggers rapid crystallization.</li>
+                        <li><strong>Ideal Dilute Solution:</strong> Solvent obeys Raoult's law; solute obeys Henry's law.</li>
+                    </ul>
+                    
+                    <div class="blue-box" style="padding: 20px 30px; margin-top: 30px;">
+                        <span class="box-label">NCERT Key Note</span>
+                        Ideal dilute solutions are frequently asked as assertion-reason questions. Remember that the solvent obeys Raoult's law while the solute obeys Henry's law.
+                    </div>
+                    
+                    <!-- MIND MAP DIAGRAM (AUTOMATICALLY INVERTED FOR DARK MODE SHIELDING CONTRAST) -->
+                    <div class="slide-image-box" style="margin-top: 20px;">
+                        <img src="Images/C01_SolutionsMindMap.png" alt="Solutions Chapter Visual Mind Map Diagram" style="max-height: 480px;">
+                    </div>
+                </div>
+                <!-- DESIGNATED TEACHER BOARD -->
+                <div class="teacher-board">
+                    
+                </div>
+            </div>
+            <div class="slide-footer">
+                <div class="footer-contact"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+                <div class="footer-page">Slide 30 of 31</div>
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- SLIDE 31: LAST-MINUTE REVISION SHEET -->
+        <!-- ======================================== -->
+        <div class="slide" data-title="Outro Slide">
+            <div class="slide-header">
+                <span class="brand-title">Vardaan Learning Institute</span>
+                <span class="chapter-meta">Class 12 • Solutions</span>
+            </div>
+            <div class="flex-center">
+                <h1 style="color: var(--green-border); font-size: 5rem; border: none; padding: 0; margin-bottom: 25px;">Congratulations!</h1>
+                <h2 style="font-size: 3rem; color: var(--text-main); border: none; padding: 0; margin-bottom: 30px;">Chapter 1: Solutions is Complete</h2>
+                
+                <div class="columns" style="width: 100%; text-align: left; gap: 40px; margin-bottom: 40px;">
+                    <div class="yellow-box">
+                        <span class="box-label">Quick Recall Checklist</span>
+                        <ul>
+                            <li><strong>Henry's Law:</strong> $p = K_H \cdot x$ (solubility drops as temperature rises).</li>
+                            <li><strong>Raoult's Law:</strong> $P_{total} = p_1^0 x_1 + p_2^0 x_2$.</li>
+                            <li><strong>Colligative:</strong> Depend *only* on particle count.</li>
+                            <li><strong>Van't Hoff Factor ($i$):</strong> Electrolytes require $i$ multiplier in all colligative equations.</li>
+                        </ul>
+                    </div>
+                    <div class="blue-box">
+                        <span class="box-label">Student Success Action Plan</span>
+                        <p style="font-size: 1.15rem; margin-bottom: 10px;">1. Re-solve all 25 practice numerical problems step by step.</p>
+                        <p style="font-size: 1.15rem; margin-bottom: 10px;">2. Pay high attention to temperature-dependent units vs invariant units.</p>
+                        <p style="font-size: 1.15rem; margin-bottom: 10px;">3. Master the signs ($\Delta H$, $\Delta V$, $P_{obs}$) for deviations.</p>
+                    </div>
+                </div>
+                
+                <div style="font-size: 1.4rem; color: var(--meta-text); font-weight: 700;">
+                    Created by Team Vardaan ❤️ &nbsp;&nbsp;|&nbsp;&nbsp; Powered by Vardaan Comet
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ======================================== -->
+    <!-- TEACHER TOOLBAR & CONTROL PANEL -->
+    <!-- ======================================== -->
+    <div id="control-panel">
+        
+        <!-- SIDEBAR INDEX DRAWER TOGGLE -->
+        <div class="control-group">
+            <button class="control-btn" id="btn-sidebar" title="Show Slide Index"><i class="fa-solid fa-list"></i></button>
+        </div>
+
+        <!-- NAVIGATION CONTROLS -->
+        <div class="control-group">
+            <button class="control-btn" id="btn-prev" title="Previous Slide"><i class="fa-solid fa-arrow-left"></i></button>
+            <span style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.1rem; color: var(--control-panel-text);" id="panel-slide-counter">01/31</span>
+            <button class="control-btn" id="btn-next" title="Next Slide"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <!-- TEACHER ANNOTATION TOOLS -->
+        <div class="control-group">
+            <button class="control-btn" id="btn-draw" title="Draw/Brush Tool"><i class="fa-solid fa-pen"></i></button>
+            <button class="control-btn" id="btn-pointer" title="Laser Pointer"><i class="fa-solid fa-circle-dot"></i></button>
+            
+            <div class="brush-color-picker">
+                <div class="color-dot active" style="background-color: #ff3b30;" data-color="#ff3b30"></div>
+                <div class="color-dot" style="background-color: #007aff;" data-color="#007aff"></div>
+                <div class="color-dot" style="background-color: #34c759;" data-color="#34c759"></div>
+                <div class="color-dot" style="background-color: #ffcc00;" data-color="#ffcc00"></div>
+                <div class="color-dot" style="background-color: var(--text-main);" id="theme-color-dot" data-color="theme"></div>
+            </div>
+            
+            <button class="control-btn" id="btn-clear" title="Clear Annotations"><i class="fa-solid fa-eraser"></i></button>
+        </div>
+
+        <!-- UTILITY CONTROLS (THEME & FULLSCREEN) -->
+        <div class="control-group">
+            <button class="control-btn" id="btn-theme" title="Toggle Theme (Light/Dark)"><i class="fa-solid fa-circle-half-stroke"></i></button>
+            <button class="control-btn" id="btn-fullscreen" title="Toggle Fullscreen"><i class="fa-solid fa-expand"></i></button>
+        </div>
+
+    </div>
+
+    <!-- ======================================== -->
+    <!-- SLIDE INDEX SIDEBAR DRAWER -->
+    <!-- ======================================== -->
+    <div id="slide-index-sidebar">
+        <div class="sidebar-header">
+            <h2>Slide Index</h2>
+            <button class="control-btn" id="btn-close-sidebar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="slide-list" id="sidebar-slide-list">
+            <!-- Dynamically populated by JS -->
+        </ul>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- JAVASCRIPT PRESENTATION ENGINE -->
+    <!-- ======================================== -->
+    <script>
+        // --- CORE VARIABLES ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const container = document.getElementById('presentation-container');
+        
+        // --- 16:9 CONTAINER AUTOSCALING ENGINE ---
+        function adjustScale() {
+            const baseWidth = 1920;
+            const baseHeight = 1080;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            const scaleX = windowWidth / baseWidth;
+            const scaleY = windowHeight / baseHeight;
+            const scale = Math.min(scaleX, scaleY);
+            
+            container.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        window.addEventListener('resize', adjustScale);
+        window.addEventListener('load', adjustScale);
+        adjustScale();
+
+        // --- SLIDE NAVIGATION ---
+        function updateSlides(index) {
+            // Remove active/prev classes from all
+            slides.forEach(s => {
+                s.classList.remove('active');
+                s.classList.remove('prev');
+            });
+            
+            // Set prev class on previous active slide for animations
+            if (currentSlide !== index) {
+                slides[currentSlide].classList.add('prev');
+            }
+            
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            
+            // Update counter and sidebar highlighting
+            const displayIndex = String(currentSlide + 1).padStart(2, '0');
+            const totalIndex = String(slides.length).padStart(2, '0');
+            document.getElementById('panel-slide-counter').textContent = `${displayIndex}/${totalIndex}`;
+            
+            const listItems = document.querySelectorAll('.slide-list-item');
+            listItems.forEach((item, idx) => {
+                if (idx === currentSlide) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Clear drawing canvas on slide change
+            clearCanvas();
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                updateSlides(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                updateSlides(currentSlide - 1);
+            }
+        }
+
+        // --- KEYBOARD BINDINGS ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'Backspace' || e.key === 'PageUp') {
+                prevSlide();
+            } else if (e.key === 'f' || e.key === 'F') {
+                toggleFullscreen();
+            }
+        });
+
+        document.getElementById('btn-prev').addEventListener('click', prevSlide);
+        document.getElementById('btn-next').addEventListener('click', nextSlide);
+
+        // --- POPULATE SLIDE INDEX SIDEBAR ---
+        const sidebarList = document.getElementById('sidebar-slide-list');
+        slides.forEach((slide, idx) => {
+            const title = slide.getAttribute('data-title') || `Slide ${idx + 1}`;
+            const li = document.createElement('li');
+            li.className = 'slide-list-item';
+            if (idx === 0) li.classList.add('active');
+            
+            const numSpan = document.createElement('span');
+            numSpan.className = 'slide-num';
+            numSpan.textContent = String(idx + 1).padStart(2, '0');
+            
+            const titleSpan = document.createElement('span');
+            titleSpan.textContent = title;
+            
+            li.appendChild(numSpan);
+            li.appendChild(titleSpan);
+            
+            li.addEventListener('click', () => {
+                updateSlides(idx);
+                toggleSidebar(false);
+            });
+            sidebarList.appendChild(li);
+        });
+
+        // --- SIDEBAR ACTIONS ---
+        const sidebar = document.getElementById('slide-index-sidebar');
+        function toggleSidebar(show) {
+            if (show) {
+                sidebar.classList.add('open');
+            } else {
+                sidebar.classList.remove('open');
+            }
+        }
+        document.getElementById('btn-sidebar').addEventListener('click', () => toggleSidebar(true));
+        document.getElementById('btn-close-sidebar').addEventListener('click', () => toggleSidebar(false));
+
+        // --- THEME TOGGLE (LIGHT / DARK) ---
+        const btnTheme = document.getElementById('btn-theme');
+        const themeColorDot = document.getElementById('theme-color-dot');
+        
+        btnTheme.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-mode');
+            
+            // Adjust canvas drawing brush default theme color
+            if (document.documentElement.classList.contains('dark-mode')) {
+                themeColorDot.style.backgroundColor = '#ffffff';
+                themeColorDot.setAttribute('data-color', '#ffffff');
+                if (currentColor === '#0f172a' || currentColor === '#1e293b') {
+                    currentColor = '#ffffff';
+                }
+            } else {
+                themeColorDot.style.backgroundColor = '#0f172a';
+                themeColorDot.setAttribute('data-color', '#0f172a');
+                if (currentColor === '#ffffff') {
+                    currentColor = '#0f172a';
+                }
+            }
+        });
+
+        // Initialize theme color dot color
+        if (document.documentElement.classList.contains('dark-mode')) {
+            themeColorDot.style.backgroundColor = '#ffffff';
+            themeColorDot.setAttribute('data-color', '#ffffff');
+        } else {
+            themeColorDot.style.backgroundColor = '#0f172a';
+            themeColorDot.setAttribute('data-color', '#0f172a');
+        }
+
+        // --- FULLSCREEN CONTROLLER ---
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
+
+        // --- PRACTICE SOLUTIONS REVEAL ENGINE ---
+        function toggleSolution(button) {
+            const drawer = button.nextElementSibling;
+            drawer.classList.toggle('open');
+            if (drawer.classList.contains('open')) {
+                button.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide Solution';
+                // Trigger MathJax re-render for formulas in revealed box
+                if (window.MathJax) {
+                    MathJax.typesetPromise([drawer]);
+                }
+            } else {
+                button.innerHTML = '<i class="fa-solid fa-eye"></i> Show Solution';
+            }
+        }
+
+        // ========================================
+        // TEACHER CANVAS DRAWING & BRUSH ENGINE
+        // ========================================
+        const canvas = document.getElementById('annotation-canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawingMode = false;
+        let isPointerMode = false;
+        let isDrawing = false;
+        let currentColor = '#ff3b30'; // Red is default drawing highlight color
+        let brushSize = 4;
+        
+        const btnDraw = document.getElementById('btn-draw');
+        const btnPointer = document.getElementById('btn-pointer');
+        const btnClear = document.getElementById('btn-clear');
+        const laserDot = document.getElementById('laser-dot');
+
+        // Fit canvas resolution to presentation scale coordinates
+        function resetCanvasResolution() {
+            canvas.width = 1920;
+            canvas.height = 1080;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+        resetCanvasResolution();
+
+        // Mode Switching
+        btnDraw.addEventListener('click', () => {
+            isDrawingMode = !isDrawingMode;
+            isPointerMode = false;
+            laserDot.style.display = 'none';
+            
+            if (isDrawingMode) {
+                btnDraw.classList.add('active');
+                btnPointer.classList.remove('active');
+                canvas.className = 'drawing-active';
+            } else {
+                btnDraw.classList.remove('active');
+                canvas.className = '';
+            }
+        });
+
+        btnPointer.addEventListener('click', () => {
+            isPointerMode = !isPointerMode;
+            isDrawingMode = false;
+            
+            if (isPointerMode) {
+                btnPointer.classList.add('active');
+                btnDraw.classList.remove('active');
+                canvas.className = 'pointer-active';
+            } else {
+                btnPointer.classList.remove('active');
+                laserDot.style.display = 'none';
+                canvas.className = '';
+            }
+        });
+
+        // Brush Colors Pickers
+        const colorDots = document.querySelectorAll('.color-dot');
+        colorDots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                colorDots.forEach(d => d.classList.remove('active'));
+                dot.classList.add('active');
+                
+                let color = dot.getAttribute('data-color');
+                if (color === 'theme') {
+                    color = dot.style.backgroundColor;
+                }
+                currentColor = color;
+                
+                // Automatically activate draw mode if a color is picked
+                if (!isDrawingMode && !isPointerMode) {
+                    isDrawingMode = true;
+                    btnDraw.classList.add('active');
+                    canvas.className = 'drawing-active';
+                }
+            });
+        });
+
+        // Drawing Event Listeners
+        function getCanvasCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            // Scale factors based on 1920x1080 design coordinate system
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            return { x, y };
+        }
+
+        function startDrawing(e) {
+            if (!isDrawingMode) return;
+            isDrawing = true;
+            const coords = getCanvasCoordinates(e);
+            ctx.beginPath();
+            ctx.moveTo(coords.x, coords.y);
+        }
+
+        // Draw and update brush coordinates
+        function draw(e) {
+            if (isPointerMode) {
+                // Render Laser Pointer
+                laserDot.style.display = 'block';
+                laserDot.style.left = `${e.clientX}px`;
+                laserDot.style.top = `${e.clientY}px`;
+                return;
+            }
+            
+            if (!isDrawing || !isDrawingMode) return;
+            const coords = getCanvasCoordinates(e);
+            ctx.lineTo(coords.x, coords.y);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = brushSize;
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        // Mouse Events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+
+        // Touch Events (For tablets and touch screens)
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                startDrawing(e.touches[0]);
+            }
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                draw(e.touches[0]);
+                e.preventDefault(); // Prevent scrolling while drawing
+            }
+        });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Laser pointer check
+        window.addEventListener('mousemove', (e) => {
+            if (!isPointerMode) return;
+            const rect = container.getBoundingClientRect();
+            if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                laserDot.style.display = 'block';
+                laserDot.style.left = `${e.clientX}px`;
+                laserDot.style.top = `${e.clientY}px`;
+            } else {
+                laserDot.style.display = 'none';
+            }
+        });
+
+        // Clear Annotations Actions
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        btnClear.addEventListener('click', clearCanvas);
+
+    </script>
+</body>
+</html>

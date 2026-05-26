@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastersheet: Light - Reflection and Refraction</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu-serif@1.0.0/font-cmu-serif.css">
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    chtml: {
+      mtextInheritFont: true,
+      scale: 1.0,
+      linebreaks: { automatic: true, width: '95%' }
+    },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+  @page { size: A4; margin: 15mm; }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { max-width: 100%; overflow-x: hidden; }
+
+  :root {
+    --primary-color: #e65100;
+    --bg-color: #fff3e0;
+    --body-bg: #fff;
+    --text-main: #000;
+    --text-secondary: #333;
+    --text-muted: #555;
+    --border-color: #ccc;
+  }
+
+  html.dark-mode {
+    --primary-color: #ffb74d;
+    --bg-color: #000000;
+    --body-bg: #000000;
+    --text-main: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #888;
+    --border-color: #444;
+  }
+
+  body {
+    font-family: "Times New Roman", Times, serif;
+    background-color: var(--body-bg);
+    color: var(--text-main);
+    line-height: 1.4; margin: 0; padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+    overflow-x: hidden; width: 100%; max-width: 100vw;
+  }
+  .container {
+    width: 100%; max-width: 210mm; margin: 0 auto;
+    padding: 20px 15px; overflow: hidden;
+  }
+
+  .header {
+    text-align: center;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 15px; margin-bottom: 20px; position: relative;
+  }
+  .institute-name {
+    font-size: 24pt; font-weight: bold; text-transform: uppercase;
+    letter-spacing: 0.5px; margin: 0; color: var(--primary-color); word-break: break-word;
+  }
+  .tagline {
+    font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+    color: var(--text-secondary);
+  }
+  .tagline a { text-decoration: none; color: inherit; }
+  .worksheet-title {
+    font-size: 16pt; font-weight: bold; text-decoration: underline;
+    margin-top: 5px; color: var(--text-secondary);
+  }
+  .meta-info {
+    display: flex; justify-content: space-between; font-weight: bold;
+    margin-top: 15px; font-size: 11pt; background-color: var(--bg-color);
+    padding: 10px 15px; border-radius: 5px; border: 1px solid var(--primary-color);
+    color: var(--primary-color); flex-wrap: wrap; gap: 10px;
+  }
+  .meta-info span { white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .student-name-container { display: inline-flex; align-items: flex-end; flex: 1 1 300px; max-width: 100%; }
+  .student-name-underline {
+    border-bottom: 1.5px dotted var(--primary-color);
+    flex-grow: 1; margin-left: 5px; margin-bottom: 3px; min-width: 120px; height: 1px;
+  }
+  .q-content, .ans-details, .case-text, .chapter-header, .institute-name, .tagline, .worksheet-title {
+    word-wrap: break-word; overflow-wrap: break-word;
+  }
+
+  .chapter-header {
+    background-color: var(--bg-color); color: var(--primary-color); font-weight: bold;
+    padding: 8px 10px; margin-top: 25px; margin-bottom: 15px;
+    border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color);
+    font-size: 13pt; text-transform: uppercase; page-break-after: avoid;
+  }
+  .questions-container { display: flex; flex-direction: column; gap: 12px; }
+  .question-item {
+    display: flex; align-items: baseline; margin-bottom: 5px;
+    font-size: 11pt; page-break-inside: avoid; text-align: left;
+  }
+  .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); flex-shrink: 0; }
+  .q-content { flex: 1; min-width: 0; }
+  .q-content ol { margin-top: 5px; margin-left: 20px; list-style-type: lower-alpha; }
+  .q-content li { margin-bottom: 3px; }
+
+  .footer {
+    margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color);
+    text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color);
+    page-break-before: auto; line-height: 1.6;
+  }
+
+  .watermark {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 70%; opacity: 0.08; z-index: -1; pointer-events: none;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+  html.dark-mode .watermark { filter: invert(1); opacity: 0.05; }
+
+  .theme-toggle {
+    position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+    border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+    z-index: 1000; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  html.dark-mode .theme-toggle { filter: invert(1) hue-rotate(180deg); background: #e0e0e0; }
+  .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+  .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+  .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+  html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+  html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+  .back-btn {
+    position: fixed; bottom: 20px; left: 20px; background: var(--bg-color);
+    color: var(--primary-color); border: 1px solid var(--primary-color);
+    padding: 8px 15px; border-radius: 20px; text-decoration: none;
+    font-weight: bold; font-size: 11pt; z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease;
+  }
+  .back-btn:hover { background: var(--primary-color); color: #fff; }
+
+  .case-header { font-weight: bold; color: var(--primary-color); margin-top: 15px; margin-bottom: 5px; font-size: 11.5pt; }
+  .case-text { font-style: italic; color: var(--text-secondary); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--primary-color); font-size: 10.5pt; }
+
+  mjx-container { max-width: 100% !important; overflow: visible; display: inline-block; vertical-align: middle; padding: 2px 0; }
+  mjx-container[display="true"] { display: block !important; padding: 6px 0; text-align: left; max-width: 100% !important; overflow: visible; }
+
+  @media screen and (max-width: 768px) {
+    html, body { overflow-x: hidden !important; max-width: 100% !important; }
+    .container { padding: 15px 10px; max-width: 100% !important; overflow: hidden; }
+    .header { padding-bottom: 10px; margin-bottom: 15px; padding-right: 50px; }
+    .institute-name { font-size: 16pt; letter-spacing: 0; }
+    .tagline { font-size: 10pt; }
+    .worksheet-title { font-size: 11pt; }
+    .meta-info { flex-direction: column; gap: 6px; font-size: 10pt; padding: 8px 10px; }
+    .meta-info span { white-space: normal; word-break: break-word; overflow-wrap: break-word; }
+    .student-name-container { flex: 1 1 auto; width: 100%; }
+    .student-name-underline { min-width: 60px; }
+    .chapter-header { font-size: 10pt; margin-top: 15px; margin-bottom: 10px; padding: 5px 8px; white-space: normal; overflow-wrap: break-word; }
+    .question-item { font-size: 10pt; margin-bottom: 8px; }
+    .q-num { min-width: 20px; margin-right: 6px; flex-shrink: 0; }
+    .q-content { overflow: visible; }
+    .footer { margin-top: 25px; font-size: 8pt; padding-bottom: 55px; }
+    .back-btn { padding: 6px 10px; font-size: 9pt; bottom: 12px; left: 12px; max-width: calc(50vw - 24px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .theme-toggle { width: 36px; height: 36px; top: 12px; right: 12px; }
+    .case-header, .case-text { font-size: 10pt; }
+  }
+  @media screen and (max-width: 420px) {
+    .institute-name { font-size: 13pt !important; letter-spacing: 0 !important; }
+    .tagline { font-size: 9.5pt !important; }
+    .worksheet-title { font-size: 10pt !important; }
+    .chapter-header { font-size: 9.5pt !important; padding: 4px 6px !important; }
+    .meta-info { padding: 6px 8px !important; font-size: 9pt !important; }
+    .student-name-underline { min-width: 50px !important; }
+    .question-item { font-size: 9.5pt !important; }
+  }
+  @media print {
+    .theme-toggle, .back-btn { display: none; }
+    .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+    .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+  }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+  </button>
+  <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+
+  <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+  <a href="Practice.html" class="back-btn">&larr; Back to Practice Arena</a>
+
+  <div class="container">
+    <div class="header">
+      <h1 class="institute-name">Vardaan Learning Institute</h1>
+      <div class="tagline"><a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336</div>
+      <div class="worksheet-title">Mastersheet: Light — Reflection and Refraction</div>
+      <div class="meta-info">
+        <span class="student-name-container">Student Name: <span class="student-name-underline"></span></span>
+        <span>Class: 10 CBSE</span>
+        <span>Subject: Science (Physics)</span>
+      </div>
+    </div>
+
+    <!-- Topic 1 -->
+    <div class="chapter-header">Topic 1: Reflection of Light & Spherical Mirrors</div>
+    <div class="questions-container">
+      <div class="question-item"><span class="q-num">1.</span><div class="q-content">State the laws of reflection of light. Do these laws hold true for irregular, rough, and curved reflecting surfaces? Explain.</div></div>
+      <div class="question-item"><span class="q-num">2.</span><div class="q-content">Differentiate between a real image and a virtual image. Can a real image be obtained on a screen? Can a virtual image be photographed?</div></div>
+      <div class="question-item"><span class="q-num">3.</span><div class="q-content">Define the following terms for a spherical mirror: (a) Center of curvature, (b) Principal axis, (c) Focus, and (d) Focal length. Explain the relationship $R = 2f$.</div></div>
+      <div class="question-item"><span class="q-num">4.</span><div class="q-content">Draw neat, standard ray diagrams showing the three rules used to construct images formed by: (a) a concave mirror, (b) a convex mirror.</div></div>
+      <div class="question-item"><span class="q-num">5.</span><div class="q-content">Draw ray diagrams showing the position, nature, and relative size of the image formed by a <strong>concave mirror</strong> when the object is placed:<ol><li>At infinity</li><li>Beyond C</li><li>At C</li><li>Between C and F</li><li>At F</li><li>Between P and F</li></ol></div></div>
+      <div class="question-item"><span class="q-num">6.</span><div class="q-content">Explain why a convex mirror is universally used as a rear-view (wing) mirror in motor vehicles, instead of a plane mirror or a concave mirror. List two reasons.</div></div>
+      <div class="question-item"><span class="q-num">7.</span><div class="q-content">State the new Cartesian sign conventions used for spherical mirrors. Why is the focal length of a concave mirror always negative, while that of a convex mirror is positive?</div></div>
+      <div class="question-item"><span class="q-num">8.</span><div class="q-content">Write down the <strong>mirror formula</strong> and magnification formula. What does: (a) a negative magnification ($m < 0$), (b) a positive magnification ($m > 0$) indicate about the image?</div></div>
+      <div class="question-item"><span class="q-num">9.</span><div class="q-content">An object of size $4\text{ cm}$ is placed at a distance of $25\text{ cm}$ in front of a concave mirror of focal length $15\text{ cm}$. Find the position, nature, and size of the image formed.</div></div>
+      <div class="question-item"><span class="q-num">10.</span><div class="q-content">A convex mirror used for rear-view on an automobile has a radius of curvature of $3.0\text{ m}$. If a bus is located at $5.0\text{ m}$ from this mirror, find the position, nature, and magnification of the image.</div></div>
+      <div class="question-item"><span class="q-num">11.</span><div class="q-content">A concave mirror produces three times magnified real image of an object placed at $10\text{ cm}$ in front of it. Where is the image located? Calculate the focal length.</div></div>
+      <div class="question-item"><span class="q-num">12.</span><div class="q-content">What is a solar furnace? Explain how concave mirrors are used in solar furnaces and solar cookers to generate intense heat.</div></div>
+    </div>
+
+    <!-- Topic 2 -->
+    <div class="chapter-header">Topic 2: Refraction of Light & Rectangular Glass Slab</div>
+    <div class="questions-container">
+      <div class="question-item"><span class="q-num">13.</span><div class="q-content">What is refraction of light? Explain the cause of refraction when light travels from one transparent medium to another in terms of speed of light.</div></div>
+      <div class="question-item"><span class="q-num">14.</span><div class="q-content">State the laws of refraction of light. What is <strong>Snell's Law</strong>? Write its mathematical expression.</div></div>
+      <div class="question-item"><span class="q-num">15.</span><div class="q-content">Define <strong>refractive index</strong> of a medium. Differentiate between absolute refractive index and relative refractive index. Write the mathematical equations.</div></div>
+      <div class="question-item"><span class="q-num">16.</span><div class="q-content">Draw a neat ray diagram showing the refraction of a ray of light through a rectangular glass slab. Label the incident ray, refracted ray, emergent ray, angle of incidence ($i$), angle of refraction ($r$), angle of emergence ($e$), and <strong>lateral displacement</strong>. Prove that the emergent ray is parallel to the incident ray.</div></div>
+      <div class="question-item"><span class="q-num">17.</span><div class="q-content">What is lateral displacement? List three factors upon which the lateral displacement of a light ray passing through a glass slab depends.</div></div>
+      <div class="question-item"><span class="q-num">18.</span><div class="q-content">The speed of light in vacuum is $3 \times 10^8\text{ m/s}$. Find the speed of light in a glass medium of refractive index $1.5$.</div></div>
+      <div class="question-item"><span class="q-num">19.</span><div class="q-content">The refractive index of water is $1.33$ and that of glass is $1.50$. Find: (a) refractive index of glass with respect to water, (b) refractive index of water with respect to glass.</div></div>
+      <div class="question-item"><span class="q-num">20.</span><div class="q-content">A ray of light enters from air into a medium 'X' at an angle of incidence of $45^\circ$. If the angle of refraction inside 'X' is $30^\circ$, calculate the refractive index of 'X'. (Take $\sin 45^\circ = 0.707$, $\sin 30^\circ = 0.5$).</div></div>
+      <div class="question-item"><span class="q-num">21.</span><div class="q-content">Explain why a pencil partially dipped in water appears bent at the water surface when viewed obliquely. Draw a neat ray diagram to support your explanation.</div></div>
+      <div class="question-item"><span class="q-num">22.</span><div class="q-content">Why does a pool of water appear shallower than it actually is? Define real depth and apparent depth, and write their relation with refractive index.</div></div>
+    </div>
+
+    <!-- Topic 3 -->
+    <div class="chapter-header">Topic 3: Spherical Lenses and Power</div>
+    <div class="questions-container">
+      <div class="question-item"><span class="q-num">23.</span><div class="q-content">What is a lens? Differentiate between a convex (converging) lens and a concave (diverging) lens based on their physical shape and optical properties.</div></div>
+      <div class="question-item"><span class="q-num">24.</span><div class="q-content">Define the following terms for a spherical lens: (a) Optical center, (b) Principal focus ($F_1$ and $F_2$), (c) Aperture, and (d) Focal length.</div></div>
+      <div class="question-item"><span class="q-num">25.</span><div class="q-content">Draw standard ray diagrams showing the three rules used to construct images formed by: (a) a convex lens, (b) a concave lens.</div></div>
+      <div class="question-item"><span class="q-num">26.</span><div class="q-content">Draw ray diagrams showing the position, nature, and relative size of the image formed by a <strong>convex lens</strong> when the object is placed:<ol><li>At infinity</li><li>Beyond $2F_1$</li><li>At $2F_1$</li><li>Between $F_1$ and $2F_1$</li><li>At $F_1$</li><li>Between optical center and $F_1$</li></ol></div></div>
+      <div class="question-item"><span class="q-num">27.</span><div class="q-content">Draw ray diagrams showing the image formed by a <strong>concave lens</strong> for: (a) an object at infinity, (b) an object at a finite distance. What is the nature of the images formed?</div></div>
+      <div class="question-item"><span class="q-num">28.</span><div class="q-content">State the Cartesian sign conventions used for spherical lenses. Why is the focal length of a convex lens positive, while that of a concave lens is negative?</div></div>
+      <div class="question-item"><span class="q-num">29.</span><div class="q-content">Write down the <strong>lens formula</strong> and magnification formula. Contrast these formulas with those of spherical mirrors.</div></div>
+      <div class="question-item"><span class="q-num">30.</span><div class="q-content">A concave lens has a focal length of $15\text{ cm}$. At what distance should the object from the lens be placed so that it forms an image at $10\text{ cm}$ from the lens? Also, find the magnification produced.</div></div>
+      <div class="question-item"><span class="q-num">31.</span><div class="q-content">A $2.0\text{ cm}$ tall object is placed perpendicular to the principal axis of a convex lens of focal length $10\text{ cm}$. The distance of the object from the lens is $15\text{ cm}$. Find the nature, position, and size of the image.</div></div>
+      <div class="question-item"><span class="q-num">32.</span><div class="q-content">Define <strong>power of a lens</strong>. What is the SI unit of power? Define one <strong>dioptre</strong>.</div></div>
+      <div class="question-item"><span class="q-num">33.</span><div class="q-content">A doctor prescribes a corrective lens of power $+2.0\text{ D}$. Find the focal length of the lens. Is the prescribed lens converging or diverging?</div></div>
+      <div class="question-item"><span class="q-num">34.</span><div class="q-content">Find the power of a concave lens of focal length $2\text{ m}$. What is its optical sign?</div></div>
+      <div class="question-item"><span class="q-num">35.</span><div class="q-content">If two thin lenses of powers $P_1$ and $P_2$ are placed in close contact, write the formula for the net power ($P$) and net focal length ($f$) of the combination. What is the physical advantage of using a lens combination in optical instruments?</div></div>
+    </div>
+
+    <!-- Topic 4 -->
+    <div class="chapter-header">Topic 4: Competency-Based Case Studies & Integrated Questions</div>
+    <div class="questions-container">
+      <div class="case-header">Case Study 1: The Dentist's Special Tool</div>
+      <div class="case-text">Dr. Mehta is a dentist. During a dental checkup of a patient, she uses a small, circular mirror attached to a handle to examine a cavity in a molar tooth. To see a highly magnified, upright, and clear image of the tooth, she holds the mirror very close to the patient's tooth.</div>
+      <div class="question-item"><span class="q-num">36.</span><div class="q-content">Based on Case Study 1, answer the following:<ol><li>Identify the type of spherical mirror used by Dr. Mehta.</li><li>Draw a neat ray diagram showing the image formation for this specific setup. (Specify where the object tooth is relative to the mirror's focus and pole).</li><li>What would happen to the image if Dr. Mehta pulls the mirror far away from the tooth? Describe the change in nature and orientation of the image.</li></ol></div></div>
+
+      <div class="case-header">Case Study 2: The Solar Cooker Project</div>
+      <div class="case-text">For a school science exhibition, Ravi constructs a high-efficiency solar cooker. He uses a large, polished curved reflector that focuses all incident parallel solar rays onto a single black cooking pot suspended in front of the reflector. Within 20 minutes, water inside the pot begins to boil.</div>
+      <div class="question-item"><span class="q-num">37.</span><div class="q-content">Based on Case Study 2, answer the following:<ol><li>What type of spherical mirror is used as the curved solar reflector? Where should the cooking pot be placed for maximum efficiency?</li><li>Explain using a ray diagram how the parallel solar rays are focused by this mirror.</li><li>Why is the cooking pot painted black? Explain based on heat absorption.</li></ol></div></div>
+
+      <div class="case-header">Case Study 3: The Swimming Pool Illusion</div>
+      <div class="case-text">Tina is standing next to a clean outdoor swimming pool. The pool's display board states that the actual depth of the pool at the deep end is 3.0 meters. However, looking straight down, Tina estimates that the pool bottom appears to be only about 2.25 meters deep. She asks her physics teacher to explain this difference.</div>
+      <div class="question-item"><span class="q-num">38.</span><div class="q-content">Based on Case Study 3, answer the following:<ol><li>Name the optical phenomenon responsible for the pool appearing shallower.</li><li>Using the actual depth of $3.0\text{ m}$ and apparent depth of $2.25\text{ m}$, calculate the refractive index of water.</li><li>Draw a neat ray diagram showing how light rays starting from a point on the pool bottom refract as they enter air, showing why they appear to originate from a shallower point.</li></ol></div></div>
+
+      <div class="case-header">Case Study 4: The Spectacle Prescription</div>
+      <div class="case-text">Arun has difficulty reading the blackboard clearly from the back bench. An optometrist prescribes spectacles with a lens power of -1.5 D. Arun is confused about what this negative number means and whether his lens is thick in the middle or at the edges.</div>
+      <div class="question-item"><span class="q-num">39.</span><div class="q-content">Based on Case Study 4, answer the following:<ol><li>Identify the type of lens prescribed to Arun. What is its focal length?</li><li>Explain whether this lens is thin at the center and thick at the edges, or vice-versa.</li><li>Draw a ray diagram showing how this lens diverges a parallel beam of light.</li></ol></div></div>
+
+      <div class="case-header">Competency Check: The Lens Combination Challenge</div>
+      <div class="case-text">An optical instrument in a physics lab uses a combination of two thin lenses in close contact. Lens A is a convex lens of focal length +20 cm. Lens B is a concave lens of focal length -25 cm. The students are asked to calculate the net power and predict if the combination behaves as a converging or diverging system.</div>
+      <div class="question-item"><span class="q-num">40.</span><div class="q-content">Based on the Lens Combination Challenge, answer the following:<ol><li>Calculate the individual powers of Lens A and Lens B in dioptres.</li><li>Find the net power ($P$) and the net focal length ($f$) of the combination.</li><li>Does this lens combination behave as a converging or diverging system? Explain.</li></ol></div></div>
+
+      <div class="case-header">Integrated Puzzle: The Mystery Medium 'M'</div>
+      <div class="case-text">A ray of light enters obliquely from a medium 'A' of refractive index $1.2$ into a mystery medium 'M'. The angle of incidence is $45^\circ$ and the angle of refraction inside 'M' is $30^\circ$. The light then exits 'M' into water (refractive index $1.33$).</div>
+      <div class="question-item"><span class="q-num">41.</span><div class="q-content">Based on the puzzle description, answer the following:<ol><li>Find the absolute refractive index of the mystery medium 'M'. (Take $\sin 45^\circ = 0.707$, $\sin 30^\circ = 0.5$).</li><li>Find the speed of light inside the mystery medium 'M'.</li><li>Will the light ray bend towards or away from the normal when it enters from 'M' into water? Explain based on refractive index.</li></ol></div></div>
+
+      <div class="question-item"><span class="q-num">42.</span><div class="q-content">Define focus of a concave mirror. Why does a concave mirror converge parallel rays of light, whereas a convex mirror diverges them? Explain using the laws of reflection on curved surfaces.</div></div>
+      <div class="question-item"><span class="q-num">43.</span><div class="q-content">A concave mirror is used as a shaving mirror. What is the position of the face relative to the mirror for safe and effective shaving? What is the nature of the image?</div></div>
+      <div class="question-item"><span class="q-num">44.</span><div class="q-content">Why is the magnification of a plane mirror always $+1$? Explain the significance of both the plus sign and the number one.</div></div>
+      <div class="question-item"><span class="q-num">45.</span><div class="q-content">Can a convex mirror ever form a real image of a real object? If not, explain why under all object positions the image is virtual, erect, and diminished.</div></div>
+      <div class="question-item"><span class="q-num">46.</span><div class="q-content">Define relative refractive index of medium 2 with respect to medium 1 ($n_{21}$). Prove that $n_{21} \times n_{12} = 1$.</div></div>
+      <div class="question-item"><span class="q-num">47.</span><div class="q-content">Explain Snells law. Why does a ray of light passing normally through a refracting interface (angle of incidence $i = 0^\circ$) go undeviated? Calculate $r$ mathematically.</div></div>
+      <div class="question-item"><span class="q-num">48.</span><div class="q-content">A coin placed at the bottom of a beaker filled with water appears to rise. If the water (refractive index $\frac{4}{3}$) is filled up to a height of $12\text{ cm}$, calculate the apparent rise of the coin.</div></div>
+      <div class="question-item"><span class="q-num">49.</span><div class="q-content">What is lateral displacement? Explain why a wider glass slab causes more lateral displacement of light compared to a thinner glass slab.</div></div>
+      <div class="question-item"><span class="q-num">50.</span><div class="q-content">A convex lens forms a real and inverted image of a needle at a distance of $50\text{ cm}$ from it. Where is the needle placed in front of the convex lens if the image is equal to the size of the object? Also, find the power of the lens.</div></div>
+      <div class="question-item"><span class="q-num">51.</span><div class="q-content">Describe the focal focus of a concave lens. Why is it called a virtual focus? Draw a ray diagram to support your answer.</div></div>
+      <div class="question-item"><span class="q-num">52.</span><div class="q-content">An object is placed at a distance of $10\text{ cm}$ from a convex lens of focal length $12\text{ cm}$. Find the position, nature, and magnification of the image. Draw the ray diagram.</div></div>
+      <div class="question-item"><span class="q-num">53.</span><div class="q-content">An object is placed at a distance of $20\text{ cm}$ in front of a concave lens of focal length $20\text{ cm}$. Find the image distance, nature, and size of the image.</div></div>
+      <div class="question-item"><span class="q-num">54.</span><div class="q-content">A lens of focal length $f$ is cut horizontally into two equal halves along the principal axis. What will be the focal length and power of each half? Explain.</div></div>
+      <div class="question-item"><span class="q-num">55.</span><div class="q-content">Why is the power of a combination of lenses calculated by algebraic addition of individual powers? Explain with reference to the total deviation of light rays.</div></div>
+      <div class="question-item"><span class="q-num">56.</span><div class="q-content">Define magnification of a lens. How does the magnification of a lens differ from the magnification of a mirror in terms of its formula?</div></div>
+      <div class="question-item"><span class="q-num">57.</span><div class="q-content">A ray of light traveling in water falls obliquely on a glass plate. If the angle of incidence is $30^\circ$, will the ray bend towards or away from the normal inside the glass? Explain using refractive indices ($n_w = 1.33, n_g = 1.5$).</div></div>
+      <div class="question-item"><span class="q-num">58.</span><div class="q-content">Explain why we see stars twinkling in the night sky. Is this caused by reflection or refraction? Discuss the atmospheric factors involved.</div></div>
+      <div class="question-item"><span class="q-num">59.</span><div class="q-content">What is critical angle and total internal reflection? State two conditions necessary for total internal reflection to occur. (Brief conceptual introduction).</div></div>
+      <div class="question-item"><span class="q-num">60.</span><div class="q-content">Evaluate the use of high-power convex lenses in magnifying glasses. Why does a magnifying glass form a virtual image only when the object is held within its focal length?</div></div>
+    </div>
+    <div class="footer">
+      Created by Team Vardaan | Powered by Vardaan Comet<br>
+      Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+    </div>
+  </div>
+</body>
+</html>
