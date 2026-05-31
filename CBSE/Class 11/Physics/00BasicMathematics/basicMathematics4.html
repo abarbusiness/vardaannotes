@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 4: Coordinate Geometry & Graphs | Physics Math | Vardaan</title>
+
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #000000;
+            --yellow-border: #fdd835;
+            --green-bg: #000000;
+            --green-border: #81c784;
+            --blue-bg: #000000;
+            --blue-border: #64b5f6;
+            --pink-bg: #000000;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.05);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pink-box {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        .pink-box .box-label {
+            color: var(--pink-border);
+            border-color: var(--pink-border);
+        }
+
+        /* --- CUSTOM NOTE ELEMENTS --- */
+        .nav-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pill {
+            border: 1px solid var(--blue-border);
+            color: var(--blue-border);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            background: transparent;
+            text-decoration: none;
+        }
+
+        .pill.active {
+            background-color: var(--blue-border);
+            color: var(--paper-bg);
+            font-weight: bold;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .rule-card {
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 15px;
+            background: var(--example-bg);
+        }
+
+        .rule-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .rule-card-top-green {
+            border-top: 4px solid var(--green-border);
+        }
+
+        .rule-card-top-pink {
+            border-top: 4px solid var(--pink-border);
+        }
+
+        .solved-example {
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+
+        /* Basic Card Style */
+        .card { padding:18px; border:1px solid var(--toggle-border); border-radius:8px; background:var(--example-bg); line-height:1.7; }
+
+        .drill-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0;
+        }
+
+        .drill-list li {
+            margin-bottom: 18px;
+            padding-left: 25px;
+            text-indent: -25px;
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            background: var(--example-bg);
+        }
+
+        .answer-table th,
+        .answer-table td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .answer-table th {
+            color: var(--blue-border);
+            font-weight: bold;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--example-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--toggle-border);
+        }
+
+        .physics-insight { border-left:4px solid #ff8f00; background:#fff8e1; padding:12px 18px; border-radius:0 8px 8px 0; margin:20px 0; font-size:.97rem; }
+        html.dark-mode .physics-insight { background:#2a1f00; border-left-color:#ffca28; }
+        .physics-insight strong { color:#e65100; }
+        html.dark-mode .physics-insight strong { color:#ffcc02; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.9 !important;
+                mix-blend-mode: normal !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                pointer-events: none !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+            }
+
+            /* Keep rules from page breaking */
+            .rule-card,
+            .blue-box,
+            .green-box,
+            .yellow-box,
+            .pink-box,
+            .solved-example,
+            .chart-container,
+            .card,
+            .physics-insight,
+            .answer-table {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left {
+                    content: none;
+                }
+
+                @bottom-right {
+                    content: none;
+                }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="created-by" style="color: var(--meta-text); font-size: 0.8rem; margin-bottom: 5px;">Created by Team Vardaan with ❤️</div>
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">CLASS 11 PHYSICS • BASIC MATHEMATICS — PART 4 OF 7</div>
+            <div class="powered-by" style="margin-top: 5px;">Powered by Vardaan Comet</div>
+
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <nav class="nav-pills">
+            <a href="basicMathematics1.html" class="pill">1: Algebra</a>
+            <a href="basicMathematics2.html" class="pill">2: Logarithms</a>
+            <a href="basicMathematics3.html" class="pill">3: Trigonometry</a>
+            <a href="basicMathematics4.html" class="pill active">4: Coord. Geometry</a>
+            <a href="basicMathematics5.html" class="pill">5: Differentiation</a>
+            <a href="basicMathematics6.html" class="pill">6: Integration</a>
+            <a href="basicMathematics7.html" class="pill">7: Vectors</a>
+        </nav>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>COORDINATE GEOMETRY & GRAPHS</h1>
+
+        <div class="blue-box">
+            <span class="box-label">WHY THIS MATTERS</span>
+            <p>Physics is fundamentally visual. The shape of a velocity-time graph tells you whether the object accelerates or decelerates. Recognising a <em>parabola</em> means understanding projectile motion. An isothermal process is a <em>rectangular hyperbola</em>. <strong>Being able to identify standard graph shapes from their equations is an essential physics skill.</strong></p>
+        </div>
+
+        <h2>§1. The Cartesian Coordinate System</h2>
+        <p>Every point in a 2D plane is described by an ordered pair $(x, y)$ — the horizontal (x-axis) and vertical (y-axis) distance from the origin (0, 0).</p>
+        <ul>
+            <li><strong>Abscissa:</strong> The x-coordinate (horizontal position)</li>
+            <li><strong>Ordinate:</strong> The y-coordinate (vertical position)</li>
+            <li><strong>Origin:</strong> $(0, 0)$ — the reference point</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">DISTANCE FORMULA</span>
+            <p>Distance between two points $A(x_1, y_1)$ and $B(x_2, y_2)$:</p>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$$
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example:</strong> Find distance between $(3, 4)$ and $(0, 0)$:</p>
+            <p>$d = \sqrt{(3-0)^2 + (4-0)^2} = \sqrt{9+16} = \sqrt{25} = \mathbf{5}$</p>
+        </div>
+
+        <h2>§2. Straight Lines — The Most Common Physics Graph</h2>
+        <div class="chart-container">
+            <canvas id="lineChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Examples of lines with different slopes and intercepts</p>
+        </div>
+        <div class="blue-box">
+            <span class="box-label">SLOPE-INTERCEPT FORM</span>
+            <div style="text-align: center; font-size: 1.3rem; margin: 15px 0;">
+                $$y = mx + c$$
+            </div>
+            <ul>
+                <li>$m = \text{slope} = \tan\alpha = \frac{\Delta y}{\Delta x}$ (gradient; represents rate of change)</li>
+                <li>$c = \text{y-intercept}$ (value of $y$ when $x = 0$)</li>
+            </ul>
+        </div>
+
+        <div class="card-grid">
+            <div class="card"><strong>Positive Slope ($m > 0$):</strong> Line rises left to right. Uniform acceleration (v-t graph).</div>
+            <div class="card"><strong>Negative Slope ($m < 0$):</strong> Line falls left to right. Deceleration.</div>
+            <div class="card"><strong>Zero Slope ($m = 0$):</strong> Horizontal line. Constant velocity.</div>
+            <div class="card"><strong>Infinite Slope:</strong> Vertical line. Instantaneous event (not physical).</div>
+        </div>
+
+        <div class="physics-insight">
+            <strong>⚛️ Physics Use:</strong><br>
+            • In a <em>velocity-time graph</em> ($v$ vs $t$): slope = acceleration.<br>
+            • In a <em>displacement-time graph</em> ($s$ vs $t$): slope = velocity.<br>
+            • In a $F$ vs $x$ graph for spring: slope = spring constant $k$.
+        </div>
+
+
+
+        <h2>§3. Standard Graph Shapes in Physics</h2>
+        <h3>1. Parabola</h3>
+        <div class="chart-container">
+            <canvas id="parabolaChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Parabola: $y = x^2$ (blue) and $y = -x^2$ (red) — Projectile path shape</p>
+        </div>
+        <p>When $y \propto x^2$ or $y = ax^2 + bx + c$, the graph is a <strong>parabola</strong> — a symmetric U-shaped (or inverted U-shaped) curve.</p>
+
+        <div class="card-grid">
+            <div class="card"><strong>Opening Upward:</strong> $y = x^2$. Minimum at vertex.</div>
+            <div class="card"><strong>Opening Downward:</strong> $y = -x^2$. Maximum at vertex. Like a projectile path!</div>
+        </div>
+
+
+
+        <div class="physics-insight">
+            <strong>⚛️ Projectile Trajectory:</strong><br>
+            $y= (\tan\theta_0)x - \frac{gx^2}{2u_0^2\cos^2\theta_0}$<br>
+            This is of the form $y = Ax - Bx^2$, which is a <strong>downward parabola</strong>.
+        </div>
+
+        <h3>2. Rectangular Hyperbola</h3>
+        <div class="chart-container">
+            <canvas id="hyperbolaChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Rectangular Hyperbola: PV = constant (Boyle's Law)</p>
+        </div>
+        <p>When $xy = k$ (a constant), the graph is a <strong>rectangular hyperbola</strong>. As $x$ increases, $y$ decreases proportionally.</p>
+
+
+
+        <div class="physics-insight">
+            <strong>⚛️ Boyle's Law:</strong> At constant temperature, $PV = \text{const}$. A P-V graph is a rectangular hyperbola. An <strong>inverse relationship</strong> always gives this shape.
+        </div>
+
+        <h3>3. Circle</h3>
+        <p>Equation of a circle centered at origin with radius $r$:</p>
+        <div style="text-align: center; margin: 15px 0;">
+            $$x^2 + y^2 = r^2$$
+        </div>
+        <p>For a circle centered at $(h, k)$: $(x-h)^2 + (y-k)^2 = r^2$</p>
+
+        <h3>4. Ellipse</h3>
+        <p>Standard form: $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ where $a \neq b$. Area = $\pi ab$.</p>
+
+        <div class="physics-insight">
+            <strong>⚛️ Kepler's First Law:</strong> All planets orbit the Sun in <strong>elliptical</strong> orbits with the Sun at one focus.
+        </div>
+
+        <h3>5. Power Curves: $y = x^n$</h3>
+        <div class="chart-container">
+            <canvas id="powerChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Power laws: $y = x, y = x^2, y = x^3, y = \sqrt{x}$</p>
+        </div>
+
+
+        <h2>§4. Reading Graphs in Physics — Slope & Area</h2>
+        <div class="green-box">
+            <span class="box-label">KEY PRINCIPLE</span>
+            <p>In any physics graph $y$ vs $x$:</p>
+            <ul>
+                <li><strong>Slope of graph</strong> = $\frac{dy}{dx}$ = the derivative of $y$ with respect to $x$</li>
+                <li><strong>Area under graph</strong> = $\int y\, dx$ = the integral of $y$ with respect to $x$</li>
+            </ul>
+        </div>
+
+        <table class="answer-table">
+            <thead>
+                <tr>
+                    <th>Graph</th>
+                    <th>Slope gives</th>
+                    <th>Area gives</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>$s$ vs $t$</td><td>Velocity $v$</td><td>(Not directly useful)</td></tr>
+                <tr><td>$v$ vs $t$</td><td>Acceleration $a$</td><td>Displacement $s$</td></tr>
+                <tr><td>$a$ vs $t$</td><td>Jerk</td><td>Change in velocity $\Delta v$</td></tr>
+                <tr><td>$F$ vs $x$</td><td>Spring constant $k$</td><td>Work done $W$</td></tr>
+                <tr><td>$P$ vs $V$</td><td>Isothermal compressibility</td><td>Work done by gas</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Practice Questions</h2>
+        <div class="green-box">
+            <span class="box-label">DRILL 1 — LINES & COORDINATES</span>
+            <ul class="drill-list">
+                <li>1. Find the slope of the line joining $(2, 5)$ and $(4, 11)$.</li>
+                <li>2. Write the equation of a line with slope 3 passing through $(0, -2)$.</li>
+                <li>3. Two lines are: $y = 2x + 1$ and $y = 3x - 4$. Find their intersection point.</li>
+                <li>4. Find the distance between $(3, -2)$ and $(-1, 1)$.</li>
+                <li>5. A displacement-time graph has slope 5. What is the velocity of the object?</li>
+            </ul>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">DRILL 2 — IDENTIFYING SHAPES</span>
+            <ul class="drill-list">
+                <li value="6">6. Identify the shape of the graph of $y = 6/x$.</li>
+                <li>7. What kind of graph is $s = 3t^2 + 2t$ (s vs t)? What is the shape?</li>
+                <li>8. A gas undergoes isothermal compression. Sketch the P-V graph and name its shape.</li>
+                <li>9. In a v-t graph for uniform acceleration, what is the interpretation of the area under the curve?</li>
+                <li>10. The trajectory of a ball is $y = x - 0.1x^2$. Identify the shape and find the maximum height ($y_{max}$).</li>
+            </ul>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">DRILL 3 — ADVANCED ANALYSIS</span>
+            <ul class="drill-list">
+                <li value="11">11. A $F$ vs $x$ graph for a spring has slope 200 N/m. What is the work done when stretched by 0.1 m?</li>
+                <li>12. A v-t graph from 0-5s rises 0 to 20 m/s; from 5-10s is constant. Find total displacement.</li>
+                <li>13. Plot roughly the s-t graph for: Phase 1 (0-2s, 5 m/s), Phase 2 (2-4s, at rest), Phase 3 (4-6s, 3 m/s).</li>
+                <li>14. A planet has elliptical orbit ($a=6$ AU, $b=4$ AU). Find area in $\text{AU}^2$.</li>
+                <li>15. The equation $x^2 + y^2 - 6x + 8y + 20 = 0$ represents a circle. Find its center and radius.</li>
+            </ul>
+        </div>
+
+        <h2>Answer Key</h2>
+        <table class="answer-table">
+            <thead>
+                <tr>
+                    <th>Q</th>
+                    <th style="color: var(--blue-border);">Answer & Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>$m = \frac{11-5}{4-2} = \mathbf{3}$</td></tr>
+                <tr><td>2</td><td>$y = 3x - 2$</td></tr>
+                <tr><td>3</td><td>$2x+1 = 3x-4 \implies x=5, y=11$. Point: $\mathbf{(5, 11)}$</td></tr>
+                <tr><td>4</td><td>$d = \sqrt{(3-(-1))^2+(-2-1)^2} = \sqrt{16+9} = \mathbf{5}$</td></tr>
+                <tr><td>5</td><td>Velocity = slope of s-t graph = <strong>5 m/s</strong></td></tr>
+                <tr><td>6</td><td><strong>Rectangular Hyperbola</strong> ($xy = 6$)</td></tr>
+                <tr><td>7</td><td>Parabola (s is quadratic in t)</td></tr>
+                <tr><td>9</td><td>Area under v-t curve = <strong>displacement</strong></td></tr>
+                <tr><td>10</td><td>Parabola. Max when $dy/dx = 0$: $1 - 0.2x = 0 \implies x = 5$. $y_{max} = 5 - 0.1(25) = \mathbf{2.5}$</td></tr>
+                <tr><td>11</td><td>$W = \frac{1}{2}kx^2 = \frac{1}{2}(200)(0.01) = \mathbf{1\text{ J}}$</td></tr>
+                <tr><td>12</td><td>Phase 1: Area = (1/2)(5)(20) = 50 m. Phase 2: Area = 5×20 = 100 m. Total = <strong>150 m</strong></td></tr>
+                <tr><td>14</td><td>Area = $\pi ab = \pi(6)(4) = \mathbf{24\pi \approx 75.4\text{ AU}^2}$</td></tr>
+                <tr><td>15</td><td>Complete the square: $(x-3)^2 + (y+4)^2 = 5$. Center: $(3, -4)$, Radius: $\sqrt{5}$</td></tr>
+            </tbody>
+        </table>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Theme Toggle Logic
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            rebuildAll();
+        }
+
+        let charts = [];
+        function tc() { return document.documentElement.classList.contains('dark-mode') ? '#aaa' : '#666'; }
+        function gc() { return document.documentElement.classList.contains('dark-mode') ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'; }
+
+        function destroyAll() {
+            charts.forEach(c => c.destroy());
+            charts = [];
+        }
+
+        function buildAll() {
+            const tColor = tc(), gColor = gc();
+            const baseScale = (yMin, yMax) => ({
+                x: { ticks: { maxTicksLimit: 11, color: tColor }, grid: { color: gColor } },
+                y: { min: yMin, max: yMax, ticks: { color: tColor }, grid: { color: gColor } }
+            });
+            const opts = (title, yMin, yMax) => ({
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: tColor } },
+                    title: { display: true, text: title, color: tColor }
+                },
+                scales: baseScale(yMin, yMax)
+            });
+
+            // 1. Line Chart
+            const lineCtx = document.getElementById('lineChart').getContext('2d');
+            const xl = [], y1 = [], y2 = [], y3 = [];
+            for (let i = -10; i <= 10; i++) {
+                xl.push(i);
+                y1.push(2 * i + 1);
+                y2.push(-i + 3);
+                y3.push(0.5 * i - 2);
+            }
+            charts.push(new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: xl,
+                    datasets: [
+                        { label: 'y = 2x + 1', data: y1, borderColor: '#1e88e5', borderWidth: 2.5, pointRadius: 0 },
+                        { label: 'y = -x + 3', data: y2, borderColor: '#d81b60', borderWidth: 2.5, pointRadius: 0 },
+                        { label: 'y = 0.5x - 2', data: y3, borderColor: '#43a047', borderWidth: 2.5, pointRadius: 0 }
+                    ]
+                },
+                options: opts('Straight Lines (x = -10 to +10)', -18, 22)
+            }));
+
+            // 2. Parabola Chart
+            const parabolaCtx = document.getElementById('parabolaChart').getContext('2d');
+            const pxl = [], py1 = [], py2 = [];
+            for (let x = -6; x <= 6; x += 0.2) {
+                pxl.push(x.toFixed(1));
+                py1.push(x * x);
+                py2.push(-x * x);
+            }
+            charts.push(new Chart(parabolaCtx, {
+                type: 'line',
+                data: {
+                    labels: pxl,
+                    datasets: [
+                        { label: 'y = x²', data: py1, borderColor: '#1e88e5', borderWidth: 2.5, pointRadius: 0 },
+                        { label: 'y = -x²', data: py2, borderColor: '#d81b60', borderWidth: 2.5, pointRadius: 0 }
+                    ]
+                },
+                options: opts('Parabolas (x = -6 to +6)', -38, 38)
+            }));
+
+            // 3. Hyperbola Chart
+            const hyperCtx = document.getElementById('hyperbolaChart').getContext('2d');
+            const hxl = [], hy = [];
+            for (let x = 0.4; x <= 10; x += 0.2) {
+                hxl.push(x.toFixed(1));
+                hy.push(6 / x);
+            }
+            charts.push(new Chart(hyperCtx, {
+                type: 'line',
+                data: {
+                    labels: hxl,
+                    datasets: [{ label: 'xy = 6 (Boyle\'s Law)', data: hy, borderColor: '#7e57c2', borderWidth: 2.5, pointRadius: 0 }]
+                },
+                options: opts('Rectangular Hyperbola', 0, 16)
+            }));
+
+            // 4. Power Chart
+            const powerCtx = document.getElementById('powerChart').getContext('2d');
+            const pxl2 = [], py1_2 = [], py2_2 = [], py3_2 = [];
+            for (let x = 0; x <= 5; x += 0.1) {
+                pxl2.push(x.toFixed(1));
+                py1_2.push(x);
+                py2_2.push(x * x);
+                py3_2.push(Math.sqrt(x));
+            }
+            charts.push(new Chart(powerCtx, {
+                type: 'line',
+                data: {
+                    labels: pxl2,
+                    datasets: [
+                        { label: 'y = x', data: py1_2, borderColor: '#1e88e5', borderWidth: 2.5, pointRadius: 0 },
+                        { label: 'y = x²', data: py2_2, borderColor: '#d81b60', borderWidth: 2.5, pointRadius: 0 },
+                        { label: 'y = √x', data: py3_2, borderColor: '#ff8f00', borderWidth: 2.5, pointRadius: 0 }
+                    ]
+                },
+                options: opts('Power Curves', 0, 26)
+            }));
+        }
+
+        function rebuildAll() {
+            destroyAll();
+            buildAll();
+        }
+
+        window.addEventListener('load', buildAll);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 5: Calculus — Differentiation | Physics Math | Vardaan</title>
+
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for rendering graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #000000;
+            --yellow-border: #fdd835;
+            --green-bg: #000000;
+            --green-border: #81c784;
+            --blue-bg: #000000;
+            --blue-border: #64b5f6;
+            --pink-bg: #000000;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #000000;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.05);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pink-box {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        .pink-box .box-label {
+            color: var(--pink-border);
+            border-color: var(--pink-border);
+        }
+
+        /* --- CUSTOM NOTE ELEMENTS --- */
+        .nav-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pill {
+            border: 1px solid var(--blue-border);
+            color: var(--blue-border);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            background: transparent;
+            text-decoration: none;
+        }
+
+        .pill.active {
+            background-color: var(--blue-border);
+            color: var(--paper-bg);
+            font-weight: bold;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .rule-card {
+            border: 1px solid var(--toggle-border);
+            border-radius: 8px;
+            padding: 15px;
+            background: var(--example-bg);
+        }
+
+        .rule-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .rule-card-top-green {
+            border-top: 4px solid var(--green-border);
+        }
+
+        .rule-card-top-pink {
+            border-top: 4px solid var(--pink-border);
+        }
+
+        .solved-example {
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+
+        /* Basic Card Style */
+        .card { padding:18px; border:1px solid var(--toggle-border); border-radius:8px; background:var(--example-bg); line-height:1.7; }
+
+        .drill-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0;
+        }
+
+        .drill-list li {
+            margin-bottom: 18px;
+            padding-left: 25px;
+            text-indent: -25px;
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            background: var(--example-bg);
+        }
+
+        .answer-table th,
+        .answer-table td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .answer-table th {
+            color: var(--blue-border);
+            font-weight: bold;
+        }
+        
+        .table-wide { width:100%; border-collapse:collapse; margin:14px 0; background: var(--example-bg); }
+        .table-wide th, .table-wide td { border:1px solid var(--toggle-border); padding:8px 12px; text-align:center; font-size:.97rem; }
+        .table-wide th { background:var(--pink-bg); color:var(--pink-border); font-weight:700; }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--example-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--toggle-border);
+        }
+
+        .physics-insight { border-left:4px solid #ff8f00; background:#fff8e1; padding:12px 18px; border-radius:0 8px 8px 0; margin:20px 0; font-size:.97rem; }
+        html.dark-mode .physics-insight { background:#2a1f00; border-left-color:#ffca28; }
+        .physics-insight strong { color:#e65100; }
+        html.dark-mode .physics-insight strong { color:#ffcc02; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.9 !important;
+                mix-blend-mode: normal !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                pointer-events: none !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+            }
+
+            /* Keep rules from page breaking */
+            .rule-card,
+            .blue-box,
+            .green-box,
+            .yellow-box,
+            .pink-box,
+            .solved-example,
+            .chart-container,
+            .card,
+            .physics-insight,
+            .table-wide {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left {
+                    content: none;
+                }
+
+                @bottom-right {
+                    content: none;
+                }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="created-by" style="color: var(--meta-text); font-size: 0.8rem; margin-bottom: 5px;">Created by Team Vardaan with ❤️</div>
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">CLASS 11 PHYSICS • BASIC MATHEMATICS — PART 5 OF 7</div>
+            <div class="powered-by" style="margin-top: 5px;">Powered by Vardaan Comet</div>
+
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <nav class="nav-pills">
+            <a href="basicMathematics1.html" class="pill">1: Algebra</a>
+            <a href="basicMathematics2.html" class="pill">2: Logarithms</a>
+            <a href="basicMathematics3.html" class="pill">3: Trigonometry</a>
+            <a href="basicMathematics4.html" class="pill">4: Coord. Geometry</a>
+            <a href="basicMathematics5.html" class="pill active">5: Differentiation</a>
+            <a href="basicMathematics6.html" class="pill">6: Integration</a>
+            <a href="basicMathematics7.html" class="pill">7: Vectors</a>
+        </nav>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>CALCULUS — DIFFERENTIATION</h1>
+
+        <div class="blue-box">
+            <span class="box-label">WHY THIS MATTERS</span>
+            <p>Calculus is the mathematical engine that drives all of physics. <strong>Differentiation</strong> answers the question: <em>"At this exact instant, how fast is this quantity changing?"</em>. Velocity is the derivative of position. Acceleration is the derivative of velocity. Finding maxima and minima of functions — projectile range, maximum kinetic energy — all need differentiation.</p>
+        </div>
+
+        <h2>§1. The Concept of Rate of Change</h2>
+        <div class="chart-container">
+            <canvas id="secantChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Secant line approaching tangent at $x=2$ on $y=x^2$</p>
+        </div>
+        <h3>Average Rate vs. Instantaneous Rate</h3>
+        <div class="card-grid">
+            <div class="card">
+                <strong>Average Rate of Change</strong><br><br>
+                Over a finite interval $[x_1, x_2]$:<br>
+                $$\frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1}$$
+                This is the slope of the <em>secant line</em> joining two points.
+            </div>
+            <div class="card">
+                <strong>Instantaneous Rate (Derivative)</strong><br><br>
+                As $\Delta x \to 0$:<br>
+                $$\frac{dy}{dx} = \lim_{\Delta x \to 0}\frac{f(x+\Delta x) - f(x)}{\Delta x}$$
+                This is the slope of the <em>tangent line</em> at a single point.
+            </div>
+        </div>
+
+
+
+        <div class="physics-insight">
+            <strong>⚛️ Physics Interpretation:</strong><br>
+            If $s(t)$ = displacement, then:<br>
+            • $v = \frac{ds}{dt}$ = Instantaneous velocity (slope of s-t graph)<br>
+            • $a = \frac{dv}{dt} = \frac{d^2s}{dt^2}$ = Instantaneous acceleration (slope of v-t graph)
+        </div>
+
+        <h2>§2. First Principles of Differentiation</h2>
+        <div class="blue-box">
+            <span class="box-label">DEFINITION</span>
+            <div style="text-align: center; font-size: 1.25rem; margin: 15px 0;">
+                $$f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Derivation from First Principles: $f(x) = x^3$</strong></p>
+            <p>$f'(x) = \lim_{h\to 0}\frac{(x+h)^3 - x^3}{h}$. Expanding gives $3x^2h + 3xh^2 + h^3$. Dividing by $h$ and letting $h \to 0$ results in $\mathbf{3x^2}$.</p>
+        </div>
+
+        <h2>§3. Standard Derivative Formulas</h2>
+        <p>These are the fundamental building blocks. <strong>Memorize every single one.</strong></p>
+        <table class="table-wide">
+            <thead>
+                <tr><th>Function $f(x)$</th><th>Derivative $f'(x)$</th><th>Function $f(x)$</th><th>Derivative $f'(x)$</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>$c$ (constant)</td><td>$0$</td><td>$\sin x$</td><td>$\cos x$</td></tr>
+                <tr><td>$x^n$</td><td>$nx^{n-1}$</td><td>$\cos x$</td><td>$-\sin x$</td></tr>
+                <tr><td>$\sqrt{x} = x^{1/2}$</td><td>$\frac{1}{2\sqrt{x}}$</td><td>$\tan x$</td><td>$\sec^2 x$</td></tr>
+                <tr><td>$e^x$</td><td>$e^x$</td><td>$\ln x$</td><td>$1/x$</td></tr>
+                <tr><td>$\ln x$</td><td>$1/x$</td><td>$\sin^{-1} x$</td><td>$1/\sqrt{1-x^2}$</td></tr>
+            </tbody>
+        </table>
+
+        <h2>§4. The Golden Rules of Differentiation</h2>
+        <div class="card-grid">
+            <div class="card" style="border-top:4px solid var(--blue-border)">
+                <strong>1. Constant Multiple Rule</strong><br><br>
+                $\frac{d}{dx}[cf(x)] = c \cdot f'(x)$
+            </div>
+            <div class="card" style="border-top:4px solid var(--green-border)">
+                <strong>2. Sum / Difference Rule</strong><br><br>
+                $\frac{d}{dx}[f \pm g] = f' \pm g'$
+            </div>
+            <div class="card" style="border-top:4px solid var(--pink-border)">
+                <strong>3. Product Rule (UV)</strong><br><br>
+                $\frac{d}{dx}[uv] = u'v + uv'$
+            </div>
+            <div class="card" style="border-top:4px solid var(--accent-purple)">
+                <strong>4. Quotient Rule (U/V)</strong><br><br>
+                $\frac{d}{dx}[\frac{u}{v}] = \frac{u'v - uv'}{v^2}$
+            </div>
+            <div class="card" style="border-top:4px solid #ff8f00">
+                <strong>5. Chain Rule</strong><br><br>
+                $\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Product Rule Example:</strong> Differentiate $y = x^2\sin x$</p>
+            <p>$\frac{dy}{dx} = (2x)(\sin x) + (x^2)(\cos x) = \mathbf{2x\sin x + x^2\cos x}$</p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Chain Rule Example:</strong> Differentiate $y = (3x^2 + 5)^4$</p>
+            <p>$\frac{dy}{dx} = 4(3x^2+5)^3 \cdot (6x) = \mathbf{24x(3x^2+5)^3}$</p>
+        </div>
+
+        <h2>§5. Higher Order Derivatives</h2>
+        <p>The derivative of a derivative is the <strong>Second Derivative</strong> ($\frac{d^2y}{dx^2}$).</p>
+        <div class="physics-insight">
+            <strong>⚛️ Physics Meaning:</strong><br>
+            If $s$ is displacement: $v = \frac{ds}{dt}$ (velocity), $a = \frac{d^2s}{dt^2}$ (acceleration). In SHM: $\frac{d^2x}{dt^2} = -\omega^2 x$.
+        </div>
+
+        <h2>§6. Application — Maxima & Minima</h2>
+        <div class="chart-container">
+            <canvas id="maxMinChart"></canvas>
+            <p style="text-align:center;font-size:0.9rem;color:var(--meta-text);margin-top:10px;">Maxima and Minima of $y = x^3 - 3x$</p>
+        </div>
+        <div class="blue-box">
+            <span class="box-label">METHOD</span>
+            <p><strong>Step 1:</strong> Set $\frac{dy}{dx} = 0$. Solve for $x$ (Critical points).</p>
+            <p><strong>Step 2:</strong> Check $\frac{d^2y}{dx^2}$ at those points:</p>
+            <ul>
+                <li>If $\frac{d^2y}{dx^2} < 0$ → <strong>Maxima</strong></li>
+                <li>If $\frac{d^2y}{dx^2} > 0$ → <strong>Minima</strong></li>
+            </ul>
+        </div>
+
+
+
+        <h2>Practice Questions</h2>
+        <div class="green-box">
+            <span class="box-label">DRILL 1 — STANDARD DERIVATIVES</span>
+            <ul class="drill-list">
+                <li>1. Differentiate $y = 5x^4 - 3x^2 + 7x - 2$</li>
+                <li>2. Differentiate $y = \sqrt{x} + 1/\sqrt{x}$</li>
+                <li>3. Find $dy/dx$ for $y = 3e^x - 2\ln x$</li>
+                <li>4. Differentiate $y = \sin x + \cos x - \tan x$</li>
+            </ul>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">DRILL 2 — PRODUCT, QUOTIENT & CHAIN RULES</span>
+            <ul class="drill-list">
+                <li value="5">5. Differentiate $y = x^3\cos x$</li>
+                <li>6. Differentiate $y = e^x \sin x$</li>
+                <li>7. Differentiate $y = \sin(3x^2)$</li>
+                <li>8. Differentiate $y = (2x^3 - 5)^6$</li>
+            </ul>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">DRILL 3 — MAXIMA/MINIMA</span>
+            <ul class="drill-list">
+                <li value="9">9. Find the maxima/minima of $y = x^3 - 3x$</li>
+                <li>10. A ball height is $h = 40t - 5t^2$. When is $h$ maximum?</li>
+            </ul>
+        </div>
+
+        <h2>Answer Key</h2>
+        <table class="answer-table">
+            <thead>
+                <tr>
+                    <th>Q</th>
+                    <th style="color: var(--blue-border);">Answer & Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>$20x^3 - 6x + 7$</td></tr>
+                <tr><td>2</td><td>$\frac{1}{2\sqrt{x}} - \frac{1}{2x^{3/2}}$</td></tr>
+                <tr><td>3</td><td>$3e^x - 2/x$</td></tr>
+                <tr><td>5</td><td>$3x^2\cos x - x^3\sin x$</td></tr>
+                <tr><td>6</td><td>$e^x(\sin x + \cos x)$</td></tr>
+                <tr><td>7</td><td>$6x\cos(3x^2)$</td></tr>
+                <tr><td>9</td><td>Max at $x=-1$, Min at $x=1$</td></tr>
+                <tr><td>10</td><td>$dh/dt = 40 - 10t = 0 \implies t = \mathbf{4\text{ s}}$</td></tr>
+            </tbody>
+        </table>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Theme Toggle Logic
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            rebuildAll();
+        }
+
+        let charts = [];
+        function tc() { return document.documentElement.classList.contains('dark-mode') ? '#aaa' : '#666'; }
+        function gc() { return document.documentElement.classList.contains('dark-mode') ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'; }
+
+        function destroyAll() {
+            charts.forEach(c => c.destroy());
+            charts = [];
+        }
+
+        function buildAll() {
+            const tColor = tc(), gColor = gc();
+
+            // 1. Secant/Tangent Chart
+            const ctx1 = document.getElementById('secantChart').getContext('2d');
+            const xl1 = [], y1 = [], y2 = [];
+            for (let x = 0; x <= 4; x += 0.2) {
+                xl1.push(x.toFixed(1));
+                y1.push(x * x);
+                y2.push(4 * x - 4); // Tangent at x=2
+            }
+            charts.push(new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: xl1,
+                    datasets: [
+                        { label: 'y = x²', data: y1, borderColor: '#1e88e5', borderWidth: 2.5, pointRadius: 0 },
+                        { label: 'Tangent at x=2', data: y2, borderColor: '#43a047', borderWidth: 2, pointRadius: 0, borderDash: [5, 5] }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: tColor } }, title: { display: true, text: 'Curve and Tangent', color: tColor } },
+                    scales: { x: { ticks: { color: tColor }, grid: { color: gColor } }, y: { ticks: { color: tColor }, grid: { color: gColor } } }
+                }
+            }));
+
+            // 2. Max/Min Chart
+            const ctx2 = document.getElementById('maxMinChart').getContext('2d');
+            const xl2 = [], y3 = [];
+            for (let x = -2.5; x <= 2.5; x += 0.1) {
+                xl2.push(x.toFixed(1));
+                y3.push(x * x * x - 3 * x);
+            }
+            charts.push(new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: xl2,
+                    datasets: [{ label: 'y = x³ - 3x', data: y3, borderColor: '#d81b60', borderWidth: 2.5, pointRadius: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: tColor } }, title: { display: true, text: 'Local Maximum and Minimum', color: tColor } },
+                    scales: { x: { ticks: { color: tColor }, grid: { color: gColor } }, y: { ticks: { color: tColor }, grid: { color: gColor } } }
+                }
+            }));
+        }
+
+        function rebuildAll() {
+            destroyAll();
+            buildAll();
+        }
+
+        window.addEventListener('load', buildAll);
+    </script>
+</body>
+
+</html>
