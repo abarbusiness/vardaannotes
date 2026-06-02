@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Chemistry Worksheet</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Level 2: Medium/Standard) */
+            --primary-color: #1565c0;
+            --bg-color: #e3f2fd;
+
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #64b5f6;
+            --bg-color: #1e2a38;
+            --body-bg: #121212;
+            --text-main: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: "Times New Roman", Times, serif;
+            background-color: var(--body-bg);
+            color: var(--text-main);
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+
+        /* --- HEADER STYLING --- */
+        .header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .institute-name {
+            font-size: 24pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .tagline {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-top: 5px;
+            color: var(--text-secondary);
+        }
+
+        .tagline a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .worksheet-title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 5px;
+            color: var(--text-secondary);
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 11pt;
+            background-color: var(--bg-color);
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header {
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            font-weight: bold;
+            padding: 8px 10px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13pt;
+            text-transform: uppercase;
+            page-break-after: avoid;
+        }
+
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .question-item {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 5px;
+            font-size: 11pt;
+            page-break-inside: avoid;
+            text-align: left;
+        }
+
+        .q-num {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 25px;
+            color: var(--primary-color);
+        }
+
+        .q-content {
+            flex: 1;
+        }
+
+        /* Compact Answer Key Grid */
+        .ans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            font-size: 10pt;
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .ans-item {
+            padding: 3px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .ans-label {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
+        .hint-box {
+            font-size: 10pt;
+            margin-top: 15px;
+            padding: 10px;
+            border-left: 3px solid var(--primary-color);
+            background: var(--bg-color);
+        }
+
+        /* --- FOOTER STYLING --- */
+        .footer {
+            margin-top: 40px;
+            padding-top: 10px;
+            border-top: 2px solid var(--primary-color);
+            text-align: center;
+            font-size: 9pt;
+            font-weight: bold;
+            color: var(--primary-color);
+            page-break-before: auto;
+            line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark {
+            filter: invert(1);
+            opacity: 0.05;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            color: #333;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        @media print {
+            .theme-toggle {
+                display: none;
+            }
+
+            .chapter-header {
+                background-color: var(--bg-color) !important;
+                border-left-color: var(--primary-color) !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .meta-info,
+            .ans-grid,
+            .hint-box {
+                background-color: var(--bg-color) !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+        class="watermark" alt="Watermark">
+
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Chapter Practice: Some Basic Concepts of Chemistry</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 11</span>
+                <span>Subject: Chemistry</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 1: Nature of Matter & Measurements</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">1.</span>
+                <div class="q-content">How many significant figures are present in the number $0.00250$?</div>
+            </div>
+            <div class="question-item"><span class="q-num">2.</span>
+                <div class="q-content">Express $37^\circ\text{C}$ (normal human body temperature) in Fahrenheit
+                    ($^\circ\text{F}$).</div>
+            </div>
+            <div class="question-item"><span class="q-num">3.</span>
+                <div class="q-content">Write the SI unit for amount of substance and luminous intensity.</div>
+            </div>
+            <div class="question-item"><span class="q-num">4.</span>
+                <div class="q-content">Round off the number $34.216$ to three significant figures.</div>
+            </div>
+            <div class="question-item"><span class="q-num">5.</span>
+                <div class="q-content">Express the number $234,000$ in scientific notation to three significant figures.
+                </div>
+            </div>
+            <div class="question-item"><span class="q-num">6.</span>
+                <div class="q-content">Calculate the result of $2.5 \times 1.25$ keeping significant figures in mind.
+                </div>
+            </div>
+            <div class="question-item"><span class="q-num">7.</span>
+                <div class="q-content">Which of the following is temperature dependent: Mass, Volume, or Density?</div>
+            </div>
+            <div class="question-item"><span class="q-num">8.</span>
+                <div class="q-content">A student measures a mass of $2.00\text{ g}$ three times as $1.95\text{ g}$,
+                    $1.93\text{ g}$, and $1.94\text{ g}$. Are these measurements accurate or precise?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 2: Laws of Chemical Combinations</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">9.</span>
+                <div class="q-content">Which law of chemical combination states that a given compound always contains
+                    exactly the same proportion of elements by weight?</div>
+            </div>
+            <div class="question-item"><span class="q-num">10.</span>
+                <div class="q-content">Carbon and oxygen combine to form $\text{CO}$ and $\text{CO}_2$. Which law is
+                    illustrated by this observation?</div>
+            </div>
+            <div class="question-item"><span class="q-num">11.</span>
+                <div class="q-content">If $20\text{ mL}$ of hydrogen reacts with $10\text{ mL}$ of oxygen to yield water
+                    vapor, what volume of water vapor is produced? (Assume constant T and P).</div>
+            </div>
+            <div class="question-item"><span class="q-num">12.</span>
+                <div class="q-content">State Avogadro's Law.</div>
+            </div>
+            <div class="question-item"><span class="q-num">13.</span>
+                <div class="q-content">Which postulate of Dalton's atomic theory is a direct result of the Law of
+                    Conservation of Mass?</div>
+            </div>
+            <div class="question-item"><span class="q-num">14.</span>
+                <div class="q-content">Is air a mixture or a pure substance?</div>
+            </div>
+            <div class="question-item"><span class="q-num">15.</span>
+                <div class="q-content">A sample of $\text{CaCO}_3$ on heating decomposes to give $56\text{ g}$
+                    $\text{CaO}$ and $44\text{ g}$ $\text{CO}_2$. How much starting $\text{CaCO}_3$ was taken?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 3: Atomic and Molecular Masses</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">16.</span>
+                <div class="q-content">Define 1 Atomic Mass Unit (amu).</div>
+            </div>
+            <div class="question-item"><span class="q-num">17.</span>
+                <div class="q-content">Chlorine occurs in nature in two isotopic forms, with masses $35\text{ u}$ and
+                    $37\text{ u}$ in the ratio of $3:1$. Calculate its average atomic mass.</div>
+            </div>
+            <div class="question-item"><span class="q-num">18.</span>
+                <div class="q-content">Calculate the molecular mass of sulfuric acid ($\text{H}_2\text{SO}_4$).</div>
+            </div>
+            <div class="question-item"><span class="q-num">19.</span>
+                <div class="q-content">Calculate the molecular mass of glucose ($\text{C}_6\text{H}_{12}\text{O}_6$).
+                </div>
+            </div>
+            <div class="question-item"><span class="q-num">20.</span>
+                <div class="q-content">The vapour density of a gas is $22$. What is its molar mass?</div>
+            </div>
+            <div class="question-item"><span class="q-num">21.</span>
+                <div class="q-content">Using Dulong and Petit's Law, find the approximate atomic weight of a metal whose
+                    specific heat is $0.16\text{ cal/g}^\circ\text{C}$.</div>
+            </div>
+            <div class="question-item"><span class="q-num">22.</span>
+                <div class="q-content">What is the mass of one single atom of Carbon-12 in grams?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 4: Mole Concept</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">23.</span>
+                <div class="q-content">How many moles are present in $36\text{ g}$ of water?</div>
+            </div>
+            <div class="question-item"><span class="q-num">24.</span>
+                <div class="q-content">Calculate the number of molecules present in $0.5\text{ mole}$ of $\text{CO}_2$.
+                </div>
+            </div>
+            <div class="question-item"><span class="q-num">25.</span>
+                <div class="q-content">What is the volume occupied by $1\text{ mole}$ of any ideal gas at STP?</div>
+            </div>
+            <div class="question-item"><span class="q-num">26.</span>
+                <div class="q-content">Calculate the mass of $0.1\text{ mole}$ of methane ($\text{CH}_4$).</div>
+            </div>
+            <div class="question-item"><span class="q-num">27.</span>
+                <div class="q-content">How many moles of gas are present in $11.2\text{ L}$ of $\text{N}_2$ at STP?
+                </div>
+            </div>
+            <div class="question-item"><span class="q-num">28.</span>
+                <div class="q-content">Calculate the total number of atoms in $0.1\text{ mole}$ of a triatomic gas like
+                    ozone ($\text{O}_3$).</div>
+            </div>
+            <div class="question-item"><span class="q-num">29.</span>
+                <div class="q-content">Which of the following contains the maximum number of molecules: $7\text{ g}$
+                    $\text{N}_2$, $2\text{ g}$ $\text{H}_2$, or $16\text{ g}$ $\text{NO}_2$?</div>
+            </div>
+            <div class="question-item"><span class="q-num">30.</span>
+                <div class="q-content">What is the mass of $N_A$ ($6.022 \times 10^{23}$) atoms of Oxygen?</div>
+            </div>
+            <div class="question-item"><span class="q-num">31.</span>
+                <div class="q-content">Calculate the charge of $1\text{ mole}$ of electrons (1 Faraday).</div>
+            </div>
+            <div class="question-item"><span class="q-num">32.</span>
+                <div class="q-content">How many moles of electrons weigh one kilogram? (Mass of one electron = $9.1
+                    \times 10^{-31}\text{ kg}$).</div>
+            </div>
+            <div class="question-item"><span class="q-num">33.</span>
+                <div class="q-content">What is the total number of ions present in $1\text{ mole}$ of $\text{NaCl}$?
+                </div>
+            </div>
+            <div class="question-item"><span class="q-num">34.</span>
+                <div class="q-content">How many moles of Oxygen atoms are present in $2\text{ moles}$ of
+                    $\text{H}_2\text{SO}_4$?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 5: Percentage Composition & Empirical Formula</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">35.</span>
+                <div class="q-content">Calculate the mass percentage of Carbon in $\text{CO}_2$.</div>
+            </div>
+            <div class="question-item"><span class="q-num">36.</span>
+                <div class="q-content">Calculate the mass percentage of water of crystallization in Blue Vitriol
+                    ($\text{CuSO}_4 \cdot 5\text{H}_2\text{O}$). [Atomic masses: Cu=63.5, S=32, O=16, H=1]</div>
+            </div>
+            <div class="question-item"><span class="q-num">37.</span>
+                <div class="q-content">What is the empirical formula of Benzene ($\text{C}_6\text{H}_6$)?</div>
+            </div>
+            <div class="question-item"><span class="q-num">38.</span>
+                <div class="q-content">A compound contains $50\%$ element A (atomic mass = $10$) and $50\%$ element B
+                    (atomic mass = $20$). Find its empirical formula.</div>
+            </div>
+            <div class="question-item"><span class="q-num">39.</span>
+                <div class="q-content">The empirical formula of a compound is $\text{CH}_2\text{O}$ and its molar mass
+                    is $180\text{ g/mol}$. Deduce its molecular formula.</div>
+            </div>
+            <div class="question-item"><span class="q-num">40.</span>
+                <div class="q-content">Find the percentage of Nitrogen in Urea ($\text{NH}_2\text{CONH}_2$).</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 6: Stoichiometry & Limiting Reagent</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">41.</span>
+                <div class="q-content">Balance the given equation: $\text{Fe}_2\text{O}_3 + \text{CO} \rightarrow
+                    \text{Fe} + \text{CO}_2$.</div>
+            </div>
+            <div class="question-item"><span class="q-num">42.</span>
+                <div class="q-content">In the reaction $\text{N}_2 + 3\text{H}_2 \rightarrow 2\text{NH}_3$, identify the
+                    limiting reagent if $1\text{ mole}$ of $\text{N}_2$ reacts with $2\text{ moles}$ of $\text{H}_2$.
+                </div>
+            </div>
+            <div class="question-item"><span class="q-num">43.</span>
+                <div class="q-content">Calculate the mass of $\text{CO}_2$ produced by the complete thermal
+                    decomposition of $10\text{ g}$ of $\text{CaCO}_3$.</div>
+            </div>
+            <div class="question-item"><span class="q-num">44.</span>
+                <div class="q-content">For the reaction $2\text{A} + \text{B} \rightarrow \text{A}_2\text{B}$, $50\text{
+                    g}$ of A reacts with $50\text{ g}$ of B. ($M_A=10$, $M_B=20$). Which is the limiting reagent?</div>
+            </div>
+            <div class="question-item"><span class="q-num">45.</span>
+                <div class="q-content">If the theoretical yield of a reaction is $20\text{ g}$ and the actual yield is
+                    $15\text{ g}$, what is the percentage yield?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Topic 7: Reactions in Solutions</div>
+        <div class="questions-container">
+            <div class="question-item"><span class="q-num">46.</span>
+                <div class="q-content">Calculate the Molarity of a solution containing $4\text{ g}$ of $\text{NaOH}$ in
+                    $250\text{ mL}$ of solution.</div>
+            </div>
+            <div class="question-item"><span class="q-num">47.</span>
+                <div class="q-content">Calculate the Molality of a solution made by dissolving $20\text{ g}$ of
+                    $\text{NaOH}$ in $100\text{ g}$ of water.</div>
+            </div>
+            <div class="question-item"><span class="q-num">48.</span>
+                <div class="q-content">What is the mole fraction of the solute if $1\text{ mole}$ of solute is dissolved
+                    in $3\text{ moles}$ of solvent?</div>
+            </div>
+            <div class="question-item"><span class="q-num">49.</span>
+                <div class="q-content">Find the Normality of a $1\text{ M}$ $\text{H}_2\text{SO}_4$ solution.</div>
+            </div>
+            <div class="question-item"><span class="q-num">50.</span>
+                <div class="q-content">Express the concentration in parts per million (ppm) if $2\text{ g}$ of a solute
+                    is dissolved in $1000\text{ kg}$ of solution.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Answer Key & Hints</div>
+        <div class="ans-grid">
+            <div class="ans-item"><span class="ans-label">1.</span> 3</div>
+            <div class="ans-item"><span class="ans-label">2.</span> $98.6^\circ\text{F}$</div>
+            <div class="ans-item"><span class="ans-label">3.</span> mole, cd</div>
+            <div class="ans-item"><span class="ans-label">4.</span> $34.2$</div>
+            <div class="ans-item"><span class="ans-label">5.</span> $2.34 \times 10^5$</div>
+            <div class="ans-item"><span class="ans-label">6.</span> $3.1$</div>
+            <div class="ans-item"><span class="ans-label">7.</span> Volume & Density</div>
+            <div class="ans-item"><span class="ans-label">8.</span> Precise, not accurate</div>
+            <div class="ans-item"><span class="ans-label">9.</span> Definite Proportions</div>
+            <div class="ans-item"><span class="ans-label">10.</span> Multiple Proportions</div>
+            <div class="ans-item"><span class="ans-label">11.</span> $20\text{ mL}$</div>
+            <div class="ans-item"><span class="ans-label">12.</span> $V \propto n$</div>
+            <div class="ans-item"><span class="ans-label">13.</span> Atoms neither created/destroyed</div>
+            <div class="ans-item"><span class="ans-label">14.</span> Mixture</div>
+            <div class="ans-item"><span class="ans-label">15.</span> $100\text{ g}$</div>
+            <div class="ans-item"><span class="ans-label">16.</span> $1/12$ mass C-12</div>
+            <div class="ans-item"><span class="ans-label">17.</span> $35.5\text{ u}$</div>
+            <div class="ans-item"><span class="ans-label">18.</span> $98\text{ u}$</div>
+            <div class="ans-item"><span class="ans-label">19.</span> $180\text{ u}$</div>
+            <div class="ans-item"><span class="ans-label">20.</span> $44\text{ g/mol}$</div>
+            <div class="ans-item"><span class="ans-label">21.</span> $\approx 40$</div>
+            <div class="ans-item"><span class="ans-label">22.</span> $1.99 \times 10^{-23}\text{g}$</div>
+            <div class="ans-item"><span class="ans-label">23.</span> $2\text{ moles}$</div>
+            <div class="ans-item"><span class="ans-label">24.</span> $3.011 \times 10^{23}$</div>
+            <div class="ans-item"><span class="ans-label">25.</span> $22.4\text{ L}$</div>
+            <div class="ans-item"><span class="ans-label">26.</span> $1.6\text{ g}$</div>
+            <div class="ans-item"><span class="ans-label">27.</span> $0.5\text{ moles}$</div>
+            <div class="ans-item"><span class="ans-label">28.</span> $1.806 \times 10^{23}$</div>
+            <div class="ans-item"><span class="ans-label">29.</span> $2\text{g } \text{H}_2$ ($1\text{ mol}$)</div>
+            <div class="ans-item"><span class="ans-label">30.</span> $16\text{ g}$</div>
+            <div class="ans-item"><span class="ans-label">31.</span> $96485\text{ C}$</div>
+            <div class="ans-item"><span class="ans-label">32.</span> $1.82 \times 10^6$</div>
+            <div class="ans-item"><span class="ans-label">33.</span> $2 \times N_A$</div>
+            <div class="ans-item"><span class="ans-label">34.</span> $8\text{ moles}$</div>
+            <div class="ans-item"><span class="ans-label">35.</span> $27.27\%$</div>
+            <div class="ans-item"><span class="ans-label">36.</span> $36.07\%$</div>
+            <div class="ans-item"><span class="ans-label">37.</span> $\text{CH}$</div>
+            <div class="ans-item"><span class="ans-label">38.</span> $\text{A}_2\text{B}$</div>
+            <div class="ans-item"><span class="ans-label">39.</span> $\text{C}_6\text{H}_{12}\text{O}_6$</div>
+            <div class="ans-item"><span class="ans-label">40.</span> $46.6\%$</div>
+            <div class="ans-item"><span class="ans-label">41.</span> $\text{Fe}_2\text{O}_3 + 3\text{CO} \rightarrow
+                2\text{Fe} + 3\text{CO}_2$</div>
+            <div class="ans-item"><span class="ans-label">42.</span> $\text{H}_2$</div>
+            <div class="ans-item"><span class="ans-label">43.</span> $4.4\text{ g}$</div>
+            <div class="ans-item"><span class="ans-label">44.</span> Reagent A</div>
+            <div class="ans-item"><span class="ans-label">45.</span> $75\%$</div>
+            <div class="ans-item"><span class="ans-label">46.</span> $0.4\text{ M}$</div>
+            <div class="ans-item"><span class="ans-label">47.</span> $5\text{ m}$</div>
+            <div class="ans-item"><span class="ans-label">48.</span> $0.25$</div>
+            <div class="ans-item"><span class="ans-label">49.</span> $2\text{ N}$</div>
+            <div class="ans-item"><span class="ans-label">50.</span> $2\text{ ppm}$</div>
+        </div>
+
+        <div class="hint-box">
+            <strong>💡 Pro Hints for Selected Questions:</strong><br>
+            <strong>Q17:</strong> Use $\text{Average Mass} = \frac{(35 \times 3) + (37 \times 1)}{3+1}$.<br>
+            <strong>Q28:</strong> One molecule of $\text{O}_3$ has $3$ atoms. Total atoms = $0.1 \times N_A \times
+            3$.<br>
+            <strong>Q32:</strong> Moles = $\frac{\text{Total Mass}}{\text{Mass of 1 mole of e}^-}$. Mass of 1 mole $e^-$
+            = $N_A \times 9.1 \times 10^{-31}$.<br>
+            <strong>Q38:</strong> Divide mass % by atomic mass to get mole ratio. $A = 50/10 = 5$, $B = 50/20 = 2.5$.
+            Simple ratio $A:B = 2:1$.<br>
+            <strong>Q42:</strong> Moles/Coefficient ratio: $\text{N}_2 = 1/1 = 1$; $\text{H}_2 = 2/3 = 0.66$.
+            $\text{H}_2$ is smaller, hence LR.
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+
+</html>
