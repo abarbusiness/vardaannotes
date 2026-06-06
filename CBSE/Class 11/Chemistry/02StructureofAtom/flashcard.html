@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Structure of Atom - Flashcards Story</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Desktop specific constraint to mimic mobile screen */
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px; /* Make room for share btn */
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        /* Slides */
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30; /* Keep above touch zones */
+            pointer-events: none; /* Let clicks pass through! */
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg); /* Opaque background for stack effect */
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px; /* Top padding for progress bar and share button */
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto; /* Active catches touch */
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30; /* So it can come back on top */
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        /* Hide scrollbar for slides */
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Navigation Touch Zones */
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        /* Aesthetics & Components */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto; /* Re-enable clicks on cards */
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff; /* White background for dark diagrams */
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto; /* Re-enable clicks */
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* MathJax Responsive Handling */
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- SHARE BUTTON --- */
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <!-- Share Button -->
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <!-- Atom Icon SVG -->
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.8rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Structure of Atom</h1>
+                        
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Chapter 2 Flashcards</span>
+                        
+                        <br>
+                        
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <!-- Intuitive Swipe Hints -->
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Subatomic Particles -->
+            <div class="slide">
+                <h2 class="slide-title">Subatomic Particles</h2>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Electron ($e^-$)</h3>
+                    <p style="margin: 0;">Discovered by J.J. Thomson.<br>Charge: $-1.6 \times 10^{-19}\text{ C}$<br>Mass: $9.1 \times 10^{-31}\text{ kg}$</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Proton ($p^+$)</h3>
+                    <p style="margin: 0;">Discovered by Goldstein.<br>Charge: $+1.6 \times 10^{-19}\text{ C}$<br>Mass: $1.672 \times 10^{-27}\text{ kg}$</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.3s;">
+                    <h3 class="subtitle">Neutron ($n^0$)</h3>
+                    <p style="margin: 0;">Discovered by Chadwick.<br>Charge: $0$<br>Mass: $1.675 \times 10^{-27}\text{ kg}$</p>
+                </div>
+            </div>
+
+            <!-- Slide 3: Rutherford -->
+            <div class="slide">
+                <h2 class="slide-title">Rutherford's Model</h2>
+                <img src="Images/rutherfords_experiment.png" alt="Rutherford Experiment" class="content-img">
+                <div class="glass-panel">
+                    <p>Based on $\alpha$-particle scattering on a gold foil.</p>
+                    <h3 class="subtitle">Conclusions:</h3>
+                    <ul style="margin-bottom: 0;">
+                        <li>Most space in an atom is <strong>empty</strong>.</li>
+                        <li>Positive charge is concentrated in a tiny volume.</li>
+                        <li>The <strong>nucleus</strong> is incredibly dense.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 4: Photoelectric Effect -->
+            <div class="slide">
+                <h2 class="slide-title">Photoelectric Effect</h2>
+                <img src="Images/photoelectric_effect.png" alt="Photoelectric Effect" class="content-img">
+                <div class="glass-panel">
+                    <p style="margin-top: 0;">Ejection of $e^-$ when light of suitable frequency hits a metal surface.</p>
+                    <h3 class="subtitle">Einstein's Equation:</h3>
+                    $$ h\nu = h\nu_0 + \frac{1}{2} m_e v^2 $$
+                    <ul style="font-size: 0.9rem; margin-bottom: 0;">
+                        <li>$\nu$ = Frequency of incident light</li>
+                        <li>$\nu_0$ = Threshold frequency</li>
+                        <li>$K.E.$ = $\frac{1}{2} m_e v^2$</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 5: Bohr's Model -->
+            <div class="slide">
+                <h2 class="slide-title">Bohr's Model</h2>
+                <img src="Images/bohr_model.png" alt="Bohr Model" class="content-img">
+                <div class="glass-panel">
+                    <p style="margin-top: 0; font-size: 0.9rem;">Electrons revolve in well-defined stationary orbits.</p>
+                    <strong>Angular Momentum:</strong>
+                    $$ mvr = \frac{nh}{2\pi} $$
+                    <strong>Radius of $n^{\text{th}}$ orbit:</strong>
+                    $$ r_n = 0.529 \times \frac{n^2}{Z} \text{ \AA} $$
+                    <strong>Energy of electron:</strong>
+                    $$ E_n = -13.6 \times \frac{Z^2}{n^2} \text{ eV} $$
+                </div>
+            </div>
+
+            <!-- Slide 6: Quantum Principles -->
+            <div class="slide">
+                <h2 class="slide-title">Quantum Principles</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">1. de Broglie Equation</h3>
+                    <p>Matter exhibits dual behavior (particle and wave).</p>
+                    $$ \lambda = \frac{h}{mv} = \frac{h}{p} $$
+                </div>
+                <div class="glass-panel">
+                    <h3 class="subtitle">2. Heisenberg Uncertainty</h3>
+                    <p>Impossible to determine exactly both position and momentum simultaneously.</p>
+                    $$ \Delta x \times \Delta p \ge \frac{h}{4\pi} $$
+                    <p style="font-size: 0.85rem; color: var(--accent-pink); margin-bottom: 0;"><em>Result: Bohr's fixed orbits are ruled out. We use probability.</em></p>
+                </div>
+            </div>
+
+            <!-- Slide 7: Quantum Numbers -->
+            <div class="slide">
+                <h2 class="slide-title">Quantum Numbers</h2>
+                <div class="glass-panel">
+                    <ul style="margin: 0;">
+                        <li><strong>Principal ($n$):</strong><br>Main shell ($K, L, M...$), size & energy.</li>
+                        <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 8px 0;">
+                        <li><strong>Azimuthal ($l$):</strong><br>Subshell shape ($s=0, p=1, d=2, f=3$).</li>
+                        <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 8px 0;">
+                        <li><strong>Magnetic ($m_l$):</strong><br>Spatial orientation in magnetic field. Values: $-l$ to $+l$.</li>
+                        <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 8px 0;">
+                        <li><strong>Spin ($m_s$):</strong><br>Electron spin ($+1/2, -1/2$).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 8: Atomic Orbitals -->
+            <div class="slide">
+                <h2 class="slide-title">Atomic Orbitals</h2>
+                <img src="Images/atomic_orbitals.png" alt="Atomic Orbitals" class="content-img">
+                <div class="glass-panel">
+                    <ul style="margin-top: 0;">
+                        <li><strong>$s$-orbital:</strong> Spherical</li>
+                        <li><strong>$p$-orbital:</strong> Dumbbell</li>
+                        <li><strong>$d$-orbital:</strong> Double dumbbell</li>
+                    </ul>
+                    <h3 class="subtitle">Nodes Hack:</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 0;">
+                        Angular nodes = $l$<br>
+                        Radial nodes = $n - l - 1$<br>
+                        Total nodes = $n - 1$
+                    </p>
+                </div>
+            </div>
+
+            <!-- Slide 9: Filling Rules -->
+            <div class="slide">
+                <h2 class="slide-title">Filling Rules</h2>
+                <img src="Images/aufbau_principle.png" alt="Aufbau Principle" class="content-img">
+                <div class="glass-panel">
+                    <ul style="margin-top: 0; font-size: 0.95rem;">
+                        <li><strong>Aufbau Principle:</strong> Fill lowest $(n+l)$ energy orbital first.</li>
+                        <li><strong>Pauli Exclusion:</strong> Max 2 electrons per orbital, opposite spins.</li>
+                        <li><strong>Hund's Rule:</strong> Singly occupy degenerate orbitals before pairing.</li>
+                    </ul>
+                    <h3 class="subtitle" style="font-size: 1rem;">Exceptions (High Stability):</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 0;">
+                        <strong>Cr (24):</strong> $[\text{Ar}] 4s^1 3d^5$ (Half-filled)<br>
+                        <strong>Cu (29):</strong> $[\text{Ar}] 4s^1 3d^{10}$ (Fully-filled)
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Touch Zones -->
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+        
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        // Initialize progress bar segments
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; // Clear inline styles from dragging
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        // Navigation
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            // Prevent fast double tapping from zooming on some browsers, handled by meta tag though
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        // Interactive Tinder-style Drag Support (Touch & Mouse)
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05; // Gentle rotation physics
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                // Swiped Left -> Next
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50); // slight delay to allow transform to stick before class change
+                } else {
+                    draggedSlide.style.transform = ''; // Snap back if last
+                }
+            } else if (deltaX > threshold) {
+                // Swiped Right -> Previous
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = ''; // Snap back if first
+                }
+            } else {
+                // Not far enough, snap back
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        // Touch events
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        // Mouse events (for desktop dragging)
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        // Theme Toggle
+        function toggleTheme(event) {
+            event.stopPropagation(); // Prevent advancing slide
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        // Share App
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Structure of Atom - Flashcards',
+                    text: 'Check out these quick revision flashcards for Structure of Atom!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        // Initialize
+        updateUI();
+
+    </script>
+</body>
+</html>

@@ -2,248 +2,789 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 1 Flashcards - Vardaan Learning Institute</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Some Basic Concepts of Chemistry - Flashcards Story</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
     <style>
         :root {
-            --primary: #9933ff;
-            --secondary: #00ffff;
-            --bg-dark: #0a0514;
-            --text-main: #ffffff;
-            --text-muted: #d9b3ff;
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-dark);
-            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Desktop specific constraint to mimic mobile screen */
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px; /* Make room for share btn */
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        /* Slides */
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30; /* Keep above touch zones */
+            pointer-events: none; /* Let clicks pass through! */
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg); /* Opaque background for stack effect */
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            background-image: radial-gradient(circle at top right, rgba(153, 51, 255, 0.1), transparent 40%),
-                              radial-gradient(circle at bottom left, rgba(0, 255, 255, 0.1), transparent 40%);
-        }
-
-        .nav-bar {
-            width: 100%;
-            padding: 20px 30px;
+            padding: 50px 20px 20px 20px; /* Top padding for progress bar and share button */
             box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 5, 20, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(170, 51, 255, 0.3);
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto; /* Active catches touch */
+        }
+
+        .slide.next {
+            opacity: 1;
             z-index: 10;
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--secondary);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 16px;
-            border: 1px solid var(--secondary);
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: rgba(0, 255, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-        }
-
-        .title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-shadow: 0 0 10px rgba(153, 51, 255, 0.5);
-            text-align: center;
-        }
-
-        .swipe-hint {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* --- CAROUSEL CONTAINER --- */
-        .flashcard-carousel {
-            flex-grow: 1;
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            padding: 0;
-            align-items: center;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
         }
         
-        .flashcard-carousel::-webkit-scrollbar {
-            display: none;
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
         }
 
-        /* --- IMAGE FLASHCARD --- */
-        .flashcard-wrapper {
-            scroll-snap-align: center;
-            flex: 0 0 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 20px;
-            box-sizing: border-box;
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30; /* So it can come back on top */
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
         }
 
-        .flashcard-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(153, 51, 255, 0.3);
-            border: 2px solid rgba(153, 51, 255, 0.4);
-            transition: transform 0.3s ease;
+        .slide.dragging {
+            transition: none !important;
         }
 
-        .flashcard-image:hover {
-            transform: scale(1.02);
-        }
+        /* Hide scrollbar for slides */
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Desktop arrows */
-        .nav-arrow {
+        /* Navigation Touch Zones */
+        #left-zone {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(153, 51, 255, 0.3);
-            border: 1px solid var(--primary);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        /* Aesthetics & Components */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto; /* Re-enable clicks on cards */
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff; /* White background for dark diagrams */
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto; /* Re-enable clicks */
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* MathJax Responsive Handling */
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- SHARE BUTTON --- */
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
             z-index: 100;
+            color: var(--text-main);
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
         }
 
-        .nav-arrow:hover {
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-        }
-
-        .arrow-left { left: 30px; }
-        .arrow-right { right: 30px; }
-
-        .progress-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: var(--secondary);
-            box-shadow: 0 0 10px var(--secondary);
-            transform: scale(1.3);
-        }
-
-        @media (max-width: 768px) {
-            .nav-bar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
-            }
-            .title { font-size: 1.2rem; }
-            .nav-arrow { display: none; }
-        }
     </style>
 </head>
 <body>
-    <div class="nav-bar">
-        <a href="../../Chemistry.html" class="back-btn"><i data-lucide="arrow-left"></i> Chapter List</a>
-        <div class="title">FLASHCARDS: SOME BASIC CONCEPTS OF CHEMISTRY</div>
-        <div class="swipe-hint"><i data-lucide="move-horizontal"></i> Swipe to view</div>
-    </div>
 
-    <button class="nav-arrow arrow-left" onclick="scrollCarousel(-1)"><i data-lucide="chevron-left"></i></button>
-    <button class="nav-arrow arrow-right" onclick="scrollCarousel(1)"><i data-lucide="chevron-right"></i></button>
+    <div id="app">
+        <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
 
-    <div class="flashcard-carousel" id="carousel">
+        <div id="progress-container"></div>
         
-        <!-- Script will populate these -->
+        <!-- Share Button -->
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
 
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <!-- Beaker/Flask SVG for Chemistry Basics -->
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 3h6"></path>
+                            <path d="M10 9l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"></path>
+                            <path d="M6 14h12"></path>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.3rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Some Basic Concepts of Chemistry</h1>
+                        
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Chapter 1 Flashcards</span>
+                        
+                        <br>
+                        
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <!-- Intuitive Swipe Hints -->
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Nature of Matter -->
+            <div class="slide">
+                <h2 class="slide-title">Nature of Matter</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">1. Mixtures</h3>
+                    <p style="margin: 0; font-size: 0.95rem;">Contain two or more substances in any ratio.</p>
+                    <ul style="margin-top: 5px; margin-bottom: 0; font-size: 0.9rem;">
+                        <li><strong>Homogeneous:</strong> Uniform (e.g., air, sugar solution)</li>
+                        <li><strong>Heterogeneous:</strong> Non-uniform (e.g., sand & salt)</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">2. Pure Substances</h3>
+                    <p style="margin: 0; font-size: 0.95rem;">Have a fixed composition.</p>
+                    <ul style="margin-top: 5px; margin-bottom: 0; font-size: 0.9rem;">
+                        <li><strong>Elements:</strong> One type of particle (Na, O₂)</li>
+                        <li><strong>Compounds:</strong> Two or more elements in fixed ratio (H₂O)</li>
+                    </ul>
+                </div>
+                <img src="Images/classification of Matter.jpg" alt="Classification of Matter" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 3: Properties & SI Units -->
+            <div class="slide">
+                <h2 class="slide-title">Properties & SI Units</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.95rem;"><strong>Physical:</strong> Measured without changing identity (color, melting pt).<br>
+                    <strong>Chemical:</strong> Require chemical change (acidity, combustibility).</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">7 Base SI Units</h3>
+                    <ul style="margin: 0; font-size: 0.9rem;">
+                        <li>Length: <strong>metre (m)</strong></li>
+                        <li>Mass: <strong>kilogram (kg)</strong></li>
+                        <li>Time: <strong>second (s)</strong></li>
+                        <li>Electric current: <strong>ampere (A)</strong></li>
+                        <li>Temperature: <strong>kelvin (K)</strong></li>
+                        <li>Amount of substance: <strong>mole (mol)</strong></li>
+                        <li>Luminous intensity: <strong>candela (cd)</strong></li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Temperature Conversion</h3>
+                    $$ \text{K} = ^\circ\text{C} + 273.15 $$
+                    $$ ^\circ\text{F} = \frac{9}{5}(^\circ\text{C}) + 32 $$
+                </div>
+            </div>
+
+            <!-- Slide 4: Uncertainty & Sig Figs -->
+            <div class="slide">
+                <h2 class="slide-title">Uncertainty & Sig Figs</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Significant Figures Rules:</h3>
+                    <ul style="font-size: 0.9rem; margin-bottom: 0;">
+                        <li>All non-zero digits are significant.</li>
+                        <li>Leading zeros are <strong>not</strong> significant (0.003 has 1).</li>
+                        <li>Zeros between non-zeros <strong>are</strong> significant.</li>
+                        <li>Trailing zeros are significant <strong>if after decimal</strong> (0.200 has 3).</li>
+                        <li>Exact numbers have infinite sig figs.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Accuracy vs Precision</h3>
+                    <p style="margin: 0; font-size: 0.9rem;"><strong>Precision:</strong> Closeness of various measurements to each other.<br>
+                    <strong>Accuracy:</strong> Closeness of a measurement to the true value.</p>
+                </div>
+                <img src="Images/Accuracy vs. Precision.jpg" alt="Accuracy vs. Precision" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 5: Chemical Combinations -->
+            <div class="slide">
+                <h2 class="slide-title">Chemical Combinations</h2>
+                <div class="glass-panel">
+                    <ul style="font-size: 0.9rem; margin: 0; gap: 15px; display: flex; flex-direction: column;">
+                        <li><strong>Law of Conservation of Mass:</strong> Matter is neither created nor destroyed. Mass of reactants = Mass of products.</li>
+                        <li><strong>Law of Definite Proportions:</strong> A compound always contains exactly the same proportion of elements by weight.</li>
+                        <li><strong>Law of Multiple Proportions:</strong> When two elements form $>1$ compound, the masses of one combining with a fixed mass of the other are in simple whole number ratios.</li>
+                        <li><strong>Gay Lussac’s Law:</strong> Gases combine/are produced in simple volume ratios at same T & P.</li>
+                        <li><strong>Avogadro’s Law:</strong> Equal volumes of gases at same T & P contain equal number of molecules.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 6: Dalton's Atomic Theory -->
+            <div class="slide">
+                <h2 class="slide-title">Dalton's Atomic Theory</h2>
+                <div class="glass-panel">
+                    <ul style="font-size: 0.9rem; margin: 0; gap: 10px; display: flex; flex-direction: column;">
+                        <li>Matter consists of indivisible atoms.</li>
+                        <li>All atoms of a given element have identical properties (including identical mass). Atoms of different elements differ in mass.</li>
+                        <li>Compounds are formed when atoms of different elements combine in a fixed ratio.</li>
+                        <li>Chemical reactions involve reorganization of atoms. These are neither created nor destroyed.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 7: Atomic & Molecular Masses -->
+            <div class="slide">
+                <h2 class="slide-title">Atomic & Molecular Masses</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Atomic Mass Unit (amu)</h3>
+                    <p style="font-size: 0.9rem; margin: 0;">Defined as a mass exactly equal to 1/12th the mass of one $^{12}\text{C}$ atom.</p>
+                    $$ 1 \text{ amu} = 1.66056 \times 10^{-24} \text{ g} $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Average Atomic Mass</h3>
+                    <p style="font-size: 0.9rem; margin: 0;">Calculated by taking into account fractional abundance of isotopes.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Vapour Density</h3>
+                    $$ \text{Molar Mass} = 2 \times \text{Vapour Density} $$
+                </div>
+            </div>
+
+            <!-- Slide 8: Mole Concept -->
+            <div class="slide">
+                <h2 class="slide-title">Mole Concept</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.95rem; margin: 0;"><strong>One Mole</strong> is the amount of a substance containing as many particles as there are atoms in exactly $12\text{ g}$ of $^{12}\text{C}$.</p>
+                    $$ N_A = 6.022 \times 10^{23} \text{ particles/mol} $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Key Formulae</h3>
+                    <ul style="font-size: 0.9rem; margin: 0;">
+                        <li>Given mass ($w$): $n = \frac{w}{M}$</li>
+                        <li>Number of particles ($N$): $n = \frac{N}{N_A}$</li>
+                        <li>Gases at STP: $n = \frac{V(\text{in L})}{22.4}$</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 9: Percentage Composition -->
+            <div class="slide">
+                <h2 class="slide-title">Percentage Composition</h2>
+                <div class="glass-panel">
+                    $$ \text{Mass \%} = \frac{\text{Mass of element}}{\text{Molar mass}} \times 100 $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Empirical & Molecular Formula</h3>
+                    <ul style="font-size: 0.9rem; margin: 0; gap: 10px; display: flex; flex-direction: column;">
+                        <li><strong>Empirical:</strong> Simplest whole number ratio of atoms.</li>
+                        <li><strong>Molecular:</strong> Exact number of different types of atoms.</li>
+                        <li><strong>Relation:</strong> Molecular Formula = $n \times$ (Empirical Formula)</li>
+                    </ul>
+                    $$ n = \frac{\text{Molar Mass}}{\text{Empirical Formula Mass}} $$
+                </div>
+            </div>
+
+            <!-- Slide 10: Stoichiometry & LR -->
+            <div class="slide">
+                <h2 class="slide-title">Stoichiometry & LR</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Limiting Reagent (LR)</h3>
+                    <p style="font-size: 0.9rem; margin: 0;">Reactant consumed first. Dictates product amount.<br>
+                    <em>Tip:</em> Divide given moles by stoichiometric coefficient. Lowest value = LR.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">POAC</h3>
+                    <p style="font-size: 0.9rem; margin: 0;">Principle of Atomic Conservation: Moles of atoms of an element remain conserved.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Percentage Yield</h3>
+                    $$ \text{\% Yield} = \frac{\text{Actual Yield}}{\text{Theoretical Yield}} \times 100 $$
+                </div>
+            </div>
+
+            <!-- Slide 11: Reactions in Solutions -->
+            <div class="slide">
+                <h2 class="slide-title">Reactions in Solutions</h2>
+                <div class="glass-panel" style="padding-bottom: 10px;">
+                    <ul style="font-size: 0.85rem; margin: 0; display: grid; grid-template-columns: 1fr; gap: 8px;">
+                        <li><strong>Molarity ($M$):</strong> Moles of solute / Vol of sol in L (Temp dependent)</li>
+                        <li><strong>Molality ($m$):</strong> Moles of solute / Mass of solvent in kg (Temp independent)</li>
+                        <li><strong>Mole Fraction ($x$):</strong> $x_A = \frac{n_A}{n_A + n_B}$</li>
+                        <li><strong>Normality ($N$):</strong> Gram eq. of solute / Vol of sol in L</li>
+                        <li><strong>ppm:</strong> $\frac{\text{Mass of component}}{\text{Total mass}} \times 10^6$</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Master Formula</h3>
+                    $$ m = \frac{1000 \times M}{1000 \times d - M \times M_w} $$
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Touch Zones -->
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+        
     </div>
-    
-    <div class="progress-dots" id="dotsContainer"></div>
 
     <script>
-        lucide.createIcons();
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
 
-        const images = [
-            "flashcard_1_matter_1780560292643.png",
-            "flashcard_2_si_units_1780560306692.png",
-            "flashcard_3_sig_figs_1780560319677.png",
-            "flashcard_4_laws_1780560334631.png",
-            "flashcard_5_dalton_1780560347179.png",
-            "flashcard_6_masses_1780560372024.png",
-            "flashcard_7_mole_1780560384673.png",
-            "flashcard_8_composition_1780560397024.png",
-            "flashcard_9_stoichiometry_1780560410280.png",
-            "flashcard_10_solutions_1780560423669.png"
-        ];
-
-        const carousel = document.getElementById('carousel');
-        const dotsContainer = document.getElementById('dotsContainer');
-
-        // Populate cards
-        images.forEach((img, i) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'flashcard-wrapper';
-            wrapper.innerHTML = `<img src="Images/${img}" alt="Flashcard ${i+1}" class="flashcard-image">`;
-            carousel.appendChild(wrapper);
-
-            const dot = document.createElement('div');
-            dot.className = 'dot' + (i === 0 ? ' active' : '');
-            dotsContainer.appendChild(dot);
+        // Initialize progress bar segments
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
         });
 
-        const dots = document.querySelectorAll('.dot');
-
-        // Scroll listener for dots update
-        carousel.addEventListener('scroll', () => {
-            const index = Math.round(carousel.scrollLeft / window.innerWidth);
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; // Clear inline styles from dragging
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
             });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        // Navigation
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            // Prevent fast double tapping from zooming on some browsers, handled by meta tag though
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
         });
 
-        // Desktop Arrow Navigation
-        function scrollCarousel(direction) {
-            const scrollAmount = window.innerWidth * direction;
-            carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        // Interactive Tinder-style Drag Support (Touch & Mouse)
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
         }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05; // Gentle rotation physics
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                // Swiped Left -> Next
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50); // slight delay to allow transform to stick before class change
+                } else {
+                    draggedSlide.style.transform = ''; // Snap back if last
+                }
+            } else if (deltaX > threshold) {
+                // Swiped Right -> Previous
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = ''; // Snap back if first
+                }
+            } else {
+                // Not far enough, snap back
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        // Touch events
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        // Mouse events (for desktop dragging)
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        // Theme Toggle
+        function toggleTheme(event) {
+            event.stopPropagation(); // Prevent advancing slide
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        // Share App
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Some Basic Concepts of Chemistry - Flashcards',
+                    text: 'Check out these quick revision flashcards for Some Basic Concepts of Chemistry!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        // Initialize
+        updateUI();
+
     </script>
 </body>
 </html>
