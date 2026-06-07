@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chemical Reactions & Equations - Flashcards</title>
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px;
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto;
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30;
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto;
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- COMPONENT: Watermark -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.5rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Chemical Reactions<br>& Equations</h1>
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Class 10 Science</span>
+                        <br>
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem;">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Physical vs Chemical -->
+            <div class="slide">
+                <h2 class="slide-title">Chemical vs Physical</h2>
+                <div class="glass-panel">
+                    <p>Changes are chemical when <strong>new substances are formed</strong>.</p>
+                    <h3 class="subtitle">5 Indicators of Chemical Change:</h3>
+                    <ul>
+                        <li>Change in State</li>
+                        <li>Change in Colour</li>
+                        <li>Evolution of Gas</li>
+                        <li>Change in Temperature</li>
+                        <li>Formation of Precipitate</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Teacher's Tip 💡</h3>
+                    <p>Burning a candle is <strong>both</strong> physical (melting wax) and chemical (burning wax)!</p>
+                </div>
+            </div>
+
+            <!-- Slide 3: Skeletal vs Balanced -->
+            <div class="slide">
+                <h2 class="slide-title">Balancing Equations</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Law of Conservation of Mass</h3>
+                    <p>Mass can neither be created nor destroyed. Atoms on LHS = Atoms on RHS.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <p><strong>Skeletal (Unbalanced):</strong><br> $Mg + O_2 \rightarrow MgO$</p>
+                    <p><strong>Balanced Equation:</strong><br> $2Mg + O_2 \rightarrow 2MgO$</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Use the "Hit and Trial" method. Balance the heaviest/most numerous atoms first!</p>
+                </div>
+            </div>
+
+            <!-- Slide 4: State Symbols -->
+            <div class="slide">
+                <h2 class="slide-title">State Symbols Legend</h2>
+                <div class="glass-panel">
+                    <p>Boards give extra credit for correct state symbols. Memorize these:</p>
+                    <ul style="font-size: 0.95rem;">
+                        <li><strong>(s):</strong> Solid (metals, precipitates)</li>
+                        <li><strong>(l):</strong> Liquid (pure liquids like $H_2O$)</li>
+                        <li><strong>(g):</strong> Gas ($CO_2$, $H_2$)</li>
+                        <li><strong>(aq):</strong> Aqueous (dissolved in water)</li>
+                        <li><strong>$\downarrow$:</strong> Precipitate (solid settling down)</li>
+                        <li><strong>$\uparrow$:</strong> Gas evolving (bubbles)</li>
+                        <li><strong>$\Delta$:</strong> Heat supplied (Thermal)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 5: Exo vs Endo -->
+            <div class="slide">
+                <h2 class="slide-title">Exothermic vs Endothermic</h2>
+                <div class="glass-panel" style="border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Exothermic Reaction</h3>
+                    <p>Heat is <strong>released</strong> along with products.</p>
+                    <p style="font-size: 0.9rem;"><strong>Respiration:</strong> $C_6H_{12}O_6 + 6O_2 \rightarrow 6CO_2 + 6H_2O + \text{Energy}$</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">Endothermic Reaction</h3>
+                    <p>Energy is <strong>absorbed</strong> from surroundings.</p>
+                    <p style="font-size: 0.9rem;"><strong>Photosynthesis:</strong> $6CO_2 + 12H_2O \xrightarrow{\text{Sunlight}} C_6H_{12}O_6 + 6O_2 + 6H_2O$</p>
+                </div>
+            </div>
+
+            <!-- Slide 6: Combination -->
+            <div class="slide">
+                <h2 class="slide-title">1. Combination Reaction</h2>
+                <div class="glass-panel">
+                    <p>Reactants merge into one product: $A + B \rightarrow C$.</p>
+                    <p><strong>Commonly Exothermic!</strong></p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Board Favorite: Whitewashing</h3>
+                    <p>1. Quick Lime + Water $\rightarrow$ Slaked Lime<br>
+                    $CaO + H_2O \rightarrow Ca(OH)_2$</p>
+                    <p>2. Slaked Lime + Carbon Dioxide $\rightarrow$ Calcium Carbonate<br>
+                    $Ca(OH)_2 + CO_2 \rightarrow CaCO_3 + H_2O$</p>
+                    <p style="font-size: 0.85rem; font-style: italic;">$CaCO_3$ provides the shiny finish after 2-3 days.</p>
+                </div>
+            </div>
+
+            <!-- Slide 7: Decomposition -->
+            <div class="slide">
+                <h2 class="slide-title">2. Decomposition Reaction</h2>
+                <div class="glass-panel">
+                    <p>A single reactant breaks down: $C \rightarrow A + B$.</p>
+                    <p><strong>Commonly Endothermic!</strong></p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Types of Decomposition:</h3>
+                    <ul>
+                        <li><strong>Thermal (Heat):</strong> $CaCO_3 \xrightarrow{\Delta} CaO + CO_2$</li>
+                        <li><strong>Electrolytic (Electricity):</strong> $2H_2O \rightarrow 2H_2 + O_2$</li>
+                        <li><strong>Photolytic (Sunlight):</strong> $2AgCl \rightarrow 2Ag + Cl_2$</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 8: Displacement -->
+            <div class="slide">
+                <h2 class="slide-title">3. Displacement Reaction</h2>
+                <div class="glass-panel">
+                    <p>A stronger (more reactive) metal kicks out a weaker one based on the Reactivity Series.</p>
+                    $$ A + BC \rightarrow AC + B $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Classic Example</h3>
+                    $$ Fe(s) + CuSO_4(aq) \rightarrow FeSO_4(aq) + Cu(s) $$
+                    <p>Iron nails in blue Copper Sulphate solution fade it to <strong>light green</strong> (Ferrous Sulphate) and nails get a brownish copper coating.</p>
+                </div>
+            </div>
+
+            <!-- Slide 9: Double Displacement -->
+            <div class="slide">
+                <h2 class="slide-title">4. Double Displacement</h2>
+                <div class="glass-panel">
+                    <p>Exchange of ions between reactants. Usually forms a <strong>Precipitate</strong>.</p>
+                    $$ AB + CD \rightarrow AD + CB $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Precipitation Example</h3>
+                    $$ Na_2SO_4(aq) + BaCl_2(aq) \rightarrow BaSO_4(s)\downarrow + 2NaCl(aq) $$
+                    <p>A <strong>white precipitate</strong> of Barium Sulphate ($BaSO_4$) is formed instantly.</p>
+                </div>
+            </div>
+
+            <!-- Slide 10: Redox -->
+            <div class="slide">
+                <h2 class="slide-title">Redox Reactions</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Mnemonic: OIL RIG</h3>
+                    <p><strong>O</strong>xidation <strong>I</strong>s <strong>L</strong>oss (of Electrons)<br>
+                    <strong>R</strong>eduction <strong>I</strong>s <strong>G</strong>ain (of Electrons)</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Oxygen-Hydrogen Rule</h3>
+                    <ul>
+                        <li><strong>Oxidation:</strong> Gain of Oxygen OR Loss of Hydrogen</li>
+                        <li><strong>Reduction:</strong> Loss of Oxygen OR Gain of Hydrogen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 11: Agents -->
+            <div class="slide">
+                <h2 class="slide-title">Oxidizing & Reducing Agents</h2>
+                <div class="glass-panel">
+                    <p>Example: $MnO_2 + 4HCl \rightarrow MnCl_2 + 2H_2O + Cl_2$</p>
+                    <ul>
+                        <li><strong>Substance Oxidized:</strong> $HCl$ (loses Hydrogen)</li>
+                        <li><strong>Substance Reduced:</strong> $MnO_2$ (loses Oxygen)</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Finding the Agent</h3>
+                    <p><strong>Oxidizing Agent:</strong> The substance that gets reduced (e.g. $MnO_2$).</p>
+                    <p><strong>Reducing Agent:</strong> The substance that gets oxidized (e.g. $HCl$).</p>
+                </div>
+            </div>
+
+            <!-- Slide 12: Corrosion & Rancidity -->
+            <div class="slide">
+                <h2 class="slide-title">Everyday Oxidation</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Corrosion</h3>
+                    <ul style="font-size: 0.95rem;">
+                        <li><strong>Iron:</strong> Rust ($Fe_2O_3 \cdot xH_2O$) - Reddish Brown.</li>
+                        <li><strong>Silver:</strong> Black Coating ($Ag_2S$) due to sulfur.</li>
+                        <li><strong>Copper:</strong> Green Coating ($CuCO_3 \cdot Cu(OH)_2$).</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Rancidity</h3>
+                    <p>Oxidation of fats/oils leads to bad smell/taste in food.</p>
+                    <p><strong>Prevention:</strong> Flush packets with Nitrogen gas (Inert), use airtight containers, add Antioxidants.</p>
+                </div>
+            </div>
+
+            <!-- Slide 13: Activity 1.1 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.1: Magnesium Ribbon</h2>
+                <div class="glass-panel">
+                    <img src="images/magnesium_flare.png" alt="Burning Magnesium" class="content-img">
+                    <p>Clean a magnesium ribbon with sandpaper to remove the protective layer of Magnesium Oxide/Carbonate.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>Burns with a <strong>dazzling white flame</strong> and changes into a white powder (Magnesium Oxide).</p>
+                    $$ 2Mg(s) + O_2(g) \rightarrow 2MgO(s) $$
+                </div>
+            </div>
+
+            <!-- Slide 14: Activity 1.2 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.2: Lead Nitrate + KI</h2>
+                <div class="glass-panel">
+                    <p>Mix aqueous solutions of Lead Nitrate $Pb(NO_3)_2$ and Potassium Iodide $KI$.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>A beautiful <strong>Yellow Precipitate</strong> of Lead Iodide ($PbI_2$) is formed instantly.</p>
+                    $$ Pb(NO_3)_2(aq) + 2KI(aq) \rightarrow PbI_2(s)\downarrow + 2KNO_3(aq) $$
+                    <p style="font-size: 0.85rem;">This is a classic Double Displacement & Precipitation reaction.</p>
+                </div>
+            </div>
+
+            <!-- Slide 15: Activity 1.3 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.3: Zinc + Dilute Acid</h2>
+                <div class="glass-panel">
+                    <p>Add dilute Sulphuric Acid or Hydrochloric Acid to Zinc granules in a conical flask.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>Gas bubbles form. Bring a candle, burns with a <strong>'pop' sound</strong> (Hydrogen gas). The flask gets <strong>hot</strong> (Exothermic).</p>
+                    $$ Zn + H_2SO_4 \rightarrow ZnSO_4 + H_2\uparrow $$
+                </div>
+            </div>
+
+            <!-- Slide 16: Activity 1.4 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.4: Quick Lime + Water</h2>
+                <div class="glass-panel">
+                    <p>Take a small amount of calcium oxide (quick lime) in a beaker and slowly add water.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>Vigorous reaction with a hissing sound. Beaker gets very hot (Highly <strong>Exothermic</strong>). Slaked lime is formed.</p>
+                    $$ CaO(s) + H_2O(l) \rightarrow Ca(OH)_2(aq) + \text{Heat} $$
+                </div>
+            </div>
+
+            <!-- Slide 17: Activity 1.5 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.5: Ferrous Sulphate</h2>
+                <div class="glass-panel">
+                    <p>Heat 2g of Ferrous Sulphate crystals ($FeSO_4 \cdot 7H_2O$) in a dry boiling tube.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>Green crystals turn white (lose water), then <strong>brown</strong> ($Fe_2O_3$). Characteristic smell of <strong>burning sulphur</strong> ($SO_2, SO_3$).</p>
+                    $$ 2FeSO_4(s) \xrightarrow{\Delta} Fe_2O_3(s) + SO_2(g) + SO_3(g) $$
+                </div>
+            </div>
+
+            <!-- Slide 18: Activity 1.6 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.6: Heating Lead Nitrate</h2>
+                <div class="glass-panel">
+                    <p>Heat 2g of Lead Nitrate powder in a boiling tube over a flame.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>Emission of thick <strong>brown fumes</strong> of Nitrogen Dioxide ($NO_2$). A yellow residue of Lead Oxide ($PbO$) is left behind.</p>
+                    $$ 2Pb(NO_3)_2(s) \xrightarrow{\Delta} 2PbO(s) + 4NO_2(g) + O_2(g) $$
+                </div>
+            </div>
+
+            <!-- Slide 19: Activity 1.7 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.7: Electrolysis</h2>
+                <div class="glass-panel">
+                    <img src="images/electrolysis_tower.png" alt="Electrolysis of Water Diagram" class="content-img">
+                    <p>Pass electric current through acidified water.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>Hydrogen gas collects at <strong>Cathode (-)</strong>, Oxygen at <strong>Anode (+)</strong>.</p>
+                    $$ 2H_2O(l) \xrightarrow{\text{Electricity}} 2H_2(g) + O_2(g) $$
+                    <p style="font-size: 0.85rem;">Volume ratio is exactly <strong>2:1 ($H_2:O_2$)</strong>.</p>
+                </div>
+            </div>
+
+            <!-- Slide 20: Activity 1.8 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.8: Photolytic Decomp.</h2>
+                <div class="glass-panel">
+                    <p>Place 2g of Silver Chloride ($AgCl$) in a china dish out in sunlight for some time.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>White $AgCl$ turns <strong>grey</strong> due to the formation of silver metal. Chlorine gas escapes.</p>
+                    $$ 2AgCl(s) \xrightarrow{\text{Sunlight}} 2Ag(s) + Cl_2(g) $$
+                    <p style="font-size: 0.85rem;">Used in black and white photography!</p>
+                </div>
+            </div>
+
+            <!-- Slide 21: Activity 1.9 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.9: Iron in CuSO₄</h2>
+                <div class="glass-panel">
+                    <p>Dip iron nails into a blue solution of Copper Sulphate ($CuSO_4$) for 20 minutes.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>The blue color fades to <strong>light green</strong> ($FeSO_4$). Iron nails get a <strong>brownish coating</strong> of Copper.</p>
+                    $$ Fe(s) + CuSO_4(aq) \rightarrow FeSO_4(aq) + Cu(s) $$
+                </div>
+            </div>
+
+            <!-- Slide 22: Activity 1.10 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.10: Precipitation</h2>
+                <div class="glass-panel">
+                    <p>Mix 3mL of Sodium Sulphate solution with 3mL of Barium Chloride solution.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>A completely insoluble <strong>white precipitate</strong> of Barium Sulphate ($BaSO_4$) is formed instantly.</p>
+                    $$ Na_2SO_4(aq) + BaCl_2(aq) \rightarrow BaSO_4(s)\downarrow + 2NaCl(aq) $$
+                </div>
+            </div>
+
+            <!-- Slide 23: Activity 1.11 -->
+            <div class="slide">
+                <h2 class="slide-title">Activity 1.11: Copper Oxidation</h2>
+                <div class="glass-panel">
+                    <p>Heat about 1g of brown copper powder in a china dish.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">Observation</h3>
+                    <p>The surface of copper powder becomes coated with <strong>black</strong> copper(II) oxide ($CuO$). Oxygen is added (Oxidation).</p>
+                    $$ 2Cu(s) + O_2(g) \xrightarrow{\Delta} 2CuO(s) $$
+                    <p style="font-size: 0.85rem;">If $H_2$ gas is passed over this, the black coating turns brown again!</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; 
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05; 
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50); 
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else if (deltaX > threshold) {
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        function toggleTheme(event) {
+            event.stopPropagation(); 
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chemical Reactions & Equations - Flashcards',
+                    text: 'Check out these quick revision flashcards for Science!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        updateUI();
+
+    </script>
+</body>
+</html>

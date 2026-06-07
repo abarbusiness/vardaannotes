@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Work, Energy and Power - Flashcards Story</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px;
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto;
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30;
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto;
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            border: 1px solid var(--glass-border);
+            padding: 8px;
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- COMPONENT: Watermark -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <!-- Share Button -->
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.8rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Work, Energy<br>& Power</h1>
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Chapter 2 Flashcards</span>
+                        <br>
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Work -->
+            <div class="slide">
+                <h2 class="slide-title">Work</h2>
+                <div class="glass-panel">
+                    <p>Work is done when a force applied on a body produces <strong>displacement</strong>.</p>
+                    <img src="Images/Fig 2.2 Force applied at an angle.jpg" alt="Force at an angle" class="content-img">
+                    <h3 class="subtitle">General Formula:</h3>
+                    $$ W = F \times S \cos \theta $$
+                    <ul style="font-size: 0.95rem; margin-bottom: 0;">
+                        <li><strong>$F$:</strong> Force applied</li>
+                        <li><strong>$S$:</strong> Displacement</li>
+                        <li><strong>$\theta$:</strong> Angle between force and displacement</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 3: Special Cases -->
+            <div class="slide">
+                <h2 class="slide-title">Special Cases ($\theta$)</h2>
+                <div class="glass-panel" style="border-left: 4px solid var(--accent-green);">
+                    <h3 class="subtitle">1. Positive Work ($\theta = 0^\circ$)</h3>
+                    <img src="Images/Fig 2.3 Force and displacement in same direction.jpg" alt="Positive Work" class="content-img">
+                    <p style="margin: 0;">Direction of displacement is same as force.<br><strong>$W = F \times S$</strong></p>
+                </div>
+                <div class="glass-panel" style="border-left: 4px solid var(--accent-blue); animation-delay: 0.1s;">
+                    <h3 class="subtitle">2. Zero Work ($\theta = 90^\circ$)</h3>
+                    <img src="Images/Fig 2.4 Force and displacement at right angles.jpg" alt="Zero Work" class="content-img">
+                    <p style="margin: 0;">Displacement is perpendicular to force (e.g. Earth orbit).<br><strong>$W = 0$</strong></p>
+                </div>
+                <div class="glass-panel" style="border-left: 4px solid var(--accent-pink); animation-delay: 0.2s;">
+                    <h3 class="subtitle">3. Negative Work ($\theta = 180^\circ$)</h3>
+                    <img src="Images/Fig 2.5 Force and displacement in opposite direction.jpg" alt="Negative Work" class="content-img">
+                    <p style="margin: 0;">Displacement is opposite to force (e.g. friction).<br><strong>$W = -F \times S$</strong></p>
+                </div>
+            </div>
+
+            <!-- Slide 4: Variable Force & Work Against Gravity -->
+            <div class="slide">
+                <h2 class="slide-title">Work & Graphs</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Work by Variable Force</h3>
+                    <p>The area under a <strong>Force-Displacement Graph</strong> gives the work done.</p>
+                    <img src="Images/Graph Work done by a variable force = Area under graph.png" alt="Force-Displacement Graph" class="content-img">
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Work Against Gravity</h3>
+                    <img src="Images/Fig 2.6 Work done against gravity in lifting a bucket.jpg" alt="Gravity Work" class="content-img">
+                    <p>Lifting a body vertically:</p>
+                    $$ W = mgh $$
+                    <p style="font-size: 0.85rem; margin-bottom: 0;">*Work done by gravity while moving horizontally is ZERO.</p>
+                </div>
+            </div>
+
+            <!-- Slide 5: Units of Work -->
+            <div class="slide">
+                <h2 class="slide-title">Units of Work</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">S.I. Unit: Joule (J)</h3>
+                    <p style="margin-top: 0;">1 joule is the work done when a force of 1 N displaces a body through 1 m.</p>
+                    $$ 1 \text{ J} = 1 \text{ N} \times 1 \text{ m} $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">C.G.S. Unit: Erg</h3>
+                    <p style="margin-top: 0;">1 erg is the work done when a force of 1 dyne displaces a body through 1 cm.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.3s; background: rgba(255, 193, 7, 0.1); border-color: rgba(255, 193, 7, 0.5);">
+                    <h3 class="subtitle">Relationship</h3>
+                    $$ 1 \text{ Joule} = 10^7 \text{ erg} $$
+                </div>
+            </div>
+
+            <!-- Slide 6: Power -->
+            <div class="slide">
+                <h2 class="slide-title">Power</h2>
+                <div class="glass-panel">
+                    <p>Power is the <strong>rate of doing work</strong>.</p>
+                    <img src="Images/Fig 2.1 A man pushing a car.jpg" alt="A man pushing a car" class="content-img">
+                    <h3 class="subtitle">Formula:</h3>
+                    $$ P = \frac{W}{t} $$
+                    <p>Since $W = F \times S$, we can also write:</p>
+                    $$ P = F \times v $$
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">(Power = Force $\times$ average speed)</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="margin: 0;"><em>Work is independent of time, but Power depends on time.</em></p>
+                </div>
+            </div>
+
+            <!-- Slide 7: Units of Power & Diff -->
+            <div class="slide">
+                <h2 class="slide-title">Power Units & Differences</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Units of Power</h3>
+                    <ul style="margin: 0;">
+                        <li><strong>S.I. Unit:</strong> Watt (W). $1\text{W} = 1\text{J/s}$</li>
+                        <li><strong>1 Kilowatt (kW)</strong> = $10^3 \text{ W}$</li>
+                        <li><strong>Horse Power (hp):</strong> $1 \text{ hp} = 746 \text{ W}$</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Work vs Power</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>Work</th><th>Power</th></tr>
+                            <tr><td>Force $\times$ displacement</td><td>Rate of doing work</td></tr>
+                            <tr><td>Independent of time</td><td>Depends on time</td></tr>
+                            <tr><td>S.I. unit: Joule (J)</td><td>S.I. unit: Watt (W)</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Energy & Potential Energy -->
+            <div class="slide">
+                <h2 class="slide-title">Energy & P.E.</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Energy</h3>
+                    <p>Energy is the <strong>capacity to do work</strong>. Units are same as work (Joule, erg, kWh, eV).</p>
+                    <p><strong>Mechanical Energy</strong> exists in two forms: Potential and Kinetic.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Potential Energy ($U$)</h3>
+                    <p>Energy possessed by virtue of <strong>position or configuration</strong>.</p>
+                    <ul>
+                        <li><strong>Gravitational PE:</strong> $U = mgh$</li>
+                        <li><strong>Elastic PE:</strong> Deformed state (e.g. spring).</li>
+                    </ul>
+                    <img src="Images/Fig 2.10 Ball flies away on releasing the spring.jpg" alt="Elastic PE" class="content-img">
+                </div>
+            </div>
+
+            <!-- Slide 9: Kinetic Energy -->
+            <div class="slide">
+                <h2 class="slide-title">Kinetic Energy</h2>
+                <div class="glass-panel">
+                    <p>Energy possessed by virtue of <strong>state of motion</strong>.</p>
+                    <img src="Images/Fig 2.9 Different forms of kinetic energy.jpg" alt="Forms of KE" class="content-img">
+                    <h3 class="subtitle">Formula:</h3>
+                    $$ K = \frac{1}{2} mv^2 $$
+                    <p style="font-size: 0.9rem;">Forms of KE: Translational, Rotational, Vibrational.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Relation: KE & Momentum ($p$)</h3>
+                    $$ K = \frac{p^2}{2m} \quad \text{or} \quad p = \sqrt{2mK} $$
+                </div>
+            </div>
+
+            <!-- Slide 10: Work-Energy Theorem -->
+            <div class="slide">
+                <h2 class="slide-title">Work-Energy Theorem</h2>
+                <div class="glass-panel">
+                    <p>The work done by a force on a moving body is equal to the <strong>increase in its kinetic energy</strong>.</p>
+                    $$ W = K_f - K_i = \Delta K $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Energy Conversions</h3>
+                    <img src="Images/Fig 2.11 Examples of energy conversion.jpg" alt="Energy Conversions" class="content-img">
+                    <ul style="font-size: 0.9rem;">
+                        <li><strong>Dry Cell:</strong> Chemical $\to$ Electric</li>
+                        <li><strong>Solar Cell:</strong> Light $\to$ Electric</li>
+                        <li><strong>Motor:</strong> Electric $\to$ Mechanical</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 11: Conservation of Energy (Free Fall) -->
+            <div class="slide">
+                <h2 class="slide-title">Conservation of Energy</h2>
+                <div class="glass-panel">
+                    <p>Energy can neither be created nor destroyed. In absence of friction: <strong>$K + U = \text{constant}$</strong></p>
+                    <h3 class="subtitle">Freely Falling Body</h3>
+                    <img src="Images/Fig 2.15 Energy conservation in free fall.jpg" alt="Free Fall" class="content-img">
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <img src="Images/Fig 2.16 Transformation of energy in free fall.jpg" alt="Free Fall Graph" class="content-img">
+                    <p style="font-size: 0.9rem; margin-bottom: 0;">Total energy ($E = mgh$) remains constant everywhere!</p>
+                </div>
+            </div>
+
+            <!-- Slide 12: Simple Pendulum -->
+            <div class="slide">
+                <h2 class="slide-title">Simple Pendulum</h2>
+                <div class="glass-panel">
+                    <p>Energy oscillates between PE and KE.</p>
+                    <img src="Images/Fig 2.17 Energy conservation in a simple pendulum.jpg" alt="Simple Pendulum" class="content-img">
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <ul style="margin: 0; font-size: 0.95rem;">
+                        <li><strong>Mean Position (A):</strong> Height is 0. <strong>KE is Maximum</strong>, PE is zero.</li>
+                        <li><strong>Extreme Positions (B & C):</strong> Bob momentarily stops. KE is zero, <strong>PE is Maximum ($mgh$)</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Touch Zones -->
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+        
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; 
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05; 
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50); 
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else if (deltaX > threshold) {
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        function toggleTheme(event) {
+            event.stopPropagation(); 
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Work, Energy and Power - Flashcards',
+                    text: 'Check out these quick revision flashcards for Work, Energy and Power!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        updateUI();
+
+    </script>
+</body>
+</html>

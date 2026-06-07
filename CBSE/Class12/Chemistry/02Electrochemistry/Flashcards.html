@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Electrochemistry - Flashcards Story</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Desktop specific constraint to mimic mobile screen */
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px; /* Make room for share btn */
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        /* Slides */
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30; /* Keep above touch zones */
+            pointer-events: none; /* Let clicks pass through! */
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg); /* Opaque background for stack effect */
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px; /* Top padding for progress bar and share button */
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto; /* Active catches touch */
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30; /* So it can come back on top */
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        /* Hide scrollbar for slides */
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Navigation Touch Zones */
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        /* Aesthetics & Components */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto; /* Re-enable clicks on cards */
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff; /* White background for dark diagrams */
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto; /* Re-enable clicks */
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* MathJax Responsive Handling */
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- SHARE BUTTON --- */
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <!-- Share Button -->
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <!-- SVG for Electrochemistry -->
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                            <polyline points="17 2 12 7 7 2"></polyline>
+                            <line x1="12" y1="12" x2="12" y2="16"></line>
+                            <line x1="10" y1="14" x2="14" y2="14"></line>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.2rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Electrochemistry</h1>
+                        
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Class 12 • Chapter 2</span>
+                        
+                        <br>
+                        
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <!-- Intuitive Swipe Hints -->
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Electrochemical Cells -->
+            <div class="slide">
+                <h2 class="slide-title">Electrochemical Cells</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Galvanic (Voltaic) Cell</h3>
+                    <p style="margin: 0; font-size: 0.9rem;">Converts chemical energy of a spontaneous redox reaction ($\Delta G < 0$) into electrical energy. (e.g. Daniell Cell).</p>
+                    <p style="margin-top: 8px; font-size: 0.9rem;"><strong>$$\text{Zn}(s) + \text{Cu}^{2+}(aq) \longrightarrow \text{Zn}^{2+}(aq) + \text{Cu}(s)$$</strong></p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">The "LOAN" Trick</h3>
+                    <ul style="font-size: 0.9rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>L</strong>eft side</li>
+                        <li><strong>O</strong>xidation occurs (Loss of $e^-$)</li>
+                        <li><strong>A</strong>node</li>
+                        <li><strong>N</strong>egative terminal</li>
+                    </ul>
+                </div>
+                <img src="Images/Figure 2.1.png" alt="Daniell cell" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 3: Salt Bridge & SHE -->
+            <div class="slide">
+                <h2 class="slide-title">Salt Bridge & SHE</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Salt Bridge Functions</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>Completes the inner electrical circuit.</li>
+                        <li>Maintains electrical neutrality in both half-cells.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Standard Hydrogen Electrode (SHE)</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Used as primary reference electrode. Assigned potential is exactly <strong>$0.00\text{ V}$</strong> at all temperatures.</p>
+                    <p style="font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;"><strong>Reaction:</strong> $\text{H}^+(aq) + e^- \rightleftharpoons \frac{1}{2} \text{H}_2(g)$</p>
+                </div>
+                <img src="Images/figure 2.3.png" alt="Standard Hydrogen Electrode" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 4: Cell Potential -->
+            <div class="slide">
+                <h2 class="slide-title">Cell Potential & Series</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Standard Cell Potential</h3>
+                    <p style="font-size: 0.9rem; margin: 0;">The EMF of a cell under standard conditions.</p>
+                    $$E^\circ_{cell} = E^\circ_{cathode} - E^\circ_{anode}$$
+                    $$E^\circ_{cell} = E^\circ_{Right} - E^\circ_{Left}$$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Electrochemical Series</h3>
+                    <ul style="font-size: 0.85rem; margin: 0; padding-left: 15px;">
+                        <li><strong>Higher +ve $E^\circ$:</strong> Strong tendency to get reduced (Powerful oxidizing agents like $F_2$).</li>
+                        <li><strong>Lower -ve $E^\circ$:</strong> Strong tendency to get oxidized (Powerful reducing agents like $Li$).</li>
+                        <li><strong>Spontaneity:</strong> Reaction is feasible if $E^\circ_{cell} > 0$.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 5: Nernst Equation -->
+            <div class="slide">
+                <h2 class="slide-title">Nernst Equation</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">Calculates cell potential at any concentration/temp.</p>
+                    <h3 class="subtitle" style="margin-top: 10px;">For a Complete Cell (at 298 K)</h3>
+                    $$E_{cell} = E^\circ_{cell} - \frac{0.0591}{n} \log \frac{[\text{Products}]}{[\text{Reactants}]}$$
+                    <p style="font-size: 0.8rem; margin: 5px 0 0 0;">$n$ = number of electrons transferred.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Hydrogen Electrode & pH</h3>
+                    $$E_{\text{H}^+/\text{H}_2} = -0.0591 \times \text{pH}$$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Concentration Cells</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Same electrodes, different concentrations. <strong>$E^\circ_{cell} = 0$</strong>.</p>
+                    $$E_{cell} = - \frac{0.0591}{n} \log \left(\frac{C_1}{C_2}\right)$$
+                </div>
+            </div>
+
+            <!-- Slide 6: Gibbs & Eq. Constant -->
+            <div class="slide">
+                <h2 class="slide-title">Gibbs & Eq. Constant</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Gibbs Free Energy ($\Delta G$)</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Represents max useful (non-expansion) work.</p>
+                    $$\Delta_r G = -nFE_{cell}$$
+                    $$\Delta_r G^\circ = -nFE^\circ_{cell}$$
+                    <p style="font-size: 0.8rem; margin: 5px 0 0 0;">$1\text{ F} = 96487\text{ C mol}^{-1}$</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Equilibrium Constant ($K_c$)</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">At equilibrium, $E_{cell} = 0$.</p>
+                    $$\log K_c = \frac{n \times E^\circ_{cell}}{0.0591}$$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    $$\Delta_r G^\circ = -2.303 RT \log K_c$$
+                </div>
+            </div>
+
+            <!-- Slide 7: Conductance Terms -->
+            <div class="slide">
+                <h2 class="slide-title">Conductance Terms</h2>
+                <div class="glass-panel">
+                    <ul style="font-size: 0.85rem; margin: 0; padding-left: 10px;">
+                        <li><strong>Resistance ($R$):</strong> Obstruction to current. $R = \rho \frac{l}{A}$.</li>
+                        <li><strong>Conductance ($G$):</strong> Ease of flow. $G = \frac{1}{R}$. Unit: $S$.</li>
+                        <li><strong>Conductivity ($\kappa$):</strong> Conductance of $1\text{ cm}^3$ solution. $\kappa = \frac{1}{\rho}$.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Cell Constant ($G^*$)</h3>
+                    $$G^* = \frac{l}{A} \quad \implies \quad \kappa = G \times G^*$$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Molar Conductivity ($\Lambda_m$)</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Conducting power of all ions from 1 mole of electrolyte.</p>
+                    $$\Lambda_m = \frac{\kappa \times 1000}{M}$$
+                    <p style="font-size: 0.8rem; margin: 5px 0 0 0;">Unit: $\text{S cm}^2 \text{ mol}^{-1}$. $M$ is Molarity.</p>
+                </div>
+            </div>
+
+            <!-- Slide 8: Variation with Concentration -->
+            <div class="slide">
+                <h2 class="slide-title">Dilution Effects</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>Conductivity ($\kappa$):</strong> Always <strong>decreases</strong> with dilution (fewer ions per unit volume).</p>
+                    <p style="font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;"><strong>Molar Conductivity ($\Lambda_m$):</strong> Always <strong>increases</strong> with dilution.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Strong vs Weak Electrolytes</h3>
+                    <ul style="font-size: 0.85rem; margin: 0; padding-left: 15px;">
+                        <li><strong>Strong:</strong> Modest increase. Debye-Hückel-Onsager equation: $\Lambda_m = \Lambda_m^\circ - A \sqrt{c}$</li>
+                        <li><strong>Weak:</strong> Steep increase. Degree of dissociation ($\alpha$) shoots up on dilution. Cannot find $\Lambda_m^\circ$ graphically.</li>
+                    </ul>
+                </div>
+                <img src="Images/Figuure 2.6.png" alt="Molar conductivity vs concentration" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 9: Kohlrausch's Law -->
+            <div class="slide">
+                <h2 class="slide-title">Kohlrausch's Law</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">Limiting molar conductivity is the sum of individual ionic contributions at infinite dilution.</p>
+                    $$\Lambda_m^\circ = \nu_+ \lambda_+^\circ + \nu_- \lambda_-^\circ$$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Applications</h3>
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>1. Finding $\Lambda_m^\circ$ for Weak Electrolytes:</strong><br>
+                    $\Lambda_m^\circ(\text{CH}_3\text{COOH}) = \Lambda_m^\circ(\text{CH}_3\text{COONa}) + \Lambda_m^\circ(\text{HCl}) - \Lambda_m^\circ(\text{NaCl})$</p>
+                    <hr style="border:0; border-top:1px solid var(--glass-border); margin: 10px 0;">
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>2. Degree of Dissociation ($\alpha$):</strong> $\alpha = \frac{\Lambda_m^c}{\Lambda_m^\circ}$</p>
+                    <p style="font-size: 0.85rem; margin-top: 5px;"><strong>3. Dissociation Constant ($K_a$):</strong> $K_a = \frac{c \alpha^2}{1 - \alpha}$</p>
+                </div>
+            </div>
+
+            <!-- Slide 10: Electrolysis & Faraday -->
+            <div class="slide">
+                <h2 class="slide-title">Electrolysis & Faraday</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Preferential Discharge</h3>
+                    <ul style="font-size: 0.85rem; margin: 0; padding-left: 15px;">
+                        <li><strong>Cathode:</strong> Ion with <em>higher</em> $E^\circ_{red}$ discharges first (e.g., $H^+$ over $Na^+$ in aq. $NaCl$).</li>
+                        <li><strong>Anode:</strong> Ion with <em>lower</em> $E^\circ_{red}$ discharges first (Exception: Overpotential of $O_2$ makes $Cl^-$ oxidize instead of $H_2O$).</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Faraday's Laws</h3>
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>First Law:</strong> Mass deposited is proportional to charge $Q$.</p>
+                    $$w = Z \cdot I \cdot t$$
+                    <p style="font-size: 0.85rem; margin-top: 10px; margin-bottom: 0;"><strong>Second Law:</strong> When same charge passes through different electrolytes in series, masses are proportional to Equivalent Weights.</p>
+                    $$\frac{w_1}{w_2} = \frac{E_1}{E_2}$$
+                </div>
+            </div>
+
+            <!-- Slide 11: Batteries & Cells -->
+            <div class="slide">
+                <h2 class="slide-title">Batteries & Fuel Cells</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Primary Cells (Non-rechargeable)</h3>
+                    <ul style="font-size: 0.85rem; margin: 0; padding-left: 15px;">
+                        <li><strong>Dry Cell:</strong> Voltage drops over time. Complex $[\text{Zn}(\text{NH}_3)_4]^{2+}$ forms.</li>
+                        <li><strong>Mercury Cell:</strong> Constant potential ($1.35\text{ V}$) because overall reaction has no ions in solution.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Secondary Cells (Rechargeable)</h3>
+                    <ul style="font-size: 0.85rem; margin: 0; padding-left: 15px;">
+                        <li><strong>Lead Storage:</strong> $\text{Pb}$ anode, $\text{PbO}_2$ cathode, $38\%$ $\text{H}_2\text{SO}_4$. Both form $\text{PbSO}_4$ on discharge.</li>
+                        <li><strong>Ni-Cd Cell:</strong> Longer life, expensive.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Fuel Cells ($H_2-O_2$)</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Highly efficient ($\sim 70\%$), zero pollution (produces pure water). Used in Apollo program.</p>
+                </div>
+            </div>
+
+            <!-- Slide 12: Corrosion -->
+            <div class="slide">
+                <h2 class="slide-title">Corrosion</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">Electrochemical degradation of metals.</p>
+                    <h3 class="subtitle" style="margin-top: 10px;">Mechanism of Rusting</h3>
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>Anode:</strong> $2\text{Fe} \rightarrow 2\text{Fe}^{2+} + 4e^-$<br>
+                    <strong>Cathode:</strong> $\text{O}_2 + 4\text{H}^+ + 4e^- \rightarrow 2\text{H}_2\text{O}$<br>
+                    <strong>Rust:</strong> $\text{Fe}_2\text{O}_3 \cdot x\text{H}_2\text{O}$</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Prevention Methods</h3>
+                    <ul style="font-size: 0.85rem; margin: 0; padding-left: 15px;">
+                        <li><strong>Barrier:</strong> Paint, oil, grease.</li>
+                        <li><strong>Galvanization:</strong> Coating iron with Zinc (more active, sacrifices itself).</li>
+                        <li><strong>Cathodic Protection:</strong> Connecting underground pipes to Mg blocks.</li>
+                    </ul>
+                </div>
+                <img src="Images/Figure 2.13.png" alt="Corrosion of iron" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+        </div>
+
+        <!-- Touch Zones -->
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+        
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        // Initialize progress bar segments
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; // Clear inline styles from dragging
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        // Navigation
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        // Interactive Drag Support
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05; 
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50); 
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else if (deltaX > threshold) {
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        // Theme Toggle
+        function toggleTheme(event) {
+            event.stopPropagation();
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        // Share App
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Electrochemistry - Flashcards',
+                    text: 'Check out these quick revision flashcards for Class 12 Electrochemistry!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        updateUI();
+
+    </script>
+</body>
+</html>

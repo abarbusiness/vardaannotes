@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Acids, Bases & Salts - Flashcards</title>
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px;
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto;
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30;
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto;
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            border: 1px solid var(--glass-border);
+            padding: 8px;
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- COMPONENT: Watermark -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 2v7.31"></path>
+                            <path d="M14 9.3V1.99"></path>
+                            <path d="M8.5 2h7"></path>
+                            <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                            <path d="M5.5 16.5h13"></path>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.8rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Acids, Bases<br>& Salts</h1>
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Class 10 Science</span>
+                        <br>
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem;">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Activity 2.1 Laboratory Indicators -->
+            <div class="slide">
+                <h2 class="slide-title">2.1 Laboratory Indicators</h2>
+                <div class="glass-panel">
+                    <p>Substances that change colour to indicate acidic/basic nature.</p>
+                    <ul style="font-size: 0.95rem;">
+                        <li><strong>Litmus:</strong> Acid turns Blue to <strong>Red</strong>. Base turns Red to <strong>Blue</strong>.</li>
+                        <li><strong>Phenolphthalein:</strong> Acid remains colourless. Base turns <strong>Pink</strong>.</li>
+                        <li><strong>Methyl Orange:</strong> Acid turns <strong>Red</strong>. Base turns <strong>Yellow</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 3: Activity 2.2 Olfactory -->
+            <div class="slide">
+                <h2 class="slide-title">2.2 Olfactory Indicators</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Smell the Change</h3>
+                    <p>Substances whose odour changes in acidic/basic media. <em>e.g. Onion, Vanilla, Clove Oil.</em></p>
+                    <p>In a <strong>Basic</strong> medium, the characteristic smells are destroyed.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <img src="./images/indicator_chart.png" alt="Indicator Color Changes" class="content-img">
+                </div>
+            </div>
+
+            <!-- Slide 4: Activity 2.3 & 2.4 -->
+            <div class="slide">
+                <h2 class="slide-title">2.3 & 2.4 Reaction with Metals</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Acid + Metal</h3>
+                    <p>When an acid reacts with a metal, it forms a salt and <strong>Hydrogen gas</strong>.</p>
+                    $$ Zn + H_2SO_4 \rightarrow ZnSO_4 + H_2 \uparrow $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Hydrogen Pop Test</h3>
+                    <img src="./images/hydrogen_pop_test.png" alt="Hydrogen Pop Test" class="content-img">
+                    <p>Bring a burning candle near the gas. Hydrogen gas burns with a characteristic <strong>'pop' sound</strong>.</p>
+                </div>
+            </div>
+
+            <!-- Slide 5: Activity 2.5 -->
+            <div class="slide">
+                <h2 class="slide-title">2.5 Carbonates & Bicarbonates</h2>
+                <div class="glass-panel">
+                    <p>Acids react with metal carbonates to release <strong>Carbon Dioxide</strong> gas.</p>
+                    $$ Na_2CO_3 + 2HCl \rightarrow 2NaCl + H_2O + CO_2\uparrow $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Lime Water Test</h3>
+                    <img src="./images/lime_water_test_correct.png" alt="Lime Water Test Setup" class="content-img">
+                    <p>Passing $CO_2$ through lime water turns it <strong>milky</strong> due to the formation of insoluble Calcium Carbonate.</p>
+                    <p style="font-size: 0.85rem; font-style: italic;">Excess $CO_2$ makes milkiness disappear due to soluble Calcium Bicarbonate!</p>
+                </div>
+            </div>
+
+            <!-- Slide 6: Activity 2.6 & 2.7 -->
+            <div class="slide">
+                <h2 class="slide-title">2.6 & 2.7 Neutralization & Oxides</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">2.6 Neutralization Reaction</h3>
+                    <p>Acid + Base $\rightarrow$ Salt + Water</p>
+                    $$ HCl(aq) + NaOH(aq) \rightarrow NaCl(aq) + H_2O(l) $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">2.7 Metallic Oxides + Acid</h3>
+                    <p>Metallic oxides (like $CuO$) react with acids to give salt and water. This proves that metallic oxides are <strong>basic</strong> in nature!</p>
+                    $$ CuO + 2HCl \rightarrow CuCl_2 + H_2O $$
+                </div>
+            </div>
+
+            <!-- Slide 7: Activity 2.8 -->
+            <div class="slide">
+                <h2 class="slide-title">2.8 Do all H-compounds show acidity?</h2>
+                <div class="glass-panel">
+                    <p><strong>Concept: Ionization</strong></p>
+                    <p>Compounds like <strong>Glucose and Alcohol</strong> contain Hydrogen, but their solutions do <em>not</em> conduct electricity.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <p>This is because they do not dissociate to produce $H^+$ ions in water. Hence, they are not categorized as acids.</p>
+                </div>
+            </div>
+
+            <!-- Slide 8: Activity 2.9 -->
+            <div class="slide">
+                <h2 class="slide-title">2.9 Is water necessary for acidity?</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Dry HCl Gas vs Litmus</h3>
+                    <p><strong>Dry</strong> HCl gas does not change the colour of dry blue litmus paper.</p>
+                    <p>It only changes the colour of a <strong>wet</strong> (moist) blue litmus paper.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <p><strong>Conclusion:</strong> Acids produce $H^+$ ions only in the presence of water! In the absence of water, dissociation of $HCl$ does not occur.</p>
+                </div>
+            </div>
+
+            <!-- Slide 9: Activity 2.10 -->
+            <div class="slide">
+                <h2 class="slide-title">2.10 The Safety Protocol (Dilution)</h2>
+                <div class="glass-panel" style="background: rgba(255, 193, 7, 0.1); border-color: rgba(255, 193, 7, 0.5);">
+                    <h3 class="subtitle">How to Dilute Acids ⚠️</h3>
+                    <p>The process is highly <strong>exothermic</strong>.</p>
+                    <p>Always add <strong>Acid to Water</strong> slowly with constant stirring.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <p>If water is added to a concentrated acid, the sudden heat generated may cause the mixture to splash out and cause burns, or the glass container may break.</p>
+                </div>
+            </div>
+
+            <!-- Slide 10: Activity 2.11 -->
+            <div class="slide">
+                <h2 class="slide-title">2.11 Testing pH</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">The pH Scale</h3>
+                    <img src="./images/ph_scale.png" alt="pH Scale Gradient" class="content-img">
+                    <p>A scale for measuring $H^+$ ion concentration (0 to 14).</p>
+                    <ul style="font-size: 0.95rem; margin: 0;">
+                        <li><strong>pH < 7:</strong> Acidic (Higher $H^+$)</li>
+                        <li><strong>pH = 7:</strong> Neutral (Pure water)</li>
+                        <li><strong>pH > 7:</strong> Basic (Higher $OH^-$)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 11: Activity 2.12 -->
+            <div class="slide">
+                <h2 class="slide-title">2.12 pH of Soil</h2>
+                <div class="glass-panel">
+                    <p>Plants require a specific pH range for healthy growth (usually close to 7).</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Adjusting Soil pH</h3>
+                    <p>If soil is too acidic, farmers treat it with materials like quick lime ($CaO$) or slaked lime ($Ca(OH)_2$) to neutralize the acidity.</p>
+                </div>
+            </div>
+
+            <!-- Slide 12: Activity 2.13 & 2.14 -->
+            <div class="slide">
+                <h2 class="slide-title">2.13 & 2.14 Families & pH</h2>
+                <div class="glass-panel">
+                    <img src="./images/salt_family_mindmap.png" alt="Salt Family Mindmap" class="content-img">
+                    <h3 class="subtitle">pH of Salts</h3>
+                    <ul style="font-size: 0.95rem;">
+                        <li><strong>Strong Acid + Strong Base:</strong> Neutral Salt (pH = 7)</li>
+                        <li><strong>Strong Acid + Weak Base:</strong> Acidic Salt (pH < 7)</li>
+                        <li><strong>Weak Acid + Strong Base:</strong> Basic Salt (pH > 7)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 13: Chlor-Alkali -->
+            <div class="slide">
+                <h2 class="slide-title">Chlor-Alkali Process</h2>
+                <div class="glass-panel">
+                    <p>Electrolysis of aqueous sodium chloride (<strong>Brine</strong>).</p>
+                    <img src="./images/chlor_alkali.jpg" alt="Chlor-Alkali Process" class="content-img">
+                    $$ 2NaCl(aq) + 2H_2O(l) \rightarrow 2NaOH(aq) + Cl_2(g) + H_2(g) $$
+                    <p style="font-size: 0.85rem;">Products: Sodium Hydroxide (Cathode), Chlorine (Anode), Hydrogen (Cathode).</p>
+                </div>
+            </div>
+
+            <!-- Slide 14: Bleaching Powder -->
+            <div class="slide">
+                <h2 class="slide-title">Bleaching Powder</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Formula: $CaOCl_2$</h3>
+                    <p>Formed by the action of Chlorine gas ($Cl_2$) on dry slaked lime $Ca(OH)_2$.</p>
+                    $$ Ca(OH)_2 + Cl_2 \rightarrow CaOCl_2 + H_2O $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">Uses:</h3>
+                    <ul>
+                        <li>Bleaching cotton and linen in the textile industry.</li>
+                        <li>Disinfecting drinking water to make it free of germs.</li>
+                        <li>As an oxidizing agent in many chemical industries.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 15: Baking Soda -->
+            <div class="slide">
+                <h2 class="slide-title">Baking Soda</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Formula: $NaHCO_3$</h3>
+                    <p>Sodium Hydrogen Carbonate. It is a mild, non-corrosive basic salt.</p>
+                    $$ NaCl + H_2O + CO_2 + NH_3 \rightarrow NH_4Cl + NaHCO_3 $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <h3 class="subtitle">Baking Powder</h3>
+                    <p>Mixture of Baking Soda + a mild edible acid (like Tartaric acid).</p>
+                    <p><strong>Role of Tartaric Acid:</strong> It neutralizes the bitter taste of Sodium Carbonate formed during heating, making cakes soft and spongy!</p>
+                </div>
+            </div>
+
+            <!-- Slide 16: Washing Soda -->
+            <div class="slide">
+                <h2 class="slide-title">Washing Soda</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Formula: $Na_2CO_3 \cdot 10H_2O$</h3>
+                    <p>Sodium Carbonate Decahydrate. Formed by recrystallization of sodium carbonate from water.</p>
+                    $$ Na_2CO_3 + 10H_2O \rightarrow Na_2CO_3 \cdot 10H_2O $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-green);">
+                    <h3 class="subtitle">Uses:</h3>
+                    <ul>
+                        <li>Removing <strong>permanent hardness</strong> of water.</li>
+                        <li>Used in glass, soap, and paper industries.</li>
+                        <li>Domestic cleaning agent.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 17: Plaster of Paris -->
+            <div class="slide">
+                <h2 class="slide-title">Plaster of Paris (POP)</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Formula: $CaSO_4 \cdot \frac{1}{2}H_2O$</h3>
+                    <p>Calcium Sulphate Hemihydrate. Obtained by heating Gypsum carefully at 373 K.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-blue);">
+                    <h3 class="subtitle">Setting into Gypsum</h3>
+                    <p>On mixing with water, it sets into a hard solid mass called Gypsum:</p>
+                    $$ CaSO_4 \cdot \frac{1}{2}H_2O + 1\frac{1}{2}H_2O \rightarrow CaSO_4 \cdot 2H_2O $$
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">(Hence, POP must always be stored in a moisture-proof container!)</p>
+                </div>
+            </div>
+
+            <!-- Slide 18: Activity 2.15 -->
+            <div class="slide">
+                <h2 class="slide-title">2.15 Water of Crystallization</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Are salt crystals really dry?</h3>
+                    <img src="./images/heating_cu_sulphate.png" alt="Heating Copper Sulphate Setup" class="content-img">
+                    <p>Heating Blue Copper Sulphate crystals ($CuSO_4 \cdot 5H_2O$) makes them turn white as water of crystallization is lost.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s; border-color: var(--accent-pink);">
+                    <p>Adding a few drops of water back restores the blue colour immediately!</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; 
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05; 
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50); 
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else if (deltaX > threshold) {
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        function toggleTheme(event) {
+            event.stopPropagation(); 
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Acids, Bases & Salts - Flashcards',
+                    text: 'Check out these quick revision flashcards for Science!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        updateUI();
+
+    </script>
+</body>
+</html>

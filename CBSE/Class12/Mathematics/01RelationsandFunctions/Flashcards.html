@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Relations and Functions - Flashcards Story</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Desktop specific constraint to mimic mobile screen */
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px; /* Make room for share btn */
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        /* Slides */
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30; /* Keep above touch zones */
+            pointer-events: none; /* Let clicks pass through! */
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg); /* Opaque background for stack effect */
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px; /* Top padding for progress bar and share button */
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto; /* Active catches touch */
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30; /* So it can come back on top */
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        /* Hide scrollbar for slides */
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Navigation Touch Zones */
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        /* Aesthetics & Components */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto; /* Re-enable clicks on cards */
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: transparent;
+            box-sizing: border-box;
+            transition: filter 0.3s ease;
+            pointer-events: auto; /* Re-enable clicks */
+            animation: slideUp 0.4s ease-out forwards;
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .formula-box {
+            background-color: rgba(25, 118, 210, 0.05);
+            border-left: 4px solid var(--accent-blue);
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        html.dark-mode .formula-box {
+            background-color: rgba(100, 181, 246, 0.1);
+        }
+
+        /* MathJax Responsive Handling */
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- SHARE BUTTON --- */
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <!-- Share Button -->
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <!-- Math Icon -->
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            <line x1="8" y1="7" x2="16" y2="7"></line>
+                            <line x1="8" y1="11" x2="16" y2="11"></line>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.2rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Relations & Functions</h1>
+                        
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Class 12 • Chapter 1</span>
+                        
+                        <br>
+                        
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <!-- Intuitive Swipe Hints -->
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Sets Revision -->
+            <div class="slide">
+                <h2 class="slide-title">Class 11 Revision: Sets</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0 0 10px 0;">Before moving to relations, recall sets:</p>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Set:</strong> A well-defined collection of distinct objects.</li>
+                        <li><strong>Subset ($\subseteq$):</strong> $A \subseteq B$ if every element of A is in B. Number of subsets of A is $2^n$.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Operations</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Union ($A \cup B$):</strong> Elements in A OR B.</li>
+                        <li><strong>Intersection ($A \cap B$):</strong> Elements in BOTH A AND B.</li>
+                        <li><strong>Difference ($A - B$):</strong> Elements in A but NOT B.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 3: Cartesian Product -->
+            <div class="slide">
+                <h2 class="slide-title">Cartesian Product</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0;">For two non-empty sets $A$ and $B$, the <strong>Cartesian Product</strong> is the set of all ordered pairs:</p>
+                    <div class="formula-box">
+                        $$ A \times B = \{ (a, b) \mid a \in A, b \in B \} $$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Key Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>If $n(A) = p$ and $n(B) = q$, then $n(A \times B) = p \times q$.</li>
+                        <li>$A \times B \neq B \times A$ generally.</li>
+                        <li><strong>Relations</strong> are derived directly from Cartesian products!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 4: What is a Relation? -->
+            <div class="slide">
+                <h2 class="slide-title">What is a Relation?</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0;">A <strong>Relation $R$</strong> from set A to set B is a <strong>subset of $A \times B$</strong>.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Terminology</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Domain:</strong> Set of all first elements $\{a\}$.</li>
+                        <li><strong>Range:</strong> Set of all second elements $\{b\}$.</li>
+                        <li><strong>Co-domain:</strong> The entire set B. (Range $\subseteq$ Co-domain).</li>
+                    </ul>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        Total possible relations from A to B: $2^{pq}$
+                    </div>
+                </div>
+                <img src="Images/01_relation_diagram.png" alt="Relation Diagram" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 5: Types of Relations -->
+            <div class="slide">
+                <h2 class="slide-title">Types of Relations</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">Relations defined on a single set $A$ ($R \subseteq A \times A$):</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Basic Types</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Empty Relation:</strong> $R = \phi$. No element is related to any element.</li>
+                        <li><strong>Universal Relation:</strong> $R = A \times A$. Every element is related to every element.</li>
+                        <li><strong>Identity Relation ($I_A$):</strong> $R = \{(a,a) : a \in A\}$. Each element is related <strong>only</strong> to itself.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="font-size: 0.8rem; margin: 0; color: var(--accent-pink);"><em>Note: Both Empty and Universal relations are symmetric and transitive!</em></p>
+                </div>
+            </div>
+
+            <!-- Slide 6: The Big Three -->
+            <div class="slide">
+                <h2 class="slide-title">The Big Three</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0 0 10px 0;">Let $R$ be a relation on set $A$:</p>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Reflexive:</strong> $(a, a) \in R$ for EVERY $a \in A$.</li>
+                        <li><strong>Symmetric:</strong> If $(a, b) \in R \implies (b, a) \in R$.</li>
+                        <li><strong>Transitive:</strong> If $(a, b) \in R$ AND $(b, c) \in R \implies (a, c) \in R$.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Equivalence Relation</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">A relation that satisfies all three: Reflexive, Symmetric, AND Transitive.</p>
+                </div>
+            </div>
+
+            <!-- Slide 7: Anti-Symmetric Relation -->
+            <div class="slide">
+                <h2 class="slide-title">Anti-Symmetric</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">JEE Focus Point</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">A relation $R$ on $A$ is <strong>Anti-Symmetric</strong> if:</p>
+                    <div class="formula-box" style="font-size: 0.95rem;">
+                        $$ (a, b) \in R \text{ and } (b, a) \in R \implies a = b $$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <p style="font-size: 0.85rem; margin: 0;">This means if $a \neq b$, you cannot have both $(a,b)$ and $(b,a)$ in the relation.</p>
+                    <p style="font-size: 0.85rem; margin-top: 10px; margin-bottom: 0;"><strong>Classic Example:</strong> The relation $\leq$ (less than or equal to) is anti-symmetric on $\mathbb{R}$.</p>
+                </div>
+            </div>
+
+            <!-- Slide 8: Equivalence Classes -->
+            <div class="slide">
+                <h2 class="slide-title">Equivalence Classes</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">If $R$ is an equivalence relation on set $A$, it partitions $A$ into disjoint subsets called <strong>Equivalence Classes</strong>.</p>
+                    <div class="formula-box">
+                        $$ [a] = \{ x \in A : (x, a) \in R \} $$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>Every element belongs to exactly one class.</li>
+                        <li>$[a] = [b] \iff (a, b) \in R$.</li>
+                        <li>Two distinct classes are always disjoint.</li>
+                    </ul>
+                </div>
+                <img src="Images/02_equivalence_classes.png" alt="Equivalence Classes Diagram" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 9: Congruence Modulo -->
+            <div class="slide">
+                <h2 class="slide-title">Congruence Modulo n</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">The most important equivalence relation in integers!</p>
+                    <div class="formula-box">
+                        $$a \equiv b \pmod{n} \iff n \text{ divides } (a - b)$$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Example: Modulo 3</h3>
+                    <p style="font-size: 0.85rem; margin: 0 0 5px 0;">Modulo 3 on $\mathbb{Z}$ gives 3 disjoint classes:</p>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>$[0] = \{\ldots, -3, 0, 3, 6, \ldots\}$</li>
+                        <li>$[1] = \{\ldots, -2, 1, 4, 7, \ldots\}$</li>
+                        <li>$[2] = \{\ldots, -1, 2, 5, 8, \ldots\}$</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 10: Functions & Types -->
+            <div class="slide">
+                <h2 class="slide-title">Functions & Types</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">A mapping $f: A \rightarrow B$ where each element of A has exactly <strong>one</strong> image in B.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Classification</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>One-One (Injective):</strong> Distinct inputs have distinct outputs. $f(x_1) = f(x_2) \implies x_1 = x_2$.</li>
+                        <li><strong>Many-One:</strong> At least two inputs share an output.</li>
+                        <li><strong>Onto (Surjective):</strong> Range = Co-domain. Every output has a pre-image.</li>
+                        <li><strong>Into:</strong> Range $\subsetneq$ Co-domain.</li>
+                        <li><strong>Bijective:</strong> Both One-One AND Onto!</li>
+                    </ul>
+                </div>
+                <img src="Images/03_types_of_functions.png" alt="Types of Functions" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 11: Horizontal Line Test -->
+            <div class="slide">
+                <h2 class="slide-title">Horizontal Line Test</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Graphical Check for One-One</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Draw any horizontal line across the graph.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>If it intersects the graph at <strong>most once</strong>, the function is <strong>One-One</strong>.</li>
+                        <li>If it intersects <strong>more than once</strong>, the function is <strong>Many-One</strong> (e.g., $y=x^2$).</li>
+                    </ul>
+                </div>
+                <img src="Images/06_horizontal_line_test.png" alt="Horizontal Line Test Graph" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 12: Special Functions - Modulus -->
+            <div class="slide">
+                <h2 class="slide-title">Special Functions (1/4)</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Modulus Function</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Absolute value function $f(x) = |x|$.</p>
+                    <div class="formula-box">
+                        $$ |x| = \begin{cases} x, & x \ge 0 \\ -x, & x < 0 \end{cases} $$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Shortcut for Double Modulus</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">$f(x) = |x - a| + |x - b|$</p>
+                    <p style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">Graph forms a "trough" or boat shape with a flat bottom between critical points $x=a$ and $x=b$.</p>
+                </div>
+                <img src="Images/08_double_modulus_graph.png" alt="Double Modulus Graph" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 13: Special Functions - GIF -->
+            <div class="slide">
+                <h2 class="slide-title">Special Functions (2/4)</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Greatest Integer Function</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Floor function $f(x) = [x]$ maps $x$ to the greatest integer $\le x$.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Key Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>$x - 1 < [x] \le x$</li>
+                        <li>$[x + n] = [x] + n$ if $n \in \mathbb{Z}$</li>
+                        <li>$[x] + [-x] = 0$ if $x \in \mathbb{Z}$, else $-1$</li>
+                    </ul>
+                    <p style="font-size: 0.85rem; margin-top: 10px; margin-bottom: 0;">Graph is a "staircase" with open right endpoints.</p>
+                </div>
+                <img src="Images/09_gif_graph.png" alt="GIF Staircase Graph" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 14: Special Functions - FPF -->
+            <div class="slide">
+                <h2 class="slide-title">Special Functions (3/4)</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Fractional Part Function</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">$f(x) = \{x\} = x - [x]$</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Key Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>Range is $[0, 1)$</li>
+                        <li>Periodic with period $1$: $\{x + n\} = \{x\}$ for $n \in \mathbb{Z}$</li>
+                        <li>$\{x\} + \{-x\} = 0$ if $x \in \mathbb{Z}$, else $1$</li>
+                    </ul>
+                    <p style="font-size: 0.85rem; margin-top: 10px; margin-bottom: 0;">Graph forms a repeating "sawtooth" pattern.</p>
+                </div>
+                <img src="Images/10_fpf_graph.png" alt="Fractional Part Sawtooth Graph" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 15: Special Functions - Signum -->
+            <div class="slide">
+                <h2 class="slide-title">Special Functions (4/4)</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Signum Function</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Extracts the sign of a real number.</p>
+                    <div class="formula-box" style="font-size: 0.95rem;">
+                        $$ \text{sgn}(x) = \begin{cases} 1, & x > 0 \\ 0, & x = 0 \\ -1, & x < 0 \end{cases} $$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <p style="font-size: 0.85rem; margin: 0;">Also written as $\text{sgn}(x) = \frac{|x|}{x}$ for $x \neq 0$.</p>
+                    <p style="font-size: 0.85rem; margin-top: 10px; margin-bottom: 0;">Range contains exactly three values: $\{-1, 0, 1\}$.</p>
+                </div>
+                <img src="Images/11_signum_graph.png" alt="Signum Function Graph" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 16: Counting Functions -->
+            <div class="slide">
+                <h2 class="slide-title">Counting Functions</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">Let $n(A) = m$ and $n(B) = n$:</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Formulas (JEE Important)</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Total Functions:</strong> $n^m$</li>
+                        <li><strong>One-One Functions:</strong> $^nP_m$ (if $n \ge m$), else $0$</li>
+                        <li><strong>Onto Functions (if n=2):</strong> $2^m - 2$ (if $m \ge 2$)</li>
+                        <li><strong>Bijective Functions:</strong> $n!$ (if $m=n$), else $0$</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 17: Composition -->
+            <div class="slide">
+                <h2 class="slide-title">Composition</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">Composite function $g \circ f$ maps A directly to C via B.</p>
+                    <div class="formula-box">
+                        $$ (g \circ f)(x) = g(f(x)) $$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Exists if:</strong> Range of $f \subseteq$ Domain of $g$</li>
+                        <li>Generally <strong>not commutative:</strong> $g \circ f \neq f \circ g$</li>
+                        <li>Is <strong>associative:</strong> $h \circ (g \circ f) = (h \circ g) \circ f$</li>
+                    </ul>
+                </div>
+                <img src="Images/04_composition_of_functions.png" alt="Composition of Functions Diagram" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 18: Inverse Functions -->
+            <div class="slide">
+                <h2 class="slide-title">Inverse Functions</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">A function $f$ is invertible $\iff$ $f$ is <strong>Bijective</strong>.</p>
+                    <div class="formula-box">
+                        $f^{-1}(y) = x \iff f(x) = y$
+                    </div>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Key Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>$(g \circ f)^{-1} = f^{-1} \circ g^{-1}$ (Reversal Rule)</li>
+                        <li>Graphs of $f$ and $f^{-1}$ are symmetric about the line $y = x$</li>
+                        <li>$f(f^{-1}(x)) = x$ and $f^{-1}(f(x)) = x$</li>
+                    </ul>
+                </div>
+                <img src="Images/07_inverse_function_graph.png" alt="Inverse Functions Graph" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 19: Binary Operations -->
+            <div class="slide">
+                <h2 class="slide-title">Binary Operations</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.85rem; margin: 0;">$*: A \times A \rightarrow A$. Takes two inputs from A and produces an output in A (Closure).</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li><strong>Commutative:</strong> $a * b = b * a$</li>
+                        <li><strong>Associative:</strong> $(a*b)*c = a*(b*c)$</li>
+                        <li><strong>Identity ($e$):</strong> $a*e = e*a = a$. (e.g. 0 for +, 1 for $\times$)</li>
+                        <li><strong>Inverse:</strong> $a*b = b*a = e$.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 20: Important Theorems -->
+            <div class="slide">
+                <h2 class="slide-title">Important Theorems</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">For Composite $g \circ f$</h3>
+                    <ul style="font-size: 0.85rem; margin-top: 5px; margin-bottom: 0;">
+                        <li>If $f, g$ are one-one $\implies g \circ f$ is one-one.</li>
+                        <li>If $f, g$ are onto $\implies g \circ f$ is onto.</li>
+                        <li>If $g \circ f$ is <strong>one-one</strong> $\implies f$ MUST be one-one.</li>
+                        <li>If $g \circ f$ is <strong>onto</strong> $\implies g$ MUST be onto.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Domain Restriction Trick</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">If a function isn't bijective (e.g., $y=x^2$), restrict its domain to $[0, \infty)$ to make it invertible!</p>
+                </div>
+            </div>
+
+            <!-- Slide 21: Chapter Mind Map (Bonus) -->
+            <div class="slide">
+                <h2 class="slide-title">Chapter Mind Map</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Recap</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Here's a quick visual overview of the entire chapter!</p>
+                </div>
+                <img src="Images/05_chapter_mind_map.png" alt="Chapter Mind Map" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+        </div>
+
+        <!-- Touch Zones -->
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+        
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        // Initialize progress bar segments
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; // Clear inline styles from dragging
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                    slide.scrollTop = 0; // Reset scroll on active slide
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        // Navigation
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        // Interactive Drag Support
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05; 
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                // Swiped Left - Go Next
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50); 
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else if (deltaX > threshold) {
+                // Swiped Right - Go Previous
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = ''; 
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        // Theme Toggle
+        function toggleTheme(event) {
+            event.stopPropagation();
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+                localStorage.setItem('vardaan-theme', 'dark');
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+                localStorage.setItem('vardaan-theme', 'light');
+            }
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('vardaan-theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+
+        // Share App
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Relations and Functions - Flashcards',
+                    text: 'Check out these quick revision flashcards for Class 12 Mathematics!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        updateUI();
+
+    </script>
+</body>
+</html>
