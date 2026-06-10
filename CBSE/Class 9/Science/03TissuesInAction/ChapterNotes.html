@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Tissues in Action - Vardaan Learning Institute</title>
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            /* TIGHTENED LAYOUT */
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO (Updated V2.2) --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+
+            /* DEFAULT STATE: Hidden on screen */
+            display: none;
+
+            /* Layout properties (active when visible) */
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+
+            /* TIGHTENED LAYOUT */
+            margin-top: 5px;
+
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+
+            /* 1. Reset Colors to Clean White/Black */
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            /* 2. FORCE HIDE Toggle & Web Footer ONLY */
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            /* 3. FORCE SHOW Contact Info in Print (Updated V2.2) */
+            .contact-info {
+                display: flex !important;
+            }
+
+            /* 4. Force Watermark Visibility in Print */
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: -1 !important;
+                opacity: 0.1 !important;
+                mix-blend-mode: normal !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 80% !important;
+            }
+
+            /* 5. Configure PDF/Print Page Numbers */
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-left {
+                    content: none;
+                }
+
+                @bottom-right {
+                    content: none;
+                }
+
+                /* The Pink Disc */
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+
+        /* Specific Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--paper-bg);
+        }
+
+        th,
+        td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--blue-bg);
+            color: var(--text-main);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 9 Science • Chapter Notes</div>
+
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>TISSUES IN ACTION</h1>
+
+        <h2>1. Introduction to Tissues</h2>
+        <p>In multicellular organisms, cells do not function alone. There is a hierarchy of organisation: <strong>Cells
+                &rarr; Tissues &rarr; Organs &rarr; Organ Systems &rarr; Organism</strong>.</p>
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Tissue:</strong> A tissue is a group of similar cells that work together to perform a specific
+            function. The formation of tissues leads to the <strong>division of labour</strong> in multicellular
+            organisms, significantly increasing the body's efficiency.
+        </div>
+
+        <h2>2. Plant vs. Animal Tissues</h2>
+        <p>Plants and animals have distinct body designs and lifestyles, leading to differences in their tissue
+            structures:</p>
+        <ul>
+            <li><strong>Mobility:</strong> Plants are stationary and require supporting tissues to stay firm and upright
+                (which usually have rigid cell walls and are often dead). Animals are mobile and require tissues that
+                provide flexibility and enable locomotion.</li>
+            <li><strong>Nutrition:</strong> Plants possess tissues to synthesise their own food via solar energy
+                (photosynthesis). Animals possess tissues adapted to digest and absorb food obtained from their
+                surroundings.</li>
+            <li><strong>Growth Pattern:</strong> Plant growth is limited to specific regions containing actively
+                dividing cells. Animal growth is more uniform across the body.</li>
+        </ul>
+
+        <h2>3. Plant Tissues</h2>
+        <p>Plant tissues are primarily classified based on their ability to divide into <strong>Meristematic
+                Tissues</strong> and <strong>Permanent Tissues</strong>.</p>
+
+        <h3>3.1 Meristematic Tissue (Tissues for Growth)</h3>
+        <p>These tissues consist of actively dividing cells responsible for the growth of the plant. Based on their
+            location, they are of three types:</p>
+        <ul>
+            <li><strong>Apical Meristem:</strong> Located at the tips of roots and shoots. It is responsible for the
+                increase in <strong>length</strong> (primary growth).</li>
+            <li><strong>Lateral Meristem:</strong> Located along the circumference of stems and roots (e.g., cambium).
+                It is responsible for the increase in <strong>girth or diameter</strong> (secondary growth). Its
+                activity creates the annual growth rings visible in tree trunks.</li>
+            <li><strong>Intercalary Meristem:</strong> Located at the nodes or the base of internodes (e.g., in
+                grasses). It helps in the rapid regrowth and branching of plants after they are cut or grazed.</li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <strong>Characteristics of Meristematic Cells:</strong> They are small, have thin cell walls, a large
+            prominent nucleus, dense cytoplasm, and are tightly packed with no intercellular spaces. They typically
+            <strong>lack vacuoles</strong> because they need to divide rapidly rather than store food or maintain
+            rigidity.
+        </div>
+
+        <h3>3.2 Permanent Tissues</h3>
+        <p>Meristematic cells eventually lose their ability to divide and take on specific roles through a process
+            called <strong>differentiation</strong>, forming permanent tissues. They are divided into Simple and Complex
+            permanent tissues.</p>
+
+        <p><strong>A. Protective Tissues:</strong></p>
+        <ul>
+            <li><strong>Epidermis:</strong> The outermost single layer of cells. It secretes a waxy, water-resistant
+                layer called the <strong>cuticle</strong> (cutin) to prevent water loss and protect against mechanical
+                injury.</li>
+            <li>In roots, epidermal cells bear <strong>root hairs</strong> to increase water absorption area.</li>
+            <li>In leaves, the epidermis contains small pores called <strong>stomata</strong>, which facilitate gas
+                exchange and transpiration (water loss).</li>
+        </ul>
+
+        <p><strong>B. Simple Permanent Tissues (Supporting Tissues):</strong></p>
+        <ul>
+            <li><strong>Parenchyma:</strong> Living cells with thin walls, loosely packed with intercellular spaces.
+                Mainly stores food and performs photosynthesis (if it contains chlorophyll).</li>
+            <li><strong>Collenchyma:</strong> Living cells with unevenly thickened corners (due to
+                <strong>pectin</strong>). Provides support and <strong>flexibility</strong> to parts like stems and
+                tendrils, allowing them to bend without breaking.</li>
+            <li><strong>Sclerenchyma:</strong> Dead cells with very thick walls due to <strong>lignin</strong>
+                deposition. Provides hard, rigid strength (e.g., coconut husk, walnut shells, wood).</li>
+        </ul>
+
+        <p><strong>C. Complex Permanent Tissues (Conducting/Vascular Tissues):</strong></p>
+        <ul>
+            <li><strong>Xylem:</strong> Transports water and minerals upwards from roots. Consists mostly of dead cells:
+                tracheids, vessels, and xylem fibres. The only living component is <strong>xylem parenchyma</strong>.
+            </li>
+            <li><strong>Phloem:</strong> Transports synthesized food from leaves to all parts of the plant. Consists
+                mostly of living cells: sieve tubes, companion cells (which regulate sieve tubes), and phloem
+                parenchyma. The only dead component is <strong>phloem fibres</strong>.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <strong>Crown Gall Disease:</strong> Caused by the bacterium <em>Agrobacterium tumefaciens</em>, this
+            disease creates tumour-like swellings in plants due to uncontrolled cell division. Scientists now use this
+            bacterium as a tool in genetic engineering to introduce useful genes into plants!
+        </div>
+
+        <h2>4. Animal Tissues</h2>
+        <p>Animal tissues are highly specialised and fall into four major categories based on their function.</p>
+
+        <h3>4.1 Epithelial Tissue</h3>
+        <p>Forms the outer covering of the body (skin) and lines internal organs/cavities. The cells are tightly packed
+            to prevent germ entry and regulate the exchange of substances.</p>
+        <table>
+            <tr>
+                <th>Function</th>
+                <th>Structure Type</th>
+                <th>Location Example</th>
+            </tr>
+            <tr>
+                <td>Exchange/Rapid Diffusion</td>
+                <td>Single layer of thin, flat cells (Squamous)</td>
+                <td>Lungs, lining of blood vessels</td>
+            </tr>
+            <tr>
+                <td>Protection</td>
+                <td>Many layers of cells (Stratified Squamous)</td>
+                <td>Skin, mouth, oesophagus</td>
+            </tr>
+            <tr>
+                <td>Secretion</td>
+                <td>Cuboidal or Columnar cells (Glandular)</td>
+                <td>Salivary glands, sweat glands, stomach</td>
+            </tr>
+            <tr>
+                <td>Sensory</td>
+                <td>Receptor cells with hair-like cilia (Ciliated)</td>
+                <td>Nostrils, taste buds, inner ear</td>
+            </tr>
+            <tr>
+                <td>Absorption</td>
+                <td>Tall, pillar-like cells (Columnar)</td>
+                <td>Lining of the small intestine</td>
+            </tr>
+        </table>
+
+        <h3>4.2 Connective Tissue</h3>
+        <p>Connects, supports, and binds other tissues. They feature cells embedded in a non-living
+            <strong>matrix</strong>.</p>
+        <ul>
+            <li><strong>Blood:</strong> Has a fluid matrix called plasma. Contains Red Blood Cells (RBCs - transport
+                oxygen via haemoglobin), White Blood Cells (WBCs - fight infection), and Platelets (blood clotting).
+            </li>
+            <li><strong>Bone:</strong> Has a hard, rigid matrix composed of calcium and phosphorus compounds. Provides
+                framework and protection.</li>
+            <li><strong>Cartilage:</strong> Has a soft, flexible, jelly-like matrix. Provides cushioning and shock
+                absorption at joints, nose, and ears.</li>
+            <li><strong>Ligaments:</strong> Connects <strong>bone to bone</strong>. Stabilises joints and prevents
+                dislocation.</li>
+            <li><strong>Tendons:</strong> Connects <strong>muscle to bone</strong>. Transmits force to allow movement.
+            </li>
+        </ul>
+
+        <h3>4.3 Muscular Tissue</h3>
+        <p>Responsible for movement. Contains specialised contractile proteins.</p>
+        <ul>
+            <li><strong>Skeletal Muscles:</strong> Voluntary control (you control them). Attached to bones. Cells are
+                long, cylindrical, unbranched, multinucleate, and <strong>striated</strong> (have light and dark bands).
+            </li>
+            <li><strong>Smooth Muscles:</strong> Involuntary control. Found in the stomach and intestines (e.g.,
+                digestion). Cells are spindle-shaped, single nucleus, and <strong>non-striated</strong>.</li>
+            <li><strong>Cardiac Muscles:</strong> Involuntary control. Found <strong>only in the heart</strong>. Cells
+                are cylindrical, branched, have a single nucleus, faint striations, and beat tirelessly throughout life.
+            </li>
+        </ul>
+
+        <h3>4.4 Nervous Tissue</h3>
+        <p>Forms the control and coordination network (brain, spinal cord, nerves).</p>
+        <ul>
+            <li>The functional unit is the <strong>Neuron</strong> (nerve cell).</li>
+            <li><strong>Parts of a Neuron:</strong>
+                <ul>
+                    <li><strong>Cell Body:</strong> Contains the nucleus and controls the cell.</li>
+                    <li><strong>Dendrites:</strong> Short, branched structures that receive signals from other neurons.
+                    </li>
+                    <li><strong>Axon:</strong> A long fibre that transmits messages away from the cell body to the axon
+                        terminals.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>5. The Musculoskeletal System & Joints</h2>
+        <p>The combination of bones, muscles, joints, cartilage, tendons, and ligaments forms the musculoskeletal
+            system, functioning under nervous system control.</p>
+        <ul>
+            <li><strong>Joint:</strong> A junction between two or more bones.</li>
+            <li><strong>Ball and Socket Joint:</strong> Allows free movement in all directions (e.g., Shoulder joint,
+                hip joint).</li>
+            <li><strong>Hinge Joint:</strong> Allows movement in only one direction, like a door hinge (e.g., Elbow,
+                knee).</li>
+            <li><strong>Pivot Joint:</strong> Allows rotational movement from side to side (e.g., connection between
+                skull and spine).</li>
+            <li><strong>Fixed Joint:</strong> Does not allow any movement, providing rigid protection (e.g., bones of
+                the skull protecting the brain).</li>
+        </ul>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Describing Motion Around Us - Vardaan Learning Institute</title>
+    <!-- MathJax for rendering math -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1); 
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* Specific Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--paper-bg);
+        }
+        
+        th, td {
+            border: 1px solid var(--toggle-border);
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--blue-bg);
+            color: var(--text-main);
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun Icon -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+        
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 9 Science • Chapter Notes</div>
+            
+            <!-- CONTACT INFO ROW (Hidden on Screen, Visible on Print) -->
+            <div class="contact-info">
+                <span>🌐 vardaanlearning.com</span>
+                <span>📞 9508841336</span>
+            </div>
+        </div>
+
+        <!-- DYNAMIC CONTENT STARTS HERE -->
+        <h1>DESCRIBING MOTION AROUND US</h1>
+
+        <p>Everything in nature is in motion, from massive astronomical objects to subatomic particles. To study these complex phenomena, scientists study them in idealised, simplified forms: linear, circular, and oscillatory.</p>
+
+        <div class="image-container">
+            <img src="Images/ch4_motion_car.png" alt="Distance vs Displacement">
+            <p><em>Illustration representing linear motion and displacement vs distance</em></p>
+        </div>
+
+        <h2>1. Motion in a Straight Line</h2>
+        <p>When an object moves along a straight path, it is called <strong>linear motion</strong>. It is the simplest kind of motion.</p>
+
+        <h3>1.1 Describing Position</h3>
+        <ul>
+            <li>To describe the position of an object, we specify a fixed point called the <strong>reference point</strong> (or origin 'O').</li>
+            <li>An object is <strong>in motion</strong> if its position with respect to the reference point changes with time.</li>
+            <li>An object is <strong>at rest</strong> if its position with respect to the reference point does not change.</li>
+            <li>For straight-line motion, direction is indicated by <strong>plus (+)</strong> and <strong>minus (-)</strong> signs relative to the origin.</li>
+        </ul>
+
+        <h3>1.2 Distance Travelled and Displacement</h3>
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <strong>Distance:</strong> The total path length covered by an object during a given time. It requires only a numerical value (magnitude) and no direction. It is a <strong>scalar</strong> quantity.<br><br>
+            <strong>Displacement:</strong> The net change in position of an object. It is the shortest straight-line distance between the initial and final positions. It requires both magnitude and direction. It is a <strong>vector</strong> quantity.
+        </div>
+        <ul>
+            <li>The SI unit for both distance and displacement is the <strong>metre (m)</strong>.</li>
+            <li>Displacement can be zero (if the object returns to its starting point), but total distance travelled is never zero for a moving object.</li>
+            <li>The magnitude of displacement is always <strong>less than or equal to</strong> the total distance travelled.</li>
+        </ul>
+
+        <h3>1.3 Average Speed and Average Velocity</h3>
+        <ul>
+            <li><strong>Average Speed:</strong> The total distance travelled divided by the total time interval. It indicates how fast the object is moving.
+                <br>$$ \text{Average Speed} = \frac{\text{Total Distance}}{\text{Time Interval}} $$
+            </li>
+            <li><strong>Average Velocity:</strong> The change in position (displacement) divided by the time interval. It indicates how fast the position is changing and in which direction.
+                <br>$$ \text{Average Velocity } (v_{av}) = \frac{\text{Displacement}}{\text{Time Interval}} $$
+            </li>
+            <li><strong>Uniform Motion:</strong> If an object travels equal distances in equal intervals of time, it moves at a constant speed.</li>
+            <li><strong>Non-Uniform Motion:</strong> If an object travels unequal distances in equal intervals of time, its speed is changing.</li>
+        </ul>
+        <div class="green-box">
+            <span class="box-label">Units</span>
+            The SI unit of both average speed and average velocity is <strong>metre per second ($\text{m s}^{-1}$ or $\text{m/s}$)</strong>.
+        </div>
+
+        <h3>1.4 Average Acceleration</h3>
+        <p>Acceleration is the rate of change of velocity. A change in velocity can be a change in magnitude (speeding up or slowing down), a change in direction, or both.</p>
+        <ul>
+            <li>$$ \text{Average Acceleration } (a) = \frac{\text{Change in Velocity}}{\text{Time Interval}} = \frac{v - u}{t} $$</li>
+            <li>The SI unit of average acceleration is <strong>$\text{m s}^{-2}$</strong>.</li>
+            <li>When the magnitude of velocity increases, acceleration is in the direction of velocity. When it decreases (braking), acceleration is opposite to velocity (sometimes called deceleration or retardation).</li>
+        </ul>
+
+        <h2>2. Graphical Representation of Motion</h2>
+        
+        <h3>2.1 Position-Time Graphs</h3>
+        <ul>
+            <li>Time is plotted on the X-axis, and position on the Y-axis.</li>
+            <li>A <strong>straight line parallel to the time axis</strong> indicates the object is at rest (stationary).</li>
+            <li>A <strong>straight inclined line</strong> indicates uniform motion (constant velocity).</li>
+            <li>A <strong>curved line</strong> indicates non-uniform motion (accelerated motion).</li>
+            <li><strong>Slope:</strong> The steepness (slope) of a position-time graph gives the <strong>velocity</strong>.</li>
+        </ul>
+
+        <h3>2.2 Velocity-Time Graphs</h3>
+        <ul>
+            <li>Time is plotted on the X-axis, and velocity on the Y-axis.</li>
+            <li>A <strong>straight line parallel to the X-axis</strong> means velocity is constant (acceleration is zero).</li>
+            <li>A <strong>straight inclined line</strong> means velocity is increasing or decreasing uniformly (constant acceleration).</li>
+            <li><strong>Slope:</strong> The slope of a velocity-time graph gives the <strong>acceleration</strong>.</li>
+            <li><strong>Area:</strong> The area enclosed by the velocity-time graph and the time axis gives the <strong>displacement</strong>.</li>
+        </ul>
+
+        <h2>3. Kinematic Equations for Constant Acceleration</h2>
+        <p>For an object moving in a straight line with constant acceleration, the following equations connect initial velocity ($u$), final velocity ($v$), acceleration ($a$), time ($t$), and displacement ($s$):</p>
+        
+        <div class="yellow-box">
+            <span class="box-label">Formulae</span>
+            <ol>
+                <li><strong>Velocity-Time Relation:</strong><br> $$ v = u + at $$</li>
+                <li><strong>Position-Time Relation:</strong><br> $$ s = ut + \frac{1}{2}at^2 $$</li>
+                <li><strong>Position-Velocity Relation:</strong><br> $$ v^2 = u^2 + 2as $$</li>
+            </ol>
+            <em>These are known as the kinematic equations.</em>
+        </div>
+
+        <h2>4. Motion in a Plane</h2>
+        <p>Motion in two dimensions, like a vehicle turning or a satellite orbiting, is motion in a plane.</p>
+
+        <h3>4.1 Uniform Circular Motion</h3>
+        <ul>
+            <li>When an object moves in a circular path with constant speed, its motion is called <strong>uniform circular motion</strong>.</li>
+            <li>Even though speed is constant, the <strong>direction of velocity continuously changes</strong>. Because velocity is changing, circular motion is an <strong>accelerated motion</strong>.</li>
+            <li>The velocity at any point on the circle is directed along the <strong>tangent</strong> to the circle at that point.</li>
+            <li>If an object completes one revolution of a circle of radius $R$ in time $T$, its average speed is:<br>
+            $$ v_{av} = \frac{2\pi R}{T} $$</li>
+        </ul>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
