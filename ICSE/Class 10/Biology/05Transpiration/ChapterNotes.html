@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 05: Transpiration - Vardaan Master Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Dark Mode */
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* V2.5 Watermark: Fixed & Centered */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Paper Sheet: Seamless Paper Rule */
+        .paper-sheet {
+            background-color: #ffffff;
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* Toggle Button: Absolute & Double Inversion */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography & Components */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+            color: #1b5e20;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #1b5e20;
+            padding-bottom: 0.5rem;
+            color: #1b5e20;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #2e7d32;
+        }
+
+        p,
+        li {
+            margin-bottom: 0.8rem;
+            color: #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+        }
+
+        /* V2.5 Semantic Colors */
+        .definition-box {
+            background-color: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .rule-box {
+            background-color: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .analysis-box {
+            background-color: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .derivation-box {
+            background-color: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .master-tip {
+            border: 2px dashed #d32f2f;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            background: #ffebee;
+            font-style: italic;
+        }
+
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            background: #fff;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            min-height: 250px;
+            background-color: #fafafa;
+            border: 2px dashed #9e9e9e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #616161;
+            background: #eee;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* Practice Question Box - Inline & End */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+            page-break-inside: avoid;
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Transpiration</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">ICSE Class 10 Biology • Chapter 05</p>
+
+        <h2>1. What is Transpiration?</h2>
+        <div class="definition-box">
+            <p><strong>Transpiration:</strong> The evaporative loss of water from the aerial parts (leaves and stem) of the plant. Or, the loss of water in the form of water vapour from the leaves and aerial parts of the plant.</p>
+        </div>
+        <p>All plants continuously absorb water through their roots. Only a small quantity (about <strong>2%</strong>) is used in photosynthesis and other activities. The rest is lost to the atmosphere as water vapour during transpiration.</p>
+
+        <h2>2. Demonstration of Transpiration</h2>
+        <div class="rule-box">
+            <ul>
+                <li><strong>Experiment 1 (Polythene Bag):</strong> A well-watered potted plant is covered with a transparent polythene bag. Water drops appear on the inner side of the bag due to the condensation of water vapour given out by the leaves.</li>
+                <li><strong>Experiment 2 (Bell Jars & Cobalt Chloride):</strong> 
+                    <ul>
+                        <li><strong>Setup A:</strong> Plant under a bell jar. (Water vapour condenses).</li>
+                        <li><strong>Setup B:</strong> Plant + Cobalt Chloride paper under a bell jar. (Paper turns pink).</li>
+                        <li><strong>Setup C:</strong> Only Cobalt Chloride paper under a bell jar (Control). (Paper remains blue).</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="master-tip">
+            <p><strong>Cobalt Chloride Paper:</strong> An indicator of moisture. It is <strong>Blue</strong> when dry, and turns <strong>Pink</strong> when exposed to moisture.</p>
+        </div>
+
+        <h2>3. Measurement of Transpiration</h2>
+        <h3>A. Weighing Method</h3>
+        <p>A small potted plant is weighed before and after a period. The loss in weight is due to the loss of water by transpiration. An improvement is using a glass bottle with a graduated side tube.</p>
+
+        <h3>B. Potometer Method</h3>
+        <p>A <strong>Potometer</strong> is a device that measures the rate of water intake by a plant (which is almost equal to the water lost through transpiration).</p>
+        <ul>
+            <li><strong>Ganong's Potometer:</strong> Commonly used. A leafy shoot is fixed in an apparatus. An air bubble is introduced into a graduated capillary tube. As the shoot transpires, the bubble moves, indicating the volume of water lost.</li>
+        </ul>
+        <div class="analysis-box">
+            <p><strong>Limitations of the Potometer:</strong></p>
+            <ol>
+                <li>Introducing the air bubble is not very easy.</li>
+                <li>The twig may not remain fully alive for a long time.</li>
+                <li>Any changes in outside air temperature may affect the position of the air bubble.</li>
+            </ol>
+        </div>
+
+        <div class="img-placeholder">
+            <span>[IMAGE PLACEHOLDER: Fig. 5.5]</span>
+            <div class="img-prompt">
+                Fig. 5.5: Ganong's potometer for measuring water uptake, showing the reservoir, capillary tube, and air bubble.
+            </div>
+        </div>
+
+        <h2>4. Kinds of Transpiration</h2>
+        <p>Transpiration from the aerial parts occurs from three different regions:</p>
+        <ol>
+            <li><strong>Stomatal Transpiration:</strong> From the leaves through the stomata (Major part).</li>
+            <li><strong>Cuticular Transpiration:</strong> Directly from the surface of the leaves and stems.</li>
+            <li><strong>Lenticular Transpiration:</strong> From the lenticels (minute openings on older stems).</li>
+        </ol>
+
+        <h3>Mechanism of Stomatal Transpiration</h3>
+        <p>Water from the xylem vessels diffuses into the mesophyll cells. These cells give out a thin film of water which evaporates and saturates the intercellular spaces. Finally, it diffuses out through the stomata into the atmosphere.</p>
+
+        <div class="rule-box">
+            <p><strong>More transpiration occurs from the undersurface of a dicot leaf.</strong></p>
+            <p>This is proven by placing pieces of dry cobalt chloride paper on both sides of a leaf. The paper on the lower surface turns pink much faster because there are more stomata on the lower epidermis.</p>
+        </div>
+
+        <h3>Cuticular & Lenticular Transpiration</h3>
+        <ul>
+            <li><strong>Cuticle:</strong> A waxy layer secreted by the epidermis. Thicker cuticle = lesser evaporation. Desert plants have thicker cuticles.</li>
+            <li><strong>Lenticels:</strong> Special openings that develop on older stems in place of stomata. They remain open <em>all the time</em>.</li>
+        </ul>
+
+        <h2>5. Factors Affecting Transpiration</h2>
+        <h3>A. External Factors</h3>
+        <ul>
+            <li><strong>Intensity of Sunlight:</strong> More transpiration during the day as stomata are open for photosynthesis.</li>
+            <li><strong>Temperature:</strong> Increase in temperature allows more water to evaporate.</li>
+            <li><strong>Velocity of Wind:</strong> Transpiration increases with wind velocity (water vapour is removed faster).</li>
+            <li><strong>Humidity:</strong> High humidity <em>reduces</em> the rate of transpiration.</li>
+            <li><strong>Carbon dioxide:</strong> High $CO_2$ levels (over 0.03%) cause stomatal closure, decreasing transpiration.</li>
+            <li><strong>Atmospheric Pressure:</strong> Decrease in pressure <em>increases</em> the rate of transpiration.</li>
+        </ul>
+
+        <h3>B. Internal Factors</h3>
+        <ul>
+            <li><strong>Water content of the leaves:</strong> Insufficient water causes leaves to wilt, closing stomata and reducing transpiration.</li>
+        </ul>
+
+        <h2>6. Adaptations to Reduce Excessive Transpiration</h2>
+        <p>Plants in dry climates have evolved adaptations:</p>
+        <ol>
+            <li><strong>Sunken stomata:</strong> Stomata covered by hairs (e.g. <em>Nerium</em>).</li>
+            <li><strong>Fewer stomata:</strong> Reduces the outlets for water vapour.</li>
+            <li><strong>Narrow leaves:</strong> Reduces surface area (e.g. <em>Nerium</em>).</li>
+            <li><strong>Reduced exposed surfaces:</strong> Leaves get wavy, rolled, or folded.</li>
+            <li><strong>Loss of leaves:</strong> Dropped or changed into spines (e.g. Cacti).</li>
+            <li><strong>Thick cuticle:</strong> Covered by a thick waxy layer (e.g. Banyan).</li>
+        </ol>
+
+        <h2>7. Significance of Transpiration</h2>
+        <ol>
+            <li><strong>Cooling effect:</strong> Evaporation reduces the temperature of the leaf surface, saving enzymes from destruction in hot weather.</li>
+            <li><strong>Suction force (Transpiration Pull):</strong> Helps in the ascent of sap from the roots to the top of tall trees.</li>
+            <li><strong>Distribution of water and minerals:</strong> Draws water and distributes it throughout the plant body.</li>
+        </ol>
+        <div class="master-tip">
+            <p><strong>Transpiration affects climate:</strong> Large forests release huge quantities of water vapour (e.g. a large apple tree loses ~30 litres/day), increasing atmospheric moisture and bringing rain.</p>
+        </div>
+
+        <h2>8. Evaporation vs Transpiration</h2>
+        <table>
+            <tr>
+                <th>Evaporation</th>
+                <th>Transpiration</th>
+            </tr>
+            <tr>
+                <td>Loss of water from the surface of water bodies.</td>
+                <td>Loss of water in the form of vapour from aerial parts.</td>
+            </tr>
+            <tr>
+                <td>Physical change controlled by environment.</td>
+                <td>Vital and partly physical process controlled by internal & external factors.</td>
+            </tr>
+            <tr>
+                <td>Fast process.</td>
+                <td>Slow process.</td>
+            </tr>
+        </table>
+
+        <h2>9. Guttation and Bleeding</h2>
+        <div class="definition-box">
+            <p><strong>Guttation:</strong> The loss of water as droplets along the margins of leaves. Occurs through special pore-bearing structures called <strong>hydathodes</strong>, typically in early mornings in humid conditions (e.g. banana, nasturtium).</p>
+            <p><strong>Bleeding:</strong> The escape of plant sap from ruptured or cut surfaces of a plant due to root pressure.</p>
+        </div>
+
+        <table>
+            <tr>
+                <th>Transpiration</th>
+                <th>Guttation / Exudation</th>
+            </tr>
+            <tr>
+                <td>Water lost in the form of vapour.</td>
+                <td>Water lost in the form of water droplets.</td>
+            </tr>
+            <tr>
+                <td>Pure water only.</td>
+                <td>Contains mineral salts in solution.</td>
+            </tr>
+            <tr>
+                <td>Occurs through stomata, lenticels, cuticle.</td>
+                <td>Occurs through hydathodes at the ends of veins.</td>
+            </tr>
+            <tr>
+                <td>Regulated by guard cells.</td>
+                <td>Opening of hydathodes cannot be regulated.</td>
+            </tr>
+            <tr>
+                <td>Occurs during dry conditions / daytime.</td>
+                <td>Occurs in humid conditions / early morning or night.</td>
+            </tr>
+        </table>
+
+        <h2>Exam Practice Questions (PYQ Trends)</h2>
+        <div class="practice-box">
+            <span class="practice-header">Give Reasons</span>
+            <p><span class="q-tag">REASONING</span> On a bright sunny day, the leaves of certain plants wilt even if the soil is well-watered.</p>
+            <p><strong>Ans:</strong> Because the rate of transpiration exceeds the rate of water absorption by the roots. The cells lose turgidity and the leaves wilt.</p>
+        </div>
+        
+        <div class="practice-box">
+            <span class="practice-header">Give Reasons</span>
+            <p><span class="q-tag">REASONING</span> Forests contribute in bringing rain.</p>
+            <p><strong>Ans:</strong> Large forest trees lose huge quantities of water by transpiration. This adds moisture to the atmosphere, forming clouds and bringing rain.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Experiment Based (Potometer)</span>
+            <p><span class="q-tag">CONCEPT CHECK</span> Why is the leafy shoot cut obliquely under water before fixing it in Ganong's Potometer?</p>
+            <p><strong>Ans:</strong> It is cut obliquely to increase the surface area for water absorption, and it is cut under water to prevent an air bubble from entering the xylem and blocking water conduction.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Experiment Based (Oil Layer)</span>
+            <p><span class="q-tag">CONCEPT CHECK</span> Why is a few drops of oil added to the test tube containing water and a leafy shoot?</p>
+            <p><strong>Ans:</strong> To prevent any loss of water by direct evaporation from the water surface, ensuring the loss in weight is solely due to transpiration by the shoot.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">Identify</span>
+            <p><span class="q-tag">NAME THE FOLLOWING</span> The chemical used to test the release of water vapour during transpiration.</p>
+            <p><strong>Ans:</strong> Dry Cobalt Chloride paper (turns from blue to pink upon absorbing moisture).</p>
+        </div>
+        
+        <div class="practice-box">
+            <span class="practice-header">Differentiate</span>
+            <p><span class="q-tag">DIFFERENCES</span> State two main differences between Transpiration and Guttation.</p>
+            <p><strong>Ans:</strong> 1. Transpiration occurs as water vapour, while guttation occurs as liquid droplets. 2. Transpiration happens mainly through stomata during the day, whereas guttation happens through hydathodes at leaf margins during early mornings or nights.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

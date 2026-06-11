@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 03: Genetics - Some Basic Fundamentals - Vardaan Master Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --paper-bg: #ffffff;
+            --ink-color: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            color: var(--ink-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Dark Mode */
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            transition: filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* V2.5 Watermark: Fixed & Centered */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+            transition: opacity 0.3s ease;
+        }
+
+        html.dark-mode .watermark-image {
+            opacity: 0.08 !important;
+        }
+
+        /* Paper Sheet: Seamless Paper Rule */
+        .paper-sheet {
+            background-color: #ffffff;
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* Toggle Button: Absolute & Double Inversion */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Typography & Components */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+            color: #1b5e20;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #1b5e20;
+            padding-bottom: 0.5rem;
+            color: #1b5e20;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #2e7d32;
+        }
+
+        p,
+        li {
+            margin-bottom: 0.8rem;
+            color: #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+        }
+
+        /* V2.5 Semantic Colors */
+        .definition-box {
+            background-color: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .rule-box {
+            background-color: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .analysis-box {
+            background-color: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .derivation-box {
+            background-color: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .master-tip {
+            border: 2px dashed #d32f2f;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            background: #ffebee;
+            font-style: italic;
+        }
+
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            background: #fff;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            min-height: 250px;
+            background-color: #fafafa;
+            border: 2px dashed #9e9e9e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-prompt {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #616161;
+            background: #eee;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 90%;
+        }
+
+        /* Practice Question Box - Inline & End */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+            page-break-inside: avoid;
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        mjx-container {
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
+            text-align: left;
+        }
+
+        @media screen and (max-width: 800px) {
+            .paper-sheet {
+                width: 95%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            html.dark-mode {
+                filter: none !important;
+            }
+
+            .theme-toggle {
+                display: none;
+            }
+
+            .paper-sheet {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .watermark-overlay {
+                position: fixed;
+                opacity: 0.05 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Genetics - Some Basic Fundamentals</h1>
+        <p style="text-align: center; color: #555; margin-bottom: 2rem;">ICSE Class 10 Biology • Chapter 03</p>
+
+        <h2>1. What is Genetics?</h2>
+        <div class="definition-box">
+            <p><strong>Genetics:</strong> The study of transmission of body features (both similarities and differences) from parents to offspring and the laws relating to such transmission.</p>
+        </div>
+        <ul>
+            <li><strong>Gregor Mendel</strong> (An Austrian Monk) is known as the <strong>Father of Genetics</strong>.</li>
+        </ul>
+
+        <h3>Modern Applications of Genetics</h3>
+        <div class="rule-box">
+            <ol>
+                <li><strong>Genetic Engineering:</strong> The technique in which the genetic constitution of an organism (bacterium) is altered by introducing new genes into its chromosomes. E.g., the hormone insulin-producing gene of mammals has been successfully introduced in certain bacteria to produce insulin in large quantities.</li>
+                <li><strong>Genetic Counselling:</strong> Newly married couples consult a specialist regarding possibilities of any undesirable traits their children might inherit (e.g., haemophilia, thalassaemia, sickle cell anaemia).</li>
+            </ol>
+        </div>
+
+        <h2>2. Heredity and Variations</h2>
+        <div class="definition-box">
+            <p><strong>Heredity:</strong> Transmission of genetically based characteristics from parents to offspring.</p>
+            <p><strong>Variations:</strong> Small differences among individuals within a species or population.</p>
+        </div>
+        <p><strong>Like begets like:</strong> It means that young ones look like their parents (Cats produce cats, mango seed germinates into mango tree).</p>
+
+        <h3>Characters and Traits</h3>
+        <p>Any inheritable feature is a <strong>character</strong>. The alternative forms of a character are called <strong>traits</strong>.</p>
+        
+        <table>
+            <tr>
+                <th>Character</th>
+                <th>Dominant Trait</th>
+                <th>Recessive Trait</th>
+            </tr>
+            <tr>
+                <td>Eye colour</td>
+                <td>Brown</td>
+                <td>Blue</td>
+            </tr>
+            <tr>
+                <td>Tongue</td>
+                <td>Rolling</td>
+                <td>Non-rolling</td>
+            </tr>
+            <tr>
+                <td>Hand use</td>
+                <td>Right-handedness</td>
+                <td>Left-handedness</td>
+            </tr>
+            <tr>
+                <td>Ear lobe</td>
+                <td>Free</td>
+                <td>Attached</td>
+            </tr>
+            <tr>
+                <td>Colour vision</td>
+                <td>Normal</td>
+                <td>Colour blind (red-green)</td>
+            </tr>
+        </table>
+        
+        <div class="master-tip">
+            <p><strong>Some uncommon hereditary traits:</strong> Polydactyly (Extra fingers & toes) is Dominant. Albinism (Total absence of skin pigment) is Recessive.</p>
+        </div>
+
+        <h2>3. Chromosomes and Genes</h2>
+        <p>Chromosomes are only visible when a cell nucleus is about to divide. The chromosome number is constant for the individuals of a species. Humans have <strong>46 chromosomes (23 pairs)</strong>.</p>
+
+        <h3>Autosomes and Sex Chromosomes</h3>
+        <ul>
+            <li><strong>Autosomes:</strong> Chromosome pairs numbered 1-22 which have identical chromosomes.</li>
+            <li><strong>Sex Chromosomes:</strong> The 23rd pair. Females have <strong>XX</strong> (similar partners). Males have <strong>XY</strong> (dissimilar, Y is much smaller than X).</li>
+        </ul>
+
+        <div class="img-wrapper" style="text-align: center; margin: 2rem 0;">
+            <img src="Images/[IMAGE PLACEHOLDER Fig. 3.1 & Fig. 3.2].jpg" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Fig 3.1 and 3.2" />
+        </div>
+
+        <h3>Sex Determination</h3>
+        <p>The sex of the child depends upon the kind of sperm that fertilises the egg. All eggs are alike (contain X), but sperms are either X-bearing or Y-bearing.</p>
+        <ul>
+            <li>Egg (X) + Sperm (X) &rarr; XX (Female / Daughter)</li>
+            <li>Egg (X) + Sperm (Y) &rarr; XY (Male / Son)</li>
+        </ul>
+
+        <h3>Genes and their Alleles</h3>
+        <div class="definition-box">
+            <p><strong>Genes:</strong> Specific parts (DNA segments) of a chromosome, which determine the hereditary characteristics.</p>
+            <p><strong>Genome:</strong> The full complement of DNA (including all genes and intergenic regions) of an organism.</p>
+            <p><strong>Alleles:</strong> Alternative forms of a gene, occupying the same position (locus) on homologous chromosomes and affecting the same characteristic but in different ways.</p>
+        </div>
+
+        <p>Out of two alleles of a gene, one is <strong>dominant</strong> (superruling) and the other is <strong>recessive</strong> (subordinate). Dominant genes are represented by capital letters (e.g. 'R'), recessive by small letters (e.g. 'r').</p>
+
+        <h3>Genotype and Phenotype</h3>
+        <ul>
+            <li><strong>Genotype:</strong> The set of genes present in the cells of an organism (the genetic constitution). E.g. RR, Rr, rr.</li>
+            <li><strong>Phenotype:</strong> The observable characteristic which is genetically controlled. E.g. Tongue roller.</li>
+        </ul>
+
+        <div class="rule-box">
+            <p><strong>Types of Genotypes:</strong></p>
+            <ul>
+                <li><strong>Homozygous dominant:</strong> Similar pair of dominant alleles (RR).</li>
+                <li><strong>Heterozygous dominant:</strong> Dissimilar pair of alleles (Rr).</li>
+                <li><strong>Homozygous recessive:</strong> Similar pair of recessive alleles (rr).</li>
+            </ul>
+        </div>
+
+        <div class="img-wrapper" style="text-align: center; margin: 2rem 0;">
+            <img src="Images/[IMAGE PLACEHOLDER Fig. 3.3 & Fig. 3.4].png" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Fig 3.3 and 3.4" />
+        </div>
+
+        <h2>4. Sex-Linked Inheritance</h2>
+        <div class="definition-box">
+            <p><strong>Sex-linked inheritance:</strong> The appearance of a trait which is due to the presence of an allele exclusively either on the X chromosome or on the Y chromosome.</p>
+        </div>
+        <p>Certain disorders like <strong>haemophilia</strong> and <strong>colour-blindness</strong> are caused by recessive genes on the X chromosome. They are more common in males because a male needs only one defective gene (X°Y) to suffer, whereas a female needs two (X°X°). A female with one defective gene (XX°) is a normal carrier.</p>
+
+        <h3>Criss-Cross Inheritance</h3>
+        <p>Inheritance of X-linked genes is passed from Mother to Son and Father to Daughter. A colour blind father passes the defective gene to his daughter (making her a carrier), and she may pass it to her son.</p>
+
+        <h2>5. Mendel's Experiments on Inheritance</h2>
+        <p>Mendel selected the garden pea (<em>Pisum sativum</em>) for three reasons:</p>
+        <ol>
+            <li>Many varieties were available in alternative forms of a character.</li>
+            <li>Varieties were available in pure forms that bred true.</li>
+            <li>Peas are normally self-pollinated but can be cross-pollinated artificially.</li>
+        </ol>
+
+        <div class="img-wrapper" style="text-align: center; margin: 2rem 0;">
+            <img src="Images/[IMAGE PLACEHOLDER Fig. 3.5].png" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Fig 3.5" />
+        </div>
+
+        <h3>A. Monohybrid Cross</h3>
+        <p>A cross between two pure breeding different varieties taking the alternative traits of <strong>one single character</strong>.</p>
+        <ul>
+            <li><strong>Example:</strong> Pure tall (TT) crossed with pure dwarf (tt).</li>
+            <li><strong>F1 generation:</strong> All hybrid tall (Tt).</li>
+            <li><strong>F2 generation (on selfing F1):</strong></li>
+            <ul>
+                <li><strong>Phenotypic ratio:</strong> 3 : 1 (3 Tall : 1 Dwarf)</li>
+                <li><strong>Genotypic ratio:</strong> 1 : 2 : 1 (1 TT : 2 Tt : 1 tt)</li>
+            </ul>
+        </ul>
+
+        <h3>B. Dihybrid Cross</h3>
+        <p>A cross considering alternative traits of <strong>two different characters</strong>.</p>
+        <ul>
+            <li><strong>Example:</strong> Pure round yellow (RRYY) crossed with wrinkled green (rryy).</li>
+            <li><strong>F2 generation Phenotypic ratio:</strong> 9 : 3 : 3 : 1 (9 Round Yellow, 3 Round Green, 3 Wrinkled Yellow, 1 Wrinkled Green).</li>
+        </ul>
+
+        <h2>6. Mendel's Laws of Inheritance</h2>
+        <div class="rule-box">
+            <ol>
+                <li><strong>Law of Dominance:</strong> Out of a pair of contrasting characters present together, only one is able to express itself (dominant) while the other remains suppressed (recessive).</li>
+                <li><strong>Law of Segregation (Law of purity of gametes):</strong> The two members of a pair of factors separate during the formation of gametes. They do not blend but segregate.</li>
+                <li><strong>Law of Independent Assortment:</strong> When there are two pairs of contrasting characters, the distribution of the members of one pair into the gametes is independent of the distribution of the other pair.</li>
+            </ol>
+        </div>
+
+        <h2>7. Mutation</h2>
+        <div class="definition-box">
+            <p><strong>Mutation:</strong> A sudden change in one or more genes, or in the number or structure of chromosomes.</p>
+        </div>
+        <p>Mutation alters the hereditary material. Examples:</p>
+        <ul>
+            <li><strong>Sickle cell anaemia:</strong> A blood disease caused by a gene mutation resulting in sickle-shaped RBCs.</li>
+            <li><strong>Radioactive radiations:</strong> Can alter gene structure (e.g., atomic explosion during WW-II in Japan led to deformities persisting today).</li>
+        </ul>
+
+        <h2>Exam Practice Questions (PYQ Trends)</h2>
+        <div class="practice-box">
+            <span class="practice-header">Frequently Asked (1 Mark)</span>
+            <p><span class="q-tag">NAME THE FOLLOWING</span> The alternative forms of a gene occupying the same position on homologous chromosomes.</p>
+            <p><strong>Ans:</strong> Alleles</p>
+        </div>
+        <div class="practice-box">
+            <span class="practice-header">Give Reasons</span>
+            <p><span class="q-tag">REASONING</span> Why are males more prone to colour blindness than females?</p>
+            <p><strong>Ans:</strong> Colour blindness is an X-linked recessive disorder. Males have only one X chromosome, so a single defective gene causes the disease. Females have two X chromosomes and need two defective genes to suffer from it.</p>
+        </div>
+        <div class="practice-box">
+            <span class="practice-header">Ratios</span>
+            <p><span class="q-tag">CONCEPT CHECK</span> State the phenotypic and genotypic ratios of a monohybrid cross in the F2 generation.</p>
+            <p><strong>Ans:</strong> Phenotypic ratio = 3 : 1. Genotypic ratio = 1 : 2 : 1.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</body>
+
+</html>

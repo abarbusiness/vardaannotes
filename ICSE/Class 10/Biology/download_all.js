@@ -3,20 +3,21 @@ const fs = require('fs');
 const path = require('path');
 
 const map = [
-    { name: "01CellCycleAndDivision", id: 502950},
-    { name: "02Genetics",             id: 502951},
-    { name: "03AbsorptionByRoots",    id: 502952},
-    { name: "04Transpiration",        id: 502954},
-    { name: "05Photosynthesis",       id: 502957},
-    { name: "06CirculatorySystem",    id: 502959},
-    { name: "07ExcretorySystem",      id: 502960},
-    { name: "08NervousSystem",        id: 502961},
-    { name: "09EndocrineGlands",      id: 502962},
-    { name: "10ReproductiveSystem",   id: 502964},
-    { name: "11Population",           id: 502967},
-    { name: "12AidsToHealth",         id: 502969},
-    { name: "13HealthOrganisations",  id: 502971},
-    { name: "14Pollution",            id: 502972}
+    { name: "01CellTheStructuralAndFunctionalUnitOfLife", id: 502921},
+    { name: "02StructureOfChromosomesCellCycleAndCellDivision", id: 502950},
+    { name: "03Genetics",             id: 502951},
+    { name: "04AbsorptionByRoots",    id: 502952},
+    { name: "05Transpiration",        id: 502954},
+    { name: "06Photosynthesis",       id: 502957},
+    { name: "07CirculatorySystem",    id: 502959},
+    { name: "08ExcretorySystem",      id: 502960},
+    { name: "09NervousSystem",        id: 502961},
+    { name: "10EndocrineGlands",      id: 502962},
+    { name: "11ReproductiveSystem",   id: 502964},
+    { name: "12Population",           id: 502967},
+    { name: "13AidsToHealth",         id: 502969},
+    { name: "14HealthOrganisations",  id: 502971},
+    { name: "15Pollution",            id: 502972}
 ];
 
 function downloadChapter(item, chapNum, callback) {
@@ -59,7 +60,7 @@ function runSequential(index) {
         return;
     }
     const item = map[index];
-    const chapNum = index + 2;
+    const chapNum = index + 1; // Corrected offset: Chapter 1 is at index 0
     downloadChapter(item, chapNum, (err) => {
         runSequential(index + 1);
     });
