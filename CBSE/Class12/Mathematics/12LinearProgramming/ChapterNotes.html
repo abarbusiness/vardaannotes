@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,6 +17,7 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* --- CSS VARIABLES (Vardaan Theming) --- */
@@ -67,7 +68,7 @@
             background-color: var(--paper-bg);
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive;
             color: var(--text-main);
             overflow-x: hidden;
             transition: background-color 0.3s ease, color 0.3s ease;
@@ -251,13 +252,14 @@
                 size: A4; margin: 2cm;
                 @bottom-left { content: none; }
                 @bottom-right { content: none; }
-                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
             }
         }
         
         /* Utility for AI Prompt Boxes */
-        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; color: var(--text-main); }
+        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive; text-align: center; color: var(--text-main); }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&amp;display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -320,9 +322,9 @@
 
         <h2>2. Graphical Concepts</h2>
 
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "A standard 2D Cartesian coordinate graph showing a bounded feasible region in the first quadrant. The x and y axes are drawn. Two solid straight lines intersect each other in the first quadrant, forming a convex, enclosed polygon (quadrilateral) with the x and y axes. This enclosed region is shaded in light blue and labeled 'Feasible Region'. The four corner points (vertices) of this shaded polygon are marked with distinct prominent red dots. Clean textbook geometric style, white background."
+        <div style="max-width: 600px; margin: 30px auto; background: var(--paper-bg); border: 1px solid var(--toggle-border); border-radius: 8px; padding: 15px;">
+            <canvas id="boundedChart"></canvas>
+            <p style="text-align: center; color: var(--meta-text); font-style: italic; font-size: 0.9rem; margin-top: 15px; margin-bottom: 0;"><strong>Fig 1:</strong> Bounded Feasible Region ($x+y \le 5$, $2x+y \le 8$)</p>
         </div>
 
         <ul>
@@ -430,9 +432,9 @@
             <li><strong>Unbounded Region:</strong> If the feasible region is open-ended (goes to infinity, usually upwards and to the right in diet problems), the max/min value found at the corner points is <strong>NOT guaranteed</strong> to be the final answer. You must perform a check!</li>
         </ul>
 
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "Graph of an Unbounded Feasible Region in LPP. The first quadrant of a Cartesian plane. Two solid constraint lines form an open-ended feasible region that stretches infinitely upwards and to the right. The region is shaded light blue. The three corner points along the bottom left edge are marked with red dots. An additional dashed (dotted) line representing the objective function inequality (ax + by < m) is drawn. This dashed line DOES NOT intersect the shaded blue region. Clean, educational vector graphic."
+        <div style="max-width: 600px; margin: 30px auto; background: var(--paper-bg); border: 1px solid var(--toggle-border); border-radius: 8px; padding: 15px;">
+            <canvas id="unboundedChart"></canvas>
+            <p style="text-align: center; color: var(--meta-text); font-style: italic; font-size: 0.9rem; margin-top: 15px; margin-bottom: 0;"><strong>Fig 2:</strong> Unbounded Feasible Region ($x+2y \ge 4$, $2x+y \ge 5$) with Objective Function check dashed line.</p>
         </div>
 
         <div class="yellow-box">
@@ -545,6 +547,108 @@
             document.documentElement.classList.toggle('dark-mode');
         }
     </script>
+
+    <!-- Chart.js LPP Graph Logic -->
+    <script>
+        const chartOptions = {
+            responsive: true,
+            aspectRatio: 1.5,
+            scales: {
+                x: {
+                    type: 'linear', position: 'bottom',
+                    min: 0, max: 6,
+                    title: { display: true, text: 'x-axis' }
+                },
+                y: {
+                    type: 'linear', position: 'left',
+                    min: 0, max: 6,
+                    title: { display: true, text: 'y-axis' }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `(${context.parsed.x}, ${context.parsed.y})`;
+                        }
+                    }
+                }
+            }
+        };
+
+        // Graph 1: Bounded Region (x+y <= 5, 2x+y <= 8)
+        const ctxBounded = document.getElementById('boundedChart');
+        if (ctxBounded) {
+            new Chart(ctxBounded.getContext('2d'), {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Feasible Region',
+                            data: [{x:0,y:0}, {x:4,y:0}, {x:3,y:2}, {x:0,y:5}, {x:0,y:0}],
+                            showLine: true, backgroundColor: 'rgba(30, 136, 229, 0.3)', borderColor: 'transparent', fill: true, pointRadius: 0
+                        },
+                        {
+                            label: 'x + y = 5',
+                            data: [{x:0,y:5}, {x:5,y:0}],
+                            showLine: true, borderColor: '#d81b60', borderWidth: 2, pointRadius: 0
+                        },
+                        {
+                            label: '2x + y = 8',
+                            data: [{x:0,y:8}, {x:4,y:0}],
+                            showLine: true, borderColor: '#43a047', borderWidth: 2, pointRadius: 0
+                        },
+                        {
+                            label: 'Corner Points',
+                            data: [{x:0,y:0}, {x:4,y:0}, {x:3,y:2}, {x:0,y:5}],
+                            backgroundColor: 'red', pointRadius: 6, pointHoverRadius: 8
+                        }
+                    ]
+                },
+                options: chartOptions
+            });
+        }
+
+        // Graph 2: Unbounded Region (x+2y >= 4, 2x+y >= 5)
+        const ctxUnbounded = document.getElementById('unboundedChart');
+        if (ctxUnbounded) {
+            new Chart(ctxUnbounded.getContext('2d'), {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Feasible Region (Unbounded)',
+                            data: [{x:0,y:5}, {x:2,y:1}, {x:4,y:0}, {x:10,y:0}, {x:10,y:10}, {x:0,y:10}, {x:0,y:5}],
+                            showLine: true, backgroundColor: 'rgba(30, 136, 229, 0.3)', borderColor: 'transparent', fill: true, pointRadius: 0
+                        },
+                        {
+                            label: 'x + 2y = 4',
+                            data: [{x:0,y:2}, {x:4,y:0}],
+                            showLine: true, borderColor: '#d81b60', borderWidth: 2, pointRadius: 0
+                        },
+                        {
+                            label: '2x + y = 5',
+                            data: [{x:0,y:5}, {x:2.5,y:0}],
+                            showLine: true, borderColor: '#43a047', borderWidth: 2, pointRadius: 0
+                        },
+                        {
+                            label: 'Objective function check (3x+4y < 10)',
+                            data: [{x:0,y:2.5}, {x:3.33,y:0}],
+                            showLine: true, borderColor: 'orange', borderWidth: 2, borderDash: [5, 5], pointRadius: 0
+                        },
+                        {
+                            label: 'Corner Points',
+                            data: [{x:0,y:5}, {x:2,y:1}, {x:4,y:0}],
+                            backgroundColor: 'red', pointRadius: 6, pointHoverRadius: 8
+                        }
+                    ]
+                },
+                options: chartOptions
+            });
+        }
+    </script>
 </body>
 </html>
+
 
