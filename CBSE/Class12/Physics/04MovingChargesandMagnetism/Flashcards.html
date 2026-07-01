@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Moving Charges and Magnetism - Flashcards Story</title>
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px;
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto;
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30;
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto;
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <!-- Magnet SVG -->
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 14v-3a8 8 0 0 1 16 0v3"></path>
+                            <path d="M4 14h4v6H4z"></path>
+                            <path d="M16 14h4v6h-4z"></path>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.1rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1;">Moving Charges and Magnetism</h1>
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px;">Physics • Chapter 4</span>
+                        <br>
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem;">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;"><span style="font-size: 2.2rem;">👈</span></div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;"><span style="font-size: 2.2rem;">👉</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Oersted's Experiment -->
+            <div class="slide">
+                <h2 class="slide-title">Oersted's Experiment</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Discovered the link between electricity and magnetism. A current-carrying wire deflects a magnetic compass needle.</p>
+                </div>
+                <img src="Images/Oersted's Experiment diagram.png" alt="Oersted's Experiment" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>Conclusion:</strong> Moving charges (current) produce a magnetic field in the surrounding space.</p>
+                </div>
+            </div>
+
+            <!-- Slide 3: Lorentz Force -->
+            <div class="slide">
+                <h2 class="slide-title">Lorentz Force</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Magnetic Force</h3>
+                    $$ \vec{F}_m = q(\vec{v} \times \vec{B}) $$
+                    <p style="font-size: 0.85rem; margin: 0;">Direction given by Fleming's Left Hand Rule or Right Hand Cross Product.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Total Lorentz Force</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Force in presence of both E and B fields:</p>
+                    $$ \vec{F} = q\vec{E} + q(\vec{v} \times \vec{B}) $$
+                </div>
+            </div>
+
+            <!-- Slide 4: Motion in Magnetic Field -->
+            <div class="slide">
+                <h2 class="slide-title">Motion in B-Field</h2>
+                <div class="glass-panel">
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li><strong>v || B ($\theta=0$):</strong> Linear path.</li>
+                        <li><strong>v $\perp$ B ($\theta=90^\circ$):</strong> Circular path. $r = \frac{mv}{qB}$</li>
+                        <li><strong>Arbitrary angle:</strong> Helical path.</li>
+                    </ul>
+                </div>
+                <img src="Images/Two panels showing charged particle trajectories in a uniform magnetic field.png" alt="Particle Trajectories" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 5: Force on Conductor -->
+            <div class="slide">
+                <h2 class="slide-title">Force on a Conductor</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">A wire carrying current $I$ in a magnetic field experiences a force:</p>
+                    $$ \vec{F} = I(\vec{l} \times \vec{B}) $$
+                    $$ F = IlB \sin\theta $$
+                </div>
+                <img src="Images/Diagram of a straight conducting rod of length l carryig curret i placed i uniform magnetic field B.png" alt="Force on Conductor" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 6: Biot-Savart Law -->
+            <div class="slide">
+                <h2 class="slide-title">Biot-Savart Law</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Magnetic field due to a small current element $Id\vec{l}$:</p>
+                    $$ d\vec{B} = \frac{\mu_0}{4\pi} \frac{I(d\vec{l} \times \hat{r})}{r^2} $$
+                </div>
+                <img src="Images/Biot-Savart Law diagram. An arbitrarily curved wire carrying current 'I'. Highlight a tiny, straight section of the wire label.png" alt="Biot Savart Law" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 7: Field on Axis of Loop -->
+            <div class="slide">
+                <h2 class="slide-title">Field on Loop Axis</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.85rem;">Magnetic field on the axis of a circular loop of radius $R$ at distance $x$:</p>
+                    $$ B = \frac{\mu_0 I R^2}{2(x^2 + R^2)^{3/2}} $$
+                </div>
+                <img src="Images/Derivation diagram for magnetic field on the axis of a circular loop.png" alt="Field on Axis" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>At center ($x=0$):</strong> $B = \frac{\mu_0 I}{2R}$</p>
+                </div>
+            </div>
+
+            <!-- Slide 8: Ampere's Circuital Law -->
+            <div class="slide">
+                <h2 class="slide-title">Ampere's Circuital Law</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Line integral of magnetic field around a closed loop equals $\mu_0$ times total current enclosed.</p>
+                    $$ \oint \vec{B} \cdot d\vec{l} = \mu_0 I_{enclosed} $$
+                </div>
+                <img src="Images/Ampere's Circuital Law diagram.png" alt="Ampere Law" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 9: Solenoid -->
+            <div class="slide">
+                <h2 class="slide-title">Field in a Solenoid</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Inside a long straight solenoid:</p>
+                    $$ B = \mu_0 n I $$
+                    <p style="font-size: 0.85rem; margin: 0;">where $n$ = number of turns per unit length.</p>
+                </div>
+                <img src="Images/Derivation of Magnetic field in a Solenoid. A cross-section of a long solenoid.png" alt="Solenoid Field" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 10: Force between parallel wires -->
+            <div class="slide">
+                <h2 class="slide-title">Force: Parallel Wires</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Force per unit length between two parallel wires separated by $d$:</p>
+                    $$ \frac{F}{l} = \frac{\mu_0 I_1 I_2}{2\pi d} $$
+                </div>
+                <img src="Images/Two long, straight parallel wires separated by distance 'd'.png" alt="Parallel Wires Force" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li><strong>Same direction:</strong> Attract</li>
+                        <li><strong>Opposite direction:</strong> Repel</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 11: Torque on a Loop -->
+            <div class="slide">
+                <h2 class="slide-title">Torque on a Loop</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">A current loop in a uniform magnetic field experiences a torque:</p>
+                    $$ \vec{\tau} = \vec{m} \times \vec{B} $$
+                    <p style="font-size: 0.85rem; margin: 0;">$\vec{m} = NIA$ (Magnetic Dipole Moment)</p>
+                </div>
+                <img src="Images/Derivation of Torque on a rectangular loop..png" alt="Torque on Loop" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 12: Moving Coil Galvanometer -->
+            <div class="slide">
+                <h2 class="slide-title">Moving Coil Galvanometer</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Principle</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Current loop in radial magnetic field experiences deflecting torque: $NIAB$. Restoring torque: $k\phi$.</p>
+                    $$ \phi = \left(\frac{NAB}{k}\right) I $$
+                </div>
+                <img src="Images/Cross-section of a Moving Coil Galvanometer.png" alt="Galvanometer" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+        </div>
+
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = '';
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05;
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = '';
+                }
+            } else if (deltaX > threshold) {
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = '';
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        function toggleTheme(event) {
+            event.stopPropagation();
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Moving Charges and Magnetism - Flashcards',
+                    text: 'Check out these quick revision flashcards for Class 12 Physics!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        updateUI();
+
+    </script>
+</body>
+</html>
