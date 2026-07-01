@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Current Electricity - Flashcards Story</title>
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px;
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto;
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30;
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto;
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <!-- Atom SVG -->
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)"></ellipse>
+                            <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)"></ellipse>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.3rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1;">Current Electricity</h1>
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px;">Physics • Chapter 3</span>
+                        <br>
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem;">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;"><span style="font-size: 2.2rem;">👈</span></div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;"><span style="font-size: 2.2rem;">👉</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Electric Current -->
+            <div class="slide">
+                <h2 class="slide-title">Electric Current ($I$)</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Rate of flow of electric charge through a cross-section.</p>
+                    $$ I = \frac{dq}{dt} $$
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>Unit:</strong> Ampere (A). It's a scalar quantity!</p>
+                </div>
+                <img src="Images/Conventional Current and Electron Drift Direction.png" alt="Current Direction" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 3: Drift Velocity -->
+            <div class="slide">
+                <h2 class="slide-title">Drift Velocity ($v_d$)</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Average velocity of free electrons in a conductor under external electric field.</p>
+                    $$ v_d = -\frac{eE}{m}\tau $$
+                    <p style="font-size: 0.85rem; margin: 0;">$\tau = $ Relaxation time (time between collisions).</p>
+                </div>
+                <img src="Images/Figure 3.3 - Microscopic View of Electron Drift.png" alt="Electron Drift" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Relation with Current</h3>
+                    $$ I = neAv_d $$
+                </div>
+            </div>
+
+            <!-- Slide 4: Ohm's Law -->
+            <div class="slide">
+                <h2 class="slide-title">Ohm's Law</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Current is directly proportional to potential difference (at constant temp).</p>
+                    $$ V = IR $$
+                </div>
+                <img src="Images/Figure 3.2 - V-I Graph for Ohmic Conductor.jpg" alt="V-I Graph" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Limitations</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Fails for non-ohmic devices (diodes, transistors, GaAs).</p>
+                </div>
+                <img src="Images/Figure 3.4 - V-I Characteristics of Non-Ohmic Devices.png.png" alt="Non Ohmic Graph" class="content-img" style="animation-delay: 0.3s;">
+            </div>
+
+            <!-- Slide 5: Resistivity & Temp -->
+            <div class="slide">
+                <h2 class="slide-title">Resistivity ($\rho$)</h2>
+                <div class="glass-panel">
+                    $$ R = \rho \frac{L}{A} $$
+                    <p style="font-size: 0.85rem; margin: 0;">Depends on material & temperature, NOT geometry.</p>
+                </div>
+                <img src="Images/Figure 3.5 - Temperature Dependence of Resistivity for Metals Alloys and Semiconductors.png" alt="Temp Dependence" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="margin: 0; font-size: 0.85rem;"><strong>Metals:</strong> $\rho$ increases with T.<br>
+                    <strong>Semiconductors:</strong> $\rho$ decreases with T.</p>
+                </div>
+            </div>
+
+            <!-- Slide 6: Power & Energy -->
+            <div class="slide">
+                <h2 class="slide-title">Electrical Power ($P$)</h2>
+                <div class="glass-panel">
+                    $$ P = VI = I^2R = \frac{V^2}{R} $$
+                </div>
+                <img src="Images/Figure 3.6 - Power Dissipation in Series vs Parallel Lightbulb Circuits.png" alt="Power Dissipation" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="margin: 0; font-size: 0.85rem;"><strong>Series:</strong> Use $I^2R$ (higher R glows brighter).<br>
+                    <strong>Parallel:</strong> Use $V^2/R$ (lower R glows brighter).</p>
+                </div>
+            </div>
+
+            <!-- Slide 7: Carbon Resistors -->
+            <div class="slide">
+                <h2 class="slide-title">Carbon Resistors</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Color Coding Mnemonic:<br><strong>B B R O Y</strong> <strong>G</strong>reat <strong>B</strong>ritain <strong>V</strong>ery <strong>G</strong>ood <strong>W</strong>ife</p>
+                </div>
+                <img src="Images/A diagram of a cylindrical carbon resistor with four colored bands.png" alt="Carbon Resistor" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li><strong>Band 1 & 2:</strong> Sig Figs (0-9)</li>
+                        <li><strong>Band 3:</strong> Multiplier ($10^x$)</li>
+                        <li><strong>Band 4:</strong> Tolerance (Gold 5%, Silver 10%)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 8: Combination of Resistors -->
+            <div class="slide">
+                <h2 class="slide-title">Resistors Combo</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Series</h3>
+                    $$ R_{eq} = R_1 + R_2 + \dots $$
+                    <p style="font-size: 0.85rem; margin: 0;">Current is same across all.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Parallel</h3>
+                    $$ \frac{1}{R_{eq}} = \frac{1}{R_1} + \frac{1}{R_2} + \dots $$
+                    <p style="font-size: 0.85rem; margin: 0;">Voltage is same across all.</p>
+                </div>
+                <img src="Images/Two circuit diagrams showing resistor combinations.png" alt="Resistor Combos" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 9: Cells, EMF, Internal R -->
+            <div class="slide">
+                <h2 class="slide-title">Cells & EMF</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;"><strong>EMF ($\varepsilon$):</strong> Potential difference when no current is drawn.</p>
+                    <p style="margin: 0; font-size: 0.9rem;"><strong>Terminal Voltage ($V$):</strong> Potential diff when current $I$ is drawn.</p>
+                    $$ V = \varepsilon - Ir $$
+                </div>
+                <img src="Images/Figure 3.7 - Circuit Diagram of a Real Battery with Internal Resistance.png" alt="Real Battery" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 10: Combination of Cells -->
+            <div class="slide">
+                <h2 class="slide-title">Combination of Cells</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Series</h3>
+                    $$ \varepsilon_{eq} = \varepsilon_1 + \varepsilon_2 $$
+                    $$ r_{eq} = r_1 + r_2 $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Parallel</h3>
+                    $$ \varepsilon_{eq} = \frac{\varepsilon_1/r_1 + \varepsilon_2/r_2}{1/r_1 + 1/r_2} $$
+                    $$ \frac{1}{r_{eq}} = \frac{1}{r_1} + \frac{1}{r_2} $$
+                </div>
+                <img src="Images/Figure 3.8 - Series and Parallel Combinations of Cells.png" alt="Cell Combinations" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 11: Kirchhoff's Laws -->
+            <div class="slide">
+                <h2 class="slide-title">Kirchhoff's Laws</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">1. Junction Rule (KCL)</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Sum of currents entering = Sum leaving. (Conservation of Charge)</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">2. Loop Rule (KVL)</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Algebraic sum of changes in potential around closed loop is zero. (Conservation of Energy)</p>
+                </div>
+                <img src="Images/Figure 3.9 - Kirchhoffs Current Law and Voltage Law Sign Conventions.png" alt="Kirchhoff's Laws" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 12: Nodal Analysis -->
+            <div class="slide">
+                <h2 class="slide-title">JEE Tip: Nodal Analysis</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Assign a reference node (0V), name unknown nodes ($x$), and apply KCL:</p>
+                    $$ \sum I_{leaving} = 0 $$
+                </div>
+                <img src="Images/A clear circuit diagram illustrating Nodal Analysis.png" alt="Nodal Analysis" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="font-size: 0.85rem; margin: 0;">Faster than KVL for complex circuits!</p>
+                </div>
+            </div>
+
+            <!-- Slide 13: Circuit Symmetry -->
+            <div class="slide">
+                <h2 class="slide-title">JEE Tip: Symmetry</h2>
+                <div class="glass-panel">
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li><strong>Mirror Symmetry:</strong> Points mirror symmetric to axis have same potential.</li>
+                        <li><strong>Folding Symmetry:</strong> Fold circuit along axis parallel to current flow.</li>
+                    </ul>
+                </div>
+                <img src="Images/A diagram showing Circuit Symmetry.png" alt="Circuit Symmetry" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 14: Wheatstone Bridge -->
+            <div class="slide">
+                <h2 class="slide-title">Wheatstone Bridge</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Balanced Condition ($I_g = 0$):</p>
+                    $$ \frac{R_1}{R_2} = \frac{R_3}{R_4} $$
+                </div>
+                <img src="Images/Figure 3.10 - Circuit Diagram of a Wheatstone Bridge.png" alt="Wheatstone Bridge" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="font-size: 0.85rem; margin: 0;">Used to measure unknown resistance accurately.</p>
+                </div>
+            </div>
+
+            <!-- Slide 15: Meter Bridge -->
+            <div class="slide">
+                <h2 class="slide-title">Meter Bridge</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">Practical application of Wheatstone bridge. Null point at length $l$ cm:</p>
+                    $$ S = R \left( \frac{100 - l}{l} \right) $$
+                </div>
+                <img src="Images/Diagram of a Meter Bridge experiment. A 1-meter long resistance wire stretched on a wooden board above a meter scale.png" alt="Meter Bridge" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 16: Galvanometer Conversion -->
+            <div class="slide">
+                <h2 class="slide-title">Galvanometer Conv.</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Into Ammeter</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Connect low resistance (Shunt $S$) in <strong>parallel</strong>.</p>
+                    $$ S = \left( \frac{I_g}{I - I_g} \right) G $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Into Voltmeter</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">Connect high resistance ($R$) in <strong>series</strong>.</p>
+                    $$ R = \frac{V}{I_g} - G $$
+                </div>
+                <img src="Images/Figure 3.11 - Conversion of Galvanometer into Ammeter and Voltmeter.png" alt="Conversion" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+        </div>
+
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = '';
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05;
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = '';
+                }
+            } else if (deltaX > threshold) {
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = '';
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        function toggleTheme(event) {
+            event.stopPropagation();
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Current Electricity - Flashcards',
+                    text: 'Check out these quick revision flashcards for Class 12 Physics!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        updateUI();
+
+    </script>
+</body>
+</html>

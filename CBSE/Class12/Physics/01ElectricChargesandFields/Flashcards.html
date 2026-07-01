@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Electric Charges and Fields - Flashcards Story</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --story-bg: #ffffff;
+            --glass-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent-blue: #1976d2;
+            --accent-pink: #d81b60;
+            --accent-green: #388e3c;
+            --progress-bg: rgba(0, 0, 0, 0.2);
+            --progress-fill: #000000;
+        }
+
+        html.dark-mode {
+            --bg-color: #000000;
+            --story-bg: #000000;
+            --glass-bg: #000000;
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --accent-blue: #64b5f6;
+            --accent-pink: #f06292;
+            --accent-green: #81c784;
+            --progress-bg: rgba(255, 255, 255, 0.3);
+            --progress-fill: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: movePattern 30s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes movePattern {
+            from { background-position: 0 0; }
+            to { background-position: 60px 60px; }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            background: transparent;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Desktop specific constraint to mimic mobile screen */
+        @media (min-width: 451px) {
+            #app {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 20px;
+                aspect-ratio: 9/16;
+            }
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            right: 50px;
+            display: flex;
+            gap: 4px;
+            z-index: 100;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background: var(--progress-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 0.15s ease-out;
+        }
+
+        .progress-segment.completed .progress-fill {
+            width: 100%;
+        }
+
+        /* Slides */
+        #slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--story-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 50px 20px 20px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            pointer-events: none;
+            transform-origin: 50% 100%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 20;
+            transform: translateX(0) scale(1) rotate(0);
+            pointer-events: auto;
+        }
+
+        .slide.next {
+            opacity: 1;
+            z-index: 10;
+            transform: translateX(0) scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+        
+        .slide.hidden-next {
+            opacity: 0;
+            z-index: 5;
+            transform: translateX(0) scale(0.90) translateY(40px);
+            pointer-events: none;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            visibility: hidden;
+            z-index: 30;
+            transform: translateX(-150vw) rotate(-20deg);
+            pointer-events: none;
+        }
+
+        .slide.dragging {
+            transition: none !important;
+        }
+
+        .slide::-webkit-scrollbar { display: none; }
+        .slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Navigation Touch Zones */
+        #left-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+        #right-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            z-index: 50;
+            cursor: pointer;
+        }
+
+        /* Aesthetics & Components */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideUp 0.4s ease-out forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-pink);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--accent-pink);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .content-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            background: #ffffff;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            transition: filter 0.3s ease;
+            pointer-events: auto;
+        }
+
+        html.dark-mode .content-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        /* MathJax Responsive Handling */
+        mjx-container[display="true"] {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+
+        mjx-container {
+            font-size: 0.95em !important;
+        }
+
+        .theme-btn {
+            position: relative;
+            z-index: 30;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- SHARE BUTTON --- */
+        .share-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        .share-btn:active {
+            transform: scale(0.9);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+        <div class="watermark-overlay">
+            <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                alt="Vardaan Watermark" class="watermark-image">
+        </div>
+
+        <div id="progress-container"></div>
+        
+        <!-- Share Button -->
+        <button class="share-btn" onclick="shareApp(event)" aria-label="Share">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+
+        <div id="slides-container">
+            <!-- Slide 1: Intro -->
+            <div class="slide">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <!-- Atom SVG for Physics Basics -->
+                    <div style="margin-bottom: 25px; animation: pulse 3s infinite;">
+                        <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)"></ellipse>
+                            <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)"></ellipse>
+                        </svg>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; max-width: 320px; border-radius: 24px; padding: 40px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                        <h1 style="color: var(--accent-blue); font-size: 2.3rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Electric Charges and Fields</h1>
+                        
+                        <span style="display: inline-block; background: var(--accent-pink); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px;">Physics • Chapter 1 Flashcards</span>
+                        
+                        <br>
+                        
+                        <button class="theme-btn" onclick="toggleTheme(event)" style="margin-top: 0; margin-bottom: 40px; width: 85%; padding: 14px; font-size: 1.05rem; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);">Toggle Dark Mode</button>
+                    </div>
+                    
+                    <!-- Intuitive Swipe Hints -->
+                    <div style="position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; opacity: 0.7;">
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideLeft 2s infinite;">
+                            <span style="font-size: 2.2rem;">👈</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; animation: slideRight 2s infinite;">
+                            <span style="font-size: 2.2rem;">👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Properties of Charge -->
+            <div class="slide">
+                <h2 class="slide-title">Electric Charge</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">1. Basic Properties</h3>
+                    <ul style="font-size: 0.9rem; margin-bottom: 0;">
+                        <li><strong>Quantization:</strong> Total charge is always an integral multiple of basic quantum of charge $e$.<br> $$ q = ne $$</li>
+                        <li><strong>Conservation:</strong> Total charge of an isolated system remains constant.</li>
+                        <li><strong>Additivity:</strong> Total charge is the algebraic sum of all individual charges in the system.</li>
+                    </ul>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">2. Key Facts</h3>
+                    <p style="margin: 0; font-size: 0.95rem;">
+                        - Like charges repel, unlike charges attract.<br>
+                        - Value of $e = 1.6 \times 10^{-19} \text{ C}$<br>
+                        - Mass of electron $m_e = 9.1 \times 10^{-31} \text{ kg}$
+                    </p>
+                </div>
+            </div>
+
+            <!-- Slide 3: Methods of Charging -->
+            <div class="slide">
+                <h2 class="slide-title">Methods of Charging</h2>
+                <div class="glass-panel">
+                    <ul style="font-size: 0.9rem; margin-bottom: 0;">
+                        <li><strong>Friction:</strong> Rubbing two insulators. e- transfer.</li>
+                        <li><strong>Conduction:</strong> Direct physical contact between conductors.</li>
+                        <li><strong>Induction:</strong> Charging without contact. Charges are redistributed due to presence of a nearby charged body.</li>
+                    </ul>
+                </div>
+                <img src="Images/Charging by Induction diagram.png" alt="Charging by Induction" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 4: Coulomb's Law -->
+            <div class="slide">
+                <h2 class="slide-title">Coulomb's Law</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Scalar Form</h3>
+                    $$ F = \frac{1}{4\pi\varepsilon_0} \frac{|q_1 q_2|}{r^2} $$
+                </div>
+                <img src="Images/diagram for Coulomb's Law in Vector Form.png" alt="Coulomb's Law Vector Form" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Vector Form</h3>
+                    $$ \vec{F}_{12} = \frac{1}{4\pi\varepsilon_0} \frac{q_1 q_2}{r^2} \hat{r}_{21} $$
+                    <p style="font-size: 0.85rem; margin: 0;">Shows that $\vec{F}_{12} = -\vec{F}_{21}$ (Newton's 3rd Law).</p>
+                </div>
+            </div>
+
+            <!-- Slide 5: Continuous Charge Distribution -->
+            <div class="slide">
+                <h2 class="slide-title">Continuous Charge</h2>
+                <div class="glass-panel">
+                    <p style="margin: 0; font-size: 0.9rem;">When charge is distributed over a region, we use charge densities:</p>
+                    <ul style="font-size: 0.85rem; margin-top: 5px;">
+                        <li><strong>Linear ($\lambda$):</strong> Charge per unit length. (C/m)</li>
+                        <li><strong>Surface ($\sigma$):</strong> Charge per unit area. (C/m²)</li>
+                        <li><strong>Volume ($\rho$):</strong> Charge per unit volume. (C/m³)</li>
+                    </ul>
+                </div>
+                <img src="Images/Three panels illustrating continuous charge distributions..jpg" alt="Continuous Charge Distributions" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 6: Electric Field -->
+            <div class="slide">
+                <h2 class="slide-title">Electric Field</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Definition</h3>
+                    <p style="font-size: 0.9rem; margin: 0;">Force experienced by a unit positive test charge.</p>
+                    $$ \vec{E} = \frac{\vec{F}}{q_0} $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Field due to Point Charge</h3>
+                    $$ E = \frac{1}{4\pi\varepsilon_0} \frac{q}{r^2} $$
+                </div>
+                <img src="Images/A visual representation of an Electric Field.png" alt="Electric Field Visualization" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 7: Electric Field Lines -->
+            <div class="slide">
+                <h2 class="slide-title">Electric Field Lines</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Key Properties</h3>
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li>Originate from +ve, terminate at -ve.</li>
+                        <li>Do not form closed loops.</li>
+                        <li>Two field lines never intersect.</li>
+                        <li>Relative closeness indicates field strength.</li>
+                    </ul>
+                </div>
+                <img src="Images/Four distinct panels showing Electric Field Lines.png" alt="Electric Field Lines" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 8: Electric Dipole -->
+            <div class="slide">
+                <h2 class="slide-title">Electric Dipole</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Dipole Moment ($\vec{p}$)</h3>
+                    $$ \vec{p} = q \times 2\vec{a} $$
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>Direction:</strong> -ve to +ve charge.<br><strong>Unit:</strong> C·m.</p>
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Dipole in Uniform Field</h3>
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li><strong>Net Force:</strong> $F_{net} = 0$</li>
+                        <li><strong>Torque:</strong> $\vec{\tau} = \vec{p} \times \vec{E}$</li>
+                        <li><strong>Magnitude:</strong> $\tau = pE \sin\theta$</li>
+                    </ul>
+                </div>
+                <img src="Images/Diagram of an electric dipole inside a uniform electric field..jpg" alt="Dipole in Uniform Field" class="content-img" style="animation-delay: 0.2s;">
+            </div>
+
+            <!-- Slide 9: Dipole Potential Energy -->
+            <div class="slide">
+                <h2 class="slide-title">Dipole P.E. & Equilibrium</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Potential Energy ($U$)</h3>
+                    <p style="font-size: 0.9rem; margin: 0;">Work done in rotating the dipole in an external field.</p>
+                    $$ U = -\vec{p} \cdot \vec{E} = -pE \cos\theta $$
+                </div>
+                <div class="glass-panel" style="animation-delay: 0.1s;">
+                    <h3 class="subtitle">Stable vs Unstable</h3>
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li><strong>Stable Eq. ($\theta = 0^\circ$):</strong> $U = -pE$ (Minimum PE). Dipole is aligned with field.</li>
+                        <li><strong>Unstable Eq. ($\theta = 180^\circ$):</strong> $U = +pE$ (Maximum PE). Dipole is anti-aligned.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 10: Field due to Dipole (Axial) -->
+            <div class="slide">
+                <h2 class="slide-title">Dipole Field: Axial</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0;">For a short dipole ($r \gg a$):</p>
+                    $$ E_{axial} = \frac{1}{4\pi\varepsilon_0} \frac{2p}{r^3} $$
+                    <p style="font-size: 0.85rem; margin: 0; color: var(--accent-pink);"><em>Direction: Same as $\vec{p}$</em></p>
+                </div>
+                <img src="Images/Electric dipole axial line derivation diagram. A dipole with -q and +q separated by 2a. A point P lies on the extended axis lin.jpg" alt="Dipole Axial Field" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 11: Field due to Dipole (Equatorial) -->
+            <div class="slide">
+                <h2 class="slide-title">Dipole Field: Equat.</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0;">For a short dipole ($r \gg a$):</p>
+                    $$ E_{eq} = \frac{1}{4\pi\varepsilon_0} \frac{p}{r^3} $$
+                    <p style="font-size: 0.85rem; margin: 0; color: var(--accent-pink);"><em>Direction: Opposite to $\vec{p}$</em></p>
+                </div>
+                <img src="Images/Electric dipole equatorial line derivation diagram. A dipole with -q and +q separated by 2a. A point P lies on the perpendicula.jpg" alt="Dipole Equatorial Field" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <h3 class="subtitle">Relation</h3>
+                    $$ E_{axial} = 2 \times E_{eq} $$
+                </div>
+            </div>
+
+            <!-- Slide 12: Electric Flux -->
+            <div class="slide">
+                <h2 class="slide-title">Electric Flux ($\Phi$)</h2>
+                <div class="glass-panel">
+                    <h3 class="subtitle">Formula</h3>
+                    $$ \Phi = \vec{E} \cdot \vec{A} = EA \cos\theta $$
+                    <p style="font-size: 0.85rem; margin: 0;">Where $\theta$ is angle between E-field and Area Vector.</p>
+                </div>
+                <img src="Images/Visualizing Electric Flux. A flat, irregular 2D surface tilted at an angle.png" alt="Electric Flux" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="font-size: 0.85rem; margin: 0;">For non-uniform field over closed surface:<br> $$ \Phi = \oint \vec{E} \cdot d\vec{S} $$</p>
+                </div>
+            </div>
+
+            <!-- Slide 13: Gauss's Law -->
+            <div class="slide">
+                <h2 class="slide-title">Gauss's Law</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0;">The total flux through a closed surface is $1/\varepsilon_0$ times the net charge enclosed.</p>
+                    $$ \oint \vec{E} \cdot d\vec{S} = \frac{q_{enclosed}}{\varepsilon_0} $$
+                </div>
+                <img src="Images/Proof of Gauss's Law diagram.jpg" alt="Gauss's Law" class="content-img" style="animation-delay: 0.1s;">
+                <div class="glass-panel" style="animation-delay: 0.2s;">
+                    <p style="font-size: 0.85rem; margin: 0;"><em>Charges outside the surface do not contribute to total flux.</em></p>
+                </div>
+            </div>
+
+            <!-- Slide 14: App 1: Infinite Wire -->
+            <div class="slide">
+                <h2 class="slide-title">Gauss: Infinite Wire</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0;">Linear charge density $\lambda$:</p>
+                    $$ E = \frac{\lambda}{2\pi\varepsilon_0 r} $$
+                    <p style="font-size: 0.85rem; margin: 0;">$E \propto 1/r$</p>
+                </div>
+                <img src="Images/Gauss's Law application Infinite wire. An infinitely long vertical wire with positive charges distributed along it.jpg" alt="Infinite Wire" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 15: App 2: Infinite Sheet -->
+            <div class="slide">
+                <h2 class="slide-title">Gauss: Infinite Sheet</h2>
+                <div class="glass-panel">
+                    <p style="font-size: 0.9rem; margin: 0;">Surface charge density $\sigma$:</p>
+                    $$ E = \frac{\sigma}{2\varepsilon_0} $$
+                    <p style="font-size: 0.85rem; margin: 0;"><em>(Independent of distance $r$!)</em></p>
+                </div>
+                <img src="Images/Gauss's Law application Infinite Sheet. A vast flat horizontal plane filled with positive charges .jpg" alt="Infinite Sheet" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+            <!-- Slide 16: App 3: Spherical Shell -->
+            <div class="slide">
+                <h2 class="slide-title">Gauss: Spherical Shell</h2>
+                <div class="glass-panel">
+                    <ul style="font-size: 0.85rem; margin-bottom: 0;">
+                        <li><strong>Outside ($r > R$):</strong> $E = \frac{1}{4\pi\varepsilon_0}\frac{q}{r^2}$</li>
+                        <li><strong>Surface ($r = R$):</strong> $E = \frac{1}{4\pi\varepsilon_0}\frac{q}{R^2}$</li>
+                        <li><strong>Inside ($r < R$):</strong> $E = 0$ (electrostatic shielding!)</li>
+                    </ul>
+                </div>
+                <img src="Images/Gauss's Law application Spherical Shell.png" alt="Spherical Shell" class="content-img" style="animation-delay: 0.1s;">
+            </div>
+
+        </div>
+
+        <!-- Touch Zones -->
+        <div id="left-zone"></div>
+        <div id="right-zone"></div>
+        
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressContainer = document.getElementById('progress-container');
+        let currentIndex = 0;
+
+        // Initialize progress bar segments
+        slides.forEach((_, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            seg.appendChild(fill);
+            progressContainer.appendChild(seg);
+        });
+
+        function updateUI() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'previous', 'next', 'hidden-next', 'dragging');
+                slide.style.transform = ''; // Clear inline styles from dragging
+                
+                if(i === currentIndex) {
+                    slide.classList.add('active');
+                } else if (i === currentIndex + 1) {
+                    slide.classList.add('next');
+                } else if (i > currentIndex + 1) {
+                    slide.classList.add('hidden-next');
+                } else if (i < currentIndex) {
+                    slide.classList.add('previous');
+                }
+            });
+            
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                const fill = seg.querySelector('.progress-fill');
+                if(i < currentIndex) {
+                    seg.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if(i === currentIndex) {
+                    seg.classList.remove('completed');
+                    fill.style.width = '100%';
+                } else {
+                    seg.classList.remove('completed');
+                    fill.style.width = '0%';
+                }
+            });
+        }
+
+        // Navigation
+        document.getElementById('right-zone').addEventListener('click', (e) => {
+            if(currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateUI();
+            }
+        });
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if(currentIndex > 0) {
+                currentIndex--;
+                updateUI();
+            }
+        });
+
+        // Interactive Tinder-style Drag Support (Touch & Mouse)
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let draggedSlide = null;
+
+        function dragStart(clientX, eTarget) {
+            if(eTarget.closest('button') || eTarget.id === 'left-zone' || eTarget.id === 'right-zone') return;
+            startX = clientX;
+            isDragging = true;
+            draggedSlide = slides[currentIndex];
+            if(draggedSlide) draggedSlide.classList.add('dragging');
+        }
+
+        function dragMove(clientX) {
+            if(!isDragging || !draggedSlide) return;
+            currentX = clientX;
+            const deltaX = currentX - startX;
+            const rotateDeg = deltaX * 0.05;
+            draggedSlide.style.transform = `translateX(${deltaX}px) rotate(${rotateDeg}deg)`;
+        }
+
+        function dragEnd(clientX) {
+            if(!isDragging) return;
+            isDragging = false;
+            if(draggedSlide) draggedSlide.classList.remove('dragging');
+            
+            const deltaX = clientX - startX;
+            const threshold = 80;
+            
+            if (deltaX < -threshold) {
+                // Swiped Left -> Next
+                if(currentIndex < slides.length - 1) {
+                    draggedSlide.style.transform = `translate(-150vw, 50px) rotate(-20deg)`;
+                    currentIndex++;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = '';
+                }
+            } else if (deltaX > threshold) {
+                // Swiped Right -> Previous
+                if(currentIndex > 0) {
+                    draggedSlide.style.transform = `translate(150vw, 50px) rotate(20deg)`;
+                    currentIndex--;
+                    setTimeout(updateUI, 50);
+                } else {
+                    draggedSlide.style.transform = '';
+                }
+            } else {
+                if(draggedSlide) draggedSlide.style.transform = '';
+            }
+            draggedSlide = null;
+        }
+
+        const appContainer = document.getElementById('app');
+        
+        appContainer.addEventListener('touchstart', e => dragStart(e.changedTouches[0].clientX, e.target), {passive: true});
+        appContainer.addEventListener('touchmove', e => dragMove(e.changedTouches[0].clientX), {passive: true});
+        appContainer.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX), {passive: true});
+        
+        appContainer.addEventListener('mousedown', e => dragStart(e.clientX, e.target));
+        window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+        window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+        // Theme Toggle
+        function toggleTheme(event) {
+            event.stopPropagation();
+            document.documentElement.classList.toggle('dark-mode');
+            const btn = event.target;
+            if(document.documentElement.classList.contains('dark-mode')) {
+                btn.innerText = "Toggle Light Mode";
+            } else {
+                btn.innerText = "Toggle Dark Mode";
+            }
+        }
+
+        // Share App
+        function shareApp(event) {
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Electric Charges and Fields - Flashcards',
+                    text: 'Check out these quick revision flashcards for Class 12 Physics!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser, but you can copy the URL: ' + window.location.href);
+            }
+        }
+
+        // Initialize
+        updateUI();
+
+    </script>
+</body>
+</html>
