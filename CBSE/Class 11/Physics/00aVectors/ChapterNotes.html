@@ -13,10 +13,19 @@
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']],
                 tags: 'ams'
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            chtml: {
+                scale: 1,
+                minScale: 0.5,
+                mtextInheritFont: true,
+                matchFontHeight: true
             }
         };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 
     <style>
         :root {
@@ -32,155 +41,212 @@
             --toggle-bg: #eee; --toggle-border: #ccc; --icon-fill: #000;
         }
         html.dark-mode {
-            --yellow-bg: #000; --yellow-border: #fdd835;
-            --green-bg: #000; --green-border: #81c784;
-            --blue-bg: #000; --blue-border: #64b5f6;
-            --pink-bg: #000; --pink-border: #f06292;
-            --purple-bg: #000; --purple-border: #ba68c8;
-            --orange-bg: #000; --orange-border: #ffb74d;
+            --yellow-bg: #1a1500; --yellow-border: #fdd835;
+            --green-bg: #0a1f0b; --green-border: #81c784;
+            --blue-bg: #071525; --blue-border: #64b5f6;
+            --pink-bg: #1c0510; --pink-border: #f06292;
+            --purple-bg: #140a20; --purple-border: #ba68c8;
+            --orange-bg: #1a0f00; --orange-border: #ffb74d;
             --text-main: #e0e0e0; --paper-bg: #121212;
             --accent-purple: #d1c4e9; --meta-text: #aaaaaa;
-            --example-bg: rgba(255,255,255,0.06); --example-text: #cccccc;
-            --toggle-bg: #333; --toggle-border: #555; --icon-fill: #fff;
+            --example-bg: rgba(255,255,255,0.05); --example-text: #cccccc;
+            --toggle-bg: #2a2a2a; --toggle-border: #444; --icon-fill: #fff;
         }
+        * { box-sizing: border-box; }
         body {
             background-color: var(--paper-bg);
             margin: 0; padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: var(--text-main); overflow-x: hidden;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         .watermark-overlay {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            pointer-events: none; z-index: 9999;
-            transition: all 0.3s ease; mix-blend-mode: multiply;
+            pointer-events: none; z-index: 9999; mix-blend-mode: multiply;
         }
-        .watermark-image { opacity: 0.1; max-width: 80%; transition: all 0.3s ease; }
+        .watermark-image { opacity: 0.08; max-width: 75%; }
         html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
-        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.12; }
 
+        /* ===== LAYOUT ===== */
         .paper-sheet {
             background-color: var(--paper-bg);
-            width: 210mm; max-width: 100%;
-            margin: 0 auto; padding: 20mm;
-            box-sizing: border-box;
+            width: 100%; max-width: 860px;
+            margin: 0 auto; padding: 16px 14px;
             transition: background-color 0.3s ease;
         }
-        .branding-header {
-            text-align: center; margin-bottom: 5px;
-            border-bottom: 3px double var(--blue-border); padding-bottom: 15px;
-        }
-        .institute-name {
-            font-size: 2.2rem; font-weight: 800;
-            color: var(--blue-border); text-transform: uppercase;
-            letter-spacing: 1px; margin-bottom: 5px;
-        }
-        .system-name { font-size: 1.1rem; color: var(--meta-text); letter-spacing: 3px; text-transform: uppercase; }
-        .contact-info {
-            font-size: 0.9rem; color: #666; margin-top: 10px;
-            font-weight: 600; display: none;
-            justify-content: center; gap: 20px; align-items: center;
-        }
-        .branding-footer { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--toggle-border); color: var(--meta-text); }
+        @media (min-width: 500px) { .paper-sheet { padding: 24px 22px; } }
+        @media (min-width: 768px) { .paper-sheet { padding: 36px 48px; } }
+
+        /* ===== BRANDING ===== */
+        .branding-header { text-align: center; margin-bottom: 8px; border-bottom: 3px double var(--blue-border); padding-bottom: 16px; }
+        .institute-name { font-size: clamp(1.3rem, 5.5vw, 2rem); font-weight: 800; color: var(--blue-border); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .system-name { font-size: clamp(0.7rem, 2.8vw, 1rem); color: var(--meta-text); letter-spacing: 2px; text-transform: uppercase; }
+        .contact-info { font-size: 0.88rem; color: #666; margin-top: 10px; font-weight: 600; display: none; justify-content: center; gap: 20px; align-items: center; }
+        .branding-footer { text-align: center; margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--toggle-border); color: var(--meta-text); }
         .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
         .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
 
-        h1 { font-size: 2.2rem; color: var(--blue-border); text-align: center; margin-top: 5px; margin-bottom: 20px; text-transform: uppercase; border-bottom: 2px solid var(--blue-border); padding-bottom: 10px; }
-        h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
-        h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
-        p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
-        ul, ol { padding-left: 20px; }
+        /* ===== TYPOGRAPHY ===== */
+        h1 { font-size: clamp(1.35rem, 6vw, 2.1rem); color: var(--blue-border); text-align: center; margin: 8px 0 20px; text-transform: uppercase; border-bottom: 2px solid var(--blue-border); padding-bottom: 10px; }
+        h2 { font-size: clamp(1.05rem, 4.5vw, 1.55rem); color: var(--pink-border); margin-top: 38px; border-left: 5px solid var(--pink-border); padding-left: 12px; font-weight: 700; }
+        h3 { font-size: clamp(0.98rem, 3.8vw, 1.2rem); color: var(--accent-purple); margin-top: 24px; margin-bottom: 8px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        p, li { font-size: clamp(0.93rem, 3vw, 1.03rem); line-height: 1.75; margin-bottom: 10px; }
+        ul, ol { padding-left: 18px; }
         strong { color: var(--pink-border); }
 
-        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .pink-box { background-color: var(--pink-bg); border: 2px solid var(--pink-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .purple-box { background-color: var(--purple-bg); border: 2px solid var(--purple-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
-        .orange-box { background-color: var(--orange-bg); border: 2px solid var(--orange-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        /* ===== INFO BOXES ===== */
+        .blue-box, .green-box, .yellow-box, .pink-box, .purple-box, .orange-box {
+            border-radius: 10px; padding: 16px 16px 14px; margin: 20px 0; position: relative;
+            overflow: hidden;
+        }
+        .blue-box   { background: var(--blue-bg);   border: 2px solid var(--blue-border);   }
+        .green-box  { background: var(--green-bg);  border: 2px solid var(--green-border);  }
+        .yellow-box { background: var(--yellow-bg); border: 2px solid var(--yellow-border); }
+        .pink-box   { background: var(--pink-bg);   border: 2px solid var(--pink-border);   }
+        .purple-box { background: var(--purple-bg); border: 2px solid var(--purple-border); }
+        .orange-box { background: var(--orange-bg); border: 2px solid var(--orange-border); }
 
-        .box-label { position: absolute; top: -12px; right: 20px; background: var(--paper-bg); padding: 2px 10px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; border: 2px solid; border-radius: 4px; }
-        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
-        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
-        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
-        .pink-box .box-label { color: var(--pink-border); border-color: var(--pink-border); }
+        .box-label { position: absolute; top: -11px; right: 14px; background: var(--paper-bg); padding: 2px 9px; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; border: 2px solid; border-radius: 4px; white-space: nowrap; max-width: calc(100% - 28px); overflow: hidden; text-overflow: ellipsis; }
+        .blue-box .box-label   { color: var(--blue-border);   border-color: var(--blue-border);   }
+        .green-box .box-label  { color: var(--green-border);  border-color: var(--green-border);  }
+        .yellow-box .box-label { color: #e69500;               border-color: var(--yellow-border); }
+        .pink-box .box-label   { color: var(--pink-border);   border-color: var(--pink-border);   }
         .purple-box .box-label { color: var(--purple-border); border-color: var(--purple-border); }
         .orange-box .box-label { color: var(--orange-border); border-color: var(--orange-border); }
 
+        /* ===== FORMULA BOXES ===== */
         .formula-box {
             background: linear-gradient(135deg, var(--blue-bg), var(--purple-bg));
-            border: 2px solid var(--accent-purple); border-radius: 10px;
-            padding: 20px; margin: 20px 0; text-align: center;
+            border: 2px solid var(--accent-purple); border-radius: 12px;
+            padding: 14px 12px; margin: 16px 0;
+            text-align: center;
         }
-        .formula-box .formula-title { font-size: 0.9rem; color: var(--meta-text); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-        .formula-box .formula { font-size: 1.4rem; font-weight: 700; color: var(--pink-border); font-family: 'Times New Roman', serif; }
+        .formula-box .formula-title { font-size: 0.78rem; color: var(--meta-text); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; font-weight: 600; }
+        .formula-box .formula { font-size: clamp(0.95rem, 3.2vw, 1.3rem); font-weight: 700; color: var(--pink-border); font-family: Georgia, 'Times New Roman', serif; }
 
-        .comparison-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 1rem; }
-        .comparison-table th { background: var(--blue-border); color: white; padding: 12px 15px; text-align: left; font-weight: 600; }
-        .comparison-table td { padding: 10px 15px; border-bottom: 1px solid var(--toggle-border); background: var(--example-bg); }
+        /* ===== MATHJAX — SCALE DOWN, NO SCROLL ===== */
+        /* Make MathJax render at 100% width and scale proportionally on small screens */
+        mjx-container {
+            max-width: 100%;
+            overflow: visible;
+        }
+        /* Inline math: just wrap naturally */
+        mjx-container[jax="CHTML"] {
+            display: inline !important;
+            overflow: visible !important;
+        }
+        /* Display (block) math: scale down to fit */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            text-align: center !important;
+            overflow: visible !important;
+            max-width: 100% !important;
+        }
+        /* Scale down the entire SVG/CHTML math on small screens */
+        @media (max-width: 480px) {
+            mjx-container[jax="CHTML"] > * {
+                transform-origin: left center;
+                transform: scale(0.82);
+            }
+            mjx-container[jax="CHTML"][display="true"] > * {
+                transform-origin: center center;
+            }
+        }
+        @media (max-width: 360px) {
+            mjx-container[jax="CHTML"] > * {
+                transform: scale(0.72);
+            }
+        }
+
+        /* ===== RESPONSIVE TABLES ===== */
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; margin: 18px 0; }
+        .comparison-table { width: 100%; min-width: 380px; border-collapse: collapse; font-size: clamp(0.8rem, 2.5vw, 0.95rem); }
+        .comparison-table th { background: var(--blue-border); color: #fff; padding: 11px 13px; text-align: left; font-weight: 600; }
+        .comparison-table th:first-child { border-radius: 8px 0 0 0; }
+        .comparison-table th:last-child  { border-radius: 0 8px 0 0; }
+        .comparison-table td { padding: 9px 13px; border-bottom: 1px solid var(--toggle-border); background: var(--example-bg); vertical-align: top; }
         .comparison-table tr:nth-child(even) td { background: var(--blue-bg); }
 
-        .content-image {
-            display: block; max-width: 85%; height: auto;
-            margin: 20px auto; border: none; box-shadow: none;
-            mix-blend-mode: multiply;
-            filter: brightness(1.05) contrast(1.1);
-            transition: filter 0.3s ease;
+        /* ===== SPECIAL CASES CARDS ===== */
+        .special-cases-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px; margin-top: 14px;
         }
-        .image-caption { text-align: center; font-size: 0.95rem; color: var(--meta-text); margin-top: -10px; margin-bottom: 25px; font-weight: 600; display: block; }
-        html.dark-mode .content-image {
-            filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.2);
-            mix-blend-mode: screen;
+        @media (min-width: 600px) { .special-cases-grid { grid-template-columns: repeat(3, 1fr); } }
+        .sc-card {
+            background: var(--paper-bg);
+            border: 1.5px solid var(--purple-border);
+            border-radius: 10px; padding: 12px 8px;
+            text-align: center;
         }
+        .sc-card .sc-angle { font-size: 1.45rem; font-weight: 800; color: var(--purple-border); display: block; margin-bottom: 3px; line-height: 1.1; }
+        .sc-card .sc-condition { font-size: 0.72rem; color: var(--meta-text); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px; }
+        .sc-card .sc-result { font-size: clamp(0.78rem, 2.8vw, 0.9rem); font-weight: 700; color: var(--pink-border); font-family: Georgia, serif; display: block; }
+        .sc-card .sc-note { font-size: 0.72rem; color: var(--meta-text); margin-top: 5px; }
+        .sc-card.sc-max { border-color: var(--green-border); background: var(--green-bg); }
+        .sc-card.sc-max .sc-angle { color: var(--green-border); }
+        .sc-card.sc-min { border-color: var(--pink-border); background: var(--pink-bg); }
+        .sc-card.sc-min .sc-angle { color: var(--pink-border); }
+        .sc-card.sc-mid { border-color: var(--blue-border); }
+        .sc-card.sc-mid .sc-angle { color: var(--blue-border); }
+        .range-note { background: var(--yellow-bg); border: 1.5px solid var(--yellow-border); border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 0.92rem; text-align: center; }
 
-        .theme-toggle {
-            position: fixed; top: 20px; right: 20px;
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--toggle-bg); border: none; cursor: pointer;
-            z-index: 1000; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease;
-        }
+        /* ===== IMAGE STYLES ===== */
+        .content-image { display: block; max-width: 88%; height: auto; margin: 16px auto; mix-blend-mode: multiply; filter: brightness(1.05) contrast(1.1); transition: filter 0.3s ease; }
+        .image-caption { text-align: center; font-size: 0.85rem; color: var(--meta-text); margin-top: -8px; margin-bottom: 20px; font-weight: 600; display: block; }
+        html.dark-mode .content-image { filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.2); mix-blend-mode: screen; }
+
+        /* ===== IMAGE PLACEHOLDER ===== */
+        .img-placeholder { border: 2px dashed var(--blue-border); border-radius: 10px; padding: 16px; margin: 18px auto; max-width: 90%; background: var(--blue-bg); }
+        .img-placeholder .ph-tag { display: inline-block; background: var(--blue-border); color: #fff; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; letter-spacing: 1px; margin-bottom: 8px; }
+        .img-placeholder .ph-prompt { font-size: 0.86rem; color: var(--text-main); line-height: 1.6; border-left: 3px solid var(--blue-border); padding-left: 10px; margin: 8px 0; }
+        .img-placeholder .ph-filename { font-size: 0.8rem; font-weight: 700; color: var(--blue-border); background: var(--paper-bg); display: inline-block; padding: 3px 10px; border-radius: 4px; border: 1px solid var(--blue-border); margin-top: 8px; font-family: monospace; }
+        .img-caption-label { text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--meta-text); margin-top: -4px; margin-bottom: 18px; display: block; }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle { position: fixed; top: 14px; right: 14px; width: 42px; height: 42px; border-radius: 50%; background: var(--toggle-bg); border: none; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.18); transition: all 0.3s ease; }
         .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
         .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
         html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
         html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        .example-box { background: var(--green-bg); border-left: 4px solid var(--green-border); padding: 15px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
-        .example-box .example-title { font-weight: 700; color: var(--green-border); margin-bottom: 10px; font-size: 1.1rem; }
+        /* ===== EXAMPLE BOX ===== */
+        .example-box { background: var(--green-bg); border-left: 4px solid var(--green-border); padding: 14px 16px; margin: 18px 0; border-radius: 0 10px 10px 0; }
+        .example-box .example-title { font-weight: 700; color: var(--green-border); margin-bottom: 8px; font-size: 0.98rem; }
 
-        /* Practice Problem Boxes */
-        .practice-box { background-color: var(--example-bg); border: 2px dashed var(--accent-purple); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        /* ===== PRACTICE BOXES ===== */
+        .practice-box { background-color: var(--example-bg); border: 2px dashed var(--accent-purple); border-radius: 10px; padding: 16px; margin: 20px 0; position: relative; }
         .practice-box .box-label { color: var(--accent-purple); border-color: var(--accent-purple); }
-        .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
+        .solution { margin-top: 14px; padding-top: 14px; border-top: 1px dotted var(--toggle-border); font-size: 0.91rem; }
 
-        /* Level badges */
-        .level-badge {
-            display: inline-block; padding: 2px 10px; border-radius: 12px;
-            font-size: 0.75rem; font-weight: bold; text-transform: uppercase;
-            letter-spacing: 0.5px; margin-left: 8px; vertical-align: middle;
-        }
-        .level-board { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
-        .level-jee { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
-        .level-neet { background: #fce4ec; color: #880e4f; border: 1px solid #f48fb1; }
-        .level-nda { background: #fff3e0; color: #bf360c; border: 1px solid #ffcc80; }
+        /* ===== LEVEL BADGES ===== */
+        .level-badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-left: 5px; vertical-align: middle; white-space: nowrap; }
+        .level-board { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+        .level-jee   { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+        .level-neet  { background: #fce4ec; color: #880e4f; border: 1px solid #f48fb1; }
+        .level-nda   { background: #fff3e0; color: #bf360c; border: 1px solid #ffcc80; }
         html.dark-mode .level-board { background: #1b3a1b; color: #a5d6a7; }
-        html.dark-mode .level-jee { background: #0d1b2a; color: #90caf9; }
-        html.dark-mode .level-neet { background: #2c0a14; color: #f48fb1; }
-        html.dark-mode .level-nda { background: #2c1200; color: #ffcc80; }
+        html.dark-mode .level-jee   { background: #071525; color: #90caf9; }
+        html.dark-mode .level-neet  { background: #1c0510; color: #f48fb1; }
+        html.dark-mode .level-nda   { background: #1a0f00; color: #ffcc80; }
 
+        /* ===== MISC ===== */
         .unit-vector { font-weight: 700; color: var(--orange-border); }
 
+        /* ===== PRINT ===== */
         @media print {
             body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 10mm !important; box-shadow: none !important; }
             .theme-toggle { display: none !important; }
             .contact-info { display: flex !important; }
-            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-overlay { position: fixed !important; z-index: -1 !important; opacity: 0.08 !important; mix-blend-mode: normal !important; }
             .watermark-image { filter: none !important; max-width: 80% !important; }
-            @page { size: A4; margin: 2cm; @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; } }
+            @page { size: A4; margin: 1.5cm; }
         }
+
     </style>
 </head>
 
@@ -220,16 +286,18 @@
             <em>Examples: Displacement (m), Velocity (m/s), Acceleration (m/s²), Force (N), Momentum (kg·m/s), Weight (N), Electric Field (N/C), Torque (N·m).</em></p>
         </div>
 
+        <div class="table-scroll">
         <table class="comparison-table">
             <tr><th>Property</th><th>Scalar Quantity</th><th>Vector Quantity</th></tr>
             <tr><td><strong>Description</strong></td><td>Magnitude only</td><td>Magnitude + Direction</td></tr>
             <tr><td><strong>Representation</strong></td><td>Simple number with unit</td><td>Arrow (length = magnitude, orientation = direction)</td></tr>
-            <tr><td><strong>Symbol</strong></td><td>Normal letter ($m$, $t$, $E$)</td><td>Arrow overhead $\vec{A}$ or boldface $\mathbf{A}$</td></tr>
+            <tr><td><strong>Symbol</strong></td><td>Normal letters ($m$, $t$, $E$)</td><td>Arrow overhead $\vec{A}$ or boldface $\mathbf{A}$</td></tr>
             <tr><td><strong>Addition</strong></td><td>Simple arithmetic: $3+4=7$</td><td>Vector laws required: may give 1 to 7</td></tr>
             <tr><td><strong>Division by scalar</strong></td><td>Allowed</td><td>Allowed</td></tr>
-            <tr><td><strong>Division by vector</strong></td><td>N/A</td><td>NOT defined</td></tr>
+            <tr><td><strong>Division by vector</strong></td><td>N/A</td><td><em>NOT defined</em></td></tr>
             <tr><td><strong>Examples</strong></td><td>Mass, Speed, Energy, Distance</td><td>Force, Velocity, Acceleration, Displacement</td></tr>
         </table>
+        </div>
 
         <div class="yellow-box">
             <span class="box-label">Classic Traps — Exams Love These!</span>
@@ -329,15 +397,39 @@
         <h3>Special Cases of Vector Addition</h3>
         <div class="purple-box">
             <span class="box-label">Crucial Special Cases</span>
-            <table class="comparison-table" style="margin:10px 0;">
-                <tr><th>Condition</th><th>$\theta$</th><th>Resultant $R$</th><th>Notes</th></tr>
-                <tr><td>Same direction</td><td>$0°$</td><td>$R = A + B$ (Maximum)</td><td>Vectors add up fully</td></tr>
-                <tr><td>Opposite direction</td><td>$180°$</td><td>$R = |A - B|$ (Minimum)</td><td>Vectors partially cancel</td></tr>
-                <tr><td>Perpendicular</td><td>$90°$</td><td>$R = \sqrt{A^2 + B^2}$</td><td>Pythagoras theorem</td></tr>
-                <tr><td>Equal magnitudes, $A = B$</td><td>$\theta$</td><td>$R = 2A\cos(\theta/2)$</td><td>Bisects the angle $\theta$</td></tr>
-                <tr><td>Equal magnitudes, perpendicular</td><td>$90°$</td><td>$R = A\sqrt{2}$</td><td>Special case of above</td></tr>
-            </table>
-            <p>⚠️ <strong>Range of Resultant:</strong> For any two vectors of magnitudes $A$ and $B$: $\mathbf{|A-B| \leq R \leq A+B}$</p>
+            <div class="special-cases-grid">
+                <div class="sc-card sc-max">
+                    <span class="sc-angle">0°</span>
+                    <div class="sc-condition">Same Direction</div>
+                    <span class="sc-result">$R = A + B$</span>
+                    <div class="sc-note">✅ Maximum Resultant</div>
+                </div>
+                <div class="sc-card sc-min">
+                    <span class="sc-angle">180°</span>
+                    <div class="sc-condition">Opposite Directions</div>
+                    <span class="sc-result">$R = |A - B|$</span>
+                    <div class="sc-note">⬇️ Minimum Resultant</div>
+                </div>
+                <div class="sc-card sc-mid">
+                    <span class="sc-angle">90°</span>
+                    <div class="sc-condition">Perpendicular</div>
+                    <span class="sc-result">$R = \sqrt{A^2 + B^2}$</span>
+                    <div class="sc-note">Pythagoras theorem</div>
+                </div>
+                <div class="sc-card">
+                    <span class="sc-angle">θ</span>
+                    <div class="sc-condition">Equal Magnitudes $(A=B)$</div>
+                    <span class="sc-result">$R = 2A\cos(\theta/2)$</span>
+                    <div class="sc-note">Bisects the angle</div>
+                </div>
+                <div class="sc-card">
+                    <span class="sc-angle">90°</span>
+                    <div class="sc-condition">Equal Magnitudes + Perp.</div>
+                    <span class="sc-result">$R = A\sqrt{2}$</span>
+                    <div class="sc-note">Special case of above</div>
+                </div>
+            </div>
+            <div class="range-note">⚠️ <strong>Range of Resultant:</strong> $|A-B| \leq R \leq A+B$</div>
         </div>
 
         <h3>C. Polygon Law of Vector Addition</h3>
