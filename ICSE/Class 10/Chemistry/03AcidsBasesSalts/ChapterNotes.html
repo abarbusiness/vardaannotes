@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,108 +9,1007 @@
     <script>MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] }, chtml: { scale: 1.05, mtextInheritFont: true } };</script>
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        /* --- CSS VARIABLES & THEME --- */
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            --paper-bg: #ffffff;
-            --ink-color: #000000;
-            --accent-color: #000000;
-            --yellow-bg: #fffde7;
-            --yellow-border: #fdd835;
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
             --green-border: #43a047;
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
             --pink-bg: #fce4ec;
             --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
             --red-border: #d32f2f;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+            --red-border: #ff8a80;
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
         }
 
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            display: inline-block !important;
+            vertical-align: middle;
+        }
+
+        mjx-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        mjx-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
         body {
             background-color: var(--paper-bg);
-            color: var(--ink-color);
-            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .system-name {
+            font-size: 1rem;
+            color: var(--meta-text);
+            margin-top: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .top-branding-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 12px;
+            padding: 8px 0 0;
+            white-space: nowrap;
+            color: var(--meta-text);
+        }
+
+        .chapter-name-banner {
+            text-align: center;
+            margin: 6px 0 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .chapter-name-label {
+            display: none;
+        }
+
+        .chapter-name-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        .powered-by-label {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            color: var(--pink-border);
+            letter-spacing: 0.3px;
+        }
+
+        .powered-by-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: 0.4px;
+        }
+
+        .heart-red {
+            color: #d32f2f;
+        }
+
+        /* --- PREMIUM TABLE --- */
+        .vardaan-table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        .vardaan-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+        }
+
+        .vardaan-table th {
+            background-color: var(--blue-border);
+            color: white;
+            padding: 15px;
+            padding-left: 15px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            text-align: left;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .vardaan-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.95rem;
+        }
+
+        .vardaan-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        html.dark-mode .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(255, 255, 255, 0.025);
+        }
+
+        /* Old table — re-styled to match Vardaan style */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+        }
+
+        th {
+            background-color: var(--blue-border);
+            color: #fff;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            text-align: left;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
             line-height: 1.6;
-            min-height: 100vh;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        ul,
+        ol {
+            padding-left: 25px;
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES (Blue/Green/Yellow/Pink) --- */
+        .blue-box,
+        .green-box,
+        .yellow-box,
+        .pink-box,
+        .concept-blue,
+        .concept-green,
+        .concept-pink {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
             position: relative;
         }
 
-        html, body { overflow-x: hidden; width: 100%; }
-        html { transition: filter 0.3s ease; }
-        html.dark-mode { filter: invert(1) hue-rotate(180deg); }
-        html.dark-mode img:not(.watermark-image), 
-        html.dark-mode .video-container, html.dark-mode .formula-box,
-        html.dark-mode .practice-box, html.dark-mode .img-placeholder { filter: invert(1) hue-rotate(180deg) !important; }
+        .blue-box,
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+        }
 
-        .watermark-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 9999; }
-        .watermark-image { width: 600px; max-width: 80%; height: auto; opacity: 0.05; transition: opacity 0.3s ease; }
-        html.dark-mode .watermark-image { opacity: 0.08 !important; }
+        .green-box,
+        .concept-green {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+        }
 
-        .paper-sheet { background-color: var(--paper-bg); width: 210mm; max-width: 100%; margin: 0 auto; padding: 20mm; position: relative; z-index: 10; padding-bottom: 50mm; }
-        @media screen and (max-width: 800px) { .paper-sheet { width: 95%; margin: 10px auto; padding: 15px; } }
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+        }
 
-        .theme-toggle { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
-        html.dark-mode .theme-toggle { filter: invert(1) hue-rotate(180deg); background: #e0e0e0; }
-        .icon-sun, .icon-moon { position: absolute; }
-        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
-        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
-        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        .pink-box,
+        .concept-pink {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+        }
 
-        /* The beautiful red headers the user requested! */
-        h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -2px; text-align: center; color: #b71c1c; }
-        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 2px solid #b71c1c; padding-bottom: 0.5rem; color: #b71c1c; }
-        h3 { font-size: 1.2rem; font-weight: 500; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #c62828;}
-        p, li { color: #333; margin-bottom: 1rem; font-size: 1.1rem; }
-        ul, ol { margin-bottom: 1rem; padding-left: 25px; }
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
 
-        table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        th, td { border: 1px solid #e0e0e0; padding: 10px 12px; text-align: center; vertical-align: middle; }
-        th { background: #b71c1c; color: white; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #b71c1c; }
-        tr:nth-child(even) { background-color: #fafafa; }
-        tr:hover { background-color: #ffebee; }
+        .blue-box .box-label,
+        .concept-blue .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
 
-        /* Components */
+        .green-box .box-label,
+        .concept-green .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        .pink-box .box-label,
+        .concept-pink .box-label {
+            color: var(--pink-border);
+        }
+
+        .concept-green strong,
+        .green-box strong {
+            color: #2e7d32;
+        }
+
+        .concept-blue strong,
+        .blue-box strong {
+            color: #1565c0;
+        }
+
+        html.dark-mode .concept-green strong,
+        html.dark-mode .green-box strong {
+            color: var(--green-border);
+        }
+
+        html.dark-mode .concept-blue strong,
+        html.dark-mode .blue-box strong {
+            color: var(--blue-border);
+        }
+
+        /* Contextual formula boxes */
+        .concept-green .formula-box,
+        .green-box .formula-box {
+            border-color: var(--green-border);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.08);
+        }
+
+        .concept-green .formula-pill,
+        .green-box .formula-pill {
+            background: var(--green-border);
+            color: #fff;
+        }
+
+        html.dark-mode .concept-green .formula-pill,
+        html.dark-mode .green-box .formula-pill {
+            color: #000;
+        }
+
+        .concept-yellow .formula-box,
+        .yellow-box .formula-box,
+        .master-tip .formula-box {
+            border-color: var(--yellow-border);
+            box-shadow: 0 2px 8px rgba(253, 216, 53, 0.08);
+        }
+
+        .concept-yellow .formula-pill,
+        .yellow-box .formula-pill,
+        .master-tip .formula-pill {
+            background: var(--yellow-border);
+            color: #000;
+        }
+
+        .concept-pink .formula-box,
+        .pink-box .formula-box {
+            border-color: var(--pink-border);
+            box-shadow: 0 2px 8px rgba(240, 98, 146, 0.08);
+        }
+
+        .concept-pink .formula-pill,
+        .pink-box .formula-pill {
+            background: var(--pink-border);
+            color: #fff;
+        }
+
+        html.dark-mode .concept-pink .formula-pill,
+        html.dark-mode .pink-box .formula-pill {
+            color: #000;
+        }
+
+        /* --- EXAM INSIGHTS --- */
+        .exam-insight,
+        .master-tip {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .master-tip {
+            background-color: var(--yellow-bg);
+            border-color: var(--yellow-border);
+        }
+
+        .master-tip table {
+            margin-top: 20px;
+            box-shadow: none;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .master-tip table strong {
+            color: inherit;
+        }
+
+        .master-tip th {
+            background-color: var(--yellow-border);
+            color: #222;
+        }
+
+        .master-tip tbody tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .master-tip td {
+            background-color: transparent !important;
+        }
+
+        html.dark-mode .master-tip table {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .master-tip tbody tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        html.dark-mode .master-tip th {
+            background-color: #fdd835;
+            /* keep header readable in dark mode */
+            color: #000;
+        }
+
+        .insight-tag,
+        .tip-header {
+            position: absolute;
+            top: -14px;
+            left: 20px;
+            background-color: var(--blue-border);
+            color: #ffffff;
+            padding: 2px 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border-radius: 4px;
+            border: 2px solid var(--blue-border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-style: normal;
+        }
+
+        .master-tip .tip-header {
+            background-color: var(--yellow-border);
+            border-color: var(--yellow-border);
+            color: #000;
+        }
+
+        .insight-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .insight-card {
+            padding: 5px 0;
+            border-left: 3px solid var(--blue-border);
+            padding-left: 15px;
+        }
+
+        .insight-card.pink {
+            border-left-color: var(--pink-border);
+        }
+
+        .insight-card-title {
+            margin: 0 0 5px 0;
+            color: var(--blue-border);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .insight-card.pink .insight-card-title {
+            color: var(--pink-border);
+        }
+
+        .insight-card-content {
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* --- FORMULA BOX --- */
+        .formula-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.08);
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--blue-border);
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        /* --- FORMULA BADGE --- */
+        .formula-badge {
+            display: inline-block;
+            background: #fff176;
+            border-left: 5px solid #fbc02d;
+            color: #212121;
+            padding: 8px 20px;
+            border-radius: 2px;
+            font-weight: 700;
+            margin: 12px 0;
+            font-size: 1rem;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+            line-height: 1.4;
+        }
+
+        html.dark-mode .formula-badge {
+            background: #fbc02d;
+            color: #000;
+        }
+
+        /* --- HIGHLIGHT / EXAM TRAP BOX --- */
+        .highlight-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .box-yellow {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+        }
+
+        /* --- QUESTION BOX --- */
+        .question-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--text-main);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        /* --- SOLUTION BOX --- */
+        .solution-box {
+            background-color: rgba(211, 84, 0, 0.05);
+            border-left: 3px dashed #d35400;
+            padding: 10px 15px;
+            margin-top: 5px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+        html.dark-mode .solution-box {
+            background-color: rgba(211, 84, 0, 0.15);
+        }
+        .solution-box strong {
+            color: #d35400;
+        }
+
+        /* --- PYQ SOLVED BOX --- */
+        .pyq-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--text-main);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pyq-box .pyq-q {
+            font-weight: 700;
+            color: var(--pink-border);
+            margin-bottom: 0.5rem;
+        }
+
+        .pyq-box img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .pyq-box .pyq-a {
+            border: none;
+            padding-top: 0;
+            margin-top: 0.5rem;
+        }
+
+        .pyq-header {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background-color: var(--text-main);
+            color: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid var(--text-main);
+            border-radius: 4px;
+            margin-bottom: 0;
+            text-decoration: none;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+
+        /* --- STEP BOX --- */
+        .step-box {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0.5rem 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .step-box strong {
+            color: var(--pink-border);
+        }
+
+        /* --- SECTION DIVIDER --- */
+        .section-divider {
+            border: none;
+            border-top: 3px double var(--blue-border);
+            margin: 2.5rem 0;
+        }
+
+        /* --- AI IMAGE PROMPT BOX --- */
+        .ai-image-prompt {
+            background: var(--blue-bg);
+            border: 1px dashed var(--blue-border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1.2rem 0;
+            font-size: 0.9rem;
+            color: var(--blue-border);
+        }
+
+        .ai-image-prompt strong {
+            color: var(--blue-border);
+        }
+
+        /* --- IMAGE STYLES --- */
+        .img-in-note {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            mix-blend-mode: multiply;
+        }
+
+        html.dark-mode .img-in-note {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        .img-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--meta-text);
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        /* --- EXAM KEY TAG --- */
+        .exam-key {
+            font-weight: 700;
+            color: #fff;
+            background-color: var(--pink-border);
+            padding: 0.2em 0.6em;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 0.5em;
+            font-size: 0.9rem;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- PRINT --- */
+        @media print {
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .branding-header {
+                background-color: white !important;
+                border-bottom: 2px solid var(--blue-border) !important;
+                padding: 10px 0 !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.8 !important;
+                mix-blend-mode: multiply !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                pointer-events: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 70% !important;
+                opacity: 0.2 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #1e88e5;
+                    color: #fff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* --- Preserved from Original Acids Chapter --- */
         .syllabus-box { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
         .syllabus-header { font-weight: 700; text-transform: uppercase; font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 0.5rem; }
-        
-        .formula-box { border: 2px solid #000; box-shadow: 4px 4px 0px #000; padding: 1.5rem; padding-top: 1.8rem; margin: 2rem 0; position: relative; background-color: #fff; text-align: center; }
-        .formula-pill { position: absolute; top: -12px; right: 20px; background: #000; color: #fff; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-        
-        .master-tip { border: 2px dashed var(--red-border); background-color: #fffaf0; padding: 1rem; margin: 1.5rem 0; border-radius: 8px; font-style: italic; }
-        .tip-header { font-weight: 700; color: var(--red-border); font-style: normal; display: block; margin-bottom: 0.5rem; }
-        
-        .concept-green { background-color: var(--green-bg); padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
-        .concept-blue { background-color: var(--blue-bg); padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
-        .concept-pink { background-color: var(--pink-bg); padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
-        
         .img-placeholder-container { margin: 2rem 0; text-align: center; }
         .img-placeholder { width: 100%; height: auto; min-height: 20px; background-color: transparent; border: none; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 10px 0; text-align: center; overflow: hidden; }
         .img-placeholder img { max-width: 70%; height: auto; display: block; border-radius: 8px; margin: 0 auto; }
-        .img-caption { margin-top: 10px; font-size: 0.9rem; color: #666; font-style: italic; }
-        
         .practice-box { background-color: #fff8e1; border: 2px solid #ff6f00; border-radius: 8px; padding: 1.5rem; margin: 2rem 0; box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2); }
         .practice-header { font-weight: 700; color: #d35400; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 0.5rem; display: block; border-bottom: 1px dashed #d35400; padding-bottom: 5px; }
         .q-tag { background: #d35400; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-right: 5px; vertical-align: middle; }
-        
-        /* Specific for questions */
         .question { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #ffe0b2; }
         .question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .header-branding { text-align: center; margin-bottom: 2rem; }
-        .header-sub { color: #64748b; font-size: 1rem; font-weight: 500; display: block; margin-bottom: 0.5rem; }
-        .header-team { font-size: 0.9rem; color: #94a3b8; display: block; }
-        .header-comet { font-size: 0.75rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 2px; margin-top: 0.5rem; display: block; }
-        .text-highlight { font-weight: 700; color: #d32f2f; }
-        mjx-container { overflow: visible !important; max-width: 100% !important; }
-        
-        @media print { .paper-sheet { width: 100%; border: none; padding: 0; box-shadow: none; } .theme-toggle { display: none; } }
-    
-        @media (max-width: 768px){.paper-sheet{padding:15px;width:100%}.institute-name{font-size:1.6rem}.system-name{font-size:.9rem;letter-spacing:1px}h1{font-size:1.6rem}h2{font-size:1.3rem}h3{font-size:1.1rem}p,li{font-size:.95rem}.blue-box,.green-box,.yellow-box{padding:15px;margin:15px 0}.theme-toggle{top:10px;right:10px;width:36px;height:36px}.chapter-image{float:none;width:100%;max-width:100%;margin:10px 0}}
     </style>
 </head>
 
@@ -136,11 +1035,20 @@
     </button>
 
     <div class="paper-sheet">
-        <div class="header-branding">
-            <h1>Acids, Bases and Salts</h1>
-            <span class="header-sub">ICSE Class 10 Chemistry • Chapter 03</span>
-            <span class="header-team">Created by Team Vardaan with ❤️</span>
-            <span class="header-comet">Powered by vardaan comet</span>
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
+        </div>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Acids, Bases and Salts</h1>
         </div>
 
         <!-- SYLLABUS SECTION -->
@@ -148,10 +1056,13 @@
             <span class="syllabus-header">SYLLABUS OVERVIEW</span>
             <ul>
                 <li><strong>(i) Simple definitions</strong> in terms of the molecules and their characteristic properties.</li>
-                <li><strong>(ii) Ions present</strong> in mineral acids, alkalis and salts and their solutions: use of litmus and pH paper to test for acidity and alkalinity. Examples with equation for the ionisation/dissociation of ions: acids form hydronium ions ($H_3O^+$); alkalis form hydroxyl ions ($OH^-$). Introduction to pH scale to test for acidity, neutrality and alkalinity.</li>
-                <li><strong>(iii) Definition of salt;</strong> types of salts: normal salts, acid salt, basic salt, definition and examples.</li>
-                <li><strong>(iv) General properties of salts:</strong> Deliquescence, Efflorescence, water of crystallization. Action of dilute acids on carbonates/bicarbonates. Action of concentrated acid on chlorides and nitrates. Equation of formation of acid rain ($H_2SO_4$, $HNO_3$).</li>
-                <li><strong>(v) Laboratory preparation of salts:</strong> Normal and acid salts via Direct combination; decomposition; displacement; double decomposition; neutralization.</li>
+                <li><strong>(ii) Ions present</strong> in mineral acids, alkalis and salts and their solutions; use of common acid-base indicator (litmus, methyl orange and phenolphthalein) and pH paper to test for acidity and alkalinity. Examples with equation for the ionisation/dissociation of ions of acids, bases and salts.</li>
+                <li><strong>Acids form hydronium ions</strong> (only positive ions) which turn blue litmus red, alkalis form hydroxyl ions (only negative ions) with water which turns red litmus blue.</li>
+                <li><strong>Salts are formed</strong> by partial or complete replacement of the hydrogen ion of an acid by a metal. (To be explained with suitable examples).</li>
+                <li><strong>Introduction to pH scale</strong> to test for acidity, neutrality and alkalinity by using pH paper or Universal indicator.</li>
+                <li><strong>(iii) Definition of salt; types of salts:</strong> normal salts, acid salt, basic salt, complex salts (definition and examples).</li>
+                <li><strong>(iv) Action of dilute acids on salts:</strong> Decomposition of hydrogen carbonates, carbonates, hydrogen sulphites, sulphites and sulphides by appropriate acids with heating if necessary. (Relevant laboratory work must be done).</li>
+                <li><strong>(v) Methods of preparation of Normal salts</strong> with relevant equations. (Details of apparatus or procedures not required). Methods included are: Direct combination, Displacement, Precipitation (double decomposition), Neutralization of insoluble base, Neutralisation of an alkali (titration), Action of dilute acids on carbonates and bi-carbonates.</li>
             </ul>
         </div>
 
@@ -246,22 +1157,7 @@
         </ul>
 
 
-        <h2>3.4 PREPARATION OF ACIDS</h2>
-        <ol>
-            <li><strong>By synthesis:</strong> Binary acids (acids containing two elements) are prepared by this method. <br>
-            Hydrogen + Non-metal $\rightarrow$ Acid. Example: $H_2 + Cl_2 \rightarrow 2HCl$.</li>
-            
-            <li><strong>By the action of water on non-metallic or acidic oxides:</strong> Acidic oxides (also called acidic anhydrides) dissolve in water to give acids.<br>
-            $SO_3 + H_2O \rightarrow H_2SO_4$ (Sulphuric acid) <br>
-            $P_2O_5 + 3H_2O \rightarrow 2H_3PO_4$ (Phosphoric acid)<br>
-            <em>Note: $NO_2$ is called mixed or double acid anhydride because two acids, nitrous acid and nitric acid, are formed when it reacts with water: $2NO_2 + H_2O \rightarrow HNO_2 + HNO_3$.</em></li>
-            
-            <li><strong>By the oxidation of non-metals:</strong> A non-metal, e.g., sulphur or phosphorus is oxidised by conc. nitric acid to form sulphuric acid or phosphoric acid respectively.<br>
-            $S + 6HNO_3 \rightarrow H_2SO_4 + 2H_2O + 6NO_2$</li>
-            
-            <li><strong>By displacement:</strong> Normal salts of more volatile acids are displaced by a less or non-volatile acid ($H_2SO_4$).<br>
-            $NaCl + H_2SO_4 \rightarrow NaHSO_4 + HCl$</li>
-        </ol>
+
 
         <h2>3.5 PROPERTIES OF ACIDS</h2>
         <h3>Physical properties</h3>
@@ -297,45 +1193,56 @@
                 $CaSO_3 + 2HCl \rightarrow CaCl_2 + H_2O + SO_2\uparrow$</li>
             <li><strong>Reaction with sulphides:</strong> Acids react with metal sulphides to liberate hydrogen sulphide.<br>
                 $ZnS + 2HCl \rightarrow ZnCl_2 + H_2S\uparrow$</li>
-            <li><strong>Reaction with chlorides:</strong> Chlorides do not react with any of the dilute acids. In general, chlorides react with concentrated sulphuric acid on warming to liberate hydrogen chloride in two steps.<br>
-                $NaCl + H_2SO_4 \text{ (conc.) below 200°C } \rightarrow NaHSO_4 + HCl\uparrow$<br>
-                $2NaCl + H_2SO_4 \text{ above 200°C } \rightarrow Na_2SO_4 + 2HCl$</li>
-            <li><strong>Reaction with nitrates:</strong> Nitrates do not react with dilute acids. However, lead nitrate solution reacts with both dilute HCl and dil. $H_2SO_4$ to form insoluble lead salts. Nitrates when heated with conc. sulphuric acid, produce more volatile nitric acid.<br>
-                $KNO_3 + H_2SO_4 \text{ below 200°C } \rightarrow KHSO_4 + HNO_3$</li>
+
         </ol>
 
-        <div class="concept-pink">
-            <p><strong>ACID RAIN:</strong></p>
-            <p>Burning fossil fuels produces oxides of sulphur and nitrogen. These react with rain water to form acids. Sulphuric acid and nitric acid formed are washed down to the earth with water. This is Acid rain.</p>
-            <p>$2SO_2 + O_2 + 2H_2O \rightarrow 2H_2SO_4$ <br>
-               $4NO_2 + O_2 + 2H_2O \rightarrow 4HNO_3$</p>
-            <p><strong>Harmful effects:</strong> Damages leaves, removes nutrients from soil, causes respiratory ailments, corrodes water pipes (leaching heavy metals), damages buildings/monuments ($CaCO_3 + H_2SO_4 \rightarrow CaSO_4 + H_2O + CO_2$).</p>
-        </div>
 
-        <h2>3.6 GENERAL USES OF SOME ACIDS</h2>
-        <table>
-            <tr><th>Acid</th><th>Use</th></tr>
-            <tr><td>1. Boric acid</td><td>Eye-wash/antiseptic.</td></tr>
-            <tr><td>2. Citric acid</td><td>Food preservation. Vitamin C preparation.</td></tr>
-            <tr><td>3. Oxalic acid</td><td>Ink stain remover.</td></tr>
-            <tr><td>4. Carbonic acid</td><td>Flavoured drinks.</td></tr>
-            <tr><td>5. Tartaric acid</td><td>Baking powder.</td></tr>
-            <tr><td>6. Acetic acid</td><td>Table vinegar and cooking.</td></tr>
-            <tr><td>7. Hydrochloric acid</td><td>Cleaning of metal items.</td></tr>
-            <tr><td>8. Benzoic acid</td><td>Preservation of food and making of perfumes and medicines.</td></tr>
-            <tr><td>9. Nitric acid</td><td>Explosives.</td></tr>
-            <tr><td>10. Phosphoric acid</td><td>Fertilizers.</td></tr>
-        </table>
+
+
 
         <!-- PRACTICE SECTION FOR ACIDS -->
         <div class="practice-box">
             <div class="practice-header">Intext Questions - Acids</div>
+            
             <div class="question"><span class="q-tag">Q1</span> (a) What do you understand by the term, acid? (b) Name the positive ion formed when an acid is dissolved in water. (c) Draw the structure of this ion.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                (a) An acid is a compound which when dissolved in water yields hydronium ions ($H_3O^+$) as the only positively charged ions.<br>
+                (b) Hydronium ion ($H_3O^+$).<br>
+                (c) Structure: $[H - \underset{\downarrow}{\overset{\bullet \bullet}{O}} - H]^+$ (the arrow represents a coordinate bond from Oxygen to Hydrogen).
+            </div>
+
             <div class="question"><span class="q-tag">Q4</span> Define the term 'basicity' of an acid. Give the basicity of nitric acid, sulphuric acid and phosphoric acid.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                Basicity is the number of hydronium ions ($H_3O^+$) that can be produced by the ionisation of one molecule of that acid in aqueous solution.<br>
+                • Nitric acid ($HNO_3$): Monobasic (Basicity = 1)<br>
+                • Sulphuric acid ($H_2SO_4$): Dibasic (Basicity = 2)<br>
+                • Phosphoric acid ($H_3PO_4$): Tribasic (Basicity = 3)
+            </div>
+
             <div class="question"><span class="q-tag">Q6</span> Name the (a) acidic anhydride of the following acids: (i) sulphurous acid, (ii) nitric acid, (iii) phosphoric acid, (iv) carbonic acid.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                (i) Sulphurous acid: Sulphur dioxide ($SO_2$)<br>
+                (ii) Nitric acid: Dinitrogen pentoxide ($N_2O_5$)<br>
+                (iii) Phosphoric acid: Phosphorus pentoxide ($P_2O_5$)<br>
+                (iv) Carbonic acid: Carbon dioxide ($CO_2$)
+            </div>
+
             <div class="question"><span class="q-tag">Q7</span> What do you understand by the statement 'acetic acid is a monobasic acid'?</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                It means that one molecule of acetic acid ($CH_3COOH$) on ionisation in water produces only one hydronium ion ($H_3O^+$). Even though its molecule contains four hydrogen atoms, only the one hydrogen atom in the carboxyl (-COOH) group is ionisable.
+            </div>
+
             <div class="question"><span class="q-tag">Q10</span> Explain the following: (b) Dil. HCl acid is stronger than highly concentrated acetic acid. (c) $H_3PO_3$ is not a tribasic acid. (e) Nitrogen dioxide is a double acid anhydride.</div>
-            <div class="question"><span class="q-tag">Q11</span> What is acid rain ? How is it formed?</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                (b) The strength of an acid depends on its degree of ionisation, not its concentration. Dilute HCl is a strong acid and ionises almost completely to give a high concentration of hydronium ions. Concentrated acetic acid is a weak acid and ionises only slightly.<br>
+                (c) $H_3PO_3$ (phosphorous acid) is a dibasic acid because only two of its three hydrogen atoms are attached to oxygen and are ionisable. The third hydrogen atom is attached directly to the central phosphorus atom and is not replaceable.<br>
+                (e) $NO_2$ dissolves in water to give a mixture of two acids: Nitric acid ($HNO_3$) and Nitrous acid ($HNO_2$). Since it corresponds to two acids, it is known as a mixed or double acid anhydride.
+            </div>
         </div>
 
 
@@ -374,15 +1281,7 @@
             <li><strong>Triacidic base:</strong> 3 $OH^-$ ions ($Al(OH)_3, Fe(OH)_3$).</li>
         </ul>
 
-        <h3>3.9.2 Preparation of bases</h3>
-        <ol>
-            <li><strong>From metals:</strong> Metals when react with oxygen give bases. $4Na + O_2 \rightarrow 2Na_2O$.</li>
-            <li><strong>By the action of water on reactive metals:</strong> $2Na + 2H_2O \rightarrow 2NaOH + H_2\uparrow$.</li>
-            <li><strong>By the action of water on soluble metallic oxides:</strong> $Na_2O + H_2O \rightarrow 2NaOH$.</li>
-            <li><strong>By double decomposition:</strong> Aqueous solutions of salts with a base precipitate the respective metallic hydroxide. $FeCl_3 + 3NaOH \rightarrow Fe(OH)_3\downarrow + 3NaCl$.</li>
-            <li><strong>By the action of oxygen on metal sulphides:</strong> $2ZnS + 3O_2 \rightarrow 2ZnO + 2SO_2$.</li>
-            <li><strong>By decomposition of salts:</strong> Heating metal carbonates ($CaCO_3 \rightarrow CaO + CO_2\uparrow$) or metal nitrates ($2Ca(NO_3)_2 \rightarrow 2CaO + 4NO_2 + O_2$). Note: Sodium and potassium carbonates/nitrates do not decompose to give metal oxide on heating.</li>
-        </ol>
+
 
         <h3>3.9.3 Properties of bases/alkalis</h3>
         <p><strong>Physical properties:</strong></p>
@@ -402,18 +1301,7 @@
             <li><strong>With ammonium salts:</strong> When alkalis are warmed with an ammonium salt, ammonia gas is given out. $NH_4Cl + NaOH \xrightarrow{\Delta} NaCl + H_2O + NH_3\uparrow$.</li>
         </ol>
 
-        <h3>3.9.4 General uses of some bases</h3>
-        <table>
-            <tr><th>Base</th><th>Use</th></tr>
-            <tr><td>1. Sodium hydroxide</td><td>Manufacture of soap.</td></tr>
-            <tr><td>2. Potassium hydroxide</td><td>Manufacture of salts and soaps and used in batteries.</td></tr>
-            <tr><td>3. Calcium hydroxide (slaked lime)</td><td>Manufacture of bleaching powder and softening of hard water.</td></tr>
-            <tr><td>4. Magnesium hydroxide</td><td>As an antacid [neutralizes acidity].</td></tr>
-            <tr><td>5. Aluminium hydroxide</td><td>As a foaming agent in fire extinguishers.</td></tr>
-            <tr><td>6. Ammonium hydroxide</td><td>To remove grease stains from clothes.</td></tr>
-            <tr><td>7. Magnesia</td><td>In making refractory bricks.</td></tr>
-            <tr><td>8. Calcium oxide</td><td>Drying agent, basic flux.</td></tr>
-        </table>
+
 
 
         <h2>3.10 STRENGTH OF ACIDIC AND BASIC SOLUTIONS (pH SCALE)</h2>
@@ -459,10 +1347,36 @@
         <!-- PRACTICE SECTION FOR BASES & pH -->
         <div class="practice-box">
             <div class="practice-header">Intext Questions - Bases & pH</div>
+            
             <div class="question"><span class="q-tag">Q2</span> What is the difference between (a) an alkali and a base.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                A base is a metallic oxide or hydroxide that reacts with an acid to give salt and water only. An alkali is a specific type of base that is <em>soluble in water</em> and yields hydroxyl ions ($OH^-$) as the only negatively charged ions in an aqueous solution. All alkalis are bases, but all bases are not alkalis.
+            </div>
+
             <div class="question"><span class="q-tag">Q4</span> Give one example in each case: (a) A basic oxide which is soluble in water, (c) A basic oxide which is insoluble in water, (e) A weak mineral acid, (f) A base which is not an alkali, (i) A base which does not contain a metal ion.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                (a) Basic oxide soluble in water: Sodium oxide ($Na_2O$)<br>
+                (c) Basic oxide insoluble in water: Copper(II) oxide ($CuO$)<br>
+                (e) Weak mineral acid: Carbonic acid ($H_2CO_3$)<br>
+                (f) Base which is not an alkali: Copper(II) hydroxide ($Cu(OH)_2$)<br>
+                (i) Base without a metal ion: Ammonium hydroxide ($NH_4OH$)
+            </div>
+
             <div class="question"><span class="q-tag">Q7</span> (b) Is $PbO_2$ a base or not? Comment. (c) Do basic solutions also have $H^+(aq)$? Explain why are they basic.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                (b) $PbO_2$ (Lead IV oxide) is <em>not</em> a base. It reacts with concentrated hydrochloric acid to produce $PbCl_2$, water, and chlorine gas ($Cl_2$). A true base must react with an acid to produce salt and water <em>only</em>.<br>
+                (c) Yes, basic solutions also have $H^+(aq)$ ions due to the auto-ionisation of water. However, they are basic because the concentration of $OH^-(aq)$ ions in the solution is much greater than the concentration of $H^+(aq)$ ions.
+            </div>
+
             <div class="question"><span class="q-tag">Q12</span> What do you understand by pH value? Two solutions X and Y have pH values of 4 and 10 respectively. Which one of these two will give a pink colour with phenolphthalein indicator?</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                The pH value is a measure of the hydrogen ion concentration of a solution, which indicates its acidity or alkalinity ($\text{pH} = -\log_{10}[H^+]$).<br>
+                Solution Y (pH = 10) is alkaline, so it will give a pink colour with the phenolphthalein indicator. Solution X (pH = 4) is acidic and will remain colourless.
+            </div>
         </div>
 
 
@@ -477,8 +1391,6 @@
             <li><strong>Normal salts:</strong> Formed by the complete replacement of the ionisable hydrogen atoms. No ionisable hydrogen. Examples: $NaCl, Na_2SO_4$.</li>
             <li><strong>Acid salts:</strong> Formed by the partial replacement of the ionisable hydrogen atoms of a polybasic acid. Contains replaceable hydrogen. Examples: $NaHSO_4, NaH_2PO_4$. They show all properties of an acid in solution.</li>
             <li><strong>Basic salts:</strong> Formed by the partial replacement of the hydroxyl group of a di- or a tri-acidic base by an acid radical. Contains $OH^-$. Examples: $Pb(OH)Cl, Mg(OH)Cl$.</li>
-            <li><strong>Double salts:</strong> Formed by the union of two simple salts that dissolve in water and crystallise. Example: Potash alum $K_2SO_4 \cdot Al_2(SO_4)_3 \cdot 24H_2O$, Mohr's salt.</li>
-            <li><strong>Mixed salts:</strong> Contain more than one basic or acid radical. Example: Sodium potassium carbonate $NaKCO_3$, Bleaching powder $CaOCl_2$.</li>
             <li><strong>Complex salts:</strong> Dissociate to give one simple ion and one complex ion. Example: Sodium argentocyanide $Na[Ag(CN)_2]$.</li>
         </ol>
 
@@ -507,175 +1419,73 @@
         </table>
         <p><em>Note: All metallic oxides and hydroxides are insoluble except of sodium, potassium and ammonium. Calcium hydroxide is slightly soluble.</em></p>
 
-        <h4>(iv) Hydrolysis of Salts</h4>
-        <p>The phenomenon due to which salt formed by a weak acid and a strong base, or by a strong acid and a weak base, reacts with water to give an acidic or an alkaline solution, is known as hydrolysis.</p>
-        <ul>
-            <li>Strong Base + Weak Acid $\rightarrow$ Alkaline solution (pH > 7). e.g., $Na_2CO_3, CH_3COOK$.</li>
-            <li>Strong Acid + Weak Base $\rightarrow$ Acidic solution (pH < 7). e.g., $FeCl_3, CuSO_4, AlCl_3$.</li>
-            <li>Strong Acid + Strong Base $\rightarrow$ Neutral solution (pH = 7). e.g., $NaCl, Na_2SO_4$.</li>
-        </ul>
 
-        <h3>3.11.3 Preparation of soluble salts</h3>
-        <table>
-            <tr><th>METHOD</th><th>REACTION</th></tr>
-            <tr><td>1. DIRECT COMBINATION (heating elements together)</td><td>Metal + Non metal $\rightarrow$ Salt <br> $2Fe + 3Cl_2 \rightarrow 2FeCl_3$</td></tr>
-            <tr><td>2. SIMPLE DISPLACEMENT (Dilute acids on active metals)</td><td>Active metal + Acid $\rightarrow$ Salt + Hydrogen <br> $Zn + H_2SO_4 \rightarrow ZnSO_4 + H_2\uparrow$</td></tr>
-            <tr><td>3. DECOMPOSITION</td><td>(a) Bicarbonates: $NaHCO_3 + HCl \rightarrow NaCl + H_2O + CO_2\uparrow$ <br> (b) Carbonates: $CuCO_3 + 2HCl \rightarrow CuCl_2 + H_2O + CO_2\uparrow$ <br> (c) Chlorides by conc $H_2SO_4$: $NaCl + H_2SO_4 \rightarrow NaHSO_4 + HCl\uparrow$</td></tr>
-            <tr><td>4. NEUTRALISATION</td><td>(i) Acid with soluble base (titration): $NaOH + HCl \rightarrow NaCl + H_2O$ <br> (ii) Acid with insoluble base: $MgO + 2HCl \rightarrow MgCl_2 + H_2O$</td></tr>
-            <tr><td>5. Alkalis on certain metals (Al, Zn) and amphoteric oxides/hydroxides</td><td>$Zn + 2NaOH \rightarrow Na_2ZnO_2 + H_2\uparrow$ <br> $Al(OH)_3 + NaOH \rightarrow NaAlO_2 + 2H_2O$</td></tr>
-        </table>
-        <p><em>Note: Soluble salts are obtained by the evaporation of water, followed by crystallisation.</em></p>
 
-        <h3>3.11.4 Preparation of insoluble salts</h3>
+        <h2>3.12 METHODS OF PREPARATION OF NORMAL SALTS</h2>
+        <p>The following methods are used for the preparation of normal salts (details of apparatus/procedures are not required, only relevant equations):</p>
         <ol>
-            <li><strong>By direct combination:</strong> $Pb + S \rightarrow PbS$ or $Fe + S \rightarrow FeS$.</li>
-            <li><strong>By the combination of an acidic oxide with a basic oxide:</strong> $SO_2 + CaO \rightarrow CaSO_3$.</li>
-            <li><strong>By the precipitation reaction (DOUBLE DECOMPOSITION):</strong> Soluble salt + Soluble salt $\rightarrow$ Insoluble salt + Soluble salt. <br>
-            $BaCl_2 + H_2SO_4 \rightarrow BaSO_4\downarrow + 2HCl$<br>
-            $Pb(NO_3)_2 + Na_2CO_3 \rightarrow PbCO_3\downarrow + 2NaNO_3$</li>
+            <li><strong>Direct Combination:</strong> Heating two elements together.
+                <ul>
+                    <li>$2Fe + 3Cl_2 \xrightarrow{\Delta} 2FeCl_3$</li>
+                    <li>$2Al + 3Cl_2 \xrightarrow{\Delta} 2AlCl_3$</li>
+                    <li>$Fe + S \xrightarrow{\Delta} FeS$</li>
+                </ul>
+            </li>
+            <li><strong>Displacement:</strong> Active metal on dilute acid.
+                <ul>
+                    <li>$Fe + H_2SO_4(dil.) \rightarrow FeSO_4 + H_2\uparrow$</li>
+                    <li>$Zn + 2HCl(dil.) \rightarrow ZnCl_2 + H_2\uparrow$</li>
+                </ul>
+            </li>
+            <li><strong>Precipitation (Double decomposition):</strong> Mixing solutions of two soluble salts to form an insoluble salt.
+                <ul>
+                    <li>$BaCl_2(aq) + H_2SO_4(aq) \rightarrow BaSO_4\downarrow + 2HCl(aq)$</li>
+                    <li>$Pb(NO_3)_2(aq) + 2NaCl(aq) \rightarrow PbCl_2\downarrow + 2NaNO_3(aq)$</li>
+                </ul>
+            </li>
+            <li><strong>Neutralization of insoluble base:</strong> Action of dilute acid on insoluble metallic oxide or hydroxide.
+                <ul>
+                    <li>$CuO + H_2SO_4(dil.) \rightarrow CuSO_4 + H_2O$</li>
+                </ul>
+            </li>
+            <li><strong>Neutralisation of an alkali (Titration):</strong> Neutralisation of a soluble base (alkali) by an acid.
+                <ul>
+                    <li>$NaOH(aq) + HCl(aq) \rightarrow NaCl(aq) + H_2O$</li>
+                    <li>$2NaOH(aq) + H_2SO_4(aq) \rightarrow Na_2SO_4(aq) + 2H_2O$</li>
+                </ul>
+            </li>
+            <li><strong>Action of dilute acids on carbonates and bi-carbonates:</strong>
+                <ul>
+                    <li>$Na_2CO_3 + 2HCl \rightarrow 2NaCl + H_2O + CO_2\uparrow$</li>
+                    <li>$CuCO_3 + H_2SO_4 \rightarrow CuSO_4 + H_2O + CO_2\uparrow$</li>
+                </ul>
+            </li>
         </ol>
 
-        <h3>3.12 Laboratory Preparation of Some Salts</h3>
-        
-        <p><strong>1. Iron (III) chloride [$FeCl_3$] (Direct Combination):</strong><br>
-        Powdered iron is taken in a combustion tube. Dry chlorine gas is passed. Heat is applied. Iron (III) chloride is highly deliquescent, so it is kept dry with the help of fused calcium chloride (drying agent).</p>
-        <div class="img-placeholder-container">
-            <div class="img-placeholder">
-            <div style="font-weight: 700; color: #b71c1c; font-size: 1.1rem; margin-bottom: 10px; text-transform: uppercase;">Figure Reference: Fig 3.4 Preparation of Iron (III) chloride</div>
-            <p><em>(This figure is present in your textbook.)</em></p>
-            <p style="font-size: 0.9rem; color: #546e7a;">Apparatus showing Concentrated Sulphuric Acid purifying $Cl_2$ gas, passing over heated iron wire in a tube, and depositing Solid Iron (III) chloride in a flask with a fused calcium chloride guard tube.</p>
-            </div>
-            <p class="img-caption">📸 Image Name / Caption: Fig 3.4 Preparation of Iron (III) chloride</p>
-        </div>
-        <p><em>Note: Anhydrous $FeCl_3$ cannot be prepared by simply heating the hydrated $FeCl_3 \cdot 6H_2O$ because on heating, it produces $Fe_2O_3$ and HCl.</em></p>
 
-        <p><strong>2. Zinc sulphate / White Vitriol [$ZnSO_4 \cdot 7H_2O$] (Dilute acid on active metal):</strong><br>
-        Add granulated zinc pieces to dil. $H_2SO_4$ in a beaker with constant stirring. Effervescence takes place. Filter the excess zinc. Evaporate the filtrate to get crystals.</p>
-        <div class="img-placeholder-container">
-            <div class="img-placeholder">
-            <div style="font-weight: 700; color: #b71c1c; font-size: 1.1rem; margin-bottom: 10px; text-transform: uppercase;">Figure Reference: Fig 3.5 Preparation of zinc sulphate crystals</div>
-            <p><em>(This figure is present in your textbook.)</em></p>
-            <p style="font-size: 0.9rem; color: #546e7a;">Four-step diagram: (a) Reaction of zinc and sulphuric acid (heating), (b) Filtering excess zinc, (c) Evaporating till crystals appear, (d) Cooling to obtain crystals.</p>
-            </div>
-            <p class="img-caption">📸 Image Name / Caption: Fig 3.5 Preparation of zinc sulphate crystals</p>
-        </div>
-
-        <p><strong>3. Lead Chloride [$PbCl_2$] (Double Decomposition / Precipitation):</strong><br>
-        It is prepared by adding either dilute hydrochloric acid or sodium chloride solution to a solution of lead nitrate. $Pb(NO_3)_2 + 2NaCl \rightarrow PbCl_2\downarrow + 2NaNO_3$. The heavy, white precipitate of lead chloride is filtered. Pure, needle-shaped crystals are obtained by dissolving in hot water and cooling.</p>
-        <div class="img-placeholder-container">
-            <div class="img-placeholder">
-            <div style="font-weight: 700; color: #b71c1c; font-size: 1.1rem; margin-bottom: 10px; text-transform: uppercase;">Figure Reference: Fig 3.6 Preparation of lead chloride</div>
-            <p><em>(This figure is present in your textbook.)</em></p>
-            <p style="font-size: 0.9rem; color: #546e7a;">Four-step diagram showing Sodium Chloride Solution added to Lead Nitrate Solution, followed by filtering, evaporating, and crystallizing $PbCl_2$.</p>
-            </div>
-            <p class="img-caption">📸 Image Name / Caption: Fig 3.6 Preparation of lead chloride</p>
-        </div>
-
-        <p><strong>4. Sodium bicarbonate [$NaHCO_3$] (Preparation of acid salt):</strong><br>
-        By passing carbon dioxide gas into a cold solution of sodium carbonate kept in a freezing mixture (ice). $Na_2CO_3 + CO_2 + H_2O \rightarrow 2NaHCO_3$.</p>
-        <div class="img-placeholder-container">
-            <div class="img-placeholder">
-            <div style="font-weight: 700; color: #b71c1c; font-size: 1.1rem; margin-bottom: 10px; text-transform: uppercase;">Figure Reference: Fig 3.7 Preparation of sodium bicarbonate NaHCO3</div>
-            <p><em>(This figure is present in your textbook.)</em></p>
-            <p style="font-size: 0.9rem; color: #546e7a;">Diagram showing $CO_2$ gas entering a flask containing Sodium Carbonate solution, which is surrounded by Ice.</p>
-            </div>
-            <p class="img-caption">📸 Image Name / Caption: Fig 3.7 Preparation of sodium bicarbonate</p>
-        </div>
-
-        <p><strong>5. Sodium sulphate [$Na_2SO_4 \cdot 10H_2O$] (Neutralisation / Titration):</strong><br>
-        Neutralisation of caustic soda with dilute sulphuric acid. Since both reactants and products are soluble, a titration is conducted using a burette and conical flask with an indicator to find the exact end point.</p>
-        <div class="img-placeholder-container">
-            <div class="img-placeholder">
-            <div style="font-weight: 700; color: #b71c1c; font-size: 1.1rem; margin-bottom: 10px; text-transform: uppercase;">Figure Reference: Fig 3.8 Neutralization of an acid with a base</div>
-            <p><em>(This figure is present in your textbook.)</em></p>
-            <p style="font-size: 0.9rem; color: #546e7a;">Diagram showing a Burette filled with Dilute Sulphuric Acid dripping into a Conical Flask containing Sodium Hydroxide.</p>
-            </div>
-            <p class="img-caption">📸 Image Name / Caption: Fig 3.8 Neutralization of an acid with a base</p>
-        </div>
-
-
-        <h2>3C. WATER OF CRYSTALLISATION, EFFLORESCENCE, DELIQUESCENCE</h2>
-        
-        <div class="concept-green">
-            <p><strong>Water of Crystallisation:</strong> Some salts, while crystallising out from their solutions, unite with a definite quantity of water. It is in loose chemical combination and driven out by heating above 100°C.</p>
-            <p>Example: $CuSO_4 \cdot 5H_2O \xrightarrow{\Delta} CuSO_4$ (white) + $5H_2O$.</p>
-        </div>
-
-        <div class="img-placeholder-container">
-            <div class="img-placeholder">
-            <div style="font-weight: 700; color: #b71c1c; font-size: 1.1rem; margin-bottom: 10px; text-transform: uppercase;">Figure Reference: Fig 3.9 Removal of water of crystallisation by heating</div>
-            <p><em>(This figure is present in your textbook.)</em></p>
-            <p style="font-size: 0.9rem; color: #546e7a;">A tilted test tube heated by a burner. Copper sulphate crystals are at the bottom, and drops of water condense near the mouth.</p>
-            </div>
-            <p class="img-caption">📸 Image Name / Caption: Fig 3.9 Removal of water of crystallisation by heating</p>
-        </div>
-
-        <h4>Table 3.2: Some salts containing water of crystallisation</h4>
-        <table>
-            <tr><th>Common name</th><th>Chemical name</th><th>Formula</th></tr>
-            <tr><td>Washing soda crystals</td><td>Sodium carbonate decahydrate</td><td>$Na_2CO_3 \cdot 10H_2O$</td></tr>
-            <tr><td>Epsom salt</td><td>Magnesium sulphate heptahydrate</td><td>$MgSO_4 \cdot 7H_2O$</td></tr>
-            <tr><td>Potash alum</td><td>Hydrated potassium aluminium sulphate</td><td>$K_2SO_4 \cdot Al_2(SO_4)_3 \cdot 24H_2O$</td></tr>
-            <tr><td>Glauber's salt</td><td>Sodium sulphate decahydrate</td><td>$Na_2SO_4 \cdot 10H_2O$</td></tr>
-            <tr><td>Blue vitriol</td><td>Copper (II) sulphate pentahydrate</td><td>$CuSO_4 \cdot 5H_2O$</td></tr>
-            <tr><td>Plaster of Paris</td><td>Calcium sulphate semihydrate</td><td>$CaSO_4 \cdot \frac{1}{2}H_2O$</td></tr>
-            <tr><td>White vitriol</td><td>Zinc sulphate heptahydrate</td><td>$ZnSO_4 \cdot 7H_2O$</td></tr>
-            <tr><td>Gypsum</td><td>Hydrated calcium sulphate</td><td>$CaSO_4 \cdot 2H_2O$</td></tr>
-        </table>
-        <p><em>Decrepitation:</em> Crystals like NaCl produce a crackling sound on heating as bigger crystals break into smaller ones. (They do not produce water vapour on heating).</p>
-
-        <h3>Efflorescence, Hygroscopy & Deliquescence</h3>
-        <ul>
-            <li><strong>3.14 Efflorescence:</strong> Property of some substances to lose wholly or partly their water of crystallisation when exposed to dry air, becoming powdery. Example: Washing soda ($Na_2CO_3 \cdot 10H_2O \rightarrow Na_2CO_3 \cdot H_2O + 9H_2O$). Higher temp = higher efflorescence.</li>
-            <li><strong>3.15 Hygroscopic substances:</strong> Absorb moisture from atmosphere without dissolving in it. Examples: Conc. $H_2SO_4$, $P_2O_5$, Quicklime (CaO), Silica gel. Used as drying agents.</li>
-            <li><strong>3.16 Deliquescent substances:</strong> Absorb moisture from atmosphere and ultimately dissolve in it forming a saturated solution. Examples: NaOH, KOH, $MgCl_2$, $CaCl_2$, $FeCl_3$. 
-            <br><em>Note: Pure table salt (NaCl) is NOT deliquescent, but it turns moist due to impurities like $MgCl_2$ and $CaCl_2$. This can be removed by passing dry HCl gas through a saturated solution of the salt.</em></li>
-        </ul>
-
-        <h4>3.17 Drying vs Dehydrating Agents</h4>
-        <table>
-            <tr><th>Drying Agent (Desiccant)</th><th>Dehydrating Agent</th></tr>
-            <tr><td>(i) They remove moisture from other substances.</td><td>(i) They remove chemically combined elements of water in the ratio of 2:1 (hydrogen:oxygen) from a compound.</td></tr>
-            <tr><td>(ii) Used to dry gases or keep things dry in desiccators.</td><td>(ii) Prepare substances like sugar charcoal.</td></tr>
-            <tr><td>(iii) Represent physical change.</td><td>(iii) Represent chemical change.</td></tr>
-            <tr><td>Examples: $P_2O_5$, Fused $CaCl_2$, CaO, Conc. $H_2SO_4$.</td><td>Example: Conc. Sulphuric acid ($H_2SO_4$).</td></tr>
-        </table>
-
-        <!-- PRACTICE SECTION FOR SALTS & WATER -->
+        <!-- PRACTICE SECTION FOR SALTS -->
         <div class="practice-box">
-            <div class="practice-header">Intext Questions - Salts & Water of Crystallisation</div>
+            <div class="practice-header">Intext Questions - Salts</div>
+            
             <div class="question"><span class="q-tag">Q2</span> Answer related to preparations: (b) What kind of salt is prepared by precipitation? (c) Name a salt prepared by direct combination and write the equation.</div>
-            <div class="question"><span class="q-tag">Q4</span> Explain clearly how conc. $H_2SO_4$ is used as a dehydrating as well as drying agent.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                (b) Insoluble salts are prepared by precipitation (also known as double decomposition) by mixing solutions of two soluble salts.<br>
+                (c) Iron (III) chloride ($FeCl_3$) is prepared by direct combination.<br>
+                Equation: $2Fe + 3Cl_2 \xrightarrow{\Delta} 2FeCl_3$
+            </div>
+
             <div class="question"><span class="q-tag">Q5</span> Name: (a) a chloride insoluble in cold water but dissolves in hot water. (d) a basic salt. (e) an acidic salt.</div>
-            <div class="question"><span class="q-tag">Q8</span> (a) Why does common salt get wet during the rainy season? (b) How can this impurity be removed? (c) Name a substance which changes blue colour of copper sulphate to white.</div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                (a) Lead(II) chloride ($PbCl_2$)<br>
+                (d) Basic lead chloride ($Pb(OH)Cl$) or Basic magnesium chloride ($Mg(OH)Cl$)<br>
+                (e) Sodium hydrogen sulphate ($NaHSO_4$)
+            </div>
         </div>
 
 
-        <!-- MEGA FINAL EXERCISE - BOARD QUESTIONS -->
-        <h2 style="background: #2e7d32; color: #fff; border-left: none; text-align: center; border-radius: 8px;">CHAPTER EXERCISE (Exam Prep & Past Board Questions)</h2>
-        <div class="practice-box"  >
-            
-            <div class="question"><span class="q-tag" >Q2</span> Write balanced reactions for the following conversions: <br> $Fe \xrightarrow{A} FeCl_2 \xrightarrow{B} FeCO_3 \xrightarrow{C} Fe(NO_3)_2 \xrightarrow{D} Fe(OH)_2$</div>
-            <div class="question"><span class="q-tag" >Q3</span> The preparation of lead sulphate from lead carbonate is a two-step process. (a) What is the first step? (b) Write the equation. (c) Why is direct addition of dil. $H_2SO_4$ to lead carbonate impractical?</div>
-            <div class="question"><span class="q-tag" >Q13</span> You are provided with: NaOH, $Na_2CO_3$, $H_2O$, $Zn(OH)_2$, $CO_2$, HCl, Fe, $H_2SO_4$, $Cl_2$, Zn. How would you prepare: (a) iron (III) chloride, (b) sodium sulphate, (c) sodium zincate?</div>
-            
-            <h4 style="color:#2e7d32; border-bottom:1px solid #c8e6c9; padding-bottom:5px; margin-top:2rem;">Board Questions (2007 - 2014)</h4>
-            
-            <div class="question"><span class="q-tag" >2008</span> (a) What are the terms defined by the following? (i) A salt containing a metal ion surrounded by other ions or molecules. (ii) A base which is soluble in water. <br>(b) Using: Dilute $H_2SO_4$, Zinc, Lead, Sodium carbonate, Sodium sulphite, Calcium carbonate... give equations to obtain: (i) Hydrogen, (ii) Sulphur dioxide, (iii) Carbon dioxide.</div>
-            
-            <div class="question"><span class="q-tag" >2009</span> (b) A black coloured solid which on reaction with dilute sulphuric acid forms a blue coloured solution is (i) Carbon (ii) Manganese [IV] oxide (iii) Lead [II] oxide (iv) Copper [II] oxide. <br>(d) Write equations to prepare lead sulphate from lead carbonate.</div>
-            
-            <div class="question"><span class="q-tag" >2010</span> (a) Select the correct answer: A compound soluble in hot water but insoluble in cold water - A. Nitroso iron [II] sulphate, B. Iron [III] chloride, C. Lead chloride, D. Sodium chloride. <br>(d) Give balanced equation for: (i) Copper [II] sulphate from copper [II] oxide, (ii) Iron [III] chloride from the metal iron.</div>
 
-            <div class="question"><span class="q-tag" >2011</span> (a) Write balanced equation - Lead nitrate solution is added to sodium chloride solution. <br>(b) State what happens to crystals of washing soda when exposed to air. Name the phenomenon.</div>
-            
-            <div class="question"><span class="q-tag" >2012</span> (c) Choosing from: dil. sulphuric acid, copper, iron, sodium carbonate, sodium chloride, zinc nitrate... Write balanced equations to obtain: (i) sodium sulphate, (ii) zinc carbonate, (iii) copper [II] sulphate, (iv) iron [II] sulphate.</div>
-
-            <div class="question"><span class="q-tag" >2013</span> (a) Select the words to complete blanks [ammonia, carbon dioxide, hydrogen, hydronium, hydroxide, precipitate, salt, water]: (iii) The process in which a substance absorbs moisture from the atmospheric air to become moist, and ultimately dissolves...</div>
-            
-            <div class="question"><span class="q-tag" >2014</span> (a) Fill in the blank: The basicity of acetic acid is _______ [3, 1, 4]. <br>(c) State inference: Salt S is prepared by reacting dilute sulphuric acid with copper oxide. Identify S. <br>(d) Give equations for: (i) Lead sulphate from lead carbonate, (ii) Sodium sulphate using dil $H_2SO_4$, (iii) Copper chloride using copper carbonate.</div>
-
-        </div>
 
     </div>
     <script>
