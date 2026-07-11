@@ -6,466 +6,702 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 02: Forest and Wildlife Resources - Vardaan Master Notes</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- MathJax Configuration -->
-    <script>
-        MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                processEscapes: true
-            },
-            chtml: {
-                mtextInheritFont: true,
-                scale: 1.05
-            },
-            options: {
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-            }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
     <style>
-        /* --- CSS VARIABLES & THEME --- */
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            /* Core Colors */
-            --paper-bg: #ffffff;
-            --ink-color: #000000;
-            --accent-color: #000000;
-
-            /* Theme Palettes (Geography Style: Earth/Blue Tones) */
-            --yellow-bg: #fffde7;
-            --yellow-border: #fdd835;
-
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
             --green-border: #43a047;
-
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
-            /* Primary Geography Color */
-
             --pink-bg: #fce4ec;
             --pink-border: #d81b60;
-
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
             --red-border: #d32f2f;
         }
 
-        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+            --red-border: #ff8a80;
+        }
+
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
         }
 
+        /* --- GLOBAL LAYOUT --- */
         body {
             background-color: var(--paper-bg);
-            color: var(--ink-color);
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* --- DARK MODE (FILTER INVERSION) --- */
-        html,
-        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
             overflow-x: hidden;
-            width: 100%;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            transition: filter 0.3s ease;
-        }
-
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg);
-        }
-
-        /* --- ADAPTIVE WATERMARK --- */
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
             z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.1;
             max-width: 80%;
-            height: auto;
-            opacity: 0.05;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important;
+            filter: invert(1);
+            opacity: 0.15;
         }
 
-        /* --- PAPER SHEET LAYOUT --- */
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
             background-color: var(--paper-bg);
-            box-shadow: none;
-            border: none;
             width: 210mm;
             max-width: 100%;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10;
-        }
-
-        @media screen and (max-width: 800px) {
-            .paper-sheet {
-                width: 100%;
-                padding: 20px;
-            }
-        }
-
-        /* --- THEME TOGGLE BUTTON --- */
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #f0f0f0;
+            box-sizing: border-box;
             border: none;
-            cursor: pointer;
-            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .top-branding-note {
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            gap: 10px;
+            margin: 10px 0 12px;
+            padding: 8px 0 0;
+            white-space: nowrap;
+            color: var(--meta-text);
         }
 
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
-        }
-
-        .icon-sun,
-        .icon-moon {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .icon-moon {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        .icon-sun {
-            opacity: 0;
-            transform: scale(0.5) rotate(-90deg);
-        }
-
-        html.dark-mode .icon-moon {
-            opacity: 0;
-            transform: scale(0.5) rotate(90deg);
-        }
-
-        html.dark-mode .icon-sun {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        /* --- CONTENT STYLING --- */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        .chapter-name-banner {
             text-align: center;
+            margin: 6px 0 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .chapter-name-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .powered-by-label {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            color: var(--pink-border);
+            letter-spacing: 0.3px;
+        }
+
+        .powered-by-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: 0.4px;
+        }
+
+        html.dark-mode .powered-by-brand {
+            color: #fff;
+        }
+
+        html.dark-mode .vardaan-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .heart-red {
+            color: #d32f2f;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
         }
 
         h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            border-bottom: 2px solid var(--ink-color);
-            padding-bottom: 0.5rem;
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-        }
-
-        p,
-        li {
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        ul,
-        ol {
-            padding-left: 25px;
-            margin-bottom: 1rem;
-        }
-
-        /* --- SPECIAL COMPONENTS --- */
-        .geo-box {
-            background-color: var(--blue-bg);
-            border-left: 4px solid var(--blue-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .wildlife-box {
-            background-color: var(--green-bg);
-            /* Using Green for forest/wildlife context */
-            border-left: 4px solid var(--green-border);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .master-tip {
-            border: 2px dashed var(--red-border);
-            background-color: #fffaf0;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-            font-style: italic;
-        }
-
-        .tip-header {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
             font-weight: 700;
-            color: var(--red-border);
-            display: block;
-            margin-bottom: 0.5rem;
         }
 
-        /* Image Placeholder */
-        .img-placeholder {
+        /* --- INFOGRAPHIC CSS --- */
+        .infographic-section {
+            margin-top: 40px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+            color: var(--text-main);
+        }
+
+        .ribbon-title {
+            text-align: center;
+            position: relative;
+            margin: 40px 0 30px;
+        }
+
+        .ribbon-title span {
+            display: inline-block;
+            background: var(--paper-bg);
+            border: 2px solid #e53935;
+            color: #e53935;
+            padding: 8px 30px;
+            font-weight: bold;
+            font-size: 1.4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ribbon-title::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
             width: 100%;
-            height: 300px;
-            background-color: #f0f0f0;
-            border: 2px dashed #ccc;
+            height: 2px;
+            background: #e53935;
+            z-index: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .info-card {
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 18px;
+            background: transparent;
+            display: flow-root;
+        }
+
+        .info-card-image {
+            float: right;
+            width: 160px;
+            margin: 0 0 10px 20px;
+        }
+
+        .info-card-image img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .info-card-image .card-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .intro-forest-image {
+            display: block;
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            margin: 20px auto 0;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            background: transparent;
+        }
+        
+        .ai-prompt-box {
+            border: 2px dashed #aaa;
+            padding: 12px;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            color: #666;
+            text-align: center;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.02);
+            width: 100%;
+            display: inline-block;
+        }
+
+        html.dark-mode .ai-prompt-box {
+            color: #aaa;
+        }
+
+        .info-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .info-card ul {
+            margin: 0;
+            padding-left: 25px;
+            list-style-type: disc;
+        }
+
+        .info-card li {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .info-card li::marker {
+            color: inherit;
+        }
+
+        /* Specific Card Colors */
+        .card-green { border-color: #43a047; }
+        .card-green h3, .card-green li::marker { color: #43a047; }
+        .card-green .highlight { color: #43a047; font-weight: bold; }
+
+        .card-pink { border-color: #e91e63; }
+        .card-pink h3, .card-pink li::marker { color: #e91e63; }
+        .card-pink .highlight { color: #e91e63; font-weight: bold; }
+
+        .card-purple { border-color: #8e24aa; }
+        .card-purple h3, .card-purple li::marker { color: #8e24aa; }
+
+        .card-blue { border-color: #1e88e5; }
+        .card-blue h3, .card-blue li::marker { color: #1e88e5; }
+
+        .card-orange { border-color: #f57c00; }
+        .card-orange h3 { color: #f57c00; text-align: center; border-bottom: 1px dashed #f57c00; padding-bottom: 8px; margin-bottom: 15px;}
+
+        /* Quick Revision Checkboxes */
+        .quick-revision ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .quick-revision li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .quick-revision li::before {
+            content: "☑";
+            position: absolute;
+            left: 0;
+            color: #e53935;
+            font-size: 1.2rem;
+            top: -4px;
+        }
+        
+        /* Highlight Specific words in quick revision */
+        .quick-revision .hl-blue { color: #1e88e5; font-weight: bold; }
+        .quick-revision .hl-green { color: #43a047; font-weight: bold; }
+        .quick-revision .hl-purple { color: #8e24aa; font-weight: bold; }
+        .quick-revision .hl-red { color: #e53935; font-weight: bold; }
+
+        .remember-box {
+            border: 2px dashed #e53935;
+            background: #fffafa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin: 1.5rem 0;
-            flex-direction: column;
-            padding: 20px;
-            text-align: center;
+            gap: 15px;
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
-        .img-prompt {
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #555;
-            background: #e0e0e0;
-            padding: 10px;
+        .remember-box .label {
+            background: #ffcdd2;
+            color: #d32f2f;
+            padding: 5px 12px;
             border-radius: 4px;
-            margin-top: 10px;
-            max-width: 90%;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        html.dark-mode .remember-box { background: rgba(229, 57, 53, 0.1); }
+        
+        /* Info Boxes styles for introduction section */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
         }
 
-        /* --- PRINT OPTIMIZATION --- */
-        @media print {
-            body {
-                background-color: #fff;
-            }
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
 
-            html.dark-mode {
-                filter: none !important;
-            }
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+        
+        /* General content styling */
+        .content-body {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .content-body ul {
+            padding-left: 25px;
+        }
 
-            .theme-toggle {
-                display: none;
-            }
-
-            .paper-sheet {
+        @media (max-width: 768px) {
+            .info-card-image {
+                float: none;
+                margin: 15px auto;
                 width: 100%;
-                margin: 0;
-                padding: 0;
-                box-shadow: none !important;
-                border: none !important;
-            }
-
-            .watermark-overlay {
-                position: fixed;
-                opacity: 0.05 !important;
             }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- ADAPTIVE WATERMARK -->
     <div class="watermark-overlay">
-        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            alt="Vardaan Watermark" class="watermark-image">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image">
     </div>
 
-    <!-- THEME TOGGLE -->
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-    </button>
-
-    <!-- CONTENT PAPER -->
     <div class="paper-sheet">
-        <h1>Forest and Wildlife Resources</h1>
-        <p style="text-align: center; color: #555; margin-bottom: 2rem;">Class 10 Geography � Chapter 02</p>
+        
+        <!-- HEADER STARTS -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
+        </div>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Chapter 2: Forest and Wildlife Resources</h1>
+        </div>
+        <!-- HEADER ENDS -->
 
-        <h2>1. Biodiversity in India</h2>
-        <p>India is one of the world's richest countries in biological diversity. (8% of world species).</p>
-        <p><strong>Crisis:</strong> 10% of India's wild flora and 20% of mammals are on the threatened list. Cheetah,
-            Pink-headed duck, Mountain Quail are almost extinct.</p>
 
-        <div class="wildlife-box">
-            <h4>IUCN Classification (International Union for Conservation of Nature)</h4>
+        <div class="content-body">
+            <!-- SYLLABUS BOX -->
+            <div class="blue-box">
+                <span class="box-label">Syllabus Overview</span>
+                <p>Strictly based on the Rationalised CBSE Syllabus (New NCERT). Covers:</p>
+                <ul>
+                    <li>Conservation of forest and wildlife in India.</li>
+                    <li>The Indian Wildlife (Protection) Act, 1972.</li>
+                    <li>Types and distribution of forest and wildlife resources (Reserved, Protected, Unclassed).</li>
+                    <li>Community and Conservation (Chipko movement, JFM, Sacred Groves).</li>
+                </ul>
+            </div>
+
+            <h2>1. Introduction: Flora and Fauna in India</h2>
+            <p>India is one of the world's richest countries in terms of its vast array of biological diversity. We share this planet with millions of other living beings, starting from micro-organisms and bacteria, lichens to banyan trees, elephants, and blue whales.</p>
             <ul>
-                <li><strong>Normal Species:</strong> Population levels normal (Cattle, Sal, Pine).</li>
-                <li><strong>Endangered Species:</strong> In danger of extinction. If negative factors continue, they
-                    will die (Black Buck, Crocodile, Indian Rhino, Indian Wild Ass).</li>
-                <li><strong>Vulnerable Species:</strong> Population declined to levels where it is likely to become
-                    endangered (Blue Sheep, Asiatic Elephant, Gangetic Dolphin).</li>
-                <li><strong>Rare Species:</strong> Small population, can move to endangered/vulnerable (Himalayan Brown
-                    Bear, Desert Fox).</li>
-                <li><strong>Endemic Species:</strong> Found ONLY in specific areas (Andaman Teal, Nicobar Pigeon, Mithun
-                    in Arunachal).</li>
-                <li><strong>Extinct Species:</strong> Not found in known areas (Asiatic Cheetah, Pink Headed Duck).</li>
+                <li><strong>Rich Biodiversity:</strong> India has nearly <span class="highlight" style="color:var(--pink-border); font-weight:bold;">8% of the total number of species</span> in the world (estimated to be 1.6 million).</li>
+                <li><strong>Flora and Fauna:</strong> The diverse plants (flora) and animals (fauna) form a complex web of ecological system. They are so well integrated into our daily life that we take them for granted.</li>
+                <li><strong>Why preserve them?</strong> We depend on this system for our basic needs like the air we breathe, the water we drink, and the soil that produces our food. Forests play a key role in the ecological system as they are the primary producers on which all other living beings depend.</li>
+                <li><strong>Threats to Biodiversity:</strong> Overexploitation of resources, cutting of trees (deforestation), and hunting have led to a severe decline in India's flora and fauna. Several species (like the Cheetah, pink-headed duck, mountain quail, and forest spotted owlet) have reached the verge of extinction.</li>
             </ul>
+
+            <img src="Images/A beautiful, highly detailed illustration showing a vibrant Indian forest ecosystem with a tiger, a deer, and colourful bir.png" alt="Vibrant Indian forest ecosystem" class="intro-forest-image">
+
+            <h2>2. Conservation of Forest and Wildlife in India</h2>
+            <p>Conservation preserves the ecological diversity and our life support systems – water, air and soil. It also preserves the genetic diversity of plants and animals for better growth of species and breeding.</p>
+            <div class="blue-box">
+                <span class="box-label">Key Act</span>
+                <h3 style="margin-top: 0; margin-bottom: 10px;">The Indian Wildlife (Protection) Act, 1972</h3>
+                <p>In the 1960s and 1970s, conservationists demanded a national wildlife protection programme. The government implemented this act in 1972.</p>
+                <ul>
+                    <li>An all-India list of protected species was published.</li>
+                    <li>The main focus was to protect the remaining population of certain endangered species by <strong>banning hunting</strong>, giving <strong>legal protection to their habitats</strong>, and <strong>restricting trade</strong> in wildlife.</li>
+                    <li>Central and many state governments established <strong>National Parks</strong> and <strong>Wildlife Sanctuaries</strong>.</li>
+                </ul>
+            </div>
+            <ul>
+                <li><strong>Specific Animal Projects:</strong> The central government announced several projects for protecting specific animals, which were gravely threatened, including the tiger, the one-horned rhinoceros, the Kashmir stag or hangul, three types of crocodiles (freshwater crocodile, saltwater crocodile and the Gharial), the Asiatic lion, and others.</li>
+                <li><strong>Recent Additions:</strong> Recently, the Indian elephant, black buck (chinkara), the great Indian bustard (godawan) and the snow leopard, etc., have been given full or partial legal protection against hunting and trade throughout India.</li>
+            </ul>
+
+            <h2>3. Types and Distribution of Forest and Wildlife Resources</h2>
+            <p>In India, much of its forest and wildlife resources are either owned or managed by the government through the Forest Department or other government departments. They are classified under the following categories:</p>
+            
+            <!-- Box container for types -->
+            <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                <!-- Reserved -->
+                <div style="border-left: 5px solid #43a047; padding: 10px 15px; background: #e8f5e9;">
+                    <h3 style="color: #43a047; margin: 0 0 5px 0;">(i) Reserved Forests</h3>
+                    <p style="margin: 0;">More than <strong>half of the total forest land</strong> has been declared reserved forests. They are regarded as the <strong>most valuable</strong> as far as the conservation of forest and wildlife resources are concerned.</p>
+                </div>
+                <!-- Protected -->
+                <div style="border-left: 5px solid #1e88e5; padding: 10px 15px; background: #e3f2fd;">
+                    <h3 style="color: #1e88e5; margin: 0 0 5px 0;">(ii) Protected Forests</h3>
+                    <p style="margin: 0;">Almost <strong>one-third of the total forest area</strong> is protected forest, as declared by the Forest Department. This forest land is protected from any further depletion.</p>
+                </div>
+                <!-- Unclassed -->
+                <div style="border-left: 5px solid #fbc02d; padding: 10px 15px; background: #fff9c4;">
+                    <h3 style="color: #f57f17; margin: 0 0 5px 0;">(iii) Unclassed Forests</h3>
+                    <p style="margin: 0;">These are other forests and wastelands belonging to both <strong>government and private individuals and communities</strong>.</p>
+                </div>
+            </div>
+
+            <ul>
+                <li><strong>Permanent Forest Estates:</strong> Reserved and protected forests are also referred to as permanent forest estates maintained for the purpose of producing timber and other forest produce, and for protective reasons.</li>
+                <li><strong>State-wise Distribution:</strong>
+                    <ul style="margin-top: 5px;">
+                        <li><strong>Madhya Pradesh</strong> has the largest area under permanent forests, constituting 75% of its total forest area.</li>
+                        <li><strong>Jammu & Kashmir, Andhra Pradesh, Uttarakhand, Kerala, Tamil Nadu, West Bengal, and Maharashtra</strong> have large percentages of reserved forests.</li>
+                        <li><strong>Bihar, Haryana, Punjab, Himachal Pradesh, Odisha and Rajasthan</strong> have a bulk of their forests under protected forests.</li>
+                        <li><strong>North-eastern states and Gujarat</strong> have a very high percentage of their forests as unclassed forests managed by local communities.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- THE INFOGRAPHIC SECTION -->
+            <div class="infographic-section">
+                
+                <div class="ribbon-title">
+                    <span>COMMUNITY AND FOREST CONSERVATION</span>
+                </div>
+                
+                <div class="info-grid">
+                    
+                    <!-- Box 1 -->
+                    <div class="info-card card-green">
+                        <div class="info-card-image">
+                            <img src="Images/A majestic tiger resting in a lush green Indian forest reserve next to a tree.png" alt="Project Tiger" class="card-image">
+                        </div>
+                        <h3>1. PROJECT TIGER (1973)</h3>
+                        <ul>
+                            <li>Launched in <span class="highlight">1973</span> after authorities realised the tiger population had dwindled from an estimated 55,000 to just 1,827.</li>
+                            <li><strong>Major Threats:</strong> Poaching for trade, shrinking habitat, depletion of prey base species, and growing human population. Tiger bones are heavily used in traditional medicines in Asian countries.</li>
+                            <li><strong>Objective:</strong> Not only to save an endangered species but also preserving biotypes of sizeable magnitude.</li>
+                            <li><strong>Major Tiger Reserves:</strong> Corbett National Park (Uttarakhand), Sundarbans (West Bengal), Bandhavgarh (MP), Sariska (Rajasthan), Manas (Assam), and Periyar (Kerala).</li>
+                        </ul>
+                    </div>
+
+                    <!-- Box 2 -->
+                    <div class="info-card card-pink">
+                        <div class="info-card-image">
+                            <img src="Images/An Indian woman in traditional attire hugging a large tree trunk, protecting it..png" alt="Chipko Movement" class="card-image">
+                        </div>
+                        <h3>2. CHIPKO MOVEMENT</h3>
+                        <ul>
+                            <li>The famous Chipko Movement in the Himalayas successfully resisted deforestation in several areas.</li>
+                            <li>It demonstrated that <strong>community afforestation</strong> with indigenous species can be enormously successful.</li>
+                            <li>People revived traditional conservation methods and hugged trees to prevent contractors from cutting them.</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Box 3 -->
+                    <div class="info-card card-orange">
+                        <div class="info-card-image">
+                            <img src="Images/Two Indian farmers proudly showing healthy crops in a green field with a banner saying BEEJ BACHAO ANDOLAN..png" alt="Beej Bachao Andolan" class="card-image">
+                        </div>
+                        <h3>3. BEEJ BACHAO ANDOLAN & NAVDANYA</h3>
+                        <ul>
+                            <li>Farmers and citizen's groups like the <strong>Beej Bachao Andolan in Tehri</strong> and <strong>Navdanya</strong> have championed agricultural conservation.</li>
+                            <li>They have shown that adequate levels of diversified crop production <strong>without the use of synthetic chemicals</strong> are possible and economically viable.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Box 4 -->
+                    <div class="info-card card-blue">
+                        <div class="info-card-image">
+                            <img src="Images/A beautiful, highly detailed illustration showing a vibrant Indian forest ecosystem with a tiger, a deer, and colourful bir.png" alt="Forest ecosystem" class="card-image">
+                        </div>
+                        <h3>4. SACRED GROVES</h3>
+                        <ul>
+                            <li>Nature worship is an age-old tribal belief that all creations of nature have to be protected. Such beliefs have preserved several virgin forests in pristine form called <strong>Sacred Groves</strong> (the forests of God and Goddesses).</li>
+                            <li>Local people leave these patches untouched and ban any interference.</li>
+                            <li><strong>Examples of Tree Worship:</strong>
+                                <ul style="margin-top: 5px;">
+                                    <li>Mundas and Santhal of Chhota Nagpur worship <strong>mahua</strong> and <strong>kadamba</strong> trees.</li>
+                                    <li>Tribals of Odisha and Bihar worship <strong>tamarind</strong> and <strong>mango</strong> trees during weddings.</li>
+                                    <li>Peepal and Banyan trees are considered sacred across India.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Box 5 -->
+                    <div class="info-card card-purple">
+                        <div class="info-card-image">
+                            <img src="Images/An Indian woman in traditional attire hugging a large tree trunk, protecting it..png" alt="Local community intervention" class="card-image">
+                        </div>
+                        <h3>5. LOCAL COMMUNITY INTERVENTIONS</h3>
+                        <ul>
+                            <li><strong>Sariska Tiger Reserve (Rajasthan):</strong> Villagers have fought against mining by citing the Wildlife Protection Act. In many areas, villagers themselves are protecting habitats and explicitly rejecting government involvement.</li>
+                            <li><strong>Bhairodev Dakav 'Sonchuri' (Alwar, Rajasthan):</strong> The inhabitants of five villages declared 1,200 hectares of forest as a sanctuary, declaring their own set of rules and regulations which do not allow hunting, and are protecting the wildlife against outside encroachments.</li>
+                            <li><strong>Bishnoi Villages (Rajasthan):</strong> In villages around Bishnoi communities, herds of blackbuck (chinkara), nilgai and peacocks can be seen as an integral part of the community, and nobody harms them.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Box 6 -->
+                    <div class="info-card card-green full-width">
+                        <div class="info-card-image" style="width: 250px;">
+                            <img src="Images/A beautiful, highly detailed illustration showing a vibrant Indian forest ecosystem with a tiger, a deer, and colourful bir.png" alt="Joint Forest Management" class="card-image">
+                        </div>
+                        <h3>6. JOINT FOREST MANAGEMENT (JFM)</h3>
+                        <ul>
+                            <li>JFM furnishes a good example for involving local communities in the management and restoration of degraded forests.</li>
+                            <li>The programme has been in formal existence since 1988 when the state of <strong>Odisha</strong> passed the first resolution for JFM.</li>
+                            <li>JFM depends on the formation of local (village) institutions that undertake protection activities mostly on <strong>degraded forest land</strong> managed by the forest department.</li>
+                            <li>In return, the members of these communities are entitled to intermediary benefits like non-timber forest produces and share in the timber harvested by 'successful protection'.</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Quick Revision Box -->
+                    <div class="info-card card-orange quick-revision">
+                        <div class="info-card-content" style="padding-right: 0;">
+                            <h3>IMPORTANT POINTS (QUICK REVISION)</h3>
+                            <ul>
+                                <li>Project Tiger was launched in <span class="hl-red">1973</span>.</li>
+                                <li>Chipko Movement is an example of <span class="hl-blue">people's participation</span> in forest conservation.</li>
+                                <li><span class="hl-green">Bishnoi</span> community protects trees and animals selflessly.</li>
+                                <li><span class="hl-purple">Sacred Groves</span> are protected due to <span class="hl-purple">religious beliefs</span>.</li>
+                                <li>Joint Forest Management promotes <span class="hl-green">partnership</span> between people and government.</li>
+                                <li>Local communities play a <span class="hl-red">key role</span> in conserving forests and wildlife.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div> <!-- End Grid -->
+
+                <div class="remember-box">
+                    <div class="label">Remember:</div>
+                    <div>Conservation of forests and wildlife is not only the responsibility of the government but also of every individual. Let us <span class="hl-green" style="color: #43a047; font-weight: bold;">save nature</span> for a <span class="hl-blue" style="color: #1e88e5; font-weight: bold;">better future</span>!</div>
+                </div>
+
+            </div>
+            <!-- END INFOGRAPHIC SECTION -->
+            
         </div>
 
-        <h2>2. Causes of Depletion</h2>
-        <ol>
-            <li><strong>Colonial Period:</strong> Expansion of railways, agriculture, commercial and scientific
-                forestry.</li>
-            <li><strong>Agriculture:</strong> Slash and burn cultivation (Jhumming) in North-East.</li>
-            <li><strong>Development Projects:</strong> River valley projects (Narmada Sagar Project submerged 40,000
-                hectares).</li>
-            <li><strong>Mining:</strong> Buxa Tiger Reserve (West Bengal) threatened by dolomite mining.</li>
-            <li><strong>Factors:</strong> Habit destruction, hunting, poaching, over-exploitation, environmental
-                pollution, poisoning, forest fires.</li>
-        </ol>
-
-        <div class="master-tip">
-            <span class="tip-header">HIMALAYAN YEW</span>
-            Is a medicinal plant found in HP and Arunachal. A chemical compound <strong>'Taxol'</strong> is extracted
-            from its bark/needles/roots to treat some cancers. The species is under threat due to over-exploitation.
-        </div>
-
-        <h2>3. Conservation of Forest and Wildlife</h2>
-        <p><strong>Benefits:</strong> Preserves ecological diversity, water, air, soil. Preserves genetic diversity.</p>
-        <p><strong>Indian Wildlife (Protection) Act 1972:</strong></p>
-        <ul>
-            <li>Ban on hunting.</li>
-            <li>Legal protection to habitats.</li>
-            <li>Restriction on trade in wildlife.</li>
-            <li>Established National Parks and Wildlife Sanctuaries.</li>
-        </ul>
-
-        <h3>Project Tiger (1973)</h3>
-        <p>One of the most well-publicised wildlife campaigns. Tiger population had fallen from 55,000 (year 1900) to
-            1,827 (year 1973). <br>
-            <strong>Major Tiger Reserves:</strong>
-        <ul>
-            <li>Corbett National Park (Uttarakhand)</li>
-            <li>Sundarbans National Park (West Bengal)</li>
-            <li>Bandhavgarh National Park (Madhya Pradesh)</li>
-            <li>Sariska Wildlife Sanctuary (Rajasthan)</li>
-            <li>Manas Tiger Reserve (Assam)</li>
-            <li>Periyar Tiger Reserve (Kerala)</li>
-        </ul>
-        </p>
-
-        <h2>4. Types of Forest Distribution</h2>
-        <ul>
-            <li><strong>Reserved Forests:</strong> More than half of total forest land. Most valuable for conservation.
-                (J&K, Andhra, Uttarakhand, Kerala, TN, West Bengal, Maharashtra).</li>
-            <li><strong>Protected Forests:</strong> 1/3rd of total. Protected from further depletion. (Bihar, Haryana,
-                Punjab, HP, Odisha, Rajasthan).</li>
-            <li><strong>Unclassed Forests:</strong> Belong to both govt and private individuals/communities.
-                (North-eastern states, Gujarat).</li>
-        </ul>
-
-        <h2>5. Community and Conservation</h2>
-        <p>Conservation is not new to India. Locals often struggle to conserve forests.</p>
-        <ul>
-            <li><strong>Sariska (Rajasthan):</strong> Villagers fought against mining by citing Wildlife Protection Act.
-            </li>
-            <li><strong>Bhairodev Dakav 'Sonchuri':</strong> Distt Alwar (Rajasthan). 5 villages declared 1,200 hectares
-                as protected. Their own rules (No hunting).</li>
-            <li><strong>Chipko Movement:</strong> Himalayas. Successfully resisted deforestation. Also showed community
-                afforestation.</li>
-            <li><strong>Beej Bachao Andolan (Tehri):</strong> Farmers showed that adequate production is possible
-                without synthetic chemicals.</li>
-            <li><strong>Joint Forest Management (JFM):</strong> Started in Odisha (1988). Village communities protect
-                degraded forests in return for share in produce (timber/non-timber).</li>
-        </ul>
-
-        <div class="master-tip">
-            <span class="tip-header">THE BISHNOIS</span>
-            In Rajasthan, herds of Blackbuck, Nilgai and Peacocks are seen as integral part of community and nobody
-            harms them.
-        </div>
-
-        <div class="img-placeholder">
-            <span>[IMAGE PLACEHOLDER: WILDLIFE RESERVES MAP]</span>
-            <div class="img-prompt">
-                Map of India showing Major Wildlife Sanctuaries, Bird Sanctuaries and National Parks. Mark Corbett,
-                Kaziranga, Manas, Gir, Periyar, Sundarbans.
+        <!-- FOOTER STARTS -->
+        <div class="branding-footer">
+            <div class="top-branding-note">
+                <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+                <span aria-hidden="true">|</span>
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 2px solid var(--blue-border);">
+                <a href="../../Geography.html" style="display:inline-block;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,var(--blue-border),var(--pink-border));color:#fff;text-decoration:none;font-weight:700;font-size:1rem;">&larr; Back to Geography</a>
             </div>
         </div>
+        <!-- FOOTER ENDS -->
 
     </div>
 
-    <!-- SCRIPT FOR TOGGLE -->
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-
-            if (html.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        // Initialize Theme
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark-mode');
-        }
-    </script>
 </body>
-
 </html>
-
-
