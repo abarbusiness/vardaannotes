@@ -3,11 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 04: Pressure in Fluids and Atmospheric Pressure - Vardaan Master Notes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Pressure in Fluids - Vardaan Learning Institute</title>
+    
+    <!-- Robust MathJax Configuration to prevent overlapping -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: { 
+                scale: 1.05,
+                matchFontHeight: false /* FIX: Prevents font-metric overlapping */
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
@@ -16,67 +33,833 @@
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
             --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0 }
-        body { background: #fff; color: #000; font-family: 'Outfit', sans-serif; line-height: 1.7 }
-        html { transition: filter .3s }
-        html.dark-mode { filter: invert(1) hue-rotate(180deg) }
-        .watermark-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 9999 }
-        .watermark-image { width: 600px; max-width: 80%; opacity: 0.05 }
-        html.dark-mode .watermark-image { opacity: 0.08 !important }
-        .paper-sheet { background: #fff; width: 210mm; max-width: 100%; margin: 0 auto; padding: 20mm; position: relative; z-index: 10 }
-        .theme-toggle { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
-        html.dark-mode .theme-toggle { filter: invert(1) hue-rotate(180deg); background: #e0e0e0; }
-        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* MathJax CSS Overrides to ensure clean fractions and spacing */
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            display: inline-block !important;
+            vertical-align: middle;
+            line-height: normal !important; /* Forces MathJax to use its own line-height */
+            margin: 0 2px;
+        }
+
+        mjx-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        mjx-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1); 
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px; /* TIGHTENED LAYOUT */
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO (Updated V2.2) --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            
+            /* DEFAULT STATE: Hidden on screen */
+            display: none;
+            
+            /* Layout properties (active when visible) */
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer{text-align:center;margin-top:60px;padding-top:20px;border-top:1px solid var(--toggle-border);color:var(--meta-text)}.top-branding-note{display:flex;align-items:center;justify-content:center;gap:10px;margin:10px 0 12px;padding:8px 0 0;white-space:nowrap;color:var(--meta-text)}.chapter-name-banner{text-align:center;margin:6px 0 0;padding:0;background:transparent;border:none}.chapter-name-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--pink-border);text-transform:uppercase;letter-spacing:.6px}.created-by{font-size:1rem;margin-bottom:5px;font-weight:normal}.powered-by{font-size:.9rem;color:var(--pink-border);font-style:italic}.powered-by-label{font-family:Georgia,'Times New Roman',serif;font-style:italic;color:var(--pink-border);letter-spacing:.3px}.powered-by-brand{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:bold;color:#000;letter-spacing:1px;text-transform:uppercase}
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .pink-box { background-color: var(--pink-bg); border: 2px solid var(--pink-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+        .pink-box .box-label { color: var(--pink-border); border-color: var(--pink-border); }
+
+        /* --- COMPONENT STYLES (Formulas, PYQs, Images) --- */
+        .formula-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.08);
+            text-align: center;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--blue-border);
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+        
+        .pyq-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--text-main);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pyq-box .pyq-q {
+            font-weight: 700;
+            color: var(--pink-border);
+            margin-bottom: 0.5rem;
+        }
+
+        .pyq-header {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background-color: var(--yellow-border);
+            color: #000;
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid var(--yellow-border);
+            border-radius: 4px;
+            margin-bottom: 0;
+        }
+
+        .step-box {
+            margin: 0.5rem 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .step-box strong {
+            color: var(--pink-border);
+        }
+
+        /* --- AI IMAGE PROMPT BOX --- */
+        .ai-image-prompt {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .ai-image-prompt img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            mix-blend-mode: multiply;
+        }
+
+        html.dark-mode .ai-image-prompt img {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        .ai-image-prompt p {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin: 0;
+            font-style: italic;
+            display: none;
+        }
+
+        .ai-image-prompt strong {
+            color: var(--blue-border);
+            font-style: normal;
+            display: none;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
         .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
         html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
         html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
-        h1 { font-size: 2.5rem; font-weight: 700; text-align: center; color: #6a1b9a; margin-bottom: .5rem }
-        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 2px solid #6a1b9a; padding-bottom: .5rem; color: #6a1b9a }
-        h3 { font-size: 1.2rem; font-weight: 500; margin-top: 1.5rem; color: #7b1fa2 }
-        p, li { margin-bottom: .8rem }
-        ul, ol { padding-left: 1.5rem }
-        .definition-box, .rule-box, .analysis-box { background: #ffffff; padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
-        .derivation-box { background: #f3e5f5; padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
-        .highlight-formula { background-color: #ffffff; border: 2px solid #7b1fa2; border-radius: 6px; padding: 10px; margin: 10px 0; display: inline-block; font-weight: bold; }
-        .master-tip { border: 2px dashed #d32f2f; padding: 1.5rem; margin: 1.5rem 0; background: #ffebee; font-style: italic }
-        @media print { html.dark-mode { filter: none !important } .theme-toggle { display: none } .paper-sheet { width: 100%; padding: 10mm } }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { 
+                background-color: #ffffff !important; 
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+            
+            .paper-sheet { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                box-shadow: none !important;
+            }
+
+            .theme-toggle, 
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .branding-header{background-color:#fff!important;border-bottom:2px solid var(--blue-border)!important;padding:10px 0!important;display:flex;flex-direction:column;justify-content:center;align-items:center}
+
+            .watermark-overlay{display:flex!important;position:fixed!important;z-index:999!important;opacity:.8!important;mix-blend-mode:multiply!important;left:0!important;top:0!important;width:100%!important;height:100%!important;pointer-events:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+            .watermark-image{filter:none!important;max-width:70%!important;opacity:.2!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+
+            @page {
+                size: A4;
+                margin: 2cm;
+                
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60; 
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="watermark-overlay"><img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image"></div>
+
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
     </button>
 
+    <!-- MAIN CONTAINER -->
     <div class="paper-sheet">
-        <h1>Pressure in Fluids and Atmospheric Pressure</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">ICSE Class 9 Physics • Chapter 04</p>
+        
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
+        </div>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Pressure in Fluids and Atmospheric Pressure</h1>
+        </div>
+        <p class="chapter-subtitle" style="text-align:center;color:var(--meta-text);margin-bottom:20px;font-style:italic">ICSE Class 9 Physics &bull; Chapter 4 &bull; Comprehensive Chapter Notes</p>
 
-        <div class="rule-box">
-            <p><strong>Chapter Overview</strong></p>
-            <p>This chapter covers the fundamental concepts of <strong>Pressure in Fluids and Atmospheric Pressure</strong>. Comprehensive notes will be added soon.</p>
+        <!-- ==================== SECTION 1 ==================== -->
+        <h2>1. Thrust and Pressure</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/Show two identical rectangular red bricks resting on a bed of smooth yellow sand. The left brick is standing vert.png" alt="Thrust and Area" style="max-width: 65%; margin: 0 auto; display: block;">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Thrust and Area</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. Show two identical rectangular red bricks resting on a bed of smooth yellow sand. The left brick is standing vertically on its smallest face, sinking deeply into the sand. The right brick is lying horizontally on its largest face, sinking only slightly. Two identical downward-pointing transparent blue arrows sit above each brick, indicating equal thrust. Clean shapes. IMPORTANT: You must include crisp, professional mathematical text labels and vector arrows. Label the downward arrows as "Thrust (F = mg)". Label the small base area as "Small Area (A) -> High Pressure" and the large base area as "Large Area (A) -> Low Pressure". Keep it strictly academic.</p>
+        </div>
+        
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <p><strong>Thrust:</strong> A force can be applied on a surface in any direction. If a force is applied in a direction normal (or perpendicular) to the surface, it is called the <strong>thrust</strong>.</p>
+            <ul>
+                <li>The thrust exerted by a body placed on a surface is equal to its weight.</li>
+                <li>Thrust is a <strong>vector quantity</strong>.</li>
+                <li><strong>Units of thrust:</strong> S.I. unit is <strong>newton (N)</strong>. C.G.S. unit is dyne ($1 \text{ N} = 10^5 \text{ dyne}$). M.K.S gravitational unit is kgf ($1 \text{ kgf} = 9.8 \text{ N}$).</li>
+            </ul>
         </div>
 
-        <div class="master-tip">
-            <p><strong>Study Tip:</strong> Chapter notes content coming soon!</p>
+        <p><strong>Pressure:</strong> The effect of thrust depends on the area of the surface on which it acts. The effect of a thrust is less on a large area, while it is more on a small area. Pressure is defined as the thrust per unit area of a surface.</p>
+
+        <div class="formula-box">
+            <span class="formula-pill">FORMULA</span>
+            $$ \text{Pressure (P)} = \frac{\text{Thrust (F)}}{\text{Area (A)}} $$
         </div>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <p><strong>Units of Pressure:</strong></p>
+            <ul>
+                <li><strong>S.I. Unit:</strong> Pascal (Pa). One pascal is the pressure exerted on a surface of area $1 \text{ m}^2$ by a force of 1 N acting normally on it. ($1 \text{ Pa} = 1 \text{ N m}^{-2}$)</li>
+                <li><strong>C.G.S Unit:</strong> dyne cm$^{-2}$. ($1 \text{ N m}^{-2} = 10 \text{ dyne cm}^{-2}$)</li>
+                <li><strong>Other units:</strong> bar and millibar. ($1 \text{ bar} = 10^5 \text{ N m}^{-2}$)</li>
+                <li><strong>Atmospheric Pressure units:</strong> atmosphere (atm). $1 \text{ atm} = 0.76 \text{ m of Hg} = 1.013 \times 10^5 \text{ Pa}$. Also, torr ($1 \text{ torr} = 1 \text{ mm of Hg}$).</li>
+            </ul>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <p><strong>Factors affecting the pressure:</strong> The pressure exerted on a surface depends directly on the <strong>thrust</strong> and inversely on the <strong>area</strong> on which it acts.</p>
+            <ul>
+                <li><strong>Ways of increasing pressure:</strong> For a given thrust, pressure is increased by reducing the area. Example: Ends of nails or pins are pointed; cutting tools have sharp edges.</li>
+                <li><strong>Ways of decreasing pressure:</strong> For a given thrust, pressure is reduced by increasing the area. Example: Wide wooden sleepers below railway tracks; foundations of buildings are made wider than the walls.</li>
+            </ul>
+        </div>
+
+        <!-- ==================== SECTION 2 ==================== -->
+        <h2>2. Pressure in Fluids</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A transparent glass beaker filled with blue liquid. Three small circular holes are drilled vertically on the righ.png" alt="Pressure in Fluids">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Pressure in Fluids</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A transparent glass beaker filled with blue liquid. Three small circular holes are drilled vertically on the right side of the beaker at different depths (shallow, middle, deep). Blue water jets spurt out from all three holes simultaneously. The jet from the deepest hole shoots out the furthest horizontally along the surface, while the shallowest jet falls closest to the base. Clean shapes. IMPORTANT: You must include professional mathematical text labels. Label the depths as "h₁", "h₂", and "h₃". Add text "P = hρg" to show pressure increases with depth. Add horizontal vector arrows indicating the water jets' velocity.</p>
+        </div>
+        
+        <p>A substance which can flow is called a <strong>fluid</strong>. All liquids and gases are fluids. A solid exerts pressure only on the surface on which it is placed (at its bottom). However, a fluid exerts pressure on the bottom as well as on the walls of the container due to its tendency to flow. Thus, <strong>a fluid contained in a vessel exerts pressure at all points and in all directions</strong>.</p>
+        
+        <p><strong>Experimental Demonstration:</strong> Take a vessel filled with water and make several small holes in the wall. You will observe:</p>
+        <ol>
+            <li>Liquid spurts out through each hole, showing it exerts pressure on the walls.</li>
+            <li>A finger on the hole feels thrust, demonstrating thrust at all points below the free surface.</li>
+            <li>The lower the hole, the further the water reaches on the horizontal surface, showing that liquid pressure increases with depth.</li>
+        </ol>
+
+        <!-- ==================== SECTION 3 ==================== -->
+        <h2>3. Pressure Exerted by a Liquid Column ($P = h\rho g$)</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A cylindrical glass vessel filled with light blue fluid. Inside the fluid, a highlighted imaginary cylindrical co.png" alt="Liquid Column Derivation">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Liquid Column Derivation</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A cylindrical glass vessel filled with light blue fluid. Inside the fluid, a highlighted imaginary cylindrical column of the fluid is outlined in sleek dashed lines. A distinct red downward arrow indicates the weight of this imaginary column pressing down on its circular base. Minimalistic, strictly academic. IMPORTANT: You must include crisp mathematical text labels. Label the height as "h", the base area as "A", and the fluid density as "ρ". Label the red downward vector arrow as "Weight W = mg = Ahρg". Add a label at the base: "Pressure P = hρg". Do not clutter.</p>
+        </div>
+
+        <div class="formula-box">
+            <span class="formula-pill">DERIVATION</span>
+            <p>Consider a vessel containing a liquid of density $\rho$. To calculate pressure at depth $h$, consider a horizontal circular surface PQ of area $A$ at depth $h$ below the free surface. The pressure is due to the weight of the liquid column above PQ.</p>
+            $$ \text{Thrust} = \text{Volume} \times \text{density} \times g = (A \times h) \times \rho \times g = Ah\rho g $$
+            $$ P = \frac{\text{Thrust}}{\text{Area}} = \frac{Ah\rho g}{A} = h\rho g $$
+            <p>Total pressure at depth $h$ (including atmospheric pressure $P_0$):</p>
+            $$ \text{Total Pressure} = P_0 + h\rho g $$
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <p><strong>Factors affecting pressure at a point in a liquid:</strong></p>
+            <ol>
+                <li><strong>Depth (h):</strong> Directly proportional to depth below the free surface.</li>
+                <li><strong>Density ($\rho$):</strong> Directly proportional to the density of the liquid.</li>
+                <li><strong>Acceleration due to gravity (g):</strong> Directly proportional to g.</li>
+            </ol>
+            <p><em>Note: Pressure does NOT depend on the shape and size of the vessel, or the area of surface on which it acts.</em></p>
+        </div>
+
+        <!-- ==================== SECTION 4 ==================== -->
+        <h2>4. Laws of Liquid Pressure</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A 'communicating vessels' apparatus consisting of a single horizontal base tube connecting four vertical glass tu.png" alt="Laws of Liquid Pressure">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Laws of Liquid Pressure</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A 'communicating vessels' apparatus consisting of a single horizontal base tube connecting four vertical glass tubes of completely different shapes (one straight cylinder, one zigzag, one bulbous flask, one slanted tube). All tubes are filled with blue liquid. The free surface level of the liquid is at the exact same horizontal height across all the differently shaped tubes, demonstrating that liquid seeks its own level. Minimalist and clean. IMPORTANT: You must include professional mathematical text labels. Add a horizontal dashed line labeled "Same height (h)". Add labels "P₁", "P₂", "P₃", "P₄" at the bottom of each tube, and an equation "P₁ = P₂ = P₃ = P₄" to show equal pressure at the same depth.</p>
+        </div>
+        
+        <div class="pink-box">
+            <span class="box-label">Core Principle</span>
+            <ol>
+                <li>Inside the liquid, pressure increases with the increase in depth from its free surface.</li>
+                <li>In a stationary liquid, pressure is the same at all points on a horizontal plane.</li>
+                <li>Pressure is same in all directions about a point in liquid.</li>
+                <li>Pressure at the same depth is different in different liquids. It increases with the increase in density.</li>
+                <li>A liquid seeks its own level.</li>
+            </ol>
+        </div>
+
+        <!-- ==================== SECTION 5 ==================== -->
+        <h2>5. Some Consequences of Liquid Pressure</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A split-panel view. Left panel A cross-section of a massive concrete water dam holding a vast body of blue water..png" alt="Consequences of Pressure">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Consequences of Pressure</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A split-panel view. Left panel: A cross-section of a massive concrete water dam holding a vast body of blue water. The concrete dam wall is thin at the top and slopes outward to become extremely thick at the base. Graduated red horizontal arrows point from the water toward the dam, getting longer near the bottom. Right panel: A deep-sea diver in a heavy vintage metallic protective suit submerged deep underwater, with arrows pointing inward towards the suit from all directions indicating high pressure. No text clutter, but MUST include professional labels. Left panel: label the depth as "h" and add text "High Pressure (P = hρg)" near the thick bottom base. Right panel: label the inward arrows as "High Water Pressure" showing force vectors acting uniformly from all directions.</p>
+        </div>
+
+        <ul>
+            <li><strong>Sea water vs. River water:</strong> The pressure at a certain depth in sea water is more than that at the same depth in river water because the density of sea water is greater.</li>
+            <li><strong>Wall of a dam is made thicker at the bottom:</strong> Pressure increases with depth. A thicker wall at the base is required to withstand the immense pressure of the deep water.</li>
+            <li><strong>Water supply tank is placed high:</strong> Greater height of the tank means more pressure in the taps of a house, ensuring a good water supply.</li>
+            <li><strong>Diver's suit:</strong> Deep sea divers wear special suits made of glass-reinforced plastic or cast aluminum to withstand the immense water pressure which exceeds normal blood pressure.</li>
+            <li><strong>Size of gas bubble inside water:</strong> As a gas bubble rises from the bottom of a lake, it grows in size. The depth decreases as it rises, lowering the pressure around it. According to Boyle's law, a decrease in pressure causes the volume of the bubble to increase.</li>
+        </ul>
+
+        <!-- IN-TEXT PRACTICE -->
+        <div class="pyq-box">
+            <div class="pyq-header">&#9997; IN-TEXT PRACTICE</div>
+            <p class="pyq-q">Q. Calculate the pressure due to a water column of height 100 m. (Take $g = 10 \text{ m s}^{-2}$ and density of water $= 10^3 \text{ kg m}^{-3}$).</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Given:</strong> $h = 100 \text{ m}$, $\rho = 10^3 \text{ kg m}^{-3}$, $g = 10 \text{ m s}^{-2}$</div>
+                <div class="step-box"><strong>Formula:</strong> $\text{Pressure} = h\rho g$</div>
+                <div class="step-box"><strong>Calculation:</strong> $P = 100 \times 10^3 \times 10 = 10^6 \text{ N m}^{-2}$</div>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION 6 ==================== -->
+        <h2>6. Transmission of Pressure in Liquids; Pascal's Law</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A spherical glass flask is filled with blue water, featuring a top opening fitted with a black plunger, and multi.png" alt="Pascal's Law Demo" style="max-width: 65%; margin: 0 auto; display: block;">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Pascal's Law Demo</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A spherical glass flask is filled with blue water, featuring a top opening fitted with a black plunger, and multiple narrow glass nozzles protruding outward in all directions from the bulb. As the plunger is shown pushing down, identical jets of water spurt equally from every single nozzle, reaching the exact same distance, demonstrating equal transmission of pressure. Clean, minimalistic, strictly academic. IMPORTANT: You must include professional mathematical text labels. Label the plunger's downward force with a vector arrow and text "Applied Force F". Add text "P = F/A". Label the exiting jets with "Transmitted Pressure P" to clearly show equal transmission in all directions.</p>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <p><strong>Pascal's Law states:</strong> The pressure exerted anywhere in a confined liquid is transmitted equally and undiminished in all directions throughout the liquid.</p>
+            <p><strong>Demonstration:</strong> If a glass flask with narrow tubes on its sides is filled with water and fitted with a piston, pushing the piston down causes jets of water to spurt out from all tubes to the same height, showing equal transmission of pressure.</p>
+        </div>
+
+        <!-- ==================== SECTION 7 ==================== -->
+        <h2>7. Application of Pascal's Law & Hydraulic Machines</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A connected U-shaped hydraulic system filled with light blue fluid. The left side is a very narrow vertical cylin.png" alt="Hydraulic Machine Principle">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Hydraulic Machine Principle</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A connected U-shaped hydraulic system filled with light blue fluid. The left side is a very narrow vertical cylinder containing a small metallic piston being pushed down by a small red arrow. The right side is a very wide vertical cylinder containing a large metallic piston that is lifting a heavy red automobile upward. Minimalistic, precise physics visualization. IMPORTANT: You must include professional mathematical text labels. Label the small piston: "Area A₁", "Force F₁", and "Pressure P₁ = F₁/A₁". Label the large piston: "Area A₂", "Force F₂", and "Pressure P₂ = F₂/A₂". Add an equation label "P₁ = P₂" in the fluid.</p>
+        </div>
+
+        <p>Hydraulic machines such as the hydraulic press, hydraulic jack, and hydraulic brakes are based on Pascal's law.</p>
+
+        <div class="formula-box">
+            <span class="formula-pill">PRINCIPLE</span>
+            <p>A small force applied on a smaller piston is transmitted to produce a large force on a bigger piston.</p>
+            <p>Pressure on small piston (A): $P_1 = \frac{F_1}{A_1}$</p>
+            <p>Pressure on large piston (B): $P_2 = \frac{F_2}{A_2}$</p>
+            <p>By Pascal's Law: $P_1 = P_2 \implies \frac{F_1}{A_1} = \frac{F_2}{A_2}$</p>
+            $$ \frac{F_2}{F_1} = \frac{A_2}{A_1} $$
+            <p>Since $A_2 > A_1$, then $F_2 > F_1$. The machine acts as a force multiplier.</p>
+        </div>
+
+        <h3>Examples of Hydraulic Machines</h3>
+        <ol>
+            <li><strong>Hydraulic Press (Bramah Press):</strong> Consists of a pump plunger (small) and a press plunger/ram (large). Used for pressing cotton bales, extracting juice from sugarcane, squeezing oil from seeds, and engraving monograms.</li>
+            <li><strong>Hydraulic Jack:</strong> Used in service stations for lifting heavy vehicles like cars and trucks. A small effort on the handle opens a valve, pushing liquid to raise the larger platform piston.</li>
+            <li><strong>Hydraulic Brakes:</strong> Used in vehicles. A small force on the foot pedal pushes a piston in the master cylinder, transmitting pressure equally to the wheel cylinders, expanding brake shoes against the rim of the wheels.</li>
+        </ol>
+
+        <!-- IN-TEXT PRACTICE -->
+        <div class="pyq-box">
+            <div class="pyq-header">&#9997; IN-TEXT PRACTICE</div>
+            <p class="pyq-q">Q. In a hydraulic machine, the two pistons are of area of cross section in the ratio 1:10. What force is needed on the narrow piston to overcome a force of 100 N on the wider piston?</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Given:</strong> $A_1 : A_2 = 1 : 10$, $F_2 = 100 \text{ N}$</div>
+                <div class="step-box"><strong>Principle:</strong> $\frac{F_1}{A_1} = \frac{F_2}{A_2}$</div>
+                <div class="step-box"><strong>Calculation:</strong> $F_1 = F_2 \times \frac{A_1}{A_2} = 100 \times \frac{1}{10} = \mathbf{10 \text{ N}}$</div>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION 8 ==================== -->
+        <h2>8. Atmospheric Pressure & Its Demonstration</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A split panel showing two phases of the collapsing tin can experiment..png" alt="Collapsing Can Experiment">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Collapsing Can Experiment</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A split panel showing two phases of the collapsing tin can experiment. Left side: An open rectangular tin can heated over a bunsen burner, with steam actively exiting the top. Right side: The exact same tin can is now sealed with a cap and removed from the heat; cold water is pouring over it, and the can is visibly violently crumpled and crushed inward. Red arrows point inwards from all sides of the crushed can, representing atmospheric pressure. Clean. IMPORTANT: You must include professional text labels. Left side: label the steam with "Steam driving out air". Right side: label the inward red arrows as "Atmospheric Pressure (P_atm)" and add text "P_atm > Internal Pressure" to explicitly explain the crushing force.</p>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <p><strong>Atmospheric Pressure:</strong> The envelope of air around the earth is the atmosphere (up to ~300 km). The thrust exerted per unit area on the earth's surface due to the column of air is called atmospheric pressure.</p>
+            <p><strong>Value:</strong> Nearly $10^5 \text{ N m}^{-2}$ or 1 kgf/cm$^2$. We don't feel this enormous thrust because our blood pressure balances it.</p>
+        </div>
+
+        <p><strong>Demonstration (Collapsing Tin Can Experiment):</strong></p>
+        <ul>
+            <li>A thin tin can is filled with a small amount of water and boiled until steam expels all air.</li>
+            <li>The can is tightly stoppered, removed from the flame, and cold water is poured over it.</li>
+            <li><strong>Result:</strong> The can collapses inwards.</li>
+            <li><strong>Reason:</strong> The cold water condenses the steam into water, creating a very low pressure inside. The excess atmospheric pressure from outside crushes the can.</li>
+        </ul>
+
+        <!-- ==================== SECTION 9 ==================== -->
+        <h2>9. Common Consequences of Atmospheric Pressure</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/Examples of atmospheric pressure effects.png" alt="Atm Pressure Consequences">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Atm Pressure Consequences</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A triple-panel view. Panel 1: A transparent glass of orange juice with a clear straw, showing the liquid magically rising high up inside the straw. Panel 2: A medical syringe with its plunger pulled up, actively drawing blue fluid into the clear barrel from a small vial. Panel 3: A red rubber suction cup (sucker) firmly stuck flat against a vertical glass wall. In all panels, subtle downward red arrows indicate the invisible atmospheric pressure pushing the fluids up or the sucker in. Clean without clutter. IMPORTANT: You must include professional text labels. For all panels, label the downward/inward arrows as "Atmospheric Pressure (P_atm)". In the straw and syringe, label the empty space as "Low Pressure". For the suction cup, label the inner space as "Vacuum".</p>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <ol>
+                <li><strong>Sucking a drink with a straw:</strong> Air in the straw is sucked out, reducing internal pressure. The atmospheric pressure on the drink's surface forces the liquid up the straw.</li>
+                <li><strong>Filling a syringe:</strong> Pulling the plunger reduces air pressure inside the barrel. Atmospheric pressure forces the liquid into the syringe.</li>
+                <li><strong>Filling ink in a fountain pen:</strong> Squeezing the rubber tube expels air. Releasing it creates low pressure, and atmospheric pressure forces ink in.</li>
+                <li><strong>Rubber suckers:</strong> Pressing forces air out, creating a vacuum. Atmospheric pressure firmly holds the sucker against the smooth wall.</li>
+                <li><strong>Action of a Siphon System:</strong> A tube transfers liquid from a higher vessel to a lower one utilizing pressure difference and atmospheric pressure.</li>
+                <li><strong>Taking oil from a sealed can:</strong> Two holes are needed. One to pour oil, and the other to let air in so atmospheric pressure can force the oil out.</li>
+            </ol>
+        </div>
+
+        <!-- ==================== SECTION 10 ==================== -->
+        <h2>10. Measurement of Atmospheric Pressure</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/Mercury barometer scientific illustration.png" alt="Simple Barometer" style="max-width: 65%; margin: 0 auto; display: block;">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Simple Barometer</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A Torricelli simple mercury barometer setup. A glass bowl (trough) containing highly reflective liquid silver mercury, with a long, thick transparent glass tube inverted into it. The mercury column is suspended high inside the tube. Downward red arrows forcefully press on the exposed mercury pool in the trough. A subtle dashed line marks the empty space at the very top of the sealed tube. Minimalist and academic. IMPORTANT: You must include precise scientific labels. Label the downward arrows on the trough as "Atmospheric Pressure (P_atm)". Label the mercury column height as "h = 76 cm of Hg". Label the empty top space as "Torricellian Vacuum (P = 0)".</p>
+        </div>
+
+        <p>An instrument used to measure atmospheric pressure is called a <strong>barometer</strong>.</p>
+
+        <h3>(i) Simple Barometer (Torricelli's Barometer)</h3>
+        <ul>
+            <li><strong>Construction:</strong> A 1m long glass tube, closed at one end, filled completely with pure mercury. The open end is inverted into a trough of mercury.</li>
+            <li><strong>Working:</strong> The mercury column falls to a height where its weight balances the atmospheric pressure acting on the trough's surface. At sea level, this <strong>barometric height</strong> is normally <strong>0.76 m (76 cm)</strong> of Hg.</li>
+            <li><strong>Torricellian Vacuum:</strong> The empty space above the mercury column. Ideally, it contains no air.</li>
+        </ul>
+
+        <div class="yellow-box">
+            <span class="box-label">Important</span>
+            <p><strong>Why is Mercury preferred over Water?</strong></p>
+            <ul>
+                <li><strong>High Density:</strong> Mercury's density ($13.6 \times 10^3 \text{ kg m}^{-3}$) is much higher than water, so only a 0.76m tube is needed instead of a highly inconvenient 10.34m tube for water.</li>
+                <li><strong>Vapour Pressure:</strong> Mercury's vapour pressure is negligible, preserving vacuum accuracy.</li>
+                <li><strong>Visibility & Wetting:</strong> Mercury is opaque, shiny, and does not stick to or wet glass.</li>
+            </ul>
+        </div>
+
+        <h3>(ii) Fortin Barometer & (iii) Aneroid Barometer</h3>
+        <ul>
+            <li><strong>Demerits of Simple Barometer:</strong> No protection, trough is open to impurities, difficult to transport, and attaching a fixed scale is hard because the trough level changes.</li>
+            <li><strong>Fortin Barometer:</strong> Modified for lab use. Protects the tube in a brass case, encloses mercury in a leather cup with an adjustment screw to align the mercury level with a zero mark (ivory pointer). Features a vernier scale for precise reading.</li>
+            <li><strong>Aneroid Barometer:</strong> Has no liquid. Portable and reads directly. Contains a partially evacuated, corrugated metallic box (diaphragm). Atmospheric pressure changes cause the box to compress or bulge, moving a lever system attached to a pointer over a scale.</li>
+        </ul>
+
+        <!-- ==================== SECTION 11 ==================== -->
+        <h2>11. Variation of Atmospheric Pressure with Altitude</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A cross-section illustration of a towering mountain peak reaching into the sky..png" alt="Pressure Variation with Altitude">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Pressure Variation with Altitude</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A cross-section illustration of a towering mountain peak reaching into the sky. Thousands of small blue dots represent air molecules: they are extremely densely packed at the bottom of the mountain (sea level) and progressively become very sparse and spread out near the mountain peak. Two simple pressure gauge dial icons are integrated into the scene: one reading high at the bottom, and one reading low at the summit. Clean. IMPORTANT: You must include professional text labels. Add a label at sea level reading "High Density, High Atmospheric Pressure". Add a label at the peak reading "Low Density, Low Atmospheric Pressure".</p>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">Core Principle</span>
+            <p>The atmospheric pressure <strong>decreases with altitude</strong> (non-linearly). At Mount Everest, it is only 30% of sea-level pressure.</p>
+            <p><strong>Reasons:</strong></p>
+            <ol>
+                <li>Decrease in the height of the air column above.</li>
+                <li>Decrease in the density of air (density is highest near the surface due to compression and rapidly drops off at higher altitudes).</li>
+            </ol>
+        </div>
+
+        <p><strong>Consequences of High Altitude:</strong></p>
+        <ul>
+            <li><strong>Nose bleeding:</strong> Atmospheric pressure is less than internal blood pressure, causing vessels to burst.</li>
+            <li><strong>Fountain pens leak:</strong> Internal air pressure inside the pen forces the ink out due to lower external pressure.</li>
+        </ul>
+
+        <!-- ==================== SECTION 12 ==================== -->
+        <h2>12. Weather Forecast by Barometer & Altimeter</h2>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A sleek, modern aneroid barometer circular dial. The dial has a clean metallic needle pointing dynamically to a d.png" alt="Weather Forecasting" style="max-width: 65%; margin: 0 auto; display: block;">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Weather Forecasting</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, 3D landscape academic diagram on a pure white (#ffffff) background. A sleek, modern aneroid barometer circular dial. The dial has a clean metallic needle pointing dynamically to a dark stormy cloud with lightning icon on the far left (indicating low pressure / sudden fall), transitioning to a bright yellow sun icon on the far right (indicating high pressure / dry weather). The design is minimalist, utilizing flat vector styling with sharp contrast. No text clutter, but MUST include professional text labels. Label the stormy side with "Low Pressure (Sudden Fall)" and the sunny side with "High Pressure (Gradual Rise)".</p>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <p><strong>Weather Forecasting Rules:</strong></p>
+            <ul>
+                <li><strong>Sudden fall:</strong> Indicates the coming of a storm or cyclone.</li>
+                <li><strong>Gradual fall:</strong> Indicates increasing moisture (possibility of rain).</li>
+                <li><strong>Gradual rise:</strong> Indicates decreasing moisture (coming of dry weather).</li>
+                <li><strong>Sudden rise:</strong> Indicates coming of an extremely dry weather.</li>
+                <li><strong>No abrupt change:</strong> Indicates weather will remain unchanged.</li>
+            </ul>
+        </div>
+
+        <p><strong>Altimeter:</strong> An altimeter is a modified aneroid barometer used in aircraft. Since atmospheric pressure drops with height, the scale is calibrated directly in terms of altitude (height of ascent) instead of pressure.</p>
+
+        <!-- IN-TEXT PRACTICE -->
+        <div class="pyq-box">
+            <div class="pyq-header">&#9997; IN-TEXT PRACTICE</div>
+            <p class="pyq-q">Q. The atmospheric pressure at a place is 75 cm of Hg. Express it in $\text{N m}^{-2}$. (Density of Hg $= 13.6 \times 10^3 \text{ kg m}^{-3}$, $g = 9.8 \text{ m s}^{-2}$)</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Given:</strong> $h = 75 \text{ cm} = 0.75 \text{ m}$, $g = 9.8 \text{ m s}^{-2}$, $\rho = 13.6 \times 10^3 \text{ kg m}^{-3}$</div>
+                <div class="step-box"><strong>Formula:</strong> $P = h\rho g$</div>
+                <div class="step-box"><strong>Calculation:</strong> $P = 0.75 \times (13.6 \times 10^3) \times 9.8 = \mathbf{9.996 \times 10^4 \text{ N m}^{-2}}$</div>
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <style>
+                .dark-mode .vardaan-logo { filter: invert(1); }
+                .dark-mode .powered-by-brand { color: #ffffff !important; }
+            </style>
+            <div class="created-by">Created by Team Vardaan with <span class="heart-red" aria-hidden="true">&hearts;</span></div>
+            <div class="powered-by" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;">
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+        </div>
+
     </div>
-    
+
+    <!-- THEME TOGGLE SCRIPT -->
     <script>
         function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
-        }
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark-mode');
+            document.documentElement.classList.toggle('dark-mode');
         }
     </script>
 </body>
 </html>
-
-
-

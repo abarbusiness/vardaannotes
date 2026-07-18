@@ -3,11 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 05: Upthrust in Fluids Archimedes Principle and Floatation - Vardaan Master Notes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- FORMAT: Chapter Name - Subject -->
+    <title>Upthrust and Floatation - Vardaan Learning Institute</title>
+    
+    <!-- Robust MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
@@ -16,67 +29,756 @@
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
             --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0 }
-        body { background: #fff; color: #000; font-family: 'Outfit', sans-serif; line-height: 1.7 }
-        html { transition: filter .3s }
-        html.dark-mode { filter: invert(1) hue-rotate(180deg) }
-        .watermark-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 9999 }
-        .watermark-image { width: 600px; max-width: 80%; opacity: 0.05 }
-        html.dark-mode .watermark-image { opacity: 0.08 !important }
-        .paper-sheet { background: #fff; width: 210mm; max-width: 100%; margin: 0 auto; padding: 20mm; position: relative; z-index: 10 }
-        .theme-toggle { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
-        html.dark-mode .theme-toggle { filter: invert(1) hue-rotate(180deg); background: #e0e0e0; }
-        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* MathJax CSS Overrides to ensure clean fractions and prevent overlapping */
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            display: inline-block !important;
+            vertical-align: middle;
+            line-height: normal !important; /* Critical fix for fraction overlapping */
+            margin: 0 2px;
+        }
+
+        mjx-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        mjx-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen; 
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1); 
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px; 
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.1rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666; 
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer{text-align:center;margin-top:60px;padding-top:20px;border-top:1px solid var(--toggle-border);color:var(--meta-text)}.top-branding-note{display:flex;align-items:center;justify-content:center;gap:10px;margin:10px 0 12px;padding:8px 0 0;white-space:nowrap;color:var(--meta-text)}.chapter-name-banner{text-align:center;margin:6px 0 0;padding:0;background:transparent;border:none}.chapter-name-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--pink-border);text-transform:uppercase;letter-spacing:.6px}.created-by{font-size:1rem;margin-bottom:5px;font-weight:normal}.powered-by{font-size:.9rem;color:var(--pink-border);font-style:italic}.powered-by-label{font-family:Georgia,'Times New Roman',serif;font-style:italic;color:var(--pink-border);letter-spacing:.3px}.powered-by-brand{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:bold;color:#000;letter-spacing:1px;text-transform:uppercase}
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box { background-color: var(--blue-bg); border: 2px solid var(--blue-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .green-box { background-color: var(--green-bg); border: 2px solid var(--green-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .yellow-box { background-color: var(--yellow-bg); border: 2px solid var(--yellow-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+        .pink-box { background-color: var(--pink-bg); border: 2px solid var(--pink-border); border-radius: 8px; padding: 20px; margin: 25px 0; position: relative; }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+        .pink-box .box-label { color: var(--pink-border); border-color: var(--pink-border); }
+
+        /* --- COMPONENT STYLES (Formulas, PYQs, Images) --- */
+        .formula-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.08);
+            text-align: center;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--blue-border);
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+        
+        .pyq-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--text-main);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .pyq-box .pyq-q {
+            font-weight: 700;
+            color: var(--pink-border);
+            margin-bottom: 0.5rem;
+        }
+
+        .pyq-header {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background-color: var(--yellow-border);
+            color: #000;
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid var(--yellow-border);
+            border-radius: 4px;
+            margin-bottom: 0;
+        }
+
+        .step-box {
+            margin: 0.5rem 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .step-box strong {
+            color: var(--pink-border);
+        }
+
+        /* --- AI IMAGE PROMPT BOX --- */
+        .ai-image-prompt {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .ai-image-prompt img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            mix-blend-mode: multiply;
+        }
+
+        html.dark-mode .ai-image-prompt img {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        .ai-image-prompt p {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin: 0;
+            font-style: italic;
+            display: none;
+        }
+
+        .ai-image-prompt strong {
+            color: var(--blue-border);
+            font-style: normal;
+            display: none;
+        }
+
+        /* Data Tables */
+        .note-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .note-table th, .note-table td {
+            border: 1px solid var(--toggle-border);
+            padding: 10px;
+            text-align: center;
+        }
+        .note-table th {
+            background-color: var(--blue-bg);
+            color: var(--blue-border);
+            font-weight: bold;
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
         .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
         html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
         html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
-        h1 { font-size: 2.5rem; font-weight: 700; text-align: center; color: #6a1b9a; margin-bottom: .5rem }
-        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 2px solid #6a1b9a; padding-bottom: .5rem; color: #6a1b9a }
-        h3 { font-size: 1.2rem; font-weight: 500; margin-top: 1.5rem; color: #7b1fa2 }
-        p, li { margin-bottom: .8rem }
-        ul, ol { padding-left: 1.5rem }
-        .definition-box, .rule-box, .analysis-box { background: #ffffff; padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
-        .derivation-box { background: #f3e5f5; padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
-        .highlight-formula { background-color: #ffffff; border: 2px solid #7b1fa2; border-radius: 6px; padding: 10px; margin: 10px 0; display: inline-block; font-weight: bold; }
-        .master-tip { border: 2px dashed #d32f2f; padding: 1.5rem; margin: 1.5rem 0; background: #ffebee; font-style: italic }
-        @media print { html.dark-mode { filter: none !important } .theme-toggle { display: none } .paper-sheet { width: 100%; padding: 10mm } }
+
+        /* --- STRICT PRINT CONFIGURATION --- */
+        @media print {
+            body { 
+                background-color: #ffffff !important; 
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+            
+            .paper-sheet { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                box-shadow: none !important;
+            }
+
+            .theme-toggle, 
+            .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .branding-header{background-color:#fff!important;border-bottom:2px solid var(--blue-border)!important;padding:10px 0!important;display:flex;flex-direction:column;justify-content:center;align-items:center}
+
+            .watermark-overlay{display:flex!important;position:fixed!important;z-index:999!important;opacity:.8!important;mix-blend-mode:multiply!important;left:0!important;top:0!important;width:100%!important;height:100%!important;pointer-events:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+            .watermark-image{filter:none!important;max-width:70%!important;opacity:.2!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+
+            @page {
+                size: A4;
+                margin: 2cm;
+                
+                @bottom-left { content: none; }
+                @bottom-right { content: none; }
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60; 
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .paper-sheet {
+                width: 100%;
+                padding: 15px;
+            }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="watermark-overlay"><img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image"></div>
+
+    <!-- COMPONENT: Watermark (Do Not Modify URL) -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
     </button>
 
+    <!-- MAIN CONTAINER -->
     <div class="paper-sheet">
-        <h1>Upthrust in Fluids Archimedes Principle and Floatation</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">ICSE Class 9 Physics • Chapter 05</p>
+        
+        <!-- BRANDING HEADER (MANDATORY) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
+        </div>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Upthrust in Fluids, Archimedes' Principle and Floatation</h1>
+        </div>
+        <p class="chapter-subtitle" style="text-align:center;color:var(--meta-text);margin-bottom:20px;font-style:italic">ICSE Class 9 Physics &bull; Chapter 5 &bull; Comprehensive Chapter Notes</p>
 
-        <div class="rule-box">
-            <p><strong>Chapter Overview</strong></p>
-            <p>This chapter covers the fundamental concepts of <strong>Upthrust in Fluids Archimedes Principle and Floatation</strong>. Comprehensive notes will be added soon.</p>
+        <h2>(A) Upthrust and Archimedes' Principle</h2>
+        
+        <h3>5.1 Buoyancy and Upthrust</h3>
+        
+        <div class="ai-image-prompt">
+            <img src="Images/A split panel. Left Panel A human hand pushing an empty sealed tin can downwards into a transparent tub.png" alt="Buoyancy and Upthrust">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Buoyancy and Upthrust</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. A split panel. Left Panel: A human hand pushing an empty sealed tin can downwards into a transparent tub of blue water, with upward translucent ripples indicating resistance. Right Panel: A solid block perfectly submerged in blue water, showing a distinct red downward arrow labeled 'W' (Weight) starting from its center, and a distinct blue upward arrow labeled 'F_B' (Upthrust) acting upwards from the same center. Minimalist and strictly academic. IMPORTANT: You must include professional mathematical text labels. On the block, label the red downward arrow as "Weight W = mg" and the blue upward arrow as "Upthrust F_B". Do not clutter.</p>
         </div>
 
-        <div class="master-tip">
-            <p><strong>Study Tip:</strong> Chapter notes content coming soon!</p>
+        <div class="blue-box">
+            <span class="box-label">Concept</span>
+            <p>When a body is partially or wholly immersed in a liquid, an upward force acts on it. This upward force is known as <strong>upthrust</strong> or <strong>buoyant force</strong> ($F_B$).</p>
+            <p><strong>Buoyancy:</strong> The property of a liquid to exert an upward force on a body immersed in it.</p>
+            <p><strong>Unit:</strong> Upthrust, being a force, is measured in <strong>newton (N)</strong> or <strong>kgf</strong>.</p>
         </div>
+
+        <p><strong>Experimental Demonstrations:</strong></p>
+        <ul>
+            <li><strong>Pushing an empty can into water:</strong> An empty sealed can floats on water. Pushing it down requires force. The further it is pushed, the greater the upward force felt. If released, it bounces back to the surface.</li>
+            <li><strong>Pushing a cork into water:</strong> A cork floats with roughly 2/5th of its volume inside. Pushing it inside requires downward force, and it rises back up when released due to buoyant force.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Fact</span>
+            <p><strong>Condition for a body to float or sink:</strong> When a body is immersed in a fluid, two forces act: (i) <strong>Weight ($W$)</strong> acting vertically downwards. (ii) <strong>Upthrust ($F_B$)</strong> acting vertically upwards.</p>
+            <ul>
+                <li>If <strong>$F'_B > W$</strong> or <strong>$F'_B = W$</strong>, the body will <strong>float</strong>. ($F'_B$ is max upthrust when fully immersed).</li>
+                <li>If <strong>$F'_B < W$</strong>, the body will <strong>sink</strong>.</li>
+            </ul>
+            <p><em>Note: Gases also exert upthrust. A hydrogen balloon rises because the upthrust of the surrounding air is greater than the balloon's weight.</em></p>
+        </div>
+
+        <h3>5.2 Characteristic Properties of Upthrust</h3>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A block floating in blue liquid with exactly half of its volume submerged. A red dot labeled 'G' (Cente.png" alt="Center of Buoyancy" style="max-width: 65%; margin: 0 auto; display: block;">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Center of Buoyancy</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. A block floating in blue liquid with exactly half of its volume submerged. A red dot labeled 'G' (Center of Gravity) is perfectly in the geometric center of the entire block. A blue dot labeled 'B' (Center of Buoyancy) is positioned lower, exactly at the geometric center of the *submerged* portion of the block. A red arrow points down from G, and a blue arrow points up from B. Minimalist, precise physics visualization. IMPORTANT: You must include professional mathematical text labels. Label the red dot "G (Center of Gravity)" and its downward arrow "W = mg". Label the blue dot "B (Center of Buoyancy)" and its upward arrow "F_B". Do not clutter.</p>
+        </div>
+
+        <ul>
+            <li><strong>Larger the volume of body submerged, greater is the upthrust:</strong> A bunch of feathers and a pebble of the same mass fall differently in air. The pebble falls faster because its volume is smaller, so it experiences less upthrust from air than the larger bunch of feathers.</li>
+            <li><strong>For the same volume inside the fluid, more the density of fluid, greater is the upthrust:</strong> A cork requires more downward force to be completely immersed in glycerine (denser) than in water (less dense).</li>
+            <li><strong>The upthrust acts upwards at the centre of buoyancy:</strong> The centre of buoyancy is the centre of gravity of the <em>displaced fluid</em> (i.e., the submerged part of the body). For a fully immersed uniform body, it coincides with the centre of gravity of the body.</li>
+        </ul>
+
+        <h3>5.3 Reason for Upthrust</h3>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A transparent cylindrical body is perfectly submerged vertically inside a blue liquid. Downward short r.png" alt="Reason for Upthrust">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Reason for Upthrust</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. A transparent cylindrical body is perfectly submerged vertically inside a blue liquid. Downward short red arrows point to the top circular face (labeled P1). Upward long red arrows point to the bottom circular face (labeled P2), indicating a pressure difference due to depth. Horizontal arrows on the curved sides are equal and opposing each other to show lateral cancellation. Clean, academic layout. IMPORTANT: You must include professional mathematical text labels. Label the top face "Pressure P₁ = h₁ρg", the bottom face "Pressure P₂ = h₂ρg". Add an equation "P₂ > P₁" and label the net upward force as "Upthrust F_B = (P₂ - P₁)A".</p>
+        </div>
+
+        <p>A liquid exerts pressure at all points. Pressure increases with depth. When a body is immersed in a liquid, the pressure $P_2$ exerted upwards on its lower face (at greater depth) is strictly greater than the pressure $P_1$ exerted downwards on its upper face (at lesser depth). The difference in pressure $(P_2 - P_1)$ creates a net upward force, which is the <strong>upthrust</strong>.</p>
+        <p><em>Note: Thrust on the side walls neutralises as they are equal and opposite. A thin lamina experiences negligible upthrust as upper and lower depths are practically the same.</em></p>
+
+        <h3>5.4 Upthrust is Equal to the Weight of Displaced Liquid (Mathematical Proof)</h3>
+
+        <div class="formula-box">
+            <span class="formula-pill">DERIVATION</span>
+            <p>Consider a cylindrical body PQRS of cross-sectional area $A$ immersed in a liquid of density $\rho$. Let top surface PQ be at depth $h_1$ and bottom RS at depth $h_2$.</p>
+            <p>Downward thrust on top surface: $F_1 = P_1 \times A = h_1 \rho g A$</p>
+            <p>Upward thrust on bottom surface: $F_2 = P_2 \times A = h_2 \rho g A$</p>
+            <p>Resultant upward thrust (Buoyant Force):</p>
+            $$ F_B = F_2 - F_1 = (h_2 - h_1)\rho g A $$
+            <p>Since $A(h_2 - h_1) = V$ (volume of submerged part of body):</p>
+            $$ F_B = V \rho g $$
+            <p>Since $V \rho g = \text{mass of displaced liquid} \times g = \text{Weight of displaced liquid}$.</p>
+            <strong>Upthrust = Weight of the liquid displaced by the submerged part of the body.</strong>
+        </div>
+
+        <p><strong>Effect of Upthrust:</strong> A body appears to weigh less in a liquid than its actual weight. For example, lifting a bucket of water from a well feels easier as long as the bucket is inside the water.</p>
+
+        <h3>5.5 Archimedes' Principle</h3>
+        <div class="blue-box">
+            <span class="box-label">Statement <span class="exam-key">ICSE</span></span>
+            <em>"When a body is immersed partially or completely in a liquid, it experiences an upthrust, which is equal to the weight of the liquid displaced by it."</em>
+        </div>
+
+        <h3>5.6 Experimental Verification of Archimedes' Principle</h3>
+
+        <div class="ai-image-prompt">
+            <img src="Images/Eureka can setup.png" alt="Eureka Can Verification">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Eureka Can Verification</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. An Archimedes principle verification setup. A metallic cylindrical weight is suspended from a vertical mechanical spring balance. The weight is completely submerged in a water-filled Eureka can (displacement can). The displaced water is flowing out from the can't side spout and collecting neatly into a small glass measuring cylinder resting next to it. Clean, academic 3D vector style. IMPORTANT: You must include professional mathematical text labels. Label the spring balance reading as "Apparent Weight". Label the displaced water in the cylinder as "Weight of Displaced Liquid". Add an equation label "Upthrust = Weight of Displaced Liquid".</p>
+        </div>
+
+        <ul>
+            <li><strong>Experiment (Eureka Can):</strong> Suspend a solid from a spring balance and note its weight in air (e.g., 300 gf).</li>
+            <li>Fill a Eureka can up to its spout and place a measuring cylinder under it.</li>
+            <li>Immerse the solid completely in the can. The spring balance reads less (e.g., 200 gf), meaning loss in weight = 100 gf.</li>
+            <li>The volume of water displaced into the cylinder will be $100 \text{ cm}^3$. Since density of water is $1 \text{ g cm}^{-3}$, the weight of displaced water is 100 gf.</li>
+            <li><strong>Conclusion:</strong> Loss in weight (Upthrust) = Weight of water displaced.</li>
+        </ul>
+
+        <h3>5.7 Floatation based on Density</h3>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A brown wooden cork is shown floating happily at the very top surface of the water, partially submerge.png" alt="Density Float/Sink Demo">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Density Float/Sink Demo</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. A large transparent glass beaker filled with blue water. An iron nail is shown resting entirely on the bottom of the beaker (sinking). A brown wooden cork is shown floating happily at the very top surface of the water, partially submerged. Minimalist academic demonstration. IMPORTANT: You must include professional mathematical text labels. Next to the sunken nail, add label "Density ρ_solid > ρ_liquid (Sinks)". Next to the floating cork, add label "Density ρ_solid < ρ_liquid (Floats)". Add downward "W" and upward "F_B" vectors on both objects.</p>
+        </div>
+
+        <p>Let a body of volume $V$ and density $\rho$ be fully immersed in a liquid of density $\rho_L$. Weight $W = V \rho g$, Max upthrust $F'_B = V \rho_L g$.</p>
+        <div class="green-box">
+            <span class="box-label">Conditions</span>
+            <ol>
+                <li>If $\rho > \rho_L$, $W > F'_B$. The body will <strong>sink</strong>. (e.g., Iron nail in water).</li>
+                <li>If $\rho = \rho_L$, $W = F'_B$. The body will <strong>float</strong> fully submerged. Net force is zero.</li>
+                <li>If $\rho < \rho_L$, $W < F'_B$ (if forced to submerge). The body will <strong>float</strong> with a part of it submerged such that upthrust equals weight. (e.g., Cork in water).</li>
+            </ol>
+        </div>
+
+        <div class="pyq-box">
+            <div class="pyq-header">&#9997; IN-TEXT PRACTICE (NUMERICALS)</div>
+            <p class="pyq-q">Q1. A body weighs 200 gf in air and 190 gf when completely immersed in water. Calculate (i) loss in weight, (ii) upthrust.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>(i) Loss in weight:</strong> $200 \text{ gf} - 190 \text{ gf} = \mathbf{10 \text{ gf}}$</div>
+                <div class="step-box"><strong>(ii) Upthrust:</strong> Upthrust = Loss in weight = $\mathbf{10 \text{ gf}}$</div>
+            </div>
+
+            <p class="pyq-q">Q2. A piece of iron of density $7.8 \times 10^3 \text{ kg m}^{-3}$ and volume $100 \text{ cm}^3$ is completely immersed in water ($\rho = 1000 \text{ kg m}^{-3}$). Calculate: (i) weight of iron piece in air, (ii) upthrust, (iii) apparent weight in water. ($g = 10 \text{ m s}^{-2}$)</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Given:</strong> $V = 100 \text{ cm}^3 = 10^{-4} \text{ m}^3$</div>
+                <div class="step-box"><strong>(i) Weight in air:</strong> $W = V \rho_{\text{iron}} g = 10^{-4} \times (7.8 \times 10^3) \times 10 = \mathbf{7.8 \text{ N}}$</div>
+                <div class="step-box"><strong>(ii) Upthrust:</strong> $F_B = V \rho_{\text{water}} g = 10^{-4} \times 1000 \times 10 = \mathbf{1 \text{ N}}$</div>
+                <div class="step-box"><strong>(iii) Apparent Weight:</strong> $W_{\text{app}} = W - F_B = 7.8 - 1 = \mathbf{6.8 \text{ N}}$</div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>(B) Relative Density and Its Measurement by Archimedes' Principle</h2>
+        
+        <h3>5.8 Density</h3>
+        <p>The density of a substance is its mass per unit volume.</p>
+        <div class="formula-box">
+            <span class="formula-pill">FORMULA</span>
+            $$ \text{Density } (\rho) = \frac{\text{Mass } (M)}{\text{Volume } (V)} $$
+            <p><strong>Units:</strong> S.I. unit is <strong>kg m$^{-3}$</strong>. C.G.S. unit is <strong>g cm$^{-3}$</strong>.</p>
+            <p><strong>Conversion:</strong> $1 \text{ g cm}^{-3} = 1000 \text{ kg m}^{-3}$.</p>
+        </div>
+        <p><strong>Effect of Temperature:</strong> Density decreases with heating (expansion) and increases with cooling. Exception: <strong>Water</strong>. The density of water is maximum at $4^{\circ}\text{C}$, equal to $1 \text{ g cm}^{-3}$ or $1000 \text{ kg m}^{-3}$.</p>
+
+        <h3>5.9 Relative Density (R.D.)</h3>
+        <div class="blue-box">
+            <span class="box-label">Definition</span>
+            <p>The relative density (R.D.) of a substance is the ratio of the density of that substance to the density of water at $4^{\circ}\text{C}$.</p>
+            $$ R.D. = \frac{\text{Density of substance } (\rho_s)}{\text{Density of water at } 4^{\circ}\text{C } (\rho_w)} $$
+            <p>Alternatively: $R.D. = \frac{\text{Mass of substance}}{\text{Mass of an equal volume of water at } 4^{\circ}\text{C}}$</p>
+            <p><strong>Unit:</strong> R.D. is a pure ratio and has <strong>no unit</strong>.</p>
+        </div>
+
+        <p><strong>Relationship:</strong> Density in $\text{g cm}^{-3}$ is numerically equal to R.D. Density in $\text{kg m}^{-3} = (R.D.) \times 1000$.</p>
+
+        <h3>5.10 & 5.11 Determination of R.D. by Archimedes' Principle</h3>
+
+        <div class="ai-image-prompt">
+            <img src="Images/traditional dual-pan physical laboratory balance. The left pan holds standard metallic weights. From th.png" alt="Measuring Relative Density">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Measuring Relative Density</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. A traditional dual-pan physical laboratory balance. The left pan holds standard metallic weights. From the right hook, a solid dark weight is suspended by a string. This solid is perfectly submerged in a glass beaker of water. Crucially, the beaker is resting independently on a small wooden bridge that straddles *over* the balance pan without touching the pan itself. Professional laboratory setup, clean, strictly academic. IMPORTANT: You must include professional mathematical text labels. Label the solid suspended in water as "Weight in Water (W₂)". Label the weights on the other pan as "Apparent Weight". Add an equation label "Loss of Weight = W₁ - W₂" pointing to the submerged solid.</p>
+        </div>
+
+        <div class="formula-box">
+            <span class="formula-pill">MEASUREMENT</span>
+            <p><strong>R.D. of a Solid (denser than water, insoluble):</strong></p>
+            $$ R.D. = \frac{\text{Weight of solid in air}}{\text{Loss of weight in water}} = \frac{W_1}{W_1 - W_2} $$
+            <p><em>(If soluble in water, weigh in a liquid where it is insoluble, and multiply the ratio by R.D. of that liquid).</em></p>
+            <p><strong>R.D. of a Liquid:</strong></p>
+            $$ R.D. = \frac{\text{Loss of weight of a solid in liquid}}{\text{Loss of weight of same solid in water}} = \frac{W_1 - W_2}{W_1 - W_3} $$
+            <p>Where $W_1$ is weight of solid in air, $W_2$ in liquid, and $W_3$ in water.</p>
+        </div>
+
+        <div class="pyq-box">
+            <div class="pyq-header">&#9997; IN-TEXT PRACTICE</div>
+            <p class="pyq-q">Q. A solid weighs 50 gf in air and 44 gf when completely immersed in water. Calculate (i) upthrust, (ii) volume of solid, (iii) R.D. of solid.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>(i) Upthrust:</strong> $W_1 - W_2 = 50 - 44 = \mathbf{6 \text{ gf}}$</div>
+                <div class="step-box"><strong>(ii) Volume:</strong> Weight of water displaced = 6 gf. Density of water = $1 \text{ g cm}^{-3}$, so volume displaced = $6 \text{ cm}^3$. Therefore, volume of solid = $\mathbf{6 \text{ cm}^3}$.</div>
+                <div class="step-box"><strong>(iii) R.D.:</strong> $\frac{W_1}{W_1 - W_2} = \frac{50}{6} = \mathbf{8.33}$</div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>(C) Floatation</h2>
+
+        <h3>5.12 Principle of Floatation</h3>
+
+        <div class="ai-image-prompt">
+            <img src="Images/Three identical glass beakers side-by-side, each filled with blue liquid. Beaker 1 A solid block sunken.png" alt="Cases of Floatation">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Cases of Floatation</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. Three identical glass beakers side-by-side, each filled with blue liquid. Beaker 1: A solid block sunken entirely to the bottom floor. Beaker 2: A solid block floating completely submerged, hovering just below the liquid surface. Beaker 3: A solid block floating partially above the liquid surface. Clean academic physics diagram. IMPORTANT: You must include professional mathematical text labels. Beaker 1: label "W > F_B (Sinks)". Beaker 2: label "W = F_B (Submerged)". Beaker 3: label "W = F_B (Partially Submerged)". Include vector arrows for W and F_B on each block.</p>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Core Principle <span class="exam-key">ICSE</span></span>
+            <em>"According to the principle of floatation, the weight of a floating body is equal to the weight of the liquid displaced by its submerged part."</em>
+            $$ W = F_B $$
+            <p>Therefore, the <strong>apparent weight of a floating body is zero.</strong></p>
+        </div>
+
+        <h3>5.13 Relation Between Volume of Submerged Part and Densities</h3>
+        <p>Let $V$ = total volume, $v$ = submerged volume, $\rho_s$ = density of solid, $\rho_L$ = density of liquid.</p>
+        <p>Weight of body $W = V \rho_s g$. Upthrust $F_B = v \rho_L g$. For floatation, $W = F_B$:</p>
+        <div class="formula-box">
+            <span class="formula-pill">RELATION</span>
+            $$ V \rho_s g = v \rho_L g \implies \frac{v}{V} = \frac{\rho_s}{\rho_L} $$
+            <p><strong>Volume of immersed part / Total volume = Density of body / Density of liquid.</strong></p>
+        </div>
+        <p><em>Example:</em> An iceberg ($\rho = 0.917 \text{ g cm}^{-3}$) in water ($\rho = 1 \text{ g cm}^{-3}$) will have $\frac{v}{V} = \frac{0.917}{1} = 91.7\%$ of its volume submerged.</p>
+
+        <h3>5.14 Applications of the Principle of Floatation</h3>
+
+        <div class="ai-image-prompt">
+            <img src="Images/A triple-panel view of floatation applications. Panel 1 A massive metallic cargo ship floating stably o.png" alt="Floatation Applications">
+            <div class="image-caption" style="font-size: 0.95rem; color: var(--meta-text); margin-top: -5px; font-style: italic; text-align: center; letter-spacing: 0.5px;">Fig. - Floatation Applications</div>
+            <p><strong>AI Image Prompt:</strong> A highly professional, landscape academic diagram on a pure white (#ffffff) background. A triple-panel view of floatation applications. Panel 1: A massive metallic cargo ship floating stably on water. Panel 2: A submarine submerged with its periscope above water, showing internal red-shaded ballast tanks. Panel 3: A massive iceberg floating with roughly 90% of its bulk hidden deep underwater. Clean, professional 3D vector style. IMPORTANT: You must include professional text labels. Panel 1: Label the ship with "Average Density < Water". Panel 2: Label submarine ballast tanks with "Variable Density". Panel 3: Label the iceberg with "ρ_ice < ρ_water" and "90% Submerged". Include vector arrows for "W" and "F_B" balancing each other.</p>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Applications</span>
+            <ol>
+                <li><strong>Floatation of iron ship:</strong> An iron nail sinks, but a ship is hollow. Its average density is less than water. A loaded ship submerses more than an unloaded one. A ship sailing from sea water (denser) to river water (less dense) will sink further to displace more volume. <em>Plimsoll line</em> indicates safe loading limit.</li>
+                <li><strong>Floatation of human body:</strong> Average density with lungs filled is $\sim 1 \text{ g cm}^{-3}$. It is easier to swim in sea water (density $1.026 \text{ g cm}^{-3}$) than fresh water, as less of the body needs to be submerged to balance weight.</li>
+                <li><strong>Floatation of submarines:</strong> Possesses ballast tanks. Filling them with water increases average density, making it dive. Pushing water out with compressed air decreases density, making it rise.</li>
+                <li><strong>Floatation of iceberg:</strong> Ice density ($0.917 \text{ g cm}^{-3}$) is less than water. It floats with $\sim 90\%$ inside, making it dangerous for ships. <em>Note: When floating ice melts, the water level remains unchanged because ice contracts on melting.</em></li>
+                <li><strong>Floatation of fish:</strong> Uses a "swim bladder" to change its volume and average density to rise or sink.</li>
+                <li><strong>Rising of balloons:</strong> A balloon filled with hydrogen (less dense than air) rises because upthrust of air > weight of balloon. It stops rising when air density drops at high altitudes such that upthrust equals weight.</li>
+            </ol>
+        </div>
+
+        <div class="pyq-box">
+            <div class="pyq-header">&#9997; IN-TEXT PRACTICE</div>
+            <p class="pyq-q">Q. A block of wood of volume $25 \text{ cm}^3$ floats on water with $20 \text{ cm}^3$ of its volume immersed. Calculate: (i) density of wood, (ii) weight of block.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>(i) Density:</strong> $\frac{v}{V} = \frac{\rho_s}{\rho_L} \implies \frac{20}{25} = \frac{\rho_s}{1} \implies \rho_s = \mathbf{0.8 \text{ g cm}^{-3}}$</div>
+                <div class="step-box"><strong>(ii) Weight:</strong> $W = V \rho_s g = 25 \times 0.8 \times g = 20 \text{ g dyne} = \mathbf{20 \text{ gf}}$</div>
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <style>
+                .dark-mode .vardaan-logo { filter: invert(1); }
+                .dark-mode .powered-by-brand { color: #ffffff !important; }
+            </style>
+            <div class="created-by">Created by Team Vardaan with <span class="heart-red" aria-hidden="true">&hearts;</span></div>
+            <div class="powered-by" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;">
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+        </div>
+
     </div>
-    
+
+    <!-- THEME TOGGLE SCRIPT -->
     <script>
         function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark-mode');
-            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
-        }
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark-mode');
+            document.documentElement.classList.toggle('dark-mode');
         }
     </script>
 </body>
 </html>
-
-
-
