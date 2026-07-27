@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,6 +9,7 @@
     <script>MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] }, chtml: { scale: 1.05, mtextInheritFont: true } };</script>
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming System) --- */
         :root {
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
@@ -17,63 +18,604 @@
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
             --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+            --red-border: #d32f2f;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+            --red-border: #ff8a80;
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0
         }
 
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle;
+        }
+
+        mjx-container[display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            margin: 0.5em 0 !important;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
         body {
-            background: #fff;
-            color: #000;
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.7
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            transition: filter .3s
-        }
-
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg)
-        }
-
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            z-index: 9999
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.1;
             max-width: 80%;
-            opacity: 0.05
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important
+            filter: invert(1);
+            opacity: 0.15;
         }
 
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
-            background: #fff;
-            width: 210mm;
-            max-width: 100%;
+            background-color: var(--paper-bg);
+            width: 100%;
+            max-width: 210mm !important;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .system-name {
+            font-size: 1rem;
+            color: var(--meta-text);
+            margin-top: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .top-branding-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 12px;
+            padding: 8px 0 0;
+            white-space: nowrap;
+            color: var(--meta-text);
+        }
+
+        .chapter-name-banner {
+            text-align: center;
+            margin: 6px 0 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .chapter-name-title {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        .powered-by-label {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            color: var(--pink-border);
+            letter-spacing: 0.3px;
+        }
+
+        .powered-by-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: 0.4px;
+        }
+
+        html.dark-mode .powered-by-brand {
+            color: #fff;
+        }
+
+        html.dark-mode .vardaan-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .heart-red {
+            color: #d32f2f;
+        }
+
+        /* --- IMAGE STYLING (AGENTS.md Rule) --- */
+        .content-image-container {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .content-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            mix-blend-mode: multiply;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .content-image {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        /* --- PREMIUM TABLE --- */
+        .vardaan-table-container {
+            width: 100%;
+            overflow-x: visible !important;
+            margin: 1.5rem 0;
+        }
+
+        .vardaan-table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+            table-layout: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table th {
+            background-color: var(--blue-border);
+            color: white;
+            padding: 10px 12px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+            font-size: 0.88rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        html.dark-mode .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(255, 255, 255, 0.025);
+        }
+
+        table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+            table-layout: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        th {
+            background-color: var(--blue-border);
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            text-align: left;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        ul,
+        ol {
+            padding-left: 25px;
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box,
+        .green-box,
+        .yellow-box,
+        .pink-box,
+        .concept-blue,
+        .concept-green,
+        .concept-pink {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .blue-box,
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+        }
+
+        .green-box,
+        .concept-green {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+        }
+
+        .pink-box,
+        .concept-pink {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+        }
+
+        .definition-box {
+            background: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .rule-box {
+            background: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .analysis-box {
+            background: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .derivation-box {
+            background: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .reaction-box {
+            background: var(--green-bg);
+            border: 1px solid var(--green-border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .master-tip {
+            background-color: var(--yellow-bg);
+            border: 2px dashed var(--red-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .formula-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.08);
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--blue-border);
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        /* --- PRACTICE BOX & SOLUTIONS --- */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+        html.dark-mode .practice-box {
+            background-color: #3f2a00;
+            border-color: #ff8f00;
+            box-shadow: 4px 4px 0 rgba(255, 143, 0, 0.3);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+        html.dark-mode .practice-header {
+            color: #ffb300;
+            border-bottom-color: #ffb300;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        html.dark-mode .q-tag {
+            background: #ffb300;
+            color: #000;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ffe0b2;
+        }
+        html.dark-mode .question {
+            border-bottom-color: #5c4000;
+        }
+        .question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .solution-box {
+            background-color: rgba(211, 84, 0, 0.05);
+            border-left: 3px dashed #d35400;
+            padding: 12px 18px;
+            margin-top: 8px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.98rem;
+            color: var(--text-main);
+            line-height: 1.65;
+        }
+        html.dark-mode .solution-box {
+            background-color: rgba(255, 179, 0, 0.1);
+            border-left-color: #ffb300;
+        }
+        .solution-box strong {
+            color: #d35400;
+        }
+        html.dark-mode .solution-box strong {
+            color: #ffb300;
+        }
+
+        /* --- SYLLABUS OVERVIEW BOX --- */
+        .syllabus-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        html.dark-mode .syllabus-box {
+            background-color: #0d1b2a;
+            border-color: #1e3a5f;
+        }
+        .syllabus-header {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #64748b;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        html.dark-mode .syllabus-header {
+            color: #82b1ff;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -81,7 +623,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--toggle-bg);
             border: none;
             cursor: pointer;
             z-index: 1000;
@@ -90,17 +632,19 @@
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
+            transition: all 0.3s ease;
         }
 
         .icon-sun,
         .icon-moon {
             position: absolute;
             transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
         }
 
         .icon-sun {
@@ -118,465 +662,686 @@
             transform: scale(1) rotate(0deg);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            color: #6a1b9a;
-            margin-bottom: .5rem
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #6a1b9a;
-            padding-bottom: .5rem;
-            color: #6a1b9a
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-            color: #7b1fa2
-        }
-
-        p,
-        li {
-            margin-bottom: .8rem
-        }
-
-        ul,
-        ol {
-            padding-left: 1.5rem
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: .8rem
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: center
-        }
-
-        th {
-            background: #f3e5f5;
-            font-weight: 600
-        }
-
-        .definition-box {
-            background: var(--yellow-bg);
-            border-left: 5px solid var(--yellow-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .rule-box {
-            background: var(--blue-bg);
-            border-left: 5px solid var(--blue-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .derivation-box {
-            background: var(--green-bg);
-            border-left: 5px solid var(--green-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .master-tip {
-            border: 2px dashed #d32f2f;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            background: #ffebee;
-            font-style: italic
-        }
-
-        .formula-box {
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0 #000;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            position: relative;
-            background: #fff
-        }
-
-        .formula-box::after {
-            content: "FORMULA";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #000;
-            color: #fff;
-            padding: 2px 8px;
-            font-size: .75rem
-        }
-
-        .practice-box {
-            background: #fff8e1;
-            border: 2px solid #ff6f00;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0
-        }
-
-        .practice-header {
-            font-weight: 700;
-            color: #d35400;
-            margin-bottom: .5rem
-        }
-
-        .q-tag {
-            background: #d35400;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: .75rem;
-            margin-right: 5px
-        }
-
-        .solved-example {
-            background: #f3e5f5;
-            border-left: 4px solid #7b1fa2;
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0
-        }
-
-        /* --- EQUATION RESPONSIVE FIXES --- */
-        mjx-container {
-            max-width: 100% !important;
-            overflow-x: visible !important;
-            display: inline !important;
-        }
-
-        /* Display equations ($$..$$) - centered and may scale */
-        mjx-container[jax="CHTML"][display="true"] {
-            display: block !important;
-            max-width: 100% !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch;
-            margin: 0.5em 0;
-        }
-
-        /* Container boxes should handle content overflow */
-        .formula-box,
-        .practice-box,
-        .definition-box,
-        .rule-box,
-        .derivation-box,
-        .solved-example,
-        .master-tip {
-            overflow-x: auto;
-            max-width: 100%;
-        }
-
-        /* Tables with equations need scroll */
-        table {
-            display: block;
-            overflow-x: auto;
-            max-width: 100%;
-        }
-
-        @media screen and (max-width:800px) {
+        @media screen and (max-width: 768px) {
             .paper-sheet {
-                width: 95%;
-                padding: 15px
+                width: 100%;
+                padding: 12px;
             }
 
-            table {
-                font-size: .65rem
+            .institute-name {
+                font-size: 1.5rem;
             }
 
-            h1 {
-                font-size: 1.8rem
+            h2 {
+                font-size: 1.25rem;
+                padding-left: 10px;
             }
 
-            /* Scale down equations on mobile */
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            p, li {
+                font-size: 0.95rem;
+            }
+
+            .vardaan-table th,
+            .vardaan-table td,
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.82rem;
+            }
+
+            .blue-box, .green-box, .yellow-box, .pink-box,
+            .definition-box, .rule-box, .analysis-box, .derivation-box,
+            .formula-box, .master-tip, .practice-box {
+                padding: 14px;
+                margin: 15px 0;
+            }
+
             mjx-container {
-                font-size: 0.85em !important;
-            }
-
-            mjx-container[jax="CHTML"][display="true"] {
-                font-size: 0.8em !important;
-            }
-        }
-
-        @media screen and (max-width:480px) {
-
-            /* Further scale on very small screens */
-            mjx-container {
-                font-size: 0.75em !important;
-            }
-
-            mjx-container[jax="CHTML"][display="true"] {
-                font-size: 0.7em !important;
+                font-size: 92% !important;
             }
         }
 
         @media print {
-            html.dark-mode {
-                filter: none !important
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
-            .theme-toggle {
-                display: none
+            .branding-header {
+                background-color: white !important;
+                border-bottom: 2px solid var(--blue-border) !important;
+                padding: 10px 0 !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
 
             .paper-sheet {
-                width: 100%;
-                padding: 10mm
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .theme-toggle,
+            .no-print {
+                display: none !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.8 !important;
+                mix-blend-mode: multiply !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                pointer-events: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 70% !important;
+                opacity: 0.2 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #1e88e5;
+                    color: #fff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
             }
         }
-    
-        @media (max-width: 768px){.paper-sheet{padding:15px;width:100%}.institute-name{font-size:1.6rem}.system-name{font-size:.9rem;letter-spacing:1px}h1{font-size:1.6rem}h2{font-size:1.3rem}h3{font-size:1.1rem}p,li{font-size:.95rem}.blue-box,.green-box,.yellow-box{padding:15px;margin:15px 0}.theme-toggle{top:10px;right:10px;width:36px;height:36px}.chapter-image{float:none;width:100%;max-width:100%;margin:10px 0}}
     </style>
 </head>
 
 <body>
-    <div class="watermark-overlay"><img
-            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            class="watermark-image"></div>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image" alt="Vardaan Watermark">
+    </div>
+
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </svg>
     </button>
 
     <div class="paper-sheet">
-        <h1>Mole Concept & Stoichiometry</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">ICSE Class 10 Chemistry • Chapter 05</p>
-
-        <h2>1. Gay-Lussac's Law of Combining Volumes</h2>
-        <div class="definition-box">
-            <p><strong>Statement:</strong> When gases react together, they do so in volumes which bear a simple whole
-                number ratio to one another and to the volumes of products, all volumes measured under the same
-                conditions of temperature and pressure.</p>
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
+        </div>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Mole Concept & Stoichiometry</h1>
         </div>
 
-        <div class="solved-example">
-            <p><strong>Example:</strong> H₂ + Cl₂ → 2HCl</p>
-            <p>1 volume + 1 volume → 2 volumes</p>
-            <p>Ratio = 1 : 1 : 2</p>
+        <!-- SYLLABUS OVERVIEW -->
+        <div class="syllabus-box">
+            <span class="syllabus-header">ICSE CLASS 10 CHEMISTRY SYLLABUS OVERVIEW</span>
+            <ul>
+                <li><strong>(i) Gay-Lussac’s Law of Combining Volumes & Avogadro’s Law:</strong> Statements, explanations, atomicity of gases ($H_2, O_2, N_2, Cl_2$), volume-volume calculations.</li>
+                <li><strong>(ii) Relative Atomic Mass & Relative Molecular Mass:</strong> $C-12$ standard scale, Gram Atomic Mass, Gram Molecular Mass, relation between Molecular Mass and Vapour Density ($RMM = 2 \times VD$), Molar Volume ($22.4 \text{ L}$ at STP).</li>
+                <li><strong>(iii) Mole Concept:</strong> Avogadro's number ($N_A = 6.022 \times 10^{23}$), mole-mass, mole-volume, and mole-particle conversions.</li>
+                <li><strong>(iv) Percentage Composition, Empirical & Molecular Formulae:</strong> Step-by-step calculations from percentage composition to empirical and molecular formulae.</li>
+                <li><strong>(v) Stoichiometry & Chemical Equations:</strong> Mass-mass, mass-volume, and volume-volume calculations based on balanced chemical equations.</li>
+            </ul>
         </div>
 
-        <h2>2. Avogadro's Law</h2>
-        <div class="formula-box">
-            <p><strong>Statement:</strong> Equal volumes of all gases, under the same conditions of temperature and
-                pressure, contain equal number of molecules.</p>
-            <p><strong>Avogadro's Number (Nₐ):</strong> $6.022 \times 10^{23}$</p>
-            <p>This is the number of particles in one mole of any substance.</p>
+        <!-- SECTION 5A -->
+        <h2>5A. GAY-LUSSAC’S LAW AND AVOGADRO’S LAW</h2>
+
+        <div class="content-image-container">
+            <img src="Images/Gau lussac law of combining volumes.png" class="content-image" alt="Gay-Lussac's Law of Combining Volumes">
         </div>
 
-        <h2>3. The Mole Concept</h2>
-        <div class="definition-box">
-            <p><strong>Mole:</strong> The amount of substance that contains as many particles (atoms, molecules, ions)
-                as there are atoms in exactly 12 g of carbon-12.</p>
-            <p><strong>1 mole = 6.022 × 10²³ particles (Avogadro's number)</strong></p>
-        </div>
+        <h3>5.1 INTRODUCTION & GAS LAWS RECAP</h3>
+        <p>All gases exhibit similar physical behavior under varying conditions of temperature ($T$) and pressure ($P$), governed by fundamental gas laws:</p>
 
-        <h3>Gram Atomic Mass (GAM)</h3>
         <div class="rule-box">
-            <p><strong>Definition:</strong> The atomic mass of an element expressed in grams.</p>
-            <p><strong>1 GAM = 1 mole of atoms = 6.022 × 10²³ atoms</strong></p>
-            <p><strong>Example:</strong> GAM of Oxygen = 16 g (contains 6.022 × 10²³ O atoms)</p>
+            <p><strong>1. Boyle's Law (Pressure-Volume Relationship):</strong> At constant temperature, the volume ($V$) of a given mass of dry gas is inversely proportional to its pressure ($P$).</p>
+            $$P_1 V_1 = P_2 V_2 = k \quad \text{(at constant } T\text{)}$$
+
+            <p style="margin-top:12px;"><strong>2. Charles's Law (Temperature-Volume Relationship):</strong> At constant pressure, the volume ($V$) of a given mass of dry gas is directly proportional to its absolute temperature ($T$ in Kelvin).</p>
+            $$\frac{V_1}{T_1} = \frac{V_2}{T_2} = k \quad \text{(at constant } P\text{)}$$
+
+            <p style="margin-top:12px;"><strong>3. Combined Gas Equation:</strong></p>
+            $$\frac{P_1 V_1}{T_1} = \frac{P_2 V_2}{T_2} = \text{constant}$$
         </div>
 
-        <h3>Gram Molecular Mass (GMM)</h3>
-        <div class="rule-box">
-            <p><strong>Definition:</strong> The molecular mass of a compound expressed in grams.</p>
-            <p><strong>1 GMM = 1 mole of molecules = 6.022 × 10²³ molecules</strong></p>
-            <p><strong>Example:</strong> GMM of H₂O = 18 g (contains 6.022 × 10²³ H₂O molecules)</p>
+        <div class="definition-box">
+            <p><strong>Standard Temperature and Pressure (STP / NTP):</strong></p>
+            <ul>
+                <li><strong>Standard Temperature:</strong> $0^\circ C = 273 \text{ K}$</li>
+                <li><strong>Standard Pressure:</strong> $1 \text{ atm} = 760 \text{ mm Hg} = 76 \text{ cm Hg}$</li>
+            </ul>
         </div>
 
-        <h2>4. Molar Volume</h2>
+        <h3>5.2 GAY-LUSSAC’S LAW OF COMBINING VOLUMES</h3>
         <div class="formula-box">
-            <p><strong>At STP (Standard Temperature & Pressure):</strong></p>
-            <p><strong>1 mole of any gas occupies 22.4 litres</strong></p>
-            <p>STP conditions: 0°C (273 K) and 1 atm pressure</p>
+            <span class="formula-pill">GAY-LUSSAC'S LAW</span>
+            <p style="font-size:1.05rem;line-height:1.6;margin:5px 0;"><strong>Statement:</strong> When gases react, they do so in <strong>volumes which bear a simple whole-number ratio to one another</strong>, and to the volume of the gaseous product, provided all volumes are measured at the <strong>same temperature and pressure</strong>.</p>
         </div>
-
-        <h2>5. Key Formulas</h2>
-        <table>
-            <tr>
-                <th>Formula</th>
-                <th>Description</th>
-            </tr>
-            <tr>
-                <td>$\text{Moles} = \frac{\text{Given Mass}}{\text{Molar Mass}}$</td>
-                <td>Calculate moles from mass</td>
-            </tr>
-            <tr>
-                <td>$\text{Moles} = \frac{\text{Number of particles}}{6.022 \times 10^{23}}$</td>
-                <td>Calculate moles from particles</td>
-            </tr>
-            <tr>
-                <td>$\text{Moles of gas} = \frac{\text{Volume at STP}}{22.4 \text{ L}}$</td>
-                <td>Calculate moles from gas volume</td>
-            </tr>
-            <tr>
-                <td>$\text{Vapour Density} = \frac{\text{Molecular Mass}}{2}$</td>
-                <td>Relation between VD and MM</td>
-            </tr>
-        </table>
 
         <div class="master-tip">
-            <p><strong>Master Formula:</strong> Molecular Mass = 2 × Vapour Density</p>
+            <p><strong>CRITICAL EXAM RULE:</strong> Gay-Lussac’s Law is valid <strong>ONLY FOR GASES</strong>. The volumes of solids and liquids produced or reacting in a chemical equation are considered <strong>ZERO</strong> in Gay-Lussac volume calculations!</p>
         </div>
 
-        <h2>6. Atomicity</h2>
-        <table>
-            <tr>
-                <th>Element</th>
-                <th>Formula</th>
-                <th>Atomicity</th>
-            </tr>
-            <tr>
-                <td>Hydrogen</td>
-                <td>H₂</td>
-                <td>2 (Diatomic)</td>
-            </tr>
-            <tr>
-                <td>Oxygen</td>
-                <td>O₂</td>
-                <td>2 (Diatomic)</td>
-            </tr>
-            <tr>
-                <td>Nitrogen</td>
-                <td>N₂</td>
-                <td>2 (Diatomic)</td>
-            </tr>
-            <tr>
-                <td>Chlorine</td>
-                <td>Cl₂</td>
-                <td>2 (Diatomic)</td>
-            </tr>
-            <tr>
-                <td>Noble Gases</td>
-                <td>He, Ne, Ar</td>
-                <td>1 (Monoatomic)</td>
-            </tr>
-            <tr>
-                <td>Ozone</td>
-                <td>O₃</td>
-                <td>3 (Triatomic)</td>
-            </tr>
-        </table>
-
-        <h2>7. Percentage Composition</h2>
-        <div class="formula-box">
-            <p>$\text{% of element} = \frac{\text{Mass of element in 1 mole of compound}}{\text{Molar mass of compound}}
-                \times 100$</p>
-        </div>
-
-        <div class="solved-example">
-            <p><strong>Example:</strong> Find % of oxygen in H₂O.</p>
-            <p>Molar mass of H₂O = 2(1) + 16 = 18 g</p>
-            <p>Mass of O = 16 g</p>
-            <p>% of O = $\frac{16}{18} \times 100 = 88.89\%$</p>
-        </div>
-
-        <h2>8. Empirical & Molecular Formula</h2>
-        <div class="definition-box">
-            <p><strong>Empirical Formula:</strong> Simplest whole number ratio of atoms in a compound.</p>
-            <p><strong>Molecular Formula:</strong> Actual number of atoms of each element in a molecule.</p>
-            <p><strong>Molecular Formula = n × Empirical Formula</strong></p>
-            <p>where $n = \frac{\text{Molecular Mass}}{\text{Empirical Formula Mass}}$</p>
-        </div>
-
-        <div class="solved-example">
-            <p><strong>Example:</strong> CH₂O (Empirical) → C₆H₁₂O₆ (Molecular for glucose)</p>
-            <p>Empirical mass = 12 + 2 + 16 = 30</p>
-            <p>Molecular mass = 180</p>
-            <p>n = 180/30 = 6</p>
-        </div>
-
-        <h2>9. Stoichiometry Based Calculations</h2>
+        <h3>Illustrations of Gay-Lussac's Law</h3>
         <div class="derivation-box">
-            <p><strong>Steps for solving stoichiometry problems:</strong></p>
+            <p><strong>1. Formation of Hydrogen Chloride Gas:</strong></p>
+            $$H_2(g) + Cl_2(g) \rightarrow 2HCl(g)$$
+            $$\text{Vol. Ratio: } 1 : 1 : 2 \quad \text{(Simple whole number ratio)}$$
+
+            <p style="margin-top:12px;"><strong>2. Synthesis of Ammonia Gas:</strong></p>
+            $$N_2(g) + 3H_2(g) \rightarrow 2NH_3(g)$$
+            $$\text{Vol. Ratio: } 1 : 3 : 2$$
+
+            <p style="margin-top:12px;"><strong>3. Combustion of Carbon Monoxide:</strong></p>
+            $$2CO(g) + O_2(g) \rightarrow 2CO_2(g)$$
+            $$\text{Vol. Ratio: } 2 : 1 : 2$$
+        </div>
+
+        <div class="analysis-box">
+            <p><strong>Limiting Reagent Concept:</strong> The reactant that is completely consumed first in a chemical reaction is called the <strong>Limiting Reagent (or Limiting Reactant)</strong>. It limits and dictates the total amount of product formed!</p>
+        </div>
+
+        <!-- TOPIC 5A PRACTICE PROBLEMS -->
+        <div class="practice-box">
+            <span class="practice-header">TOPIC 5A PRACTICE NUMERICALS (GAY-LUSSAC'S & AVOGADRO'S LAW)</span>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 1</span> What volume of oxygen is required to burn completely $200 \text{ mL}$ of acetylene ($C_2H_2$), and what is the volume of carbon dioxide formed?
+                $$\text{Equation: } 2C_2H_2(g) + 5O_2(g) \rightarrow 4CO_2(g) + 2H_2O(l)$$
+            </div>
+            <div class="solution-box">
+                <strong>Step-by-Step Solution:</strong><br>
+                By Gay-Lussac's Law, volume ratio of $C_2H_2 : O_2 : CO_2 = 2 : 5 : 4$ (Water is liquid $\implies$ volume = 0).<br>
+                2 volumes of $C_2H_2$ require 5 volumes of $O_2$.<br>
+                $$\implies \text{Volume of } O_2 \text{ required} = \frac{5}{2} \times 200 \text{ mL} = \mathbf{500 \text{ mL}}$$
+                2 volumes of $C_2H_2$ produce 4 volumes of $CO_2$.<br>
+                $$\implies \text{Volume of } CO_2 \text{ formed} = \frac{4}{2} \times 200 \text{ mL} = \mathbf{400 \text{ mL}}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 2</span> $80 \text{ cm}^3$ of methane ($CH_4$) is mixed with $200 \text{ cm}^3$ of pure oxygen at room temperature and ignited. Calculate the composition of the resulting gaseous mixture cooled to room temperature.
+                $$\text{Equation: } CH_4(g) + 2O_2(g) \rightarrow CO_2(g) + 2H_2O(l)$$
+            </div>
+            <div class="solution-box">
+                <strong>Step-by-Step Solution:</strong><br>
+                Volume ratio $CH_4 : O_2 : CO_2 = 1 : 2 : 1$.<br>
+                1 vol. $CH_4$ requires 2 vols. $O_2 \implies 80 \text{ cm}^3 \text{ } CH_4$ requires $2 \times 80 = 160 \text{ cm}^3 \text{ } O_2$.<br>
+                • <strong>Unreacted $O_2$ remaining:</strong> $200 - 160 = \mathbf{40 \text{ cm}^3}$<br>
+                • <strong>$CO_2$ gas formed:</strong> $1 \times 80 = \mathbf{80 \text{ cm}^3}$<br>
+                • <strong>Water ($H_2O$):</strong> Liquid at room temp $\implies$ volume negligible.<br>
+                <strong>Final Composition of Gaseous Mixture:</strong> $80 \text{ cm}^3 \text{ } CO_2$ + $40 \text{ cm}^3 \text{ unreacted } O_2$ = <strong>$120 \text{ cm}^3$ total gas</strong>.
+            </div>
+        </div>
+
+        <h3>5.3 AVOGADRO’S LAW & ATOMICITY</h3>
+
+        <div class="content-image-container">
+            <img src="Images/Avaradro law and gas atomicity comparison.png" class="content-image" alt="Avogadro's Law and Gas Atomicity Comparison">
+        </div>
+        <div class="definition-box">
+            <p><strong>Avogadro’s Law:</strong> Equal volumes of all gases under similar conditions of temperature and pressure contain the same number of molecules.</p>
+        </div>
+
+        <p>Avogadro distinguished clearly between <strong>atoms</strong> and <strong>molecules</strong>:</p>
+        <ul>
+            <li><strong>Atom:</strong> Smallest particle of an element that takes part in a chemical reaction; it may or may not exist independently.</li>
+            <li><strong>Molecule:</strong> Smallest particle of an element or compound that can exist independently and retains all chemical properties of the substance.</li>
+            <li><strong>Atomicity:</strong> The number of atoms present in one molecule of an element.</li>
+        </ul>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:25%;">Atomicity Type</th>
+                        <th style="width:30%;">Number of Atoms per Molecule</th>
+                        <th style="width:45%;">Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Monoatomic</strong></td><td>1 atom</td><td>Inert gases ($He, Ne, Ar, Kr, Xe$)</td></tr>
+                    <tr><td><strong>Diatomic</strong></td><td>2 atoms</td><td>$H_2, O_2, N_2, Cl_2, Br_2, I_2, CO, NO$</td></tr>
+                    <tr><td><strong>Triatomic</strong></td><td>3 atoms</td><td>Ozone ($O_3$), $CO_2, H_2O, SO_2$</td></tr>
+                    <tr><td><strong>Tetratomic</strong></td><td>4 atoms</td><td>Phosphorus ($P_4$), $NH_3$</td></tr>
+                    <tr><td><strong>Octatomic</strong></td><td>8 atoms</td><td>Sulphur ($S_8$)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Applications of Avogadro's Law</h3>
+        <div class="rule-box">
             <ol>
-                <li>Write the balanced chemical equation</li>
-                <li>Identify the given and required quantities</li>
-                <li>Convert given quantity to moles</li>
-                <li>Use mole ratio from equation</li>
-                <li>Convert moles to required unit (mass/volume/particles)</li>
+                <li><strong>Explains Gay-Lussac’s Law:</strong> Shows why gas reaction volumes are in simple whole-number ratios.</li>
+                <li><strong>Deduces Atomicity of Elementary Gases:</strong> Proves $H_2, Cl_2, N_2, O_2$ are diatomic.</li>
+                <li><strong>Relates Relative Molecular Mass (RMM) and Vapour Density (VD):</strong> $\mathbf{RMM = 2 \times VD}$.</li>
+                <li><strong>Establishes Molar Volume of Gases at STP:</strong> 1 mole of ANY gas at STP occupies <strong>$22.4 \text{ Litres}$</strong>.</li>
             </ol>
         </div>
 
-        <div class="solved-example">
-            <p><strong>Example:</strong> Calculate the volume of CO₂ at STP when 10 g of CaCO₃ decomposes completely.
-            </p>
-            <p>CaCO₃ → CaO + CO₂</p>
-            <p>Molar mass of CaCO₃ = 40 + 12 + 48 = 100 g</p>
-            <p>Moles of CaCO₃ = 10/100 = 0.1 mol</p>
-            <p>From equation: 1 mol CaCO₃ → 1 mol CO₂</p>
-            <p>∴ Moles of CO₂ = 0.1 mol</p>
-            <p>Volume at STP = 0.1 × 22.4 = <strong>2.24 L</strong></p>
+        <div class="derivation-box">
+            <p style="font-weight:700;color:#2e7d32;margin-top:0;font-size:1.1rem;">Formal Proof 1: Relationship Between Molecular Mass & Vapour Density</p>
+            $$\text{Vapour Density (VD)} = \frac{\text{Mass of volume } v \text{ of gas at STP}}{\text{Mass of volume } v \text{ of } H_2 \text{ gas at STP}}$$
+            <p>According to Avogadro's Law, equal volumes contain equal number of molecules ($n$). Let volume $v$ contain $n$ molecules:</p>
+            $$\text{VD} = \frac{\text{Mass of } n \text{ molecules of gas}}{\text{Mass of } n \text{ molecules of } H_2} = \frac{\text{Mass of 1 molecule of gas}}{\text{Mass of 1 molecule of } H_2}$$
+            <p>Since a Hydrogen molecule is diatomic ($\text{Mass of 1 molecule of } H_2 = 2 \times \text{Mass of 1 atom of } H$):</p>
+            $$\text{VD} = \frac{\text{Mass of 1 molecule of gas}}{2 \times \text{Mass of 1 atom of } H}$$
+            <p>Multiplying both sides by 2:</p>
+            $$2 \times \text{VD} = \frac{\text{Mass of 1 molecule of gas}}{\text{Mass of 1 atom of } H} = \mathbf{\text{Relative Molecular Mass (RMM)}}$$
+            $$\mathbf{\text{RMM} = 2 \times \text{Vapour Density (VD)}}$$
+
+            <hr style="border:0;border-top:1px dashed var(--green-border);margin:15px 0;">
+
+            <p style="font-weight:700;color:#2e7d32;margin-top:10px;font-size:1.1rem;">Formal Proof 2: Deduction of Atomicity of Elementary Gases ($H_2, Cl_2$)</p>
+            <p>Consider the reaction between Hydrogen and Chlorine gas:</p>
+            $$\text{Hydrogen} + \text{Chlorine} \rightarrow \text{Hydrogen Chloride}$$
+            $$\text{Vol. Ratio: } 1 \text{ vol.} + 1 \text{ vol.} \rightarrow 2 \text{ vols. (by Gay-Lussac's Law)}$$
+            <p>Applying Avogadro's Law (let 1 vol. contain $n$ molecules):</p>
+            $$n \text{ molecules of } H_2 + n \text{ molecules of } Cl_2 \rightarrow 2n \text{ molecules of } HCl$$
+            $$\text{Dividing by } n: 1 \text{ molecule of } H_2 + 1 \text{ molecule of } Cl_2 \rightarrow 2 \text{ molecules of } HCl$$
+            $$\text{Dividing by } 2: \frac{1}{2} \text{ molecule of } H_2 + \frac{1}{2} \text{ molecule of } Cl_2 \rightarrow 1 \text{ molecule of } HCl$$
+            <p>1 molecule of $HCl$ contains at least 1 atom of H and 1 atom of Cl. Therefore, $\frac{1}{2}$ molecule of Hydrogen contains 1 atom of H $\implies$ <strong>1 full molecule of Hydrogen contains 2 atoms ($H_2$)</strong>. Hence, Hydrogen and Chlorine are <strong>diatomic</strong>!</p>
         </div>
 
-        <h2>Quick Reference</h2>
-        <table>
-            <tr>
-                <th>Quantity</th>
-                <th>1 Mole =</th>
-            </tr>
-            <tr>
-                <td>Number of particles</td>
-                <td>6.022 × 10²³</td>
-            </tr>
-            <tr>
-                <td>Mass of element</td>
-                <td>Gram Atomic Mass (g)</td>
-            </tr>
-            <tr>
-                <td>Mass of compound</td>
-                <td>Gram Molecular Mass (g)</td>
-            </tr>
-            <tr>
-                <td>Volume of gas at STP</td>
-                <td>22.4 litres</td>
-            </tr>
-        </table>
+        <!-- SECTION 5B -->
+        <h2>5B. RELATIVE ATOMIC MASS, RELATIVE MOLECULAR MASS AND MOLE CONCEPT</h2>
 
-        <h2>Exam Practice (PYQ Trends)</h2>
-        <div class="practice-box">
-            <span class="practice-header">PYQ: 2023</span>
-            <p><span class="q-tag">BOARD</span> Calculate the number of molecules in 5.6 litres of CO₂ gas at STP.</p>
+        <h3>5.4 RELATIVE ATOMIC MASS (RAM) & FRACTIONAL ATOMIC MASS</h3>
+        <div class="definition-box">
+            <p><strong>Relative Atomic Mass (RAM / Atomic Weight):</strong> The number of times one atom of an element is heavier than $\frac{1}{12}\text{th}$ the mass of an atom of Carbon-12 ($^{12}C$).</p>
+            $$\text{RAM} = \frac{\text{Mass of 1 atom of the element}}{\frac{1}{12} \times \text{Mass of 1 atom of } ^{12}C}$$
+            <p><strong>Atomic Mass Unit (amu or u):</strong> Defined as exactly $\frac{1}{12}\text{th}$ the mass of a Carbon-12 atom ($1 \text{ amu} = 1.6605 \times 10^{-24} \text{ g}$).</p>
         </div>
-        <div class="practice-box">
-            <span class="practice-header">PYQ: 2022</span>
-            <p><span class="q-tag">BOARD</span> A compound contains 40% carbon, 6.67% hydrogen, and 53.33% oxygen. Its
-                molecular mass is 180. Find empirical and molecular formula.</p>
+
+        <div class="analysis-box">
+            <p><strong>Why are Atomic Masses Fractional?</strong> Most elements exist in nature as a mixture of two or more <strong>isotopes</strong> in fixed natural abundance. RAM is the weighted average of isotopic masses!</p>
+            <p><strong>Example (Chlorine):</strong> Contains $^{35}Cl$ and $^{37}Cl$ in $3 : 1$ ratio.</p>
+            $$\text{Average RAM of Chlorine} = \frac{(35 \times 3) + (37 \times 1)}{3 + 1} = \frac{105 + 37}{4} = \mathbf{35.5 \text{ amu}}$$
         </div>
+
+        <h3>5.5 RELATIVE MOLECULAR MASS (RMM)</h3>
+        <div class="formula-box">
+            <span class="formula-pill">MOLECULAR MASS</span>
+            <p><strong>Relative Molecular Mass (RMM):</strong> The sum of the relative atomic masses of all atoms present in one molecule of a substance.</p>
+        </div>
+
+        <h3>5.6 & 5.7 GRAM ATOMIC MASS AND GRAM MOLECULAR MASS</h3>
+        <ul>
+            <li><strong>Gram Atomic Mass (GAM / 1 g-atom):</strong> The atomic mass of an element expressed in grams. (e.g. GAM of Oxygen = $16 \text{ g}$).</li>
+            <li><strong>Gram Molecular Mass (GMM / 1 g-molecule / Molar Mass):</strong> The molecular mass of a substance expressed in grams. (e.g. GMM of $H_2O = 18 \text{ g}$, GMM of $H_2SO_4 = 98 \text{ g}$).</li>
+        </ul>
+
+        <h3>5.8 THE MOLE CONCEPT & AVOGADRO'S NUMBER</h3>
+        <div class="definition-box">
+            <p><strong>Mole:</strong> A mole is the amount of pure substance that contains as many elementary entities (atoms, molecules, ions, electrons) as there are atoms in exactly $12 \text{ grams}$ of Carbon-12.</p>
+            <p><strong>Avogadro’s Number ($N_A$):</strong> The fixed number of particles present in one mole of any substance.</p>
+            $$\mathbf{N_A = 6.022 \times 10^{23} \text{ particles/mole}}$$
+        </div>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:25%;">1 Mole of Substance</th>
+                        <th style="width:25%;">Mass Equivalent</th>
+                        <th style="width:25%;">Particle Equivalent ($N_A$)</th>
+                        <th style="width:25%;">STP Gas Volume Equivalent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1 Mole of Atoms</strong> (e.g. $Na$)</td>
+                        <td>Gram Atomic Mass ($23 \text{ g}$)</td>
+                        <td>$6.022 \times 10^{23}$ atoms</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1 Mole of Molecules</strong> (e.g. $O_2$)</td>
+                        <td>Gram Molecular Mass ($32 \text{ g}$)</td>
+                        <td>$6.022 \times 10^{23}$ molecules</td>
+                        <td>$22.4 \text{ Litres}$ at STP</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1 Mole of Ionic Compound</strong> ($NaCl$)</td>
+                        <td>Gram Formula Mass ($58.5 \text{ g}$)</td>
+                        <td>$6.022 \times 10^{23}$ formula units</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="rule-box">
+            <p style="font-weight:700;color:var(--blue-border);margin-top:0;">MASTER MOLE CONVERSION FORMULAS:</p>
+            <ol>
+                <li>$$\text{Moles } (n) = \frac{\text{Given Mass } (m)}{\text{Molar Mass } (M)}$$</li>
+                <li>$$\text{Moles } (n) = \frac{\text{Given Volume at STP in Litres } (V)}{22.4 \text{ L}}$$</li>
+                <li>$$\text{Moles } (n) = \frac{\text{Given Number of Particles } (N)}{6.022 \times 10^{23}}$$</li>
+                <li>$$\text{Mass of 1 single atom} = \frac{\text{Gram Atomic Mass}}{6.022 \times 10^{23}}$$</li>
+                <li>$$\text{Mass of 1 single molecule} = \frac{\text{Gram Molecular Mass}}{6.022 \times 10^{23}}$$</li>
+            </ol>
+        </div>
+
+        <!-- TOPIC 5B PRACTICE PROBLEMS -->
+        <div class="practice-box">
+            <span class="practice-header">TOPIC 5B PRACTICE NUMERICALS (MOLE & MASS/VOLUME CONVERSIONS)</span>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 1</span> Calculate the relative molecular mass of hydrated copper sulphate ($CuSO_4 \cdot 5H_2O$). [Given: $Cu = 63.5, S = 32, O = 16, H = 1$]
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                $$\text{RMM of } CuSO_4 \cdot 5H_2O = 63.5 + 32 + (4 \times 16) + 5 \times (2 \times 1 + 16)$$
+                $$= 63.5 + 32 + 64 + 5 \times 18 = 159.5 + 90 = \mathbf{249.5 \text{ amu}}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 2</span> Calculate: (i) the mass of $0.2 \text{ moles}$ of $H_2O$, (ii) the number of molecules in $1.8 \text{ g}$ of $H_2O$, (iii) the volume occupied by $8.8 \text{ g}$ of $CO_2$ gas at STP.
+            </div>
+            <div class="solution-box">
+                <strong>Step-by-Step Solutions:</strong><br>
+                (i) Molar mass of $H_2O = 18 \text{ g/mol}$.<br>
+                $$\text{Mass} = \text{Moles} \times \text{Molar Mass} = 0.2 \times 18 = \mathbf{3.6 \text{ grams}}$$
+                (ii) Moles in $1.8 \text{ g } H_2O = \frac{1.8}{18} = 0.1 \text{ mole}$.<br>
+                $$\text{Molecules} = 0.1 \times 6.022 \times 10^{23} = \mathbf{6.022 \times 10^{22} \text{ molecules}}$$
+                (iii) Molar mass of $CO_2 = 12 + 32 = 44 \text{ g/mol}$.<br>
+                $$\text{Moles of } CO_2 = \frac{8.8}{44} = 0.2 \text{ mole}$$
+                $$\text{Volume at STP} = 0.2 \times 22.4 \text{ L} = \mathbf{4.48 \text{ Litres}}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 3</span> A gas cylinder holds $50 \text{ g}$ of hydrogen gas. The same cylinder holds $200 \text{ g}$ of Gas X under identical conditions of temperature and pressure. Calculate the relative molecular mass of Gas X.
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                By Avogadro's Law, equal volumes of gases under identical conditions contain equal number of moles.<br><br>
+                $$\text{Vapour Density (VD) of Gas X} = \frac{\text{Mass of gas X}}{\text{Mass of equal vol. of } H_2} = \frac{200 \text{ g}}{50 \text{ g}} = 4$$
+                $$\text{Molecular Mass of Gas X} = 2 \times \text{VD of Gas X} = 2 \times 4 = \mathbf{8 \text{ amu}}$$
+                <em>(since Relative Molecular Mass $RMM = 2 \times VD$)</em>
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 4</span> Calculate the total number of electrons present in $1.6 \text{ g}$ of methane gas ($CH_4$). [Given: $C = 12, H = 1$]
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                $$\text{Molar mass of } CH_4 = 12 + (4 \times 1) = 16 \text{ g/mol}$$
+                $$\text{Moles of } CH_4 = \frac{1.6}{16} = 0.1 \text{ mole}$$
+                $$\text{Number of } CH_4 \text{ molecules} = 0.1 \times 6.022 \times 10^{23} = 6.022 \times 10^{22} \text{ molecules}$$
+                1 molecule of $CH_4$ contains $6 + 4(1) = 10 \text{ electrons}$.<br>
+                $$\text{Total number of electrons} = 10 \times 6.022 \times 10^{22} = \mathbf{6.022 \times 10^{23} \text{ electrons}}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 5</span> Find the number of $Na^+$ ions and $SO_4^{2-}$ ions in $14.2 \text{ g}$ of sodium sulphate ($Na_2SO_4$). [Given: $Na = 23, S = 32, O = 16$]
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                $$\text{Molar mass of } Na_2SO_4 = (2 \times 23) + 32 + (4 \times 16) = 142 \text{ g/mol}$$
+                $$\text{Moles of } Na_2SO_4 = \frac{14.2}{142} = 0.1 \text{ mole}$$
+                $$\text{Total formula units} = 0.1 \times 6.022 \times 10^{23} = 6.022 \times 10^{22} \text{ units}$$
+                Each unit of $Na_2SO_4$ dissociates into $2 Na^+$ ions and $1 SO_4^{2-}$ ion.<br>
+                $$\text{Number of } Na^+ \text{ ions} = 2 \times 6.022 \times 10^{22} = \mathbf{1.204 \times 10^{23} \text{ ions}}$$
+                $$\text{Number of } SO_4^{2-} \text{ ions} = 1 \times 6.022 \times 10^{22} = \mathbf{6.022 \times 10^{22} \text{ ions}}$$
+            </div>
+        </div>
+
+        <!-- SECTION 5C -->
+        <h2>5C. PERCENTAGE COMPOSITION, EMPIRICAL AND MOLECULAR FORMULAE</h2>
+
+        <h3>5.10 PERCENTAGE COMPOSITION</h3>
+        <div class="definition-box">
+            <p><strong>Percentage Composition:</strong> The percentage by weight of each constituent element present in a compound.</p>
+            $$\text{Percentage of Element} = \left( \frac{\text{Mass of Element in 1 Mole}}{\text{Gram Molecular Mass of Compound}} \right) \times 100$$
+        </div>
+
+        <h3>5.11 EMPIRICAL FORMULA vs MOLECULAR FORMULA</h3>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:25%;">Feature</th>
+                        <th style="width:37.5%;">Empirical Formula</th>
+                        <th style="width:37.5%;">Molecular Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Definition</strong></td>
+                        <td>Simplest whole-number ratio of atoms of different elements present in one molecule.</td>
+                        <td>Actual number of atoms of each element present in one molecule of the compound.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Example (Glucose)</strong></td>
+                        <td>$CH_2O$ (Ratio $C:H:O = 1:2:1$)</td>
+                        <td>$C_6H_{12}O_6$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Example (Hydrogen Peroxide)</strong></td>
+                        <td>$HO$ (Ratio $H:O = 1:1$)</td>
+                        <td>$H_2O_2$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mathematical Relation</strong></td>
+                        <td colspan="2" style="text-align:center;font-weight:700;color:var(--pink-border);">
+                            $\mathbf{\text{Molecular Formula} = n \times (\text{Empirical Formula})}$<br>
+                            $\text{where } n = \frac{\text{Molecular Weight}}{\text{Empirical Formula Weight}}$
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>5.12 STEP-BY-STEP PROCEDURE FOR DETERMINING EMPIRICAL FORMULA</h3>
+        <div class="rule-box">
+            <ol>
+                <li><strong>List Elements & Percentages:</strong> Note the percentage by mass of each element. (If sum $< 100\%$, the remainder is Oxygen).</li>
+                <li><strong>Calculate Atomic Ratios:</strong> Divide percentage of each element by its atomic mass ($Ratio = \frac{\%}{Atomic Mass}$).</li>
+                <li><strong>Find Simplest Ratio:</strong> Divide all atomic ratios by the <em>smallest</em> ratio value obtained.</li>
+                <li><strong>Convert to Whole Numbers:</strong> If ratios are fractional (e.g. $1.5$), multiply all numbers by a suitable integer (e.g. $\times 2$) to obtain whole numbers.</li>
+                <li><strong>Write Formula:</strong> Combine element symbols with their respective simplest whole-number subscripts.</li>
+            </ol>
+        </div>
+
+        <!-- TOPIC 5C PRACTICE PROBLEMS -->
+        <div class="practice-box">
+            <span class="practice-header">TOPIC 5C PRACTICE NUMERICALS (PERCENTAGE COMPOSITION & FORMULAE)</span>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 1</span> Calculate the percentage of water of crystallisation in washing soda crystals ($Na_2CO_3 \cdot 10H_2O$). [Given: $Na = 23, C = 12, O = 16, H = 1$]
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                $$\text{Molar mass of } Na_2CO_3 \cdot 10H_2O = (23 \times 2) + 12 + (16 \times 3) + 10 \times (2 + 16)$$
+                $$= 46 + 12 + 48 + 180 = 286 \text{ g/mol}$$
+                $$\text{Mass of water of crystallisation } (10H_2O) = 180 \text{ g}$$
+                $$\text{Percentage of } H_2O = \frac{180}{286} \times 100 = \mathbf{62.94\%}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 2</span> An organic compound contains $40.0\%$ Carbon, $6.7\%$ Hydrogen, and the rest Oxygen. Its vapour density is $30$. Find its empirical formula and molecular formula.
+            </div>
+            <div class="solution-box">
+                <strong>Step 1: Calculate Percentage of Oxygen:</strong><br>
+                $$\% \text{ Oxygen} = 100 - (40.0 + 6.7) = 53.3\%$$
+
+                <strong>Step 2: Tabular Empirical Formula Calculation:</strong>
+                <div class="vardaan-table-container">
+                    <table class="vardaan-table">
+                        <thead>
+                            <tr>
+                                <th>Element</th>
+                                <th>% Composition</th>
+                                <th>Atomic Mass</th>
+                                <th>Atomic Ratio ($\%/At.Mass$)</th>
+                                <th>Simplest Ratio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Carbon (C)</strong></td><td>$40.0\%$</td><td>$12$</td><td>$40.0 / 12 = 3.33$</td><td>$3.33 / 3.33 = \mathbf{1}$</td></tr>
+                            <tr><td><strong>Hydrogen (H)</strong></td><td>$6.7\%$</td><td>$1$</td><td>$6.7 / 1 = 6.70$</td><td>$6.70 / 3.33 = \mathbf{2}$</td></tr>
+                            <tr><td><strong>Oxygen (O)</strong></td><td>$53.3\%$</td><td>$16$</td><td>$53.3 / 16 = 3.33$</td><td>$3.33 / 3.33 = \mathbf{1}$</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                $$\mathbf{\text{Empirical Formula} = CH_2O}$$
+
+                <strong>Step 3: Determine Molecular Formula:</strong><br>
+                $$\text{Empirical Formula Weight } (EFW) = 12 + (2 \times 1) + 16 = 30 \text{ amu}$$
+                $$\text{Molecular Weight } (MW) = 2 \times \text{Vapour Density} = 2 \times 30 = 60 \text{ amu}$$
+                $$n = \frac{MW}{EFW} = \frac{60}{30} = 2$$
+                $$\mathbf{\text{Molecular Formula} = n \times (CH_2O) = (CH_2O)_2 = C_2H_4O_2 \quad (\text{Acetic Acid})}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 3</span> On heating $10 \text{ g}$ of copper sulphate crystals ($CuSO_4 \cdot xH_2O$), $6.4 \text{ g}$ of anhydrous copper sulphate is left. Find the formula of the crystalline salt. [Given: $Cu = 63.5, S = 32, O = 16, H = 1$]
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                • Mass of anhydrous $CuSO_4 = 6.4 \text{ g}$<br>
+                • Mass of water lost ($xH_2O$) = $10 - 6.4 = 3.6 \text{ g}$<br>
+                • Molar mass of $CuSO_4 = 63.5 + 32 + 64 = 159.5 \text{ g/mol}$<br>
+                • Molar mass of $H_2O = 18 \text{ g/mol}$<br>
+                $$\text{Moles of } CuSO_4 = \frac{6.4}{159.5} = 0.0401 \text{ moles}$$
+                $$\text{Moles of } H_2O = \frac{3.6}{18} = 0.20 \text{ moles}$$
+                $$\text{Mole ratio of } H_2O : CuSO_4 = \frac{0.20}{0.0401} = 5$$
+                $$\mathbf{\text{Formula of crystalline salt} = CuSO_4 \cdot 5H_2O}$$
+            </div>
+        </div>
+
+        <!-- SECTION 5D -->
+        <h2>5D. CALCULATIONS BASED ON CHEMICAL EQUATIONS (STOICHIOMETRY)</h2>
+
+        <h3>5.14 STOICHIOMETRIC CALCULATIONS</h3>
+        <p>Stoichiometry measures quantitative relationships between reactants and products in a balanced chemical equation.</p>
+
+        <div class="rule-box">
+            <p style="font-weight:700;color:var(--blue-border);margin-top:0;">3-STEP STOICHIOMETRIC SOLVING TECHNIQUE:</p>
+            <ol>
+                <li><strong>Write a Balanced Equation:</strong> Ensure coefficients correctly represent mole and volume ratios.</li>
+                <li><strong>Convert Given Quantity to Moles:</strong> Use mass/molar mass or volume/22.4 L at STP.</li>
+                <li><strong>Apply Mole Ratio:</strong> Multiply by product/reactant mole ratio to determine required mass or volume.</li>
+            </ol>
+        </div>
+
+        <!-- TOPIC 5D PRACTICE PROBLEMS -->
+        <div class="practice-box">
+            <span class="practice-header">TOPIC 5D PRACTICE NUMERICALS (STOICHIOMETRIC CALCULATIONS)</span>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 1 (MASS-MASS)</span> Calculate the mass of quicklime (calcium oxide, $CaO$) obtained by heating $200 \text{ g}$ of pure limestone ($CaCO_3$). [Given: $Ca = 40, C = 12, O = 16$]
+                $$\text{Reaction: } CaCO_3(s) \xrightarrow{\Delta} CaO(s) + CO_2(g)$$
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                $$\text{Molar mass of } CaCO_3 = 40 + 12 + (3 \times 16) = 100 \text{ g/mol}$$
+                $$\text{Molar mass of } CaO = 40 + 16 = 56 \text{ g/mol}$$
+                According to the balanced equation, $100 \text{ g}$ of $CaCO_3$ yields $56 \text{ g}$ of $CaO$.<br>
+                $$\implies \text{Mass of } CaO = \frac{56}{100} \times 200 = \mathbf{112 \text{ grams}}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 2 (MASS-VOLUME)</span> Calculate the volume of oxygen gas liberated at STP by the complete thermal decomposition of $24.5 \text{ g}$ of potassium chlorate ($KClO_3$). [Given: $K = 39, Cl = 35.5, O = 16$]
+                $$\text{Reaction: } 2KClO_3(s) \xrightarrow{MnO_2, \Delta} 2KCl(s) + 3O_2(g)$$
+            </div>
+            <div class="solution-box">
+                <strong>Solution:</strong><br>
+                • Molar mass of $KClO_3 = 39 + 35.5 + 48 = 122.5 \text{ g/mol}$<br>
+                • $2 \text{ moles of } KClO_3 = 2 \times 122.5 = 245 \text{ g}$<br>
+                • $3 \text{ moles of } O_2 \text{ gas at STP} = 3 \times 22.4 \text{ L} = 67.2 \text{ Litres}$<br><br>
+                Since $245 \text{ g}$ of $KClO_3$ liberates $67.2 \text{ L}$ of $O_2$ at STP:<br>
+                $$\text{Volume liberated from } 24.5 \text{ g } KClO_3 = \frac{67.2}{245} \times 24.5 = \mathbf{6.72 \text{ Litres of } O_2 \text{ at STP}}$$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED EXAMPLE 3 (PERCENTAGE YIELD)</span> On heating $12.4 \text{ g}$ of copper(II) carbonate ($CuCO_3$) in a crucible, only $7.0 \text{ g}$ of copper(II) oxide ($CuO$) was obtained. Calculate the percentage yield of copper(II) oxide. [Given: $Cu = 64, C = 12, O = 16$]
+                $$\text{Reaction: } CuCO_3(s) \xrightarrow{\Delta} CuO(s) + CO_2(g)$$
+            </div>
+            <div class="solution-box">
+                <strong>Step 1: Calculate Theoretical Yield:</strong><br>
+                • Molar mass of $CuCO_3 = 64 + 12 + 48 = 124 \text{ g/mol}$<br>
+                • Molar mass of $CuO = 64 + 16 = 80 \text{ g/mol}$<br>
+                $124 \text{ g}$ of $CuCO_3$ produces $80 \text{ g}$ of $CuO$.<br>
+                $$\text{Theoretical Yield} = \frac{80}{124} \times 12.4 = \mathbf{8.0 \text{ grams of } CuO}$$
+
+                <strong>Step 2: Calculate Percentage Yield:</strong><br>
+                $$\text{Percentage Yield} = \frac{\text{Actual Yield}}{\text{Theoretical Yield}} \times 100$$
+                $$\text{Percentage Yield} = \frac{7.0 \text{ g}}{8.0 \text{ g}} \times 100 = \mathbf{87.5\%}$$
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER -->
+        <div class="branding-footer">
+            <div class="top-branding-note">
+                <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+                <span aria-hidden="true">|</span>
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+            <div class="no-print" style="margin-top: 25px; padding-top: 20px; border-top: 2px solid var(--blue-border);">
+                <a href="../../Chemistry.html" style="display:inline-block;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,var(--blue-border),var(--pink-border));color:#fff;text-decoration:none;font-weight:700;font-size:1rem;">&larr; Back to Chemistry</a>
+            </div>
+        </div>
+
     </div>
+
     <script>
         function toggleTheme() {
             const html = document.documentElement;
             html.classList.toggle('dark-mode');
             localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
         }
-        // Initialize Theme - Default to LIGHT
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark-mode');
         }
@@ -584,6 +1349,3 @@
 </body>
 
 </html>
-
-
-

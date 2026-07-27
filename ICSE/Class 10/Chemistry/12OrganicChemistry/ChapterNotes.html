@@ -1,13 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 12: Organic Chemistry - Vardaan Master Notes</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
+    <script>MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] }, chtml: { scale: 1.05, mtextInheritFont: true } };</script>
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming System) --- */
         :root {
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
@@ -16,63 +18,669 @@
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
             --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+            --red-border: #d32f2f;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+            --red-border: #ff8a80;
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0
         }
 
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            display: inline-block !important;
+            vertical-align: middle;
+        }
+
+        mjx-container::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        mjx-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        mjx-container[display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: visible !important;
+            margin: 0.5em 0 !important;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
         body {
-            background: #fff;
-            color: #000;
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.7
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            transition: filter .3s
-        }
-
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg)
-        }
-
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            z-index: 9999
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.1;
             max-width: 80%;
-            opacity: 0.05
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important
+            filter: invert(1);
+            opacity: 0.15;
         }
 
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
-            background: #fff;
-            width: 210mm;
-            max-width: 100%;
+            background-color: var(--paper-bg);
+            width: 100%;
+            max-width: 210mm !important;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .system-name {
+            font-size: 1rem;
+            color: var(--meta-text);
+            margin-top: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .top-branding-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 12px;
+            padding: 8px 0 0;
+            white-space: nowrap;
+            color: var(--meta-text);
+        }
+
+        .chapter-name-banner {
+            text-align: center;
+            margin: 6px 0 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .chapter-name-title {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .powered-by-label {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            color: var(--pink-border);
+            letter-spacing: 0.3px;
+        }
+
+        .powered-by-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: 0.4px;
+        }
+
+        html.dark-mode .powered-by-brand {
+            color: #fff;
+        }
+
+        html.dark-mode .vardaan-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .heart-red {
+            color: #d32f2f;
+        }
+
+        /* --- IMAGE STYLING (AGENTS.md Compliance) --- */
+        .content-image-container {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .content-image, .img-in-note {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            mix-blend-mode: multiply;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .content-image, html.dark-mode .img-in-note {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        /* --- AI IMAGE PROMPT BOX --- */
+        .ai-image-prompt {
+            background: var(--blue-bg);
+            border: 2px dashed var(--blue-border);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.6;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .ai-image-prompt strong {
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-image-prompt em {
+            color: var(--pink-border);
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        /* --- SCIENTIFIC SVG DIAGRAM STYLING --- */
+        .svg-diagram-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 1.8rem auto;
+            text-align: center;
+            background: var(--paper-bg);
+            border: 1px solid var(--toggle-border);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            overflow-x: auto;
+        }
+
+        .svg-diagram {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .svg-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- PREMIUM TABLE --- */
+        .vardaan-table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .vardaan-table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+            table-layout: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table th {
+            background-color: var(--blue-border);
+            color: white;
+            padding: 10px 12px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+            font-size: 0.88rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        html.dark-mode .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(255, 255, 255, 0.025);
+        }
+
+        table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+            table-layout: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        th {
+            background-color: var(--blue-border);
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            text-align: left;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        ul,
+        ol {
+            padding-left: 25px;
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box,
+        .green-box,
+        .yellow-box,
+        .pink-box,
+        .concept-blue,
+        .concept-green,
+        .concept-pink {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .blue-box,
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+        }
+
+        .green-box,
+        .concept-green {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+        }
+
+        .pink-box,
+        .concept-pink {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+        }
+
+        .definition-box {
+            background: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .rule-box {
+            background: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .analysis-box {
+            background: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .derivation-box {
+            background: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .master-tip {
+            background-color: var(--yellow-bg);
+            border: 2px dashed var(--red-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .formula-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.08);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--blue-border);
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        /* --- PRACTICE BOX & SOLUTIONS --- */
+        .practice-box {
+            background-color: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 4px 4px 0 rgba(255, 111, 0, 0.2);
+        }
+        html.dark-mode .practice-box {
+            background-color: #3f2a00;
+            border-color: #ff8f00;
+            box-shadow: 4px 4px 0 rgba(255, 143, 0, 0.3);
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            display: block;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+        }
+        html.dark-mode .practice-header {
+            color: #ffb300;
+            border-bottom-color: #ffb300;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        html.dark-mode .q-tag {
+            background: #ffb300;
+            color: #000;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ffe0b2;
+        }
+        html.dark-mode .question {
+            border-bottom-color: #5c4000;
+        }
+        .question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .solution-box {
+            background-color: rgba(211, 84, 0, 0.05);
+            border-left: 3px dashed #d35400;
+            padding: 12px 18px;
+            margin-top: 8px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.98rem;
+            color: var(--text-main);
+            line-height: 1.65;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        html.dark-mode .solution-box {
+            background-color: rgba(255, 179, 0, 0.1);
+            border-left-color: #ffb300;
+        }
+        .solution-box strong {
+            color: #d35400;
+        }
+        html.dark-mode .solution-box strong {
+            color: #ffb300;
+        }
+
+        /* --- SYLLABUS OVERVIEW BOX --- */
+        .syllabus-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        html.dark-mode .syllabus-box {
+            background-color: #0d1b2a;
+            border-color: #1e3a5f;
+        }
+        .syllabus-header {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #64748b;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        html.dark-mode .syllabus-header {
+            color: #82b1ff;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -80,7 +688,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--toggle-bg);
             border: none;
             cursor: pointer;
             z-index: 1000;
@@ -89,17 +697,19 @@
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
+            transition: all 0.3s ease;
         }
 
         .icon-sun,
         .icon-moon {
             position: absolute;
             transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
         }
 
         .icon-sun {
@@ -117,509 +727,705 @@
             transform: scale(1) rotate(0deg);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            color: #6a1b9a;
-            margin-bottom: .5rem
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #6a1b9a;
-            padding-bottom: .5rem;
-            color: #6a1b9a
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-            color: #7b1fa2
-        }
-
-        h4 {
-            font-size: 1rem;
-            margin-top: 1rem;
-            color: #9c27b0
-        }
-
-        p,
-        li {
-            margin-bottom: .8rem
-        }
-
-        ul,
-        ol {
-            padding-left: 1.5rem
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: .75rem
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: center
-        }
-
-        th {
-            background: #f3e5f5;
-            font-weight: 600
-        }
-
-        .definition-box {
-            background: var(--yellow-bg);
-            border-left: 5px solid var(--yellow-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .rule-box {
-            background: var(--blue-bg);
-            border-left: 5px solid var(--blue-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .derivation-box {
-            background: var(--green-bg);
-            border-left: 5px solid var(--green-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .analysis-box {
-            background: var(--pink-bg);
-            border-left: 5px solid var(--pink-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .master-tip {
-            border: 2px dashed #d32f2f;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            background: #ffebee;
-            font-style: italic
-        }
-
-        .formula-box {
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0 #000;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            position: relative;
-            background: #fff
-        }
-
-        .formula-box::after {
-            content: "FORMULA";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #000;
-            color: #fff;
-            padding: 2px 8px;
-            font-size: .75rem
-        }
-
-        .practice-box {
-            background: #fff8e1;
-            border: 2px solid #ff6f00;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0
-        }
-
-        .practice-header {
-            font-weight: 700;
-            color: #d35400;
-            margin-bottom: .5rem
-        }
-
-        .q-tag {
-            background: #d35400;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: .75rem;
-            margin-right: 5px
-        }
-
-        .reaction-box {
-            background: #e8f5e9;
-            border: 1px solid #43a047;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: center
-        }
-
-        @media screen and (max-width:800px) {
+        @media screen and (max-width: 768px) {
             .paper-sheet {
-                width: 95%;
-                padding: 15px
+                width: 100%;
+                padding: 12px;
             }
 
-            table {
-                font-size: .6rem
+            .institute-name {
+                font-size: 1.5rem;
             }
 
-            h1 {
-                font-size: 1.8rem
+            h2 {
+                font-size: 1.25rem;
+                padding-left: 10px;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            p, li {
+                font-size: 0.95rem;
+            }
+
+            .vardaan-table th,
+            .vardaan-table td,
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.82rem;
+            }
+
+            .blue-box, .green-box, .yellow-box, .pink-box,
+            .definition-box, .rule-box, .analysis-box, .derivation-box,
+            .formula-box, .master-tip, .practice-box, .ai-image-prompt {
+                padding: 14px;
+                margin: 15px 0;
+            }
+
+            mjx-container {
+                font-size: 92% !important;
             }
         }
 
         @media print {
-            html.dark-mode {
-                filter: none !important
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
-            .theme-toggle {
-                display: none
+            .branding-header {
+                background-color: white !important;
+                border-bottom: 2px solid var(--blue-border) !important;
+                padding: 10px 0 !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
 
             .paper-sheet {
-                width: 100%;
-                padding: 10mm
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .theme-toggle,
+            .no-print {
+                display: none !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.8 !important;
+                mix-blend-mode: multiply !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                pointer-events: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 70% !important;
+                opacity: 0.2 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #1e88e5;
+                    color: #fff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
             }
         }
-    
-        @media (max-width: 768px){.paper-sheet{padding:15px;width:100%}.institute-name{font-size:1.6rem}.system-name{font-size:.9rem;letter-spacing:1px}h1{font-size:1.6rem}h2{font-size:1.3rem}h3{font-size:1.1rem}p,li{font-size:.95rem}.blue-box,.green-box,.yellow-box{padding:15px;margin:15px 0}.theme-toggle{top:10px;right:10px;width:36px;height:36px}.chapter-image{float:none;width:100%;max-width:100%;margin:10px 0}}
     </style>
 </head>
+
 <body>
-    <div class="watermark-overlay"><img
-            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            class="watermark-image"></div>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image" alt="Vardaan Watermark">
+    </div>
+
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </svg>
     </button>
 
     <div class="paper-sheet">
-        <h1>Organic Chemistry</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">ICSE Class 10 Chemistry â€¢ Chapter 12</p>
-
-        <h2>1. Introduction to Organic Compounds</h2>
-        <p>The word <strong>'organic'</strong> means pertaining to life. Initially, it was believed that organic compounds were products of a <em>"vital force"</em> of nature. This <strong>Vital Force Theory</strong> was discarded in 1828 when Friedrich Wohler synthesized an organic compound, <strong>Urea</strong> (CO(NHâ‚‚)â‚‚), from an inorganic compound, Ammonium cyanate (NHâ‚„CNO), in the laboratory.</p>
-        <p>Today, Organic Chemistry is defined as the <strong>study of carbon compounds</strong> (excluding oxides of carbon, metallic carbonates, and related compounds like metal cyanides and carbides).</p>
-        
-        <h3>Comparison between Organic and Inorganic Compounds</h3>
-        <table>
-            <tr>
-                <th>Characteristics</th>
-                <th>Organic Compounds</th>
-                <th>Inorganic Compounds</th>
-            </tr>
-            <tr>
-                <td><strong>Presence of Carbon</strong></td>
-                <td>Carbon is a necessary element.</td>
-                <td>Carbon is not essential.</td>
-            </tr>
-            <tr>
-                <td><strong>Solubility in Water</strong></td>
-                <td>Generally insoluble in water.</td>
-                <td>Generally dissolve in water.</td>
-            </tr>
-            <tr>
-                <td><strong>Solubility in Organic Solvents</strong></td>
-                <td>Dissolve in organic solvents (alcohol, benzene).</td>
-                <td>Do not dissolve in organic solvents.</td>
-            </tr>
-            <tr>
-                <td><strong>Melting & Boiling Point</strong></td>
-                <td>Have low m.p. and b.p.; easily decompose.</td>
-                <td>Have high m.p. and b.p.; do not easily decompose.</td>
-            </tr>
-            <tr>
-                <td><strong>Combustibility</strong></td>
-                <td>Inflammable (catch fire easily).</td>
-                <td>Do not burn easily.</td>
-            </tr>
-            <tr>
-                <td><strong>Bonding & Conductivity</strong></td>
-                <td>Form <strong>covalent bonds</strong>. Non-electrolytes.</td>
-                <td>Mostly form <strong>ionic bonds</strong>. Good electrolytes.</td>
-            </tr>
-            <tr>
-                <td><strong>Isomerism</strong></td>
-                <td>Show the phenomenon of isomerism.</td>
-                <td>No such phenomenon.</td>
-            </tr>
-        </table>
-
-        <h2>2. Unique Nature of Carbon Atoms</h2>
-        <div class="definition-box">
-            <p><strong>Tetravalency:</strong> Carbon has four valence electrons (At. No. 6, Config 2, 4). It forms four covalent bonds by sharing its electrons. This is called tetravalency.</p>
-            <p><strong>Catenation:</strong> The unique property of self-linking of carbon atoms through covalent bonds to form straight chains, branched chains, and cyclic chains of different sizes.</p>
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
         </div>
-        <p>Because of tetravalency and catenation, more than 5 million organic compounds are known today.</p>
-
-        <h3>Types of Chains</h3>
-        <ul>
-            <li><strong>Straight Chain:</strong> Carbon atoms are connected in a continuous single line (e.g., n-butane).</li>
-            <li><strong>Branched Chain:</strong> Carbon atoms have side branches (e.g., iso-butane).</li>
-            <li><strong>Cyclic (Closed) Chain:</strong> Carbon atoms form a closed ring (e.g., Cyclopropane, Benzene).</li>
-        </ul>
-
-        <h2>3. Types of Organic Compounds</h2>
-        <div class="rule-box">
-            <p><strong>Hydrocarbons:</strong> Compounds made up entirely of carbon and hydrogen atoms only.</p>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
         </div>
-        <table>
-            <tr>
-                <th>Saturated Hydrocarbons</th>
-                <th>Unsaturated Hydrocarbons</th>
-            </tr>
-            <tr>
-                <td>All four valencies of carbon are satisfied by <strong>single covalent bonds</strong>.</td>
-                <td>Valencies of at least two carbon atoms are satisfied by a <strong>double or triple covalent bond</strong>.</td>
-            </tr>
-            <tr>
-                <td>Less reactive (due to non-availability of electrons). Undergo <strong>substitution reactions</strong>.</td>
-                <td>More reactive (due to presence of electrons in double/triple bond). Undergo <strong>addition reactions</strong>.</td>
-            </tr>
-            <tr>
-                <td>Example: Alkanes (\(C_nH_{2n+2}\))</td>
-                <td>Examples: Alkenes (\(C_nH_{2n}\)), Alkynes (\(C_nH_{2n-2}\))</td>
-            </tr>
-        </table>
-
-        <h2>4. Functional Groups & Alkyl Groups</h2>
-        <p><strong>Alkyl Group:</strong> Obtained by removing one atom of hydrogen from an alkane molecule. General formula: \(C_n H_{2n+1}\). Example: Methyl (\(-CH_3\)), Ethyl (\(-C_2H_5\)).</p>
-        
-        <div class="definition-box">
-            <p><strong>Functional Group:</strong> An atom or a group of atoms that defines the structure (and chemical properties) of a particular family of organic compounds.</p>
-        </div>
-        <table>
-            <tr>
-                <th>Functional Group</th>
-                <th>General Formula</th>
-                <th>Type of Compound</th>
-                <th>Suffix</th>
-            </tr>
-            <tr><td>Hydroxyl (\(-OH\))</td><td>\(R-OH\)</td><td>Alcohols</td><td>-ol</td></tr>
-            <tr><td>Aldehyde (\(-CHO\))</td><td>\(R-CHO\)</td><td>Aldehydes</td><td>-al</td></tr>
-            <tr><td>Carboxyl (\(-COOH\))</td><td>\(R-COOH\)</td><td>Carboxylic acids</td><td>-oic acid</td></tr>
-            <tr><td>Halide (\(-X\))</td><td>\(R-X\)</td><td>Haloalkanes</td><td>-ane (Prefix: chloro/bromo)</td></tr>
-        </table>
-
-        <h2>5. Isomerism</h2>
-        <div class="analysis-box">
-            <p><strong>Isomers:</strong> Compounds having the same molecular formula but different structural formulas. This phenomenon is known as Isomerism.</p>
-            <p>Isomers differ in physical properties or chemical properties or both. It is caused by difference in the mode of linking of atoms.</p>
-        </div>
-        
-        <h3>Types of Structural Isomerism</h3>
-        <ul>
-            <li><strong>Chain Isomerism:</strong> Differ in the arrangement of carbon atoms in straight or branched chains.
-                <br><em>Example (Isomers of Butane \(C_4H_{10}\)):</em> n-butane (straight chain) and isobutane (2-methylpropane, branched chain).
-                <br><em>Example (Isomers of Pentane \(C_5H_{12}\)):</em> n-pentane, isopentane (2-methylbutane), and neopentane (2,2-dimethylpropane).
-            </li>
-            <li><strong>Position Isomerism:</strong> Differ in the position of the substituent atom or functional group (or double/triple bond).
-                <br><em>Example:</em> But-1-ene and But-2-ene.
-            </li>
-            <li><strong>Functional Isomerism:</strong> Differ in the functional group. Example: Ethanol (\(CH_3CH_2OH\)) and Dimethyl ether (\(CH_3OCH_3\)).</li>
-        </ul>
-
-        <h2>6. Homologous Series</h2>
-        <p>A homologous series is a group of organic compounds having a similar structure and similar chemical properties in which the successive compounds differ by a \(CH_2\) group (and a molecular mass of 14 a.m.u).</p>
-        <div class="master-tip">
-            <p><strong>Characteristics:</strong> All members share a general formula. They show similar chemical properties. Their physical properties (like melting and boiling point) show a gradual gradation (increase) as the molecular mass increases.</p>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Organic Chemistry</h1>
         </div>
 
-        <h2>7. IUPAC Nomenclature</h2>
-        <p>Naming organic compounds relies on three parts: <strong>Prefix + Root Word + Suffix</strong>.</p>
-        <ul>
-            <li><strong>Root Word:</strong> Indicates the number of carbon atoms in the longest chain (Meth = 1, Eth = 2, Prop = 3, But = 4, Pent = 5, Hex = 6).</li>
-            <li><strong>Suffix:</strong> Indicates the type of bond (-ane for single, -ene for double, -yne for triple) or the functional group (-ol, -al, -oic acid).</li>
-            <li><strong>Prefix:</strong> Indicates substituents (methyl, chloro, bromo) attached to the main chain.</li>
-        </ul>
-        <div class="rule-box">
-            <p><strong>Key Rules:</strong></p>
-            <ol>
-                <li>Select the longest continuous carbon chain.</li>
-                <li>Number the carbon atoms starting from the end closest to the functional group, double/triple bond, or substituent (to give them the lowest possible number).</li>
-                <li>Write prefixes alphabetically (e.g., bromo comes before chloro). Use di, tri, tetra for multiple identical groups.</li>
-            </ol>
-        </div>
-
-        <h2>8. Alkanes (\(C_nH_{2n+2}\))</h2>
-        <p>Alkanes are saturated hydrocarbons containing only single covalent bonds. Also known as <strong>paraffins</strong> (little affinity) because they are relatively unreactive.</p>
-        
-        <h3>Methane (\(CH_4\)) and Ethane (\(C_2H_6\))</h3>
-        <p><strong>Occurrence:</strong> Methane is marsh gas. It is also a primary constituent of natural gas. It is a potent <strong>Green House Gas</strong>.</p>
-        
-        <div class="derivation-box">
-            <p><strong>Laboratory Preparation of Methane:</strong></p>
-            <p><em>Reactants:</em> Sodium ethanoate (sodium acetate) and soda lime (mixture of NaOH and CaO).</p>
-            <p><em>Reaction:</em> \(CH_3COONa + NaOH \xrightarrow{CaO, \ 300^\circ C} Na_2CO_3 + CH_4\uparrow\)</p>
-            <p><em>Collection:</em> Downward displacement of water (slightly soluble in water, lighter than air).</p>
-        </div>
-
-        <div class="derivation-box">
-            <p><strong>Laboratory Preparation of Ethane:</strong></p>
-            <p><em>Reaction:</em> \(C_2H_5COONa + NaOH \xrightarrow{CaO, \ 300^\circ C} Na_2CO_3 + C_2H_6\uparrow\)</p>
-        </div>
-
-        <p><strong>Other Preparation Methods:</strong></p>
-        <ul>
-            <li><strong>Reduction of Alkyl Halides:</strong> \(CH_3I + 2[H] \rightarrow CH_4 + HI\)</li>
-            <li><strong>Wurtz Reaction (for Ethane):</strong> \(2CH_3I + 2Na \xrightarrow{\text{dry ether}} C_2H_6 + 2NaI\) (Not suitable for methane).</li>
-        </ul>
-
-        <h4>Chemical Properties of Alkanes</h4>
-        <ul>
-            <li><strong>Combustion:</strong> Burn in excess oxygen with a pale blue, non-sooty flame.
-                <br>\(CH_4 + 2O_2 \rightarrow CO_2 + 2H_2O + \text{Heat}\)
-            </li>
-            <li><strong>Substitution Reaction (Halogenation):</strong> React with halogens in diffused sunlight.
-                <br>\(CH_4 + Cl_2 \rightarrow CH_3Cl + HCl\) (Chloromethane)
-                <br>\(CH_3Cl + Cl_2 \rightarrow CH_2Cl_2 + HCl\) (Dichloromethane)
-                <br>\(CH_2Cl_2 + Cl_2 \rightarrow CHCl_3 + HCl\) (Trichloromethane/Chloroform)
-                <br>\(CHCl_3 + Cl_2 \rightarrow CCl_4 + HCl\) (Carbon tetrachloride)
-            </li>
-            <li><strong>Catalytic Oxidation:</strong>
-                <br>With Cu tube at 475K, 120 atm \(\rightarrow\) Methanol (\(CH_3OH\))
-                <br>With Molybdenum oxide (\(MoO\)) \(\rightarrow\) Formaldehyde (\(HCHO\))
-                <br>With Manganese compound \(\rightarrow\) Formic acid (\(HCOOH\))
-            </li>
-        </ul>
-
-        <h2>9. Alkenes (\(C_nH_{2n}\))</h2>
-        <p>Unsaturated aliphatic hydrocarbons containing one double bond. Also known as <strong>olefins</strong> (oil-forming).</p>
-
-        <h3>Ethene (\(C_2H_4\))</h3>
-        <p><strong>Structure:</strong> Planar molecule. Bond angle is 120Â°.</p>
-
-        <div class="derivation-box">
-            <p><strong>Laboratory Preparation of Ethene:</strong></p>
-            <p><em>Dehydration of Ethyl Alcohol:</em> Reactants are Ethanol and Conc. Sulphuric acid.</p>
-            <p><em>Reaction:</em> \(C_2H_5OH \xrightarrow{\text{Conc. } H_2SO_4, \ 170^\circ C} C_2H_4 + H_2O\)</p>
-            <p><em>Purification:</em> Gas is passed through NaOH to remove impurities like \(CO_2\) and \(SO_2\).</p>
-        </div>
-        <p><strong>Dehydrohalogenation:</strong>
-            <br>\(C_2H_5Cl + KOH \text{ (alcoholic, hot)} \rightarrow C_2H_4 + KCl + H_2O\)
-        </p>
-
-        <h4>Chemical Properties of Alkenes</h4>
-        <p>Alkenes undergo <strong>Addition Reactions</strong> due to the breaking of the double bond to form saturated products.</p>
-        <ul>
-            <li><strong>Hydrogenation:</strong> \(C_2H_4 + H_2 \xrightarrow{Ni, \ 200^\circ C} C_2H_6\) (Ethane)</li>
-            <li><strong>Halogenation:</strong> \(C_2H_4 + Cl_2 \rightarrow C_2H_4Cl_2\) (1,2-dichloroethane).
-                <br><span class="q-tag">TEST</span> <em>Bromine water test:</em> Reddish-brown colour of bromine in \(CCl_4\) gets decolourised, forming colourless 1,2-dibromoethane. This proves unsaturation.
-            </li>
-            <li><strong>Hydration:</strong> \(C_2H_4 + H_2O \xrightarrow{H^+} C_2H_5OH\) (Ethanol)</li>
-            <li><strong>Polymerization:</strong> Ethene molecules polymerize at high temp/pressure to form <strong>Polythene</strong>.</li>
-            <li><strong>Baeyer's Test:</strong> Purple colour of alkaline \(KMnO_4\) is decolourised by ethene, forming 1,2-Ethanediol (Ethylene glycol).</li>
-        </ul>
-
-        <h2>10. Alkynes (\(C_nH_{2n-2}\))</h2>
-        <p>Unsaturated aliphatic hydrocarbons containing a triple bond.</p>
-
-        <h3>Ethyne (Acetylene, \(C_2H_2\))</h3>
-        <p><strong>Structure:</strong> Linear molecule.</p>
-
-        <div class="derivation-box">
-            <p><strong>Laboratory Preparation of Ethyne:</strong></p>
-            <p><em>Reactants:</em> Water and Calcium carbide.</p>
-            <p><em>Reaction:</em> \(CaC_2 + 2H_2O \rightarrow Ca(OH)_2 + C_2H_2\uparrow\)</p>
-            <p><em>Purification:</em> Passed through acidified \(CuSO_4\) or acidified \(K_2Cr_2O_7\) to remove phosphine (\(PH_3\)) and hydrogen sulphide (\(H_2S\)) impurities.</p>
-        </div>
-
-        <h4>Chemical Properties of Alkynes</h4>
-        <ul>
-            <li><strong>Addition Reactions:</strong> Occur in two stages.
-                <br><em>Halogenation (with \(Cl_2\)):</em> \(C_2H_2 \xrightarrow{+Cl_2} C_2H_2Cl_2 \xrightarrow{+Cl_2} C_2H_2Cl_4\) (1,1,2,2-tetrachloroethane)
-            </li>
-            <li><strong>Combustion:</strong> Burns with a brilliant white, sooty flame. In pure oxygen, it produces a very hot flame (3000Â°C) used in <strong>Oxy-acetylene welding</strong>.</li>
-        </ul>
-
-        <h2>11. Alcohols (\(C_nH_{2n+1}OH\))</h2>
-        <p>Hydroxyl derivatives of alkanes.</p>
-
-        <h3>Ethanol (Ethyl Alcohol, \(C_2H_5OH\))</h3>
-        <p><strong>Laboratory Preparation:</strong> Hydrolysis of alkyl halides with hot dilute alkali.
-            <br>\(C_2H_5Cl + KOH \text{ (aqueous, boil)} \rightarrow C_2H_5OH + KCl\)
-        </p>
-        <p><strong>Industrial Preparation:</strong> Hydration of Ethene, or Fermentation of sugar (using enzymes at 37Â°C).</p>
-
-        <h4>Chemical Properties of Ethanol</h4>
-        <ul>
-            <li><strong>Combustion:</strong> Burns with a pale blue flame.</li>
-            <li><strong>Oxidation:</strong> With acidified Potassium Dichromate (\(K_2Cr_2O_7\)).
-                <br>\(C_2H_5OH \xrightarrow{[O]} CH_3CHO \text{ (Acetaldehyde)} \xrightarrow{[O]} CH_3COOH \text{ (Acetic Acid)}\)
-            </li>
-            <li><strong>Action with Sodium:</strong> Evolves Hydrogen gas.
-                <br>\(2C_2H_5OH + 2Na \rightarrow 2C_2H_5ONa \text{ (Sodium ethoxide)} + H_2\uparrow\)
-            </li>
-            <li><strong>Esterification:</strong> Reacts with Acetic Acid (with conc. \(H_2SO_4\)) to form Ethyl Acetate (fruity smell).
-                <br>\(C_2H_5OH + CH_3COOH \xrightarrow{\text{Conc. } H_2SO_4} CH_3COOC_2H_5 + H_2O\)
-            </li>
-            <li><strong>Dehydration:</strong> Heated with conc. \(H_2SO_4\) at 170Â°C forms Ethene.</li>
-        </ul>
-
-        <div class="analysis-box">
-            <p><strong>Forms of Ethanol:</strong></p>
+        <!-- SYLLABUS OVERVIEW -->
+        <div class="syllabus-box">
+            <span class="syllabus-header">ICSE CLASS 10 CHEMISTRY SYLLABUS OVERVIEW</span>
             <ul>
-                <li><strong>Denatured Alcohol (Methylated Spirit):</strong> Ethanol made undrinkable for industrial use by adding poisonous substances like pyridine, methyl alcohol, and a dye (copper sulphate).</li>
-                <li><strong>Spurious Alcohol:</strong> Illicit liquor made improperly, containing fatal amounts of methanol.</li>
+                <li><strong>(i) Introduction to Organic Compounds:</strong> Unique nature of Carbon (tetravalency, catenation, single/double/triple bonds, straight, branched and cyclic chains).</li>
+                <li><strong>(ii) Structure and Isomerism:</strong> Structural formulas of single, double, and triple bond compounds. Isomerism (chain and position isomerism).</li>
+                <li><strong>(iii) Homologous Series:</strong> Characteristics, examples, gradation in physical properties and relationship with molecular mass.</li>
+                <li><strong>(iv) IUPAC Nomenclature:</strong> Naming of hydrocarbons, alkyl groups, and functional groups (alkanes, alkenes, alkynes, alcohols, aldehydes, ketones, carboxylic acids, ethers, halides).</li>
+                <li><strong>(v) Hydrocarbons (Alkanes, Alkenes, Alkynes):</strong> Preparation, physical & chemical properties, combustion, substitution, addition, and industrial uses of Methane, Ethane, Ethene, and Ethyne.</li>
+                <li><strong>(vi) Alcohols (Ethanol):</strong> Preparation (hydration of ethene, hydrolysis of alkyl halides), physical & chemical properties (combustion, oxidation, sodium test, esterification, dehydration), and uses.</li>
+                <li><strong>(vii) Carboxylic Acids (Ethanoic / Acetic Acid):</strong> Lab preparation, properties (acidic nature, reaction with carbonates/alkalis, esterification, reduction), glacial acetic acid, and uses.</li>
             </ul>
         </div>
 
-        <h2>12. Carboxylic Acids (\(R-COOH\))</h2>
-        <p>Compounds containing the carboxyl group. Exhibit acidic properties.</p>
+        <!-- SECTION 12A -->
+        <h2>12A. ORGANIC COMPOUNDS</h2>
 
-        <h3>Acetic Acid (Ethanoic Acid, \(CH_3COOH\))</h3>
-        <p><strong>Laboratory Preparation:</strong> Complete oxidation of ethanol using acidified \(K_2Cr_2O_7\).</p>
-        
-        <div class="master-tip">
-            <p><strong>Glacial Acetic Acid:</strong> Anhydrous (pure) acetic acid cools to form crystalline mass resembling ice at 17Â°C, hence the name glacial acetic acid.</p>
+        <div class="content-image-container">
+            <img src="./Images/Tetrahedral Structure of Methane & Carbon Catenation Chain Types.png" alt="Tetrahedral Structure of Methane and Carbon Catenation Chain Types" class="img-in-note content-image">
         </div>
 
-        <h4>Chemical Properties of Acetic Acid</h4>
+        <h3>12.1 INTRODUCTION & HISTORICAL BACKGROUND</h3>
+        <p>The word <strong>'organic'</strong> means <em>pertaining to life</em>. Originally, scientists believed organic compounds (like sugar, starch, proteins, and acetic acid) could only be produced by living organisms through a hypothetical <strong>'Vital Force'</strong>.</p>
+
+        <div class="analysis-box">
+            <p><strong>Overthrow of Vital Force Theory:</strong></p>
+            <ul>
+                <li>In <strong>1828</strong>, German chemist <strong>Friedrich Wöhler</strong> synthesized the first organic compound, <strong>Urea</strong>, in the laboratory by heating inorganic Ammonium Cyanate:
+                    $$\text{NH}_4\text{CNO} \xrightarrow{\Delta} \text{CO(NH}_2\text{)}_2 \quad (\text{Ammonium Cyanate } \rightarrow \text{ Urea})$$
+                </li>
+                <li>In <strong>1845</strong>, <strong>Kolbe</strong> synthesized Acetic Acid ($CH_3COOH$) from its constituent elements ($C, H, O$).</li>
+                <li>In <strong>1856</strong>, <strong>Berthelot</strong> synthesized Methane gas ($CH_4$).</li>
+            </ul>
+            <p style="margin-top:10px;"><strong>Modern Definition:</strong> Organic chemistry is the <strong>study of carbon compounds</strong> (excluding oxides of carbon, carbonates, hydrogen carbonates, metal cyanides, and metal carbides).</p>
+        </div>
+
+        <h3>12.2 SOURCES OF ORGANIC COMPOUNDS</h3>
         <ul>
-            <li><strong>Acidic Nature:</strong> Weak acid. Turns blue litmus red.</li>
-            <li><strong>Reaction with Active Metals:</strong> Evolves hydrogen.
-                <br>\(2CH_3COOH + Zn \rightarrow (CH_3COO)_2Zn + H_2\uparrow\)
-            </li>
-            <li><strong>Reaction with Alkalis:</strong> Forms salt (Sodium acetate) and water.</li>
-            <li><strong>Reaction with Carbonates/Bicarbonates:</strong> Evolves \(CO_2\) gas with brisk effervescence.
-                <br>\(2CH_3COOH + Na_2CO_3 \rightarrow 2CH_3COONa + H_2O + CO_2\uparrow\)
-            </li>
+            <li><strong>1. Plants:</strong> Carbohydrates (sugar, starch, cellulose), drugs, organic acids.</li>
+            <li><strong>2. Animals:</strong> Proteins, fats, urea.</li>
+            <li><strong>3. Coal:</strong> Destructive distillation of coal yields Benzene, Toluene, Naphthalene, Dyes, Perfumes.</li>
+            <li><strong>4. Petroleum:</strong> Gasoline, Petrol, Kerosene, Naphtha, Paraffin wax.</li>
+            <li><strong>5. Fermentation:</strong> Ethyl alcohol, Acetic acid.</li>
+            <li><strong>6. Synthetic Methods:</strong> Modern plastics, pharmaceuticals, synthetic rubbers, dyes.</li>
         </ul>
 
-        <br><br>
-        <p style="text-align:center;color:#888;font-size:0.9rem;">-- End of Master Notes --</p>
+        <h3>12.2.1 Comparison Between Organic and Inorganic Compounds</h3>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:20%;">Characteristic</th>
+                        <th style="width:40%;">Organic Compounds</th>
+                        <th style="width:40%;">Inorganic Compounds</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>1. Presence of Carbon</strong></td><td>Carbon is an essential constituent element in every organic compound.</td><td>Carbon is not an essential element (except in carbonates/oxides).</td></tr>
+                    <tr><td><strong>2. Water Solubility</strong></td><td>Generally insoluble in water (except lower alcohols/acids).</td><td>Generally soluble in water.</td></tr>
+                    <tr><td><strong>3. Organic Solvents</strong></td><td>Soluble in organic solvents (alcohol, ether, benzene, chloroform).</td><td>Insoluble in organic solvents.</td></tr>
+                    <tr><td><strong>4. Melting & Boiling Points</strong></td><td>Low m.p. and b.p.; easily decompose on heating.</td><td>High m.p. and b.p.; generally heat stable.</td></tr>
+                    <tr><td><strong>5. Combustibility</strong></td><td>Inflammable; catch fire easily to form $CO_2$ and $H_2O$.</td><td>Non-inflammable; do not burn easily.</td></tr>
+                    <tr><td><strong>6. Chemical Bonding</strong></td><td>Form <strong>covalent bonds</strong> by sharing electrons.</td><td>Mostly form <strong>electrovalent (ionic) bonds</strong>.</td></tr>
+                    <tr><td><strong>7. Electrical Conductivity</strong></td><td>Non-electrolytes (do not conduct electricity).</td><td>Good electrolytes in aqueous or molten state.</td></tr>
+                    <tr><td><strong>8. Isomerism</strong></td><td>Exhibit the unique phenomenon of <strong>isomerism</strong>.</td><td>Isomerism is extremely rare or non-existent.</td></tr>
+                    <tr><td><strong>9. Color & Smell</strong></td><td>Possess characteristic colors and odours (e.g. fruity esters).</td><td>Mostly odorless and colorless.</td></tr>
+                    <tr><td><strong>10. Reaction Speed</strong></td><td>Molecular reactions are slow and reversible.</td><td>Ionic reactions are instantaneous and fast.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>12.3 UNIQUE NATURE OF CARBON ATOMS</h3>
+        <p>Carbon forms more than 5 million known organic compounds due to two unique structural properties:</p>
+
+        <div class="rule-box">
+            <p><strong>1. Tetravalency of Carbon:</strong></p>
+            <p>Carbon (Atomic number = 6; Electronic configuration = 2, 4) has 4 valence electrons. To attain an octet, carbon shares 4 electrons with other atoms, forming <strong>four covalent bonds</strong>.</p>
+
+            <p style="margin-top:15px;"><strong>2. Catenation:</strong></p>
+            <div class="definition-box" style="margin:10px 0;">
+                <p><strong>Catenation:</strong> The unique property of self-linking of atoms of an element through covalent bonds to form straight chains, branched chains, and cyclic (ring) structures of different sizes.</p>
+            </div>
+            <p><strong>Reasons for Maximum Catenation in Carbon:</strong></p>
+            <ul>
+                <li>High carbon-carbon bond energy ($C-C = 348 \text{ kJ/mol}$).</li>
+                <li>Small atomic size of carbon allowing strong overlapping of atomic orbitals.</li>
+                <li>Ability to form single ($C-C$), double ($C=C$), and triple ($C\equiv C$) bonds with carbon or other elements ($O, N, S, H, \text{Halogens}$).</li>
+            </ul>
+        </div>
+
+        <h3>12.4 & 12.5 CLASSIFICATION OF HYDROCARBONS</h3>
+        <div class="definition-box">
+            <p><strong>Hydrocarbons:</strong> Organic compounds composed exclusively of <strong>Carbon and Hydrogen</strong> atoms.</p>
+        </div>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:25%;">Hydrocarbon Class</th>
+                        <th style="width:20%;">General Formula</th>
+                        <th style="width:25%;">Bonding Type</th>
+                        <th style="width:30%;">Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Alkanes (Paraffins)</strong></td><td>$C_n H_{2n+2}$</td><td>Single covalent bonds ($C-C$)</td><td>Methane ($CH_4$), Ethane ($C_2H_6$), Propane ($C_3H_8$)</td></tr>
+                    <tr><td><strong>Alkenes (Olefins)</strong></td><td>$C_n H_{2n}$</td><td>At least one double bond ($C=C$)</td><td>Ethene ($C_2H_4$), Propene ($C_3H_6$)</td></tr>
+                    <tr><td><strong>Alkynes (Acetylenes)</strong></td><td>$C_n H_{2n-2}$</td><td>At least one triple bond ($C\equiv C$)</td><td>Ethyne ($C_2H_2$), Propyne ($C_3H_4$)</td></tr>
+                    <tr><td><strong>Alicyclic (Cycloalkanes)</strong></td><td>$C_n H_{2n}$</td><td>Single bonds in closed ring</td><td>Cyclopropane ($C_3H_6$), Cyclohexane ($C_6H_{12}$)</td></tr>
+                    <tr><td><strong>Aromatic Hydrocarbons</strong></td><td>Ring containing $C_6$ ring</td><td>Alternate single and double bonds</td><td>Benzene ($C_6H_6$), Toluene ($C_7H_8$), Phenol ($C_6H_5OH$)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Comparison Between Saturated and Unsaturated Hydrocarbons</h3>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Saturated Hydrocarbons (Alkanes)</th>
+                        <th>Unsaturated Hydrocarbons (Alkenes & Alkynes)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Valency Satisfaction</strong></td><td>All 4 valencies of carbon are satisfied by single covalent bonds.</td><td>Valencies are satisfied by double ($C=C$) or triple ($C\equiv C$) bonds.</td></tr>
+                    <tr><td><strong>Reactivity</strong></td><td>Relatively unreactive (paraffins); undergo <strong>substitution reactions</strong>.</td><td>Highly reactive due to multiple bonds; undergo <strong>addition reactions</strong>.</td></tr>
+                    <tr><td><strong>Flame Type</strong></td><td>Burn with a clean, non-sooty blue flame.</td><td>Burn with a yellow, luminous, sooty flame due to higher $\% C$.</td></tr>
+                    <tr><td><strong>Bromine Water Test</strong></td><td>Do not decolourise orange bromine water.</td><td>Decolourise orange bromine water to colorless solution.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>12.6 ALKYL GROUPS</h3>
+        <div class="definition-box">
+            <p><strong>Alkyl Radical / Group:</strong> A univalent group obtained by removing one hydrogen atom from an alkane molecule.</p>
+            $$\text{Alkane } (C_n H_{2n+2}) \xrightarrow{-H} \text{Alkyl Group } (C_n H_{2n+1})$$
+        </div>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Parent Alkane</th>
+                        <th>Formula</th>
+                        <th>Alkyl Group</th>
+                        <th>Formula</th>
+                        <th>Abbreviated Structure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Methane</td><td>$CH_4$</td><td>Methyl</td><td>$-CH_3$</td><td>$CH_3-$</td></tr>
+                    <tr><td>Ethane</td><td>$C_2H_6$</td><td>Ethyl</td><td>$-C_2H_5$</td><td>$CH_3-CH_2-$</td></tr>
+                    <tr><td>Propane</td><td>$C_3H_8$</td><td>Propyl</td><td>$-C_3H_7$</td><td>$CH_3-CH_2-CH_2-$</td></tr>
+                    <tr><td>Butane</td><td>$C_4H_{10}$</td><td>Butyl</td><td>$-C_4H_9$</td><td>$CH_3-CH_2-CH_2-CH_2-$</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>12.7 FUNCTIONAL GROUPS</h3>
+        <div class="formula-box">
+            <span class="formula-pill">FUNCTIONAL GROUP</span>
+            <p><strong>Definition:</strong> An atom or a group of atoms attached to a carbon chain that defines the structure and determines the characteristic chemical properties of an organic compound.</p>
+        </div>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Functional Group</th>
+                        <th>Structure</th>
+                        <th>Class of Compound</th>
+                        <th>IUPAC Suffix / Prefix</th>
+                        <th>Example (IUPAC Name)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Halide</td><td>$-X \text{ (F, Cl, Br, I)}$</td><td>Haloalkanes</td><td>Prefix: Halo-</td><td>$CH_3Cl$ (Chloromethane)</td></tr>
+                    <tr><td>Hydroxyl</td><td>$-OH$</td><td>Alcohols</td><td>Suffix: -ol</td><td>$C_2H_5OH$ (Ethanol)</td></tr>
+                    <tr><td>Aldehyde</td><td>$-CHO \text{ } (-C(=O)H)$</td><td>Aldehydes</td><td>Suffix: -al</td><td>$CH_3CHO$ (Ethanal)</td></tr>
+                    <tr><td>Carboxyl</td><td>$-COOH \text{ } (-C(=O)OH)$</td><td>Carboxylic Acids</td><td>Suffix: -oic acid</td><td>$CH_3COOH$ (Ethanoic acid)</td></tr>
+                    <tr><td>Keto (Carbonyl)</td><td>$>C=O$</td><td>Ketones</td><td>Suffix: -one</td><td>$CH_3COCH_3$ (Propan-2-one)</td></tr>
+                    <tr><td>Ether</td><td>$-O-$</td><td>Ethers</td><td>Prefix: Alkoxy-</td><td>$CH_3-O-CH_3$ (Methoxy methane)</td></tr>
+                    <tr><td>Ester</td><td>$-COOR$</td><td>Esters</td><td>Suffix: -oate</td><td>$CH_3COOC_2H_5$ (Ethyl ethanoate)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>12.9 ISOMERS AND ISOMERISM</h3>
+        <div class="definition-box">
+            <p><strong>Isomerism:</strong> Compounds having the <strong>same molecular formula</strong> but <strong>different structural formulas</strong> (and different physical/chemical properties) are called <strong>isomers</strong>, and the phenomenon is known as <strong>isomerism</strong>.</p>
+        </div>
+
+        <div class="content-image-container">
+            <img src="./Images/Classification of Isomerism Flowchart.png" alt="Classification of Isomerism Flowchart" class="img-in-note content-image">
+        </div>
+
+        <h3>Types of Structural Isomerism</h3>
+        <div class="rule-box">
+            <p><strong>1. Chain Isomerism:</strong> Occurs when two or more compounds have the same molecular formula but differ in the arrangement of carbon skeleton (straight vs branched chain).</p>
+            <p>• <strong>Isomers of Butane ($C_4H_{10}$):</strong></p>
+            <ul>
+                <li>$n$-butane: $CH_3-CH_2-CH_2-CH_3$ ($b.p. 0^\circ C$)</li>
+                <li>Iso-butane (2-methylpropane): $CH_3-CH(CH_3)-CH_3$ ($b.p. -12^\circ C$)</li>
+            </ul>
+
+            <p style="margin-top:12px;">• <strong>Isomers of Pentane ($C_5H_{12}$):</strong></p>
+            <ul>
+                <li>$n$-pentane: $CH_3-CH_2-CH_2-CH_2-CH_3$</li>
+                <li>Iso-pentane (2-methylbutane): $CH_3-CH(CH_3)-CH_2-CH_3$</li>
+                <li>Neo-pentane (2,2-dimethylpropane): $C(CH_3)_4$</li>
+            </ul>
+
+            <p style="margin-top:15px;"><strong>2. Position Isomerism:</strong> Occurs when two or more compounds have the same molecular formula and carbon skeleton but differ in the <strong>position of substituent atom, double/triple bond, or functional group</strong>.</p>
+            <ul>
+                <li>But-1-ene ($CH_2=CH-CH_2-CH_3$) vs But-2-ene ($CH_3-CH=CH-CH_3$)</li>
+                <li>Propan-1-ol ($CH_3-CH_2-CH_2-OH$) vs Propan-2-ol ($CH_3-CH(OH)-CH_3$)</li>
+            </ul>
+
+            <p style="margin-top:15px;"><strong>3. Functional Group Isomerism:</strong> Same molecular formula but different functional groups.</p>
+            <ul>
+                <li>Ethanol ($C_2H_5OH$) vs Dimethyl ether ($CH_3-O-CH_3$) [Formula $C_2H_6O$]</li>
+            </ul>
+        </div>
+
+        <h3>12.10 HOMOLOGOUS SERIES</h3>
+        <div class="definition-box">
+            <p><strong>Homologous Series:</strong> A group of organic compounds having similar structure, similar chemical properties, and the same functional group, in which successive members differ from each other by a <strong>$-CH_2-$ group</strong> (methylene group) and by a <strong>molecular mass of $14 \text{ amu}$</strong>.</p>
+        </div>
+
+        <div class="rule-box">
+            <p style="font-weight:700;color:var(--blue-border);margin-top:0;">5 KEY CHARACTERISTICS OF A HOMOLOGOUS SERIES:</p>
+            <ol>
+                <li>All members share the <strong>same general formula</strong> (e.g. Alkanes $C_n H_{2n+2}$, Alcohols $C_n H_{2n+1}OH$).</li>
+                <li>Two consecutive members differ by a <strong>$-CH_2-$ unit</strong> in formula and <strong>$14 \text{ amu}$</strong> in molecular mass.</li>
+                <li>All members exhibit <strong>similar chemical properties</strong> due to the presence of the same functional group.</li>
+                <li>All members show a <strong>gradual change (gradation) in physical properties</strong> (melting point, boiling point, density increase with increasing molecular mass).</li>
+                <li>All members can be prepared by the <strong>same general methods of synthesis</strong>.</li>
+            </ol>
+        </div>
+
+        <h3>12.11 IUPAC NOMENCLATURE SYSTEM</h3>
+        <p>IUPAC (International Union of Pure and Applied Chemistry) system assigns systematic names consisting of 3 parts:</p>
+
+        <div class="formula-box">
+            <span class="formula-pill">IUPAC NAME STRUCTURE</span>
+            <h4 style="text-align:center;margin:10px 0;font-size:1.2rem;color:var(--pink-border);">PREFIX + ROOT WORD + PRIMARY SUFFIX + SECONDARY SUFFIX</h4>
+        </div>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:25%;">Carbon Count</th>
+                        <th style="width:25%;">Root Word</th>
+                        <th style="width:25%;">Carbon Count</th>
+                        <th style="width:25%;">Root Word</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>$C_1$</td><td>Meth-</td><td>$C_6$</td><td>Hex-</td></tr>
+                    <tr><td>$C_2$</td><td>Eth-</td><td>$C_7$</td><td>Hept-</td></tr>
+                    <tr><td>$C_3$</td><td>Prop-</td><td>$C_8$</td><td>Oct-</td></tr>
+                    <tr><td>$C_4$</td><td>But-</td><td>$C_9$</td><td>Non-</td></tr>
+                    <tr><td>$C_5$</td><td>Pent-</td><td>$C_{10}$</td><td>Dec-</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="rule-box">
+            <p style="font-weight:700;color:var(--blue-border);margin-top:0;">MASTER IUPAC NAMING RULES:</p>
+            <ol>
+                <li><strong>Longest Chain Rule:</strong> Select the longest continuous chain of carbon atoms containing the functional group/multiple bond as the parent chain.</li>
+                <li><strong>Lowest Locant Rule:</strong> Number the carbon atoms in the parent chain from the end that gives the <strong>lowest possible locant (number)</strong> to the functional group, double/triple bond, or alkyl substituent.</li>
+                <li><strong>Alphabetical Order:</strong> If multiple different substituents are present, write them in alphabetical order (e.g. bromo before chloro, ethyl before methyl).</li>
+                <li><strong>Prefixes for Identical Groups:</strong> Use <em>di-</em>, <em>tri-</em>, <em>tetra-</em> for identical substituent groups (e.g. 2,2-dimethylpropane).</li>
+                <li><strong>Functional Group Priority:</strong> Carboxylic Acid ($-COOH$) $>$ Aldehyde ($-CHO$) $>$ Ketone ($>C=O$) $>$ Alcohol ($-OH$) $>$ Triple Bond ($C\equiv C$) $>$ Double Bond ($C=C$) $>$ Substituent Halogens/Alkyls.</li>
+            </ol>
+        </div>
+
+        <div class="content-image-container">
+            <img src="./Images/Laboratory Preparation of Methane Gas].png" alt="Laboratory Preparation of Methane Gas" class="img-in-note content-image">
+        </div>
+
+        <h3>12.13 & 12.14 METHANE ($CH_4$) AND ETHANE ($C_2H_6$)</h3>
+        <p>Methane is the simplest saturated hydrocarbon. It occurs in marshy areas (called <strong>marsh gas</strong>) due to anaerobic bacterial decomposition of cellulose, in coal mines (called <strong>fire-damp</strong>), and is a primary <strong>greenhouse gas</strong>.</p>
+
+        <h3>Laboratory Preparation of Methane and Ethane</h3>
+        <div class="derivation-box">
+            <p><strong>1. Laboratory Preparation of Methane ($CH_4$):</strong></p>
+            <p>• <strong>Reactants:</strong> Sodium Ethanoate (Sodium Acetate, $CH_3COONa$) + Soda Lime ($NaOH + CaO$).</p>
+            <p>• <strong>Role of $CaO$ in Soda Lime:</strong> $NaOH$ is deliquescent and attacks glass. $CaO$ makes soda lime porous, dry, and prevents glass cracking!</p>
+            <p>• <strong>Reaction (Decarboxylation):</strong></p>
+            $$\text{CH}_3\text{COONa} + \text{NaOH} \xrightarrow{\text{CaO}, 300^\circ\text{C}} \text{Na}_2\text{CO}_3 + \text{CH}_4\uparrow$$
+            <p>• <strong>Collection:</strong> Over water by <strong>downward displacement of water</strong> (since methane is insoluble in water and lighter than air).</p>
+
+            <p style="margin-top:15px;"><strong>2. Laboratory Preparation of Ethane ($C_2H_6$):</strong></p>
+            $$\text{C}_2\text{H}_5\text{COONa} + \text{NaOH} \xrightarrow{\text{CaO}, 300^\circ\text{C}} \text{Na}_2\text{CO}_3 + \text{C}_2\text{H}_6\uparrow$$
+
+            <p style="margin-top:15px;"><strong>3. Other Methods of Preparation:</strong></p>
+            <p>• <strong>Reduction of Alkyl Halides:</strong> $CH_3I + 2[H] \xrightarrow{Zn/HCl} CH_4 + HI$</p>
+            <p>• <strong>Action of Water on Aluminium Carbide:</strong> $Al_4C_3 + 12H_2O \rightarrow 3CH_4\uparrow + 4Al(OH)_3\downarrow$</p>
+            <p>• <strong>Wurtz Reaction (for Ethane):</strong></p>
+            $$2\text{CH}_3\text{I} + 2\text{Na} \xrightarrow{\text{dry ether}} \text{CH}_3-\text{CH}_3 + 2\text{NaI}$$
+        </div>
+
+        <h3>12.15.2 Chemical Reactions of Methane & Ethane</h3>
+        <div class="rule-box">
+            <p><strong>1. Substitution Reaction with Chlorine (in Diffused Sunlight):</strong></p>
+            <p>Alkanes undergo step-by-step substitution of hydrogen atoms by halogen atoms:</p>
+            $$\text{CH}_4 + \text{Cl}_2 \xrightarrow{h\nu} \text{CH}_3\text{Cl } (\text{Chloromethane}) + \text{HCl}$$
+            $$\text{CH}_3\text{Cl} + \text{Cl}_2 \xrightarrow{h\nu} \text{CH}_2\text{Cl}_2 \text{ (Dichloromethane)} + \text{HCl}$$
+            $$\text{CH}_2\text{Cl}_2 + \text{Cl}_2 \xrightarrow{h\nu} \text{CHCl}_3 \text{ (Trichloromethane / Chloroform)} + \text{HCl}$$
+            $$\text{CHCl}_3 + \text{Cl}_2 \xrightarrow{h\nu} \text{CCl}_4 \text{ (Tetrachloromethane / Carbon tetrachloride)} + \text{HCl}$$
+
+            <p style="margin-top:15px;"><strong>2. Catalytic Controlled Oxidation:</strong></p>
+            <ul>
+                <li>$2CH_4 + O_2 \xrightarrow{Cu \text{ tube, } 475\text{ K, } 120\text{ atm}} 2CH_3OH$ (Methanol)</li>
+                <li>$CH_4 + O_2 \xrightarrow{MoO \text{ catalyst, } \Delta} HCHO \text{ (Methanal)} + H_2O$</li>
+                <li>$2CH_4 + 3O_2 \xrightarrow{Mn \text{ catalyst, } 100^\circ\text{C}} 2HCOOH \text{ (Methanoic acid)} + 2H_2O$</li>
+            </ul>
+
+            <p style="margin-top:15px;"><strong>3. Pyrolysis / Cracking:</strong></p>
+            $$\text{CH}_4 \xrightarrow{1500^\circ\text{C}} \text{HC}\equiv\text{CH} + 3\text{H}_2 \quad (\text{Methane to Ethyne})$$
+        </div>
+
+        <!-- SECTION 12C -->
+        <h2>12C. HYDROCARBONS : ALKENES (ETHENE / ETHYLENE)</h2>
+
+        <div class="content-image-container">
+            <img src="./Images/Laboratory Preparation & Purification of Ethene].png" alt="Laboratory Preparation and Purification of Ethene" class="img-in-note content-image">
+        </div>
+
+        <h3>12.16 ETHENE ($C_2H_4$)</h3>
+        <p>Ethene (Ethylene) is the first member of the alkene series ($C_n H_{2n}$). It is an unsaturated hydrocarbon containing a double covalent bond ($C=C$). Structure is <strong>planar</strong> with $120^\circ$ bond angles.</p>
+
+        <h3>Laboratory & Industrial Preparation of Ethene</h3>
+        <div class="derivation-box">
+            <p><strong>1. Dehydration of Ethanol (Lab Method):</strong></p>
+            $$\text{C}_2\text{H}_5\text{OH} \xrightarrow{\text{conc. } \text{H}_2\text{SO}_4, 170^\circ\text{C}} \text{CH}_2=\text{CH}_2\uparrow + \text{H}_2\text{O}$$
+            <p>• <strong>Purification:</strong> Passed through $NaOH$ solution to remove $SO_2$ and $CO_2$ formed by partial reduction of $H_2SO_4$.</p>
+            <p>• <strong>Industrial Dehydration:</strong> Ethanol vapour passed over heated Alumina at $350^\circ C$ ($C_2H_5OH \xrightarrow{Al_2O_3, 350^\circ C} C_2H_4 + H_2O$).</p>
+
+            <p style="margin-top:15px;"><strong>2. Dehydrohalogenation of Bromoethane:</strong></p>
+            $$\text{C}_2\text{H}_5\text{Br} + \text{alcoholic KOH} \xrightarrow{\text{boil}} \text{CH}_2=\text{CH}_2\uparrow + \text{KBr} + \text{H}_2\text{O}$$
+        </div>
+
+        <h3>Chemical Properties of Ethene (Addition Reactions)</h3>
+        <div class="rule-box">
+            <p><strong>1. Hydrogenation (Addition of Hydrogen):</strong></p>
+            $$\text{CH}_2=\text{CH}_2 + \text{H}_2 \xrightarrow{\text{Ni / Pt}, 200^\circ\text{C}} \text{CH}_3-\text{CH}_3 \quad (\text{Ethene } \rightarrow \text{ Ethane})$$
+
+            <p style="margin-top:12px;"><strong>2. Halogenation & Test for Unsaturation:</strong></p>
+            $$\text{CH}_2=\text{CH}_2 + \text{Br}_2 \xrightarrow{\text{in } \text{CCl}_4} \text{CH}_2\text{Br}-\text{CH}_2\text{Br}$$
+            <p style="text-align:center;font-size:0.92rem;color:var(--meta-text);margin-top:-5px;">(Orange-red Bromine solution decolourises to colorless 1,2-dibromoethane)</p>
+
+            <div class="master-tip">
+                <p><strong>CRITICAL EXAM TEST:</strong> The decolourisation of reddish-orange Bromine solution in $CCl_4$ is the standard laboratory test for <strong>unsaturation</strong> (double or triple bond)!</p>
+            </div>
+
+            <p style="margin-top:12px;"><strong>3. Baeyer's Test (Oxidation with Cold Alkaline $KMnO_4$):</strong></p>
+            $$\text{CH}_2=\text{CH}_2 + \text{H}_2\text{O} + [\text{O}] \xrightarrow[\text{alk. } \text{KMnO}_4]{\text{cold}} \text{CH}_2\text{OH}-\text{CH}_2\text{OH}$$
+            <p style="text-align:center;font-size:0.92rem;color:var(--meta-text);margin-top:-5px;">(Product: 1,2-Ethanediol / Ethylene Glycol)</p>
+            <p>The purple color of $KMnO_4$ fades and decolourises completely!</p>
+
+            <p style="margin-top:12px;"><strong>4. Polymerization:</strong></p>
+            $$n(\text{CH}_2=\text{CH}_2) \xrightarrow[\text{high } P, T]{\text{catalyst}} [-\text{CH}_2-\text{CH}_2-]_n$$
+            <p style="text-align:center;font-size:0.92rem;color:var(--meta-text);margin-top:-5px;">(Ethene monomer $\rightarrow$ Polyethene / Polythene polymer)</p>
+        </div>
+
+        <!-- SECTION 12D -->
+        <h2>12D. HYDROCARBONS : ALKYNES (ETHYNE / ACETYLENE)</h2>
+
+        <div class="content-image-container">
+            <img src="./Images/Laboratory Preparation & Purification of Ethyne.png" alt="Laboratory Preparation and Purification of Ethyne" class="img-in-note content-image">
+        </div>
+
+        <h3>12.17 ETHYNE ($C_2H_2$)</h3>
+        <p>Ethyne (Acetylene) is the first member of alkynes ($C_n H_{2n-2}$). Contains a triple covalent bond ($C\equiv C$). Molecule geometry is <strong>linear</strong> with $180^\circ$ bond angle.</p>
+
+        <h3>Laboratory Preparation of Ethyne</h3>
+        <div class="derivation-box">
+            <p><strong>1. From Calcium Carbide ($CaC_2$):</strong></p>
+            $$\text{CaC}_2 + 2\text{H}_2\text{O} \rightarrow \text{Ca(OH)}_2 + \text{HC}\equiv\text{CH}\uparrow \quad (\Delta H = \text{Exothermic})$$
+            <p>• <strong>Purification:</strong> Gas is passed through acidified Copper Sulphate ($CuSO_4$) solution to absorb impurities like Phosphine ($PH_3$), Hydrogen Sulphide ($H_2S$), and Ammonia ($NH_3$).</p>
+            <p>• <strong>Collection:</strong> Over water by downward displacement of water.</p>
+
+            <p style="margin-top:15px;"><strong>2. From 1,2-dibromoethane:</strong></p>
+            $$\text{CH}_2\text{Br}-\text{CH}_2\text{Br} + 2\text{alc. KOH} \xrightarrow{200^\circ\text{C}} \text{HC}\equiv\text{CH}\uparrow + 2\text{KBr} + 2\text{H}_2\text{O}$$
+        </div>
+
+        <h3>Distinguishing Tests Between Alkanes, Alkenes, and Alkynes</h3>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:20%;">Reagent / Test</th>
+                        <th style="width:25%;">Alkane (Ethane)</th>
+                        <th style="width:25%;">Alkene (Ethene)</th>
+                        <th style="width:30%;">Alkyne (Ethyne)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>1. Bromine in $CCl_4$</strong></td><td>No change (orange color stays).</td><td>Orange color decolourises.</td><td>Orange color decolourises.</td></tr>
+                    <tr><td><strong>2. Alkaline $KMnO_4$ (Baeyer's)</strong></td><td>No change (purple color stays).</td><td>Purple color decolourises.</td><td>Purple color decolourises.</td></tr>
+                    <tr><td><strong>3. Ammoniacal $Cu_2Cl_2$ Solution</strong></td><td>No observation.</td><td>No observation.</td><td><strong style="color:var(--red-border);">Red Precipitate</strong> of Copper Acetylide ($Cu_2C_2\downarrow$).</td></tr>
+                    <tr><td><strong>4. Ammoniacal $AgNO_3$ Solution</strong></td><td>No observation.</td><td>No observation.</td><td><strong style="color:var(--text-main);">White Precipitate</strong> of Silver Acetylide ($Ag_2C_2\downarrow$).</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECTION 12E -->
+        <h2>12E. ALCOHOLS (ETHANOL / ETHYL ALCOHOL)</h2>
+
+        <h3>12.18 & 12.19 ETHANOL ($C_2H_5OH$)</h3>
+        <p>Ethanol (Ethyl alcohol, $C_2H_5OH$) is a hydroxyl derivative of ethane. It is known as <strong>grain alcohol</strong> or <strong>spirit of wine</strong>.</p>
+
+        <h3>Methods of Preparation</h3>
+        <div class="derivation-box">
+            <p><strong>1. Lab Preparation (Hydrolysis of Bromoethane):</strong></p>
+            $$\text{C}_2\text{H}_5\text{Br} + \text{aq. KOH} \xrightarrow{\text{boil}} \text{C}_2\text{H}_5\text{OH} + \text{KBr}$$
+
+            <p style="margin-top:15px;"><strong>2. Industrial Fermentation of Sugar / Molasses:</strong></p>
+            $$\text{C}_{12}\text{H}_{22}\text{O}_{11} + \text{H}_2\text{O} \xrightarrow{\text{Invertase (Yeast)}} \text{C}_6\text{H}_{12}\text{O}_6 \text{ (Glucose)} + \text{C}_6\text{H}_{12}\text{O}_6 \text{ (Fructose)}$$
+            $$\text{C}_6\text{H}_{12}\text{O}_6 \xrightarrow{\text{Zymase (Yeast)}} 2\text{C}_2\text{H}_5\text{OH} + 2\text{CO}_2\uparrow$$
+        </div>
+
+        <h3>Chemical Properties of Ethanol</h3>
+        <div class="rule-box">
+            <p><strong>1. Action with Sodium Metal (Effervescence Test):</strong></p>
+            $$2\text{C}_2\text{H}_5\text{OH} + 2\text{Na} \rightarrow 2\text{C}_2\text{H}_5\text{ONa} + \text{H}_2\uparrow$$
+            <p style="text-align:center;font-size:0.92rem;color:var(--meta-text);margin-top:-5px;">(Sodium ethoxide formed with brisk effervescence of $H_2$ gas)</p>
+
+            <p style="margin-top:12px;"><strong>2. Oxidation with Acidified $K_2Cr_2O_7$:</strong></p>
+            $$\text{C}_2\text{H}_5\text{OH} \xrightarrow[\text{K}_2\text{Cr}_2\text{O}_7 / \text{H}^+]{[\text{O}]} \text{CH}_3\text{CHO} \xrightarrow{[\text{O}]} \text{CH}_3\text{COOH}$$
+            <p style="text-align:center;font-size:0.92rem;color:var(--meta-text);margin-top:-5px;">(Ethanol $\rightarrow$ Ethanal $\rightarrow$ Ethanoic acid)</p>
+            <p>Orange color of Potassium dichromate turns <strong>Green</strong> due to formation of $Cr^{3+}$ ions!</p>
+
+            <p style="margin-top:12px;"><strong>3. Esterification (Fruity Smell Test):</strong></p>
+            $$\text{C}_2\text{H}_5\text{OH} + \text{CH}_3\text{COOH} \xrightarrow{\text{conc. } \text{H}_2\text{SO}_4, \Delta} \text{CH}_3\text{COOC}_2\text{H}_5 + \text{H}_2\text{O}$$
+            <p style="text-align:center;font-size:0.92rem;color:var(--meta-text);margin-top:-5px;">(Product: Ethyl acetate with pleasant fruity smell)</p>
+
+            <p style="margin-top:12px;"><strong>4. Dehydration Reactions:</strong></p>
+            <ul>
+                <li>At $170^\circ C$ with conc. $H_2SO_4$: $C_2H_5OH \rightarrow CH_2=CH_2 + H_2O$ (Ethene formed).</li>
+                <li>At $140^\circ C$ with excess $C_2H_5OH$: $2C_2H_5OH \rightarrow C_2H_5-O-C_2H_5 + H_2O$ (Diethyl ether formed).</li>
+            </ul>
+        </div>
+
+        <h3>Commercial Forms of Ethanol</h3>
+        <ul>
+            <li><strong>Absolute Alcohol:</strong> 100% pure ethyl alcohol.</li>
+            <li><strong>Rectified Spirit:</strong> 95.5% ethyl alcohol + 4.5% water (constant boiling azeotropic mixture).</li>
+            <li><strong>Denatured Alcohol (Methylated Spirit):</strong> Ethyl alcohol mixed with 5% poisonous Methyl alcohol ($CH_3OH$), pyridine, and $CuSO_4$ to make it unfit for drinking.</li>
+            <li><strong>Spurious Alcohol:</strong> Illicit liquor containing large amounts of poisonous methanol ($CH_3OH$), causing blindness or death!</li>
+        </ul>
+
+        <!-- SECTION 12F -->
+        <h2>12F. CARBOXYLIC ACIDS (ETHANOIC ACID / ACETIC ACID)</h2>
+
+        <h3>12.20 & 12.21 ETHANOIC ACID ($CH_3COOH$)</h3>
+        <p>Ethanoic acid (Acetic acid) is a monocarboxylic acid. Dilute $4-5\%$ aqueous solution of acetic acid is known as <strong>vinegar</strong>. Pure anhydrous acetic acid is called <strong>Glacial Acetic Acid</strong> because it freezes at $17^\circ C$ into ice-like crystals.</p>
+
+        <h3>Laboratory Preparation & Manufacture</h3>
+        <div class="derivation-box">
+            <p><strong>1. Lab Preparation (Oxidation of Ethanol):</strong></p>
+            $$\text{CH}_3\text{CH}_2\text{OH} + 2[\text{O}] \xrightarrow{\text{K}_2\text{Cr}_2\text{O}_7 / \text{H}_2\text{SO}_4} \text{CH}_3\text{COOH} + \text{H}_2\text{O}$$
+
+            <p style="margin-top:15px;"><strong>2. Industrial Manufacture from Acetylene:</strong></p>
+            $$\text{HC}\equiv\text{CH} + \text{H}_2\text{O} \xrightarrow{40\% \text{H}_2\text{SO}_4, 1\% \text{HgSO}_4, 60^\circ\text{C}} \text{CH}_3\text{CHO} \xrightarrow{\text{O}_2, \text{Mn(CH}_3\text{COO)}_2} 2\text{CH}_3\text{COOH}$$
+        </div>
+
+        <h3>Chemical Properties of Ethanoic Acid</h3>
+        <div class="rule-box">
+            <p><strong>1. Acidic Nature & Litmus Test:</strong> Turns blue litmus red. Weak monobasic acid ($CH_3COOH \rightleftharpoons CH_3COO^- + H^+$).</p>
+            <p><strong>2. Reaction with Carbonates & Bicarbonates (Brisk Effervescence):</strong></p>
+            $$2\text{CH}_3\text{COOH} + \text{Na}_2\text{CO}_3 \rightarrow 2\text{CH}_3\text{COONa} + \text{H}_2\text{O} + \text{CO}_2\uparrow$$
+            $$\text{CH}_3\text{COOH} + \text{NaHCO}_3 \rightarrow \text{CH}_3\text{COONa} + \text{H}_2\text{O} + \text{CO}_2\uparrow$$
+
+            <p style="margin-top:12px;"><strong>3. Reaction with Active Metals:</strong></p>
+            $$2\text{CH}_3\text{COOH} + \text{Zn} \rightarrow (\text{CH}_3\text{COO})_2\text{Zn } (\text{Zinc acetate}) + \text{H}_2\uparrow$$
+
+            <p style="margin-top:12px;"><strong>4. Neutral $FeCl_3$ Test for Acetic Acid:</strong></p>
+            <p>On adding neutral Ferric Chloride solution to acetic acid, a <strong>wine-red color</strong> solution is produced!</p>
+        </div>
+
+        <!-- PRACTICE NUMERICALS & CONVERSIONS -->
+        <div class="practice-box">
+            <span class="practice-header">TOPIC 12 PRACTICE SOLVED QUESTIONS & ORGANIC CONVERSIONS</span>
+
+            <div class="question">
+                <span class="q-tag">SOLVED CONVERSION 1</span> How would you convert: (i) Methane into Chloroform, (ii) Calcium Carbide into Ethyne, (iii) Ethanol into Ethene?
+            </div>
+            <div class="solution-box">
+                <strong>Step-by-Step Solutions:</strong><br>
+                (i) $CH_4 + Cl_2 \xrightarrow{h\nu} CH_3Cl \xrightarrow{Cl_2} CH_2Cl_2 \xrightarrow{Cl_2} \mathbf{CHCl_3 \text{ (Chloroform)}}$<br>
+                (ii) $CaC_2 + 2H_2O \rightarrow \mathbf{C_2H_2\uparrow \text{ (Ethyne)}} + Ca(OH)_2$<br>
+                (iii) $C_2H_5OH \xrightarrow{\text{conc. } H_2SO_4, 170^\circ C} \mathbf{C_2H_4\uparrow \text{ (Ethene)}} + H_2O$
+            </div>
+
+            <div class="question">
+                <span class="q-tag">SOLVED QUESTION 2</span> Write the IUPAC names of: (a) $CH_3-CH(CH_3)-CH_2-CH_3$, (b) $CH_3-C\equiv C-CH_3$, (c) $CH_3-CH_2-CHO$, (d) $CH_3-CO-CH_3$.
+            </div>
+            <div class="solution-box">
+                <strong>Solutions:</strong><br>
+                (a) <strong>2-Methylbutane</strong><br>
+                (b) <strong>But-2-yne</strong><br>
+                (c) <strong>Propanal</strong><br>
+                (d) <strong>Propan-2-one (Acetone)</strong>
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER -->
+        <div class="branding-footer">
+            <div class="top-branding-note">
+                <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+                <span aria-hidden="true">|</span>
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+            <div class="no-print" style="margin-top: 25px; padding-top: 20px; border-top: 2px solid var(--blue-border);">
+                <a href="../../Chemistry.html" style="display:inline-block;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,var(--blue-border),var(--pink-border));color:#fff;text-decoration:none;font-weight:700;font-size:1rem;">&larr; Back to Chemistry</a>
+            </div>
+        </div>
+
     </div>
+
     <script>
         function toggleTheme() {
-            document.documentElement.classList.toggle('dark-mode');
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
         }
     </script>
 </body>
+
 </html>

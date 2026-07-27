@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 04: Analytical Chemistry - Vardaan Master Notes</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']] }, chtml: { scale: 1.05 } };</script>
+    <script>MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] }, chtml: { scale: 1.05, mtextInheritFont: true } };</script>
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
+        /* --- CSS VARIABLES (Vardaan Theming System) --- */
         :root {
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
@@ -17,63 +18,507 @@
             --blue-bg: #e3f2fd;
             --blue-border: #1e88e5;
             --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+            --red-border: #d32f2f;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+            --red-border: #ff8a80;
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0
         }
 
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            display: inline-block !important;
+            vertical-align: middle;
+        }
+
+        mjx-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        mjx-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
         body {
-            background: #fff;
-            color: #000;
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.7
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            transition: filter .3s
-        }
-
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg)
-        }
-
+        /* --- WATERMARK OVERLAY --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            z-index: 9999
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
         }
 
         .watermark-image {
-            width: 600px;
+            opacity: 0.1;
             max-width: 80%;
-            opacity: 0.05
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
         }
 
         html.dark-mode .watermark-image {
-            opacity: 0.08 !important
+            filter: invert(1);
+            opacity: 0.15;
         }
 
+        /* --- PAPER SHEET CONTAINER --- */
         .paper-sheet {
-            background: #fff;
-            width: 210mm;
-            max-width: 100%;
+            background-color: var(--paper-bg);
+            width: 100%;
+            max-width: 210mm !important;
             margin: 0 auto;
             padding: 20mm;
-            position: relative;
-            z-index: 10
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .system-name {
+            font-size: 1rem;
+            color: var(--meta-text);
+            margin-top: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .top-branding-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 12px;
+            padding: 8px 0 0;
+            white-space: nowrap;
+            color: var(--meta-text);
+        }
+
+        .chapter-name-banner {
+            text-align: center;
+            margin: 6px 0 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .chapter-name-title {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        .powered-by-label {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            color: var(--pink-border);
+            letter-spacing: 0.3px;
+        }
+
+        .powered-by-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: 0.4px;
+        }
+
+        html.dark-mode .powered-by-brand {
+            color: #fff;
+        }
+
+        html.dark-mode .vardaan-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .heart-red {
+            color: #d32f2f;
+        }
+
+        /* --- PREMIUM TABLE (NO HORIZONTAL SCROLL) --- */
+        .vardaan-table-container {
+            width: 100%;
+            overflow-x: visible !important;
+            margin: 1.5rem 0;
+        }
+
+        .vardaan-table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+            table-layout: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table th {
+            background-color: var(--blue-border);
+            color: white;
+            padding: 10px 12px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+            font-size: 0.88rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .vardaan-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        html.dark-mode .vardaan-table tr:nth-child(even) td {
+            background-color: rgba(255, 255, 255, 0.025);
+        }
+
+        table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--toggle-border);
+            table-layout: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        th {
+            background-color: var(--blue-border);
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--toggle-border);
+            background-color: var(--paper-bg);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pink-border);
+            margin-top: 40px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 15px;
+            font-weight: 700;
+            border-bottom: none;
+            text-align: left;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--accent-purple);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            text-align: left;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        ul,
+        ol {
+            padding-left: 25px;
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box,
+        .green-box,
+        .yellow-box,
+        .pink-box,
+        .concept-blue,
+        .concept-green,
+        .concept-pink {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .blue-box,
+        .concept-blue {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+        }
+
+        .green-box,
+        .concept-green {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+        }
+
+        .pink-box,
+        .concept-pink {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+        }
+
+        .definition-box {
+            background: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .rule-box {
+            background: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .analysis-box {
+            background: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .derivation-box {
+            background: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .reaction-box {
+            background: var(--green-bg);
+            border: 1px solid var(--green-border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .master-tip {
+            background-color: var(--yellow-bg);
+            border: 2px dashed var(--red-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .formula-box {
+            background-color: var(--paper-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.08);
+        }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--blue-border);
+            color: #fff;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        /* --- SYLLABUS OVERVIEW BOX --- */
+        .syllabus-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        html.dark-mode .syllabus-box {
+            background-color: #0d1b2a;
+            border-color: #1e3a5f;
+        }
+        .syllabus-header {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #64748b;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        html.dark-mode .syllabus-header {
+            color: #82b1ff;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -81,7 +526,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--toggle-bg);
             border: none;
             cursor: pointer;
             z-index: 1000;
@@ -90,17 +535,19 @@
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
+            transition: all 0.3s ease;
         }
 
         .icon-sun,
         .icon-moon {
             position: absolute;
             transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
         }
 
         .icon-sun {
@@ -118,431 +565,600 @@
             transform: scale(1) rotate(0deg);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            color: #6a1b9a;
-            margin-bottom: .5rem
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #6a1b9a;
-            padding-bottom: .5rem;
-            color: #6a1b9a
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-            color: #7b1fa2
-        }
-
-        p,
-        li {
-            margin-bottom: .8rem
-        }
-
-        ul,
-        ol {
-            padding-left: 1.5rem
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: .75rem
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: center
-        }
-
-        th {
-            background: #f3e5f5;
-            font-weight: 600
-        }
-
-        .definition-box {
-            background: var(--yellow-bg);
-            border-left: 5px solid var(--yellow-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .rule-box {
-            background: var(--blue-bg);
-            border-left: 5px solid var(--blue-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .analysis-box {
-            background: var(--pink-bg);
-            border-left: 5px solid var(--pink-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .derivation-box {
-            background: var(--green-bg);
-            border-left: 5px solid var(--green-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .master-tip {
-            border: 2px dashed #d32f2f;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            background: #ffebee;
-            font-style: italic
-        }
-
-        .formula-box {
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0 #000;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            position: relative;
-            background: #fff
-        }
-
-        .formula-box::after {
-            content: "PROCEDURE";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #000;
-            color: #fff;
-            padding: 2px 8px;
-            font-size: .75rem
-        }
-
-        .practice-box {
-            background: #fff8e1;
-            border: 2px solid #ff6f00;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0
-        }
-
-        .practice-header {
-            font-weight: 700;
-            color: #d35400;
-            margin-bottom: .5rem
-        }
-
-        .q-tag {
-            background: #d35400;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: .75rem;
-            margin-right: 5px
-        }
-
-        @media screen and (max-width:800px) {
+        @media screen and (max-width: 768px) {
             .paper-sheet {
-                width: 95%;
-                padding: 15px
+                width: 100%;
+                padding: 12px;
             }
 
-            table {
-                font-size: .6rem
+            .institute-name {
+                font-size: 1.5rem;
             }
 
-            h1 {
-                font-size: 1.8rem
+            h2 {
+                font-size: 1.25rem;
+                padding-left: 10px;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            p, li {
+                font-size: 0.95rem;
+            }
+
+            .vardaan-table th,
+            .vardaan-table td,
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.82rem;
+            }
+
+            .blue-box, .green-box, .yellow-box, .pink-box,
+            .definition-box, .rule-box, .analysis-box, .derivation-box,
+            .formula-box, .master-tip {
+                padding: 14px;
+                margin: 15px 0;
+            }
+
+            mjx-container {
+                font-size: 92% !important;
             }
         }
 
         @media print {
-            html.dark-mode {
-                filter: none !important
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
-            .theme-toggle {
-                display: none
+            .branding-header {
+                background-color: white !important;
+                border-bottom: 2px solid var(--blue-border) !important;
+                padding: 10px 0 !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
 
             .paper-sheet {
-                width: 100%;
-                padding: 10mm
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .theme-toggle,
+            .no-print {
+                display: none !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                opacity: 0.8 !important;
+                mix-blend-mode: multiply !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                pointer-events: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 70% !important;
+                opacity: 0.2 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #1e88e5;
+                    color: #fff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
             }
         }
-    
-        @media (max-width: 768px){.paper-sheet{padding:15px;width:100%}.institute-name{font-size:1.6rem}.system-name{font-size:.9rem;letter-spacing:1px}h1{font-size:1.6rem}h2{font-size:1.3rem}h3{font-size:1.1rem}p,li{font-size:.95rem}.blue-box,.green-box,.yellow-box{padding:15px;margin:15px 0}.theme-toggle{top:10px;right:10px;width:36px;height:36px}.chapter-image{float:none;width:100%;max-width:100%;margin:10px 0}}
     </style>
 </head>
 
 <body>
-    <div class="watermark-overlay"><img
-            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            class="watermark-image"></div>
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark-image" alt="Vardaan Watermark">
+    </div>
+
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </svg>
     </button>
 
     <div class="paper-sheet">
-        <h1>Analytical Chemistry</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">ICSE Class 10 Chemistry • Chapter 04</p>
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
+        </div>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Analytical Chemistry</h1>
+        </div>
 
-        <h2>1. Introduction</h2>
+        <!-- SYLLABUS OVERVIEW -->
+        <div class="syllabus-box">
+            <span class="syllabus-header">ICSE CLASS 10 CHEMISTRY SYLLABUS OVERVIEW</span>
+            <ul>
+                <li><strong>(i) Action of Sodium Hydroxide & Ammonium Hydroxide on salt solutions:</strong> Colour of salts & solutions, formation & colours of hydroxide precipitates of $Ca^{2+}, Fe^{2+}, Fe^{3+}, Cu^{2+}, Zn^{2+}, Pb^{2+}, Al^{3+}$; action of excess alkali; special action of $NH_4OH$ on copper salts and $NaOH$ on ammonium salts.</li>
+                <li><strong>(ii) Action of Alkalis on Metals & Metal Oxides/Hydroxides:</strong> Reaction of $NaOH$ and $KOH$ with metals ($Zn, Al, Pb$) and their oxides/hydroxides demonstrating their <strong>amphoteric nature</strong>.</li>
+            </ul>
+        </div>
+
+        <h2>4.1 INTRODUCTION & COLOURS OF SALTS & SOLUTIONS</h2>
+        <p><strong>Analysis:</strong> Determination of chemical components in a given sample. It is divided into:</p>
+        <ul>
+            <li><strong>Qualitative Analysis:</strong> Identification of unknown cations (metal ions) or anions present in a substance using chemical reagents.</li>
+            <li><strong>Quantitative Analysis:</strong> Determination of the precise quantity or percentage composition of components in a mixture.</li>
+        </ul>
+
         <div class="definition-box">
-            <p><strong>Analytical Chemistry:</strong> Branch of chemistry dealing with identification and separation of
-                chemical substances.</p>
-            <p>In this chapter, we study the <strong>action of NaOH and NH₄OH on salt solutions</strong> to identify the
-                cation (metal ion) present.</p>
+            <p><strong>Reagent:</strong> A chemical substance that reacts with another substance to produce a characteristic observation (colour change, gas evolution, or precipitate formation) used for identification.</p>
         </div>
 
-        <h2>2. Action of Sodium Hydroxide (NaOH) on Salt Solutions</h2>
+        <h3>Origin of Colours in Salts & Ions</h3>
+        <p>Salts of <strong>Representative Elements</strong> (Groups 1, 2, 13 to 17) are generally <strong>colourless / white</strong>, whereas salts of <strong>Transition Elements</strong> (Groups 3 to 12) are generally <strong>coloured</strong> due to incomplete inner d-orbitals.</p>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:25%;">Ion Type</th>
+                        <th style="width:25%;">Cation / Anion</th>
+                        <th style="width:20%;">Symbol</th>
+                        <th style="width:30%;">Colour in Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="8"><strong>Colourless Cations</strong></td>
+                        <td>Ammonium ion</td><td>$NH_4^+$</td><td>Colourless</td>
+                    </tr>
+                    <tr><td>Sodium ion</td><td>$Na^+$</td><td>Colourless</td></tr>
+                    <tr><td>Potassium ion</td><td>$K^+$</td><td>Colourless</td></tr>
+                    <tr><td>Calcium ion</td><td>$Ca^{2+}$</td><td>Colourless</td></tr>
+                    <tr><td>Magnesium ion</td><td>$Mg^{2+}$</td><td>Colourless</td></tr>
+                    <tr><td>Aluminium ion</td><td>$Al^{3+}$</td><td>Colourless</td></tr>
+                    <tr><td>Lead ion</td><td>$Pb^{2+}$</td><td>Colourless</td></tr>
+                    <tr><td>Zinc ion</td><td>$Zn^{2+}$</td><td>Colourless</td></tr>
+                    <tr>
+                        <td rowspan="7"><strong>Coloured Cations</strong></td>
+                        <td>Cupric ion</td><td>$Cu^{2+}$</td><td><strong>Blue</strong></td>
+                    </tr>
+                    <tr><td>Ferrous ion</td><td>$Fe^{2+}$</td><td><strong>Light / Pale Green</strong></td>
+                    </tr>
+                    <tr><td>Ferric ion</td><td>$Fe^{3+}$</td><td><strong>Yellowish Brown / Reddish Brown</strong></td>
+                    </tr>
+                    <tr><td>Nickel ion</td><td>$Ni^{2+}$</td><td><strong>Green</strong></td>
+                    </tr>
+                    <tr><td>Chromium ion</td><td>$Cr^{3+}$</td><td><strong>Green</strong></td>
+                    </tr>
+                    <tr><td>Manganese ion</td><td>$Mn^{2+}$</td><td><strong>Pink</strong></td>
+                    </tr>
+                    <tr><td>Cobalt ion</td><td>$Co^{2+}$</td><td><strong>Pink / Red</strong></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4"><strong>Coloured Anions</strong></td>
+                        <td>Permanganate ion</td><td>$MnO_4^-$</td><td><strong>Pink / Purple</strong></td>
+                    </tr>
+                    <tr><td>Dichromate ion</td><td>$Cr_2O_7^{2-}$</td><td><strong>Orange</strong></td>
+                    </tr>
+                    <tr><td>Chromate ion</td><td>$CrO_4^{2-}$</td><td><strong>Yellow</strong></td>
+                    </tr>
+                    <tr><td>Other Anions ($Cl^-, SO_4^{2-}, CO_3^{2-}, NO_3^-$)</td><td>Various</td><td>Colourless</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>4.2 ACTION OF SODIUM HYDROXIDE (NaOH) ON SALT SOLUTIONS</h2>
         <div class="formula-box">
-            <p><strong>Procedure:</strong> Add NaOH solution drop by drop to the salt solution.</p>
-            <p><strong>Observe:</strong> Formation and colour of precipitate (if any)</p>
-            <p><strong>Then:</strong> Add excess NaOH and note if precipitate dissolves</p>
+            <span class="formula-pill">GENERAL REACTION</span>
+            <p style="text-align: center; font-weight: 700; font-size: 1.02rem; margin: 10px 0; color: var(--blue-border); line-height: 1.6;">
+                Metal Salt Solution + Sodium Hydroxide ($NaOH$) <br>
+                $\rightarrow$ Metal Hydroxide $\downarrow$ (Precipitate) + Sodium Salt
+            </p>
+            <p style="margin-top:10px;"><strong>Procedure:</strong> Add $NaOH$ solution drop by drop to 2-3 mL of salt solution in a test tube. Observe precipitate colour. Then add $NaOH$ in <strong>EXCESS</strong> and shake.</p>
         </div>
 
-        <table>
-            <tr>
-                <th>Salt Solution</th>
-                <th>Precipitate Formed</th>
-                <th>Colour</th>
-                <th>On Adding Excess NaOH</th>
-                <th>Ionic Equation</th>
-            </tr>
-            <tr>
-                <td><strong>Calcium (Ca²⁺)</strong></td>
-                <td>Ca(OH)₂</td>
-                <td>White (milky)</td>
-                <td>Insoluble (No change)</td>
-                <td>Ca²⁺ + 2OH⁻ → Ca(OH)₂↓</td>
-            </tr>
-            <tr>
-                <td><strong>Iron(II) (Fe²⁺)</strong></td>
-                <td>Fe(OH)₂</td>
-                <td>Dirty/Pale Green</td>
-                <td>Insoluble (turns brown on standing)</td>
-                <td>Fe²⁺ + 2OH⁻ → Fe(OH)₂↓</td>
-            </tr>
-            <tr>
-                <td><strong>Iron(III) (Fe³⁺)</strong></td>
-                <td>Fe(OH)₃</td>
-                <td>Reddish Brown</td>
-                <td>Insoluble</td>
-                <td>Fe³⁺ + 3OH⁻ → Fe(OH)₃↓</td>
-            </tr>
-            <tr>
-                <td><strong>Copper (Cu²⁺)</strong></td>
-                <td>Cu(OH)₂</td>
-                <td>Pale Blue</td>
-                <td>Insoluble</td>
-                <td>Cu²⁺ + 2OH⁻ → Cu(OH)₂↓</td>
-            </tr>
-            <tr>
-                <td><strong>Zinc (Zn²⁺)</strong></td>
-                <td>Zn(OH)₂</td>
-                <td>White gelatinous</td>
-                <td><strong>Soluble</strong> (forms sodium zincate)</td>
-                <td>Zn(OH)₂ + 2OH⁻ → ZnO₂²⁻ + 2H₂O</td>
-            </tr>
-            <tr>
-                <td><strong>Lead (Pb²⁺)</strong></td>
-                <td>Pb(OH)₂</td>
-                <td>White</td>
-                <td><strong>Soluble</strong> (forms sodium plumbite)</td>
-                <td>Pb(OH)₂ + 2OH⁻ → PbO₂²⁻ + 2H₂O</td>
-            </tr>
-            <tr>
-                <td><strong>Aluminium (Al³⁺)</strong></td>
-                <td>Al(OH)₃</td>
-                <td>White gelatinous</td>
-                <td><strong>Soluble</strong> (forms sodium aluminate)</td>
-                <td>Al(OH)₃ + OH⁻ → AlO₂⁻ + 2H₂O</td>
-            </tr>
-        </table>
-
-        <div class="master-tip">
-            <p><strong>Amphoteric Hydroxides:</strong> Zn(OH)₂, Pb(OH)₂, Al(OH)₃ dissolve in EXCESS NaOH!</p>
-            <p>They react with both acids AND bases (amphoteric nature).</p>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:18%;">Salt Cation</th>
+                        <th style="width:25%;">Precipitate Formed & Colour</th>
+                        <th style="width:22%;">Solubility in Excess NaOH</th>
+                        <th style="width:35%;">Balanced Chemical Equations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Calcium ($Ca^{2+}$)</strong><br><small style="color:var(--meta-text);">$Ca(NO_3)_2$</small></td>
+                        <td>$Ca(OH)_2\downarrow$<br><strong>White precipitate</strong></td>
+                        <td><strong>Slightly Soluble / Insoluble</strong></td>
+                        <td>$Ca(NO_3)_2 + 2NaOH \rightarrow Ca(OH)_2\downarrow + 2NaNO_3$<br>
+                        <small style="color:var(--meta-text);"><em>Ionic:</em> $Ca^{2+} + 2OH^- \rightarrow Ca(OH)_2\downarrow$</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Iron(II) ($Fe^{2+}$)</strong><br><small style="color:var(--meta-text);">$FeSO_4$ (pale green)</small></td>
+                        <td>$Fe(OH)_2\downarrow$<br><strong>Dirty Green gelatinous ppt</strong></td>
+                        <td><strong>INSOLUBLE</strong><br><small style="color:var(--meta-text);">(Turns reddish-brown on standing due to $Fe(OH)_3$ oxidation)</small></td>
+                        <td>$FeSO_4 + 2NaOH \rightarrow Fe(OH)_2\downarrow + Na_2SO_4$<br>
+                        <small style="color:var(--meta-text);"><em>Ionic:</em> $Fe^{2+} + 2OH^- \rightarrow Fe(OH)_2\downarrow$</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Iron(III) ($Fe^{3+}$)</strong><br><small style="color:var(--meta-text);">$FeCl_3$ (yellow/brown)</small></td>
+                        <td>$Fe(OH)_3\downarrow$<br><strong>Reddish-Brown ppt</strong></td>
+                        <td><strong>INSOLUBLE</strong></td>
+                        <td>$FeCl_3 + 3NaOH \rightarrow Fe(OH)_3\downarrow + 3NaCl$<br>
+                        <small style="color:var(--meta-text);"><em>Ionic:</em> $Fe^{3+} + 3OH^- \rightarrow Fe(OH)_3\downarrow$</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Copper ($Cu^{2+}$)</strong><br><small style="color:var(--meta-text);">$CuSO_4$ (blue)</small></td>
+                        <td>$Cu(OH)_2\downarrow$<br><strong>Pale Blue ppt</strong></td>
+                        <td><strong>INSOLUBLE</strong></td>
+                        <td>$CuSO_4 + 2NaOH \rightarrow Cu(OH)_2\downarrow + Na_2SO_4$<br>
+                        <small style="color:var(--meta-text);"><em>Ionic:</em> $Cu^{2+} + 2OH^- \rightarrow Cu(OH)_2\downarrow$</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zinc ($Zn^{2+}$)</strong><br><small style="color:var(--meta-text);">$ZnSO_4$ (colourless)</small></td>
+                        <td>$Zn(OH)_2\downarrow$<br><strong>Gelatinous White ppt</strong></td>
+                        <td><strong>SOLUBLE in excess</strong><br><small style="color:var(--meta-text);">(Forms colourless Sodium Zincate complex)</small></td>
+                        <td>1. $ZnSO_4 + 2NaOH \rightarrow Zn(OH)_2\downarrow + Na_2SO_4$<br>
+                        2. $Zn(OH)_2 + 2NaOH \rightarrow Na_2ZnO_2 + 2H_2O$<br>
+                        <small style="color:var(--meta-text);">(Sodium zincate - colourless)</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lead ($Pb^{2+}$)</strong><br><small style="color:var(--meta-text);">$Pb(NO_3)_2$ (colourless)</small></td>
+                        <td>$Pb(OH)_2\downarrow$<br><strong>Chalky White ppt</strong></td>
+                        <td><strong>SOLUBLE in excess</strong><br><small style="color:var(--meta-text);">(Forms colourless Sodium Plumbite complex)</small></td>
+                        <td>1. $Pb(NO_3)_2 + 2NaOH \rightarrow Pb(OH)_2\downarrow + 2NaNO_3$<br>
+                        2. $Pb(OH)_2 + 2NaOH \rightarrow Na_2PbO_2 + 2H_2O$<br>
+                        <small style="color:var(--meta-text);">(Sodium plumbite - colourless)</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aluminium ($Al^{3+}$)</strong><br><small style="color:var(--meta-text);">$AlCl_3$ (colourless)</small></td>
+                        <td>$Al(OH)_3\downarrow$<br><strong>Gelatinous White ppt</strong></td>
+                        <td><strong>SOLUBLE in excess</strong><br><small style="color:var(--meta-text);">(Forms colourless Sodium Meta-aluminate complex)</small></td>
+                        <td>1. $AlCl_3 + 3NaOH \rightarrow Al(OH)_3\downarrow + 3NaCl$<br>
+                        2. $Al(OH)_3 + NaOH \rightarrow NaAlO_2 + 2H_2O$<br>
+                        <small style="color:var(--meta-text);">(Sodium Meta-Aluminate - colourless)</small></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <h2>3. Action of Ammonium Hydroxide (NH₄OH) on Salt Solutions</h2>
-        <div class="formula-box">
-            <p><strong>Procedure:</strong> Add NH₄OH solution drop by drop to the salt solution.</p>
-            <p><strong>Observe:</strong> Formation and colour of precipitate</p>
-            <p><strong>Then:</strong> Add excess NH₄OH and note if precipitate dissolves</p>
-        </div>
-
-        <table>
-            <tr>
-                <th>Salt Solution</th>
-                <th>Precipitate</th>
-                <th>Colour</th>
-                <th>On Adding Excess NH₄OH</th>
-                <th>Reason</th>
-            </tr>
-            <tr>
-                <td><strong>Calcium (Ca²⁺)</strong></td>
-                <td>No precipitate</td>
-                <td>-</td>
-                <td>-</td>
-                <td>Ca(OH)₂ slightly soluble</td>
-            </tr>
-            <tr>
-                <td><strong>Iron(II) (Fe²⁺)</strong></td>
-                <td>Fe(OH)₂</td>
-                <td>Dirty Green</td>
-                <td>Insoluble</td>
-                <td>Does not form complex</td>
-            </tr>
-            <tr>
-                <td><strong>Iron(III) (Fe³⁺)</strong></td>
-                <td>Fe(OH)₃</td>
-                <td>Reddish Brown</td>
-                <td>Insoluble</td>
-                <td>Does not form complex</td>
-            </tr>
-            <tr>
-                <td><strong>Copper (Cu²⁺)</strong></td>
-                <td>Cu(OH)₂</td>
-                <td>Pale Blue</td>
-                <td><strong>Soluble</strong> - Deep Blue solution</td>
-                <td>Forms [Cu(NH₃)₄]²⁺ complex</td>
-            </tr>
-            <tr>
-                <td><strong>Zinc (Zn²⁺)</strong></td>
-                <td>Zn(OH)₂</td>
-                <td>White</td>
-                <td><strong>Soluble</strong> - Colourless</td>
-                <td>Forms [Zn(NH₃)₄]²⁺ complex</td>
-            </tr>
-            <tr>
-                <td><strong>Lead (Pb²⁺)</strong></td>
-                <td>Pb(OH)₂</td>
-                <td>White</td>
-                <td>Insoluble</td>
-                <td>Does not form complex</td>
-            </tr>
-            <tr>
-                <td><strong>Aluminium (Al³⁺)</strong></td>
-                <td>Al(OH)₃</td>
-                <td>White</td>
-                <td>Insoluble</td>
-                <td>Does not form complex</td>
-            </tr>
-        </table>
-
-        <div class="master-tip">
-            <p><strong>Cu²⁺ with excess NH₄OH → Deep Blue</strong> (Tetraamminecopper(II) complex)</p>
-            <p><strong>Zn²⁺ with excess NH₄OH → Colourless</strong> (Tetraamminezinc(II) complex)</p>
-        </div>
-
-        <h2>4. Special Action on Ammonium Salts</h2>
+        <h3>Special Action of NaOH on Ammonium Salts</h3>
         <div class="analysis-box">
-            <p><strong>When NaOH is added to ammonium salts and heated:</strong></p>
-            <p>NH₄Cl + NaOH → NaCl + H₂O + NH₃↑</p>
-            <p><strong>Observation:</strong> Pungent smell of ammonia gas released</p>
-            <p><strong>Test:</strong> Ammonia turns moist red litmus paper blue</p>
+            <p><strong>Reaction:</strong> When any ammonium salt ($NH_4Cl, (NH_4)_2SO_4, NH_4NO_3$) is heated with a strong alkali like $NaOH$ or $KOH$, <strong>Ammonia gas ($NH_3$)</strong> is evolved.</p>
+            $$NH_4Cl + NaOH \xrightarrow{\Delta} NaCl + H_2O + NH_3\uparrow$$
+            $$(NH_4)_2SO_4 + 2NaOH \xrightarrow{\Delta} Na_2SO_4 + 2H_2O + 2NH_3\uparrow$$
+            <p><strong>Identification Tests for Evolved Ammonia Gas:</strong></p>
+            <ol>
+                <li>Characteristic alkaline, pungent suffocating smell.</li>
+                <li>Turns moist red litmus paper <strong>blue</strong>.</li>
+                <li>Gives dense white fumes when a glass rod dipped in conc. $HCl$ is brought near the mouth of test tube ($NH_3 + HCl \rightarrow NH_4Cl$).</li>
+            </ol>
         </div>
 
-        <h2>5. Comparison Table: NaOH vs NH₄OH</h2>
-        <table>
-            <tr>
-                <th>Cation</th>
-                <th>NaOH (limited)</th>
-                <th>NaOH (excess)</th>
-                <th>NH₄OH (limited)</th>
-                <th>NH₄OH (excess)</th>
-            </tr>
-            <tr>
-                <td>Cu²⁺</td>
-                <td>Pale blue ppt</td>
-                <td>Insoluble</td>
-                <td>Pale blue ppt</td>
-                <td><strong>Deep blue soln</strong></td>
-            </tr>
-            <tr>
-                <td>Zn²⁺</td>
-                <td>White ppt</td>
-                <td><strong>Soluble</strong></td>
-                <td>White ppt</td>
-                <td><strong>Soluble</strong></td>
-            </tr>
-            <tr>
-                <td>Pb²⁺</td>
-                <td>White ppt</td>
-                <td><strong>Soluble</strong></td>
-                <td>White ppt</td>
-                <td>Insoluble</td>
-            </tr>
-            <tr>
-                <td>Al³⁺</td>
-                <td>White ppt</td>
-                <td><strong>Soluble</strong></td>
-                <td>White ppt</td>
-                <td>Insoluble</td>
-            </tr>
-            <tr>
-                <td>Fe²⁺</td>
-                <td>Dirty green ppt</td>
-                <td>Insoluble</td>
-                <td>Dirty green ppt</td>
-                <td>Insoluble</td>
-            </tr>
-            <tr>
-                <td>Fe³⁺</td>
-                <td>Reddish brown ppt</td>
-                <td>Insoluble</td>
-                <td>Reddish brown ppt</td>
-                <td>Insoluble</td>
-            </tr>
-        </table>
+        <h2>4.3 ACTION OF AMMONIUM HYDROXIDE (NH₄OH) ON SALT SOLUTIONS</h2>
+        <div class="formula-box">
+            <span class="formula-pill">WEAK ALKALI REACTION</span>
+            <p style="text-align: center; font-weight: 700; font-size: 1.02rem; margin: 10px 0; color: var(--blue-border); line-height: 1.6;">
+                Metal Salt Solution + Ammonium Hydroxide ($NH_4OH$) <br>
+                $\rightarrow$ Metal Hydroxide $\downarrow$ (Precipitate) + Ammonium Salt
+            </p>
+            <p style="margin-top:10px;"><strong>Key Principle:</strong> $NH_4OH$ is a weak alkali providing a lower concentration of $OH^-$ ions compared to strong $NaOH$.</p>
+        </div>
 
-        <h2>Exam Practice (PYQ Trends)</h2>
-        <div class="practice-box">
-            <span class="practice-header">PYQ: 2023</span>
-            <p><span class="q-tag">BOARD</span> What do you observe when sodium hydroxide is added drop by drop and then
-                in excess to solutions of: (i) Copper sulphate (ii) Zinc sulphate?</p>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:18%;">Salt Cation</th>
+                        <th style="width:25%;">Precipitate Formed & Colour</th>
+                        <th style="width:22%;">Solubility in Excess NH₄OH</th>
+                        <th style="width:35%;">Balanced Chemical & Complex Equations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Calcium ($Ca^{2+}$)</strong></td>
+                        <td><strong>NO PRECIPITATE FORMED</strong></td>
+                        <td>—</td>
+                        <td>$NH_4OH$ is a weak base; $[OH^-]$ concentration is too low to exceed solubility product of $Ca(OH)_2$.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Iron(II) ($Fe^{2+}$)</strong></td>
+                        <td>$Fe(OH)_2\downarrow$<br><strong>Dirty Green ppt</strong></td>
+                        <td><strong>INSOLUBLE</strong></td>
+                        <td>$FeSO_4 + 2NH_4OH \rightarrow Fe(OH)_2\downarrow + (NH_4)_2SO_4$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Iron(III) ($Fe^{3+}$)</strong></td>
+                        <td>$Fe(OH)_3\downarrow$<br><strong>Reddish-Brown ppt</strong></td>
+                        <td><strong>INSOLUBLE</strong></td>
+                        <td>$FeCl_3 + 3NH_4OH \rightarrow Fe(OH)_3\downarrow + 3NH_4Cl$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Copper ($Cu^{2+}$)</strong></td>
+                        <td>$Cu(OH)_2\downarrow$<br><strong>Pale Blue ppt</strong></td>
+                        <td><strong>SOLUBLE in excess</strong><br><strong style="color:var(--pink-border);">(Forms DEEP BLUE / INKY BLUE solution)</strong></td>
+                        <td>1. $CuSO_4 + 2NH_4OH \rightarrow Cu(OH)_2\downarrow + (NH_4)_2SO_4$<br>
+                        2. $Cu(OH)_2 + (NH_4)_2SO_4 + 2NH_4OH \rightarrow$<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;$[Cu(NH_3)_4]SO_4 + 4H_2O$<br>
+                        <small style="color:var(--meta-text);">(Tetraamminecopper(II) sulphate - Deep Blue)</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zinc ($Zn^{2+}$)</strong></td>
+                        <td>$Zn(OH)_2\downarrow$<br><strong>Gelatinous White ppt</strong></td>
+                        <td><strong>SOLUBLE in excess</strong><br><small style="color:var(--meta-text);">(Forms COLOURLESS soluble Tetraamminezinc complex)</small></td>
+                        <td>1. $ZnSO_4 + 2NH_4OH \rightarrow Zn(OH)_2\downarrow + (NH_4)_2SO_4$<br>
+                        2. $Zn(OH)_2 + (NH_4)_2SO_4 + 2NH_4OH \rightarrow$<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;$[Zn(NH_3)_4]SO_4 + 4H_2O$<br>
+                        <small style="color:var(--meta-text);">(Tetraamminezinc(II) sulphate - Colourless)</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lead ($Pb^{2+}$)</strong></td>
+                        <td>$Pb(OH)_2\downarrow$<br><strong>Chalky White ppt</strong></td>
+                        <td><strong>INSOLUBLE</strong></td>
+                        <td>$Pb(NO_3)_2 + 2NH_4OH \rightarrow Pb(OH)_2\downarrow + 2NH_4NO_3$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aluminium ($Al^{3+}$)</strong></td>
+                        <td>$Al(OH)_3\downarrow$<br><strong>Gelatinous White ppt</strong></td>
+                        <td><strong>INSOLUBLE</strong></td>
+                        <td>$AlCl_3 + 3NH_4OH \rightarrow Al(OH)_3\downarrow + 3NH_4Cl$</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="practice-box">
-            <span class="practice-header">PYQ: 2022</span>
-            <p><span class="q-tag">BOARD</span> Identify the cation: A salt solution gives a pale blue precipitate with
-                NaOH which is insoluble in excess. With NH₄OH, the precipitate dissolves in excess giving a deep blue
-                solution.</p>
+
+        <div class="master-tip">
+            <p><strong>Crucial Distinguishing Test (Zinc vs Lead vs Aluminium):</strong></p>
+            <p>• White ppt of $Zn(OH)_2$ is soluble in <strong>BOTH excess $NaOH$ AND excess $NH_4OH$</strong>.</p>
+            <p>• White ppt of $Pb(OH)_2$ and $Al(OH)_3$ is soluble in <strong>excess $NaOH$</strong>, but <strong>INSOLUBLE in excess $NH_4OH$</strong>!</p>
         </div>
+
+        <h2>4.4 ACTION OF ALKALIS ON CERTAIN METALS</h2>
+        <p>Metals like <strong>Zinc ($Zn$), Aluminium ($Al$), and Lead ($Pb$)</strong> react with hot concentrated alkalis ($NaOH, KOH$) to form soluble complex salts and liberate <strong>Hydrogen gas ($H_2$)</strong>.</p>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:20%;">Metal</th>
+                        <th style="width:25%;">Reagents Used</th>
+                        <th style="width:25%;">Soluble Salt Formed</th>
+                        <th style="width:30%;">Balanced Equation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2"><strong>Zinc ($Zn$)</strong></td>
+                        <td>Hot conc. $NaOH$</td>
+                        <td>Sodium Zincate (colourless)</td>
+                        <td>$Zn + 2NaOH \xrightarrow{\Delta} Na_2ZnO_2 + H_2\uparrow$</td>
+                    </tr>
+                    <tr>
+                        <td>Hot conc. $KOH$</td>
+                        <td>Potassium Zincate (colourless)</td>
+                        <td>$Zn + 2KOH \xrightarrow{\Delta} K_2ZnO_2 + H_2\uparrow$</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><strong>Aluminium ($Al$)</strong></td>
+                        <td>Boiling conc. $NaOH + H_2O$</td>
+                        <td>Sodium Meta-aluminate</td>
+                        <td>$2Al + 2NaOH + 2H_2O \xrightarrow{\Delta} 2NaAlO_2 + 3H_2\uparrow$</td>
+                    </tr>
+                    <tr>
+                        <td>Boiling conc. $KOH + H_2O$</td>
+                        <td>Potassium Meta-aluminate</td>
+                        <td>$2Al + 2KOH + 2H_2O \xrightarrow{\Delta} 2KAlO_2 + 3H_2\uparrow$</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><strong>Lead ($Pb$)</strong></td>
+                        <td>Hot conc. $NaOH$</td>
+                        <td>Sodium Plumbite</td>
+                        <td>$Pb + 2NaOH \xrightarrow{\Delta} Na_2PbO_2 + H_2\uparrow$</td>
+                    </tr>
+                    <tr>
+                        <td>Hot conc. $KOH$</td>
+                        <td>Potassium Plumbite</td>
+                        <td>$Pb + 2KOH \xrightarrow{\Delta} K_2PbO_2 + H_2\uparrow$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>4.5 ACTION OF ALKALIS ON AMPHOTERIC OXIDES AND HYDROXIDES</h2>
+        <div class="definition-box">
+            <p><strong>Amphoteric Oxides / Hydroxides:</strong> Oxides and hydroxides of metals ($Zn, Al, Pb$) that show dual character — reacting with both acids and strong bases (alkalis) to form salt and water.</p>
+        </div>
+
+        <h3>Reaction Equations of Amphoteric Oxides & Hydroxides</h3>
+        <div class="derivation-box">
+            <p style="font-weight:700;color:#2e7d32;margin-top:0;font-size:1.1rem;">1. Zinc Oxide ($ZnO$) & Zinc Hydroxide ($Zn(OH)_2$)</p>
+            
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(a) Action of Acid ($HCl$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $ZnO + 2HCl \rightarrow ZnCl_2 + H_2O$</li>
+                <li><strong>Hydroxide:</strong> $Zn(OH)_2 + 2HCl \rightarrow ZnCl_2 + 2H_2O$</li>
+            </ul>
+
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(b) Action of Caustic Soda ($NaOH$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $ZnO + 2NaOH \rightarrow Na_2ZnO_2 + H_2O$ <small style="color:var(--meta-text);">(Sodium Zincate)</small></li>
+                <li><strong>Hydroxide:</strong> $Zn(OH)_2 + 2NaOH \rightarrow Na_2ZnO_2 + 2H_2O$</li>
+            </ul>
+
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(c) Action of Caustic Potash ($KOH$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $ZnO + 2KOH \rightarrow K_2ZnO_2 + H_2O$ <small style="color:var(--meta-text);">(Potassium Zincate)</small></li>
+                <li><strong>Hydroxide:</strong> $Zn(OH)_2 + 2KOH \rightarrow K_2ZnO_2 + 2H_2O$</li>
+            </ul>
+
+            <hr style="border:0;border-top:1px dashed var(--green-border);margin:15px 0;">
+
+            <p style="font-weight:700;color:#2e7d32;margin-top:10px;font-size:1.1rem;">2. Aluminium Oxide ($Al_2O_3$) & Aluminium Hydroxide ($Al(OH)_3$)</p>
+            
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(a) Action of Acid ($HCl$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $Al_2O_3 + 6HCl \rightarrow 2AlCl_3 + 3H_2O$</li>
+                <li><strong>Hydroxide:</strong> $Al(OH)_3 + 3HCl \rightarrow AlCl_3 + 3H_2O$</li>
+            </ul>
+
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(b) Action of Caustic Soda ($NaOH$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $Al_2O_3 + 2NaOH \rightarrow 2NaAlO_2 + H_2O$ <small style="color:var(--meta-text);">(Sodium Meta-aluminate)</small></li>
+                <li><strong>Hydroxide:</strong> $Al(OH)_3 + NaOH \rightarrow NaAlO_2 + 2H_2O$</li>
+            </ul>
+
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(c) Action of Caustic Potash ($KOH$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $Al_2O_3 + 2KOH \rightarrow 2KAlO_2 + H_2O$ <small style="color:var(--meta-text);">(Potassium Meta-aluminate)</small></li>
+                <li><strong>Hydroxide:</strong> $Al(OH)_3 + KOH \rightarrow KAlO_2 + 2H_2O$</li>
+            </ul>
+
+            <hr style="border:0;border-top:1px dashed var(--green-border);margin:15px 0;">
+
+            <p style="font-weight:700;color:#2e7d32;margin-top:10px;font-size:1.1rem;">3. Lead Oxide ($PbO$) & Lead Hydroxide ($Pb(OH)_2$)</p>
+            
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(a) Action of Acid ($HNO_3$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $PbO + 2HNO_3 \rightarrow Pb(NO_3)_2 + H_2O$</li>
+                <li><strong>Hydroxide:</strong> $Pb(OH)_2 + 2HNO_3 \rightarrow Pb(NO_3)_2 + 2H_2O$</li>
+            </ul>
+
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(b) Action of Caustic Soda ($NaOH$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $PbO + 2NaOH \rightarrow Na_2PbO_2 + H_2O$ <small style="color:var(--meta-text);">(Sodium Plumbite)</small></li>
+                <li><strong>Hydroxide:</strong> $Pb(OH)_2 + 2NaOH \rightarrow Na_2PbO_2 + 2H_2O$</li>
+            </ul>
+
+            <p style="font-weight:600;margin:8px 0 4px;color:var(--pink-border);">(c) Action of Caustic Potash ($KOH$):</p>
+            <ul>
+                <li><strong>Oxide:</strong> $PbO + 2KOH \rightarrow K_2PbO_2 + H_2O$ <small style="color:var(--meta-text);">(Potassium Plumbite)</small></li>
+                <li><strong>Hydroxide:</strong> $Pb(OH)_2 + 2KOH \rightarrow K_2PbO_2 + 2H_2O$</li>
+            </ul>
+        </div>
+
+        <h2>4.6 SUMMARY COMPARISON TABLE: NaOH vs NH₄OH</h2>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width:15%;">Cation</th>
+                        <th style="width:20%;">Action of NaOH (Limited)</th>
+                        <th style="width:20%;">Action of NaOH (Excess)</th>
+                        <th style="width:22%;">Action of NH₄OH (Limited)</th>
+                        <th style="width:23%;">Action of NH₄OH (Excess)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>$Ca^{2+}$</strong></td>
+                        <td>White ppt</td><td>Insoluble</td><td>No ppt</td><td>No ppt</td>
+                    </tr>
+                    <tr>
+                        <td><strong>$Fe^{2+}$</strong></td>
+                        <td>Dirty green ppt</td><td>Insoluble</td><td>Dirty green ppt</td><td>Insoluble</td>
+                    </tr>
+                    <tr>
+                        <td><strong>$Fe^{3+}$</strong></td>
+                        <td>Reddish-brown ppt</td><td>Insoluble</td><td>Reddish-brown ppt</td><td>Insoluble</td>
+                    </tr>
+                    <tr>
+                        <td><strong>$Cu^{2+}$</strong></td>
+                        <td>Pale blue ppt</td><td>Insoluble</td><td>Pale blue ppt</td><td><strong style="color:var(--pink-border);">Deep Blue Solution</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>$Zn^{2+}$</strong></td>
+                        <td>Gelatinous white ppt</td><td><strong>Soluble (Colourless)</strong></td><td>Gelatinous white ppt</td><td><strong>Soluble (Colourless)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>$Pb^{2+}$</strong></td>
+                        <td>Chalky white ppt</td><td><strong>Soluble (Colourless)</strong></td><td>Chalky white ppt</td><td>Insoluble</td>
+                    </tr>
+                    <tr>
+                        <td><strong>$Al^{3+}$</strong></td>
+                        <td>Gelatinous white ppt</td><td><strong>Soluble (Colourless)</strong></td><td>Gelatinous white ppt</td><td>Insoluble</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- BRANDING FOOTER -->
+        <div class="branding-footer">
+            <div class="top-branding-note">
+                <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red" aria-hidden="true">&hearts;</span></span>
+                <span aria-hidden="true">|</span>
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png" alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+            <div class="no-print" style="margin-top: 25px; padding-top: 20px; border-top: 2px solid var(--blue-border);">
+                <a href="../../Chemistry.html" style="display:inline-block;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,var(--blue-border),var(--pink-border));color:#fff;text-decoration:none;font-weight:700;font-size:1rem;">&larr; Back to Chemistry</a>
+            </div>
+        </div>
+
     </div>
+
     <script>
         function toggleTheme() {
             const html = document.documentElement;
             html.classList.toggle('dark-mode');
             localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
         }
-        // Initialize Theme - Default to LIGHT
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark-mode');
         }
@@ -550,6 +1166,3 @@
 </body>
 
 </html>
-
-
-
