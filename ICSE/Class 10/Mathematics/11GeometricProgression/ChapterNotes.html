@@ -1,1 +1,856 @@
-﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 11: Geometric Progression - Vardaan Master Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            chtml: {
+                scale: 1.05
+            }
+        };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --purple-main: #6a1b9a;
+            --purple-dark: #4a148c;
+            --purple-light: #7b1fa2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #fff;
+            color: #1a1a1a;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.75;
+        }
+
+        html {
+            transition: filter .3s;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--purple-main);
+            margin-bottom: .5rem;
+        }
+
+        .sub-header {
+            text-align: center;
+            color: #555;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--purple-main);
+            padding-bottom: .5rem;
+            color: var(--purple-main);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple-light);
+        }
+
+        h4 {
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #8e24aa;
+        }
+
+        p,
+        li {
+            margin-bottom: .8rem;
+            font-size: 1.05rem;
+        }
+
+        ul,
+        ol {
+            padding-left: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: .95rem;
+            display: table;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3e5f5;
+            color: var(--purple-dark);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .definition-box {
+            background: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .rule-box {
+            background: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .analysis-box {
+            background: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .derivation-box {
+            background: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .master-tip {
+            border: 2px dashed #d32f2f;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            background: #ffebee;
+            border-radius: 6px;
+        }
+
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            padding: 1.5rem;
+            margin: 1.8rem 0;
+            position: relative;
+            background: #fff;
+            border-radius: 4px;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .practice-box {
+            background: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: .75rem;
+            margin-right: 5px;
+            font-weight: 600;
+        }
+
+        .solved-example {
+            background: #f3e5f5;
+            border-left: 4px solid #7b1fa2;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .step-box {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        /* SVG & Graph Container Styling */
+        .svg-container {
+            text-align: center;
+            margin: 1.8rem 0;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.2rem;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .math-svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            position: relative;
+            max-width: 580px;
+            margin: 1.8rem auto;
+            background: #fff;
+            padding: 1.2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* MATHJAX NO-SCROLLBAR STYLING */
+        mjx-container,
+        mjx-container[jax="CHTML"][display="true"],
+        mjx-container * {
+            overflow: visible !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+
+        mjx-container::-webkit-scrollbar,
+        mjx-container *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        mjx-container {
+            display: inline !important;
+        }
+
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            margin: 0.5em 0;
+        }
+
+        .formula-box,
+        .practice-box,
+        .definition-box,
+        .rule-box,
+        .derivation-box,
+        .analysis-box,
+        .step-box,
+        .solved-example,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        table {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        @media(max-width:800px) {
+            .paper-sheet {
+                width: 95%;
+                padding: 15px;
+            }
+
+            table {
+                font-size: .8rem;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+
+            mjx-container[jax="CHTML"][display="true"] {
+                font-size: 0.85em !important;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image" alt="Watermark"></div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="icon-moon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Geometric Progression</h1>
+        <p class="sub-header">ICSE Class 10 Mathematics — Chapter 11 Master Notes</p>
+
+        <!-- SECTION 1 -->
+        <h2>1. Introduction to Sequences & Geometric Progression</h2>
+        <div class="definition-box">
+            <p><strong>Sequence:</strong> An arrangement of numbers written in a definite order according to a fixed mathematical rule.</p>
+            <p><strong>Geometric Progression (G.P.):</strong> A sequence of non-zero numbers in which each term after the first is obtained by <strong>multiplying or dividing the preceding term by a fixed non-zero constant quantity</strong>.</p>
+            <p><strong>Common Ratio ($r$):</strong> The fixed ratio between any term and its immediately preceding term.</p>
+            <p style="text-align:center;font-size:1.25rem;font-weight:600;">
+                $$r = \frac{t_2}{t_1} = \frac{t_3}{t_2} = \frac{t_4}{t_3} = \dots = \frac{t_n}{t_{n-1}}$$
+            </p>
+        </div>
+
+        <!-- SVG DIAGRAM 1: GEOMETRIC PROGRESSION MULTIPLICATION -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 520 180" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="520" height="180" fill="#fafafa" rx="6"/>
+
+                <defs>
+                    <marker id="arrow-gp" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1565c0"/>
+                    </marker>
+                </defs>
+
+                <!-- Terms Circles -->
+                <!-- t1 = a (60, 110), t2 = ar (170, 110), t3 = ar^2 (280, 110), t4 = ar^3 (390, 110) -->
+                <circle cx="60" cy="110" r="25" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+                <circle cx="170" cy="110" r="25" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+                <circle cx="280" cy="110" r="25" fill="#fff9c4" stroke="#fbc02d" stroke-width="2"/>
+                <circle cx="390" cy="110" r="25" fill="#fce4ec" stroke="#d81b60" stroke-width="2"/>
+
+                <text x="60" y="115" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1565c0">a</text>
+                <text x="170" y="115" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2e7d32">ar</text>
+                <text x="280" y="115" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#fbc02d">ar²</text>
+                <text x="390" y="115" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#d81b60">ar³</text>
+
+                <!-- Curved multiplication arrows -->
+                <path d="M 85,95 Q 115,55 145,95" fill="none" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow-gp)"/>
+                <path d="M 195,95 Q 225,55 255,95" fill="none" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow-gp)"/>
+                <path d="M 305,95 Q 335,55 365,95" fill="none" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow-gp)"/>
+
+                <text x="115" y="60" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#1565c0">× r</text>
+                <text x="225" y="60" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#1565c0">× r</text>
+                <text x="335" y="60" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#1565c0">× r</text>
+
+                <text x="445" y="115" font-family="Outfit, sans-serif" font-size="16" font-weight="bold" fill="#333">...</text>
+
+                <text x="260" y="165" font-family="Outfit, sans-serif" font-size="13" font-style="italic" text-anchor="middle" fill="#555">Fig 11.1: General Terms of a Geometric Progression with Common Ratio r</text>
+            </svg>
+        </div>
+
+        <!-- SECTION 2 -->
+        <h2>2. General Term ($n^{\text{th}}$ Term) of a G.P.</h2>
+        <div class="derivation-box">
+            <p><strong>Derivation of the $n^{\text{th}}$ Term Formula:</strong></p>
+            <p>Let the first term of a G.P. be $a$ and its common ratio be $r$. Then:</p>
+            <ul>
+                <li>$1^{\text{st}}$ term ($t_1$) $= a = a \cdot r^{1-1}$</li>
+                <li>$2^{\text{nd}}$ term ($t_2$) $= a \cdot r = a \cdot r^{2-1}$</li>
+                <li>$3^{\text{rd}}$ term ($t_3$) $= a \cdot r^2 = a \cdot r^{3-1}$</li>
+                <li>$4^{\text{th}}$ term ($t_4$) $= a \cdot r^3 = a \cdot r^{4-1}$</li>
+            </ul>
+            <p>Continuing this pattern for $n$ terms:</p>
+        </div>
+
+        <div class="formula-box">
+            <p><strong>General Term ($n^{\text{th}}$ Term from Beginning):</strong></p>
+            <p style="text-align:center;font-size:1.3rem;font-weight:600;">
+                $$t_n = a \cdot r^{n-1}$$
+            </p>
+            <p>Where $a = \text{first term}$, $r = \text{common ratio}$, and $n = \text{number of terms}$.</p>
+            <p>If a G.P. contains $n$ terms, the $n^{\text{th}}$ term is also the <strong>last term ($l$)</strong>:</p>
+            <p style="text-align:center;font-size:1.25rem;font-weight:600;">
+                $$l = a \cdot r^{n-1}$$
+            </p>
+        </div>
+
+        <div class="formula-box">
+            <p><strong>$n^{\text{th}}$ Term from the End of a Finite G.P.:</strong></p>
+            <p>If a finite G.P. has last term $l$ and common ratio $r$, the $n^{\text{th}}$ term from the end is:</p>
+            <p style="text-align:center;font-size:1.3rem;font-weight:600;">
+                $$t_n^{\text{end}} = \frac{l}{r^{n-1}} = l \cdot \left(\frac{1}{r}\right)^{n-1}$$
+            </p>
+        </div>
+
+        <!-- SECTION 3 -->
+        <h2>3. Selection of Terms in a G.P.</h2>
+        <div class="analysis-box">
+            <p>When the product of consecutive terms of a G.P. is given, select terms in the following symmetric forms to simplify algebra:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Number of Terms</th>
+                        <th>Assumed Terms</th>
+                        <th>Common Ratio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>3 Terms</strong></td>
+                        <td>$\frac{a}{r}, \quad a, \quad ar$</td>
+                        <td>$r$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4 Terms</strong></td>
+                        <td>$\frac{a}{r^3}, \quad \frac{a}{r}, \quad ar, \quad ar^3$</td>
+                        <td>$r^2$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5 Terms</strong></td>
+                        <td>$\frac{a}{r^2}, \quad \frac{a}{r}, \quad a, \quad ar, \quad ar^2$</td>
+                        <td>$r$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECTION 4 -->
+        <h2>4. Important Properties of a G.P.</h2>
+        <div class="rule-box">
+            <p><strong>Key Algebraic Properties:</strong></p>
+            <ol>
+                <li><strong>Equidistant Product Property:</strong> In a finite G.P., the product of terms equidistant from the beginning and end is constant and equal to the product of first and last terms.
+                    $$t_k \times t_{n-k+1} = a \times l$$
+                </li>
+                <li><strong>Three Consecutive Terms Condition:</strong> If $a, b, c$ are three consecutive terms of a G.P., then:
+                    $$\frac{b}{a} = \frac{c}{b} \implies b^2 = ac \implies b = \sqrt{ac}$$
+                </li>
+                <li><strong>Multiplication / Division Property:</strong> If each term of a G.P. is multiplied or divided by a non-zero constant, the resulting sequence is also a G.P. with the same common ratio.</li>
+                <li><strong>Reciprocal Property:</strong> The reciprocals of the terms of a G.P. ($\frac{1}{a}, \frac{1}{ar}, \frac{1}{ar^2}, \dots$) also form a G.P. with common ratio $\frac{1}{r}$.</li>
+                <li><strong>Logarithmic Relation with A.P.:</strong> If $a, b, c$ are positive numbers in G.P., then $\log a, \log b, \log c$ are in <strong>Arithmetic Progression (A.P.)</strong>!</li>
+            </ol>
+        </div>
+
+        <!-- SECTION 5 -->
+        <h2>5. Sum of $n$ Terms of a G.P. ($S_n$)</h2>
+        <div class="derivation-box">
+            <p><strong>Derivation of Sum Formula ($S_n$):</strong></p>
+            <p>Let $S_n = a + ar + ar^2 + ar^3 + \dots + ar^{n-1}$ &nbsp; --- (i)</p>
+            <p>Multiply (i) by $r$: &nbsp; $r \cdot S_n = ar + ar^2 + ar^3 + \dots + ar^n$ &nbsp; --- (ii)</p>
+            <p>Subtracting (ii) from (i):</p>
+            $$S_n - r \cdot S_n = a - ar^n \implies S_n(1 - r) = a(1 - r^n)$$
+            $$\therefore S_n = \frac{a(1 - r^n)}{1 - r} \quad (r \neq 1)$$
+        </div>
+
+        <div class="formula-box">
+            <p><strong>Sum Formulas for $S_n$:</strong></p>
+            <ol>
+                <li><strong>When $r = 1$:</strong> $$S_n = n \cdot a$$</li>
+                <li><strong>When $r < 1$:</strong>
+                    $$S_n = \frac{a(1 - r^n)}{1 - r} = \frac{a - lr}{1 - r}$$
+                </li>
+                <li><strong>When $r > 1$:</strong>
+                    $$S_n = \frac{a(r^n - 1)}{r - 1} = \frac{lr - a}{r - 1}$$
+                </li>
+            </ol>
+        </div>
+
+        <div class="master-tip">
+            <p><strong>Standard Board Summation Series ($5 + 55 + 555 + \dots$):</strong></p>
+            <p>To evaluate $S_n = 5 + 55 + 555 + \dots$ up to $n$ terms:</p>
+            $$S_n = 5(1 + 11 + 111 + \dots) = \frac{5}{9}(9 + 99 + 999 + \dots) = \frac{5}{9} \left[ (10 - 1) + (10^2 - 1) + (10^3 - 1) + \dots \right]$$
+            $$S_n = \frac{5}{9} \left[ \frac{10(10^n - 1)}{10 - 1} - n \right] = \frac{50}{81}(10^n - 1) - \frac{5n}{9}$$
+        </div>
+
+        <!-- SECTION 6 -->
+        <h2>6. Sum of Infinite Terms of a G.P. ($S_\infty$) & Recurring Decimals</h2>
+
+        <div class="formula-box">
+            <p><strong>Sum of Infinite Terms ($S_\infty$):</strong></p>
+            <p>For an infinite G.P., if the numerical value of common ratio $|r| < 1$ (i.e. $-1 < r < 1$), then as $n \to \infty$, $r^n \to 0$.</p>
+            <p style="text-align:center;font-size:1.35rem;font-weight:600;">
+                $$S_\infty = \frac{a}{1 - r} \quad (|r| < 1)$$
+            </p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Application to Recurring Decimals:</strong> Convert $0.\overline{437} = 0.4373737\dots$ into rational fraction form $\frac{p}{q}$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                $$0.4373737\dots = 0.4 + 0.037 + 0.00037 + 0.0000037 + \dots$$
+                $$= \frac{4}{10} + \frac{37}{1000} \left[ 1 + \frac{1}{100} + \frac{1}{10000} + \dots \right]$$
+                <p>The terms inside the bracket form an infinite G.P. with $a = 1, r = \frac{1}{100}$:</p>
+                $$S_\infty = \frac{1}{1 - \frac{1}{100}} = \frac{100}{99}$$
+                $$\therefore \text{Fraction} = \frac{4}{10} + \frac{37}{1000} \times \frac{100}{99} = \frac{4}{10} + \frac{37}{990} = \frac{396 + 37}{990} = \frac{433}{990}$$
+            </div>
+        </div>
+
+        <!-- SECTION 7 -->
+        <h2>7. Geometric Mean (G.M.)</h2>
+        <div class="definition-box">
+            <p><strong>Single Geometric Mean between $a$ and $b$:</strong></p>
+            <p>If $a, G, b$ are in G.P., then $G$ is called the <strong>Geometric Mean</strong> between $a$ and $b$.</p>
+            $$\frac{G}{a} = \frac{b}{G} \implies G^2 = ab \implies G = \sqrt{ab}$$
+        </div>
+
+        <div class="derivation-box">
+            <p><strong>Inserting $n$ Geometric Means ($G_1, G_2, \dots, G_n$) between $a$ and $b$:</strong></p>
+            <p>Let $a, G_1, G_2, G_3, \dots, G_n, b$ form a G.P. containing total $(n + 2)$ terms.</p>
+            <ul>
+                <li>First term $= a$, Last term $(n+2)^{\text{th}} = b$.</li>
+                <li>$b = a \cdot r^{(n+2)-1} = a \cdot r^{n+1} \implies r = \left(\frac{b}{a}\right)^{\frac{1}{n+1}}$.</li>
+                <li>$G_1 = a \cdot r$, $G_2 = a \cdot r^2$, $\dots$, $G_n = a \cdot r^n$.</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 8 -->
+        <h2>8. Step-by-Step Solved Master Examples & Interactive Chart</h2>
+
+        <!-- CHART.JS INTERACTIVE VISUALIZATION -->
+        <div class="chart-container">
+            <h4 style="text-align: center; margin-bottom: 10px; color: var(--purple-main);">Interactive Comparison: G.P. Exponential Growth vs A.P. Linear Growth</h4>
+            <canvas id="gpChart" width="550" height="260"></canvas>
+            <p style="font-size: 0.85rem; text-align: center; color: #666; margin-top: 8px;">
+                Comparing G.P. ($a=2, r=2 \implies 2, 4, 8, 16, 32, 64$) vs A.P. ($a=2, d=2 \implies 2, 4, 6, 8, 10, 12$).
+            </p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 1 (Finding Term Number):</strong> Which term of the G.P. $3, -6, 12, -24, \dots$ is $-384$?</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>First term $a = 3$, common ratio $r = \frac{-6}{3} = -2$.</p>
+                <p>Let $t_n = -384 \implies a \cdot r^{n-1} = -384$:</p>
+                $$3 \cdot (-2)^{n-1} = -384 \implies (-2)^{n-1} = -128$$
+                $$(-2)^{n-1} = (-2)^7 \implies n - 1 = 7 \implies n = 8$$
+                <p><strong>Answer:</strong> $-384$ is the <strong>$8^{\text{th}}$ term</strong>.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 2 (Finding G.P. from Two Given Terms):</strong> The $5^{\text{th}}$ term of a G.P. is $48$ and its $8^{\text{th}}$ term is $384$. Find the G.P.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>$t_5 = a r^4 = 48$ &nbsp; --- (i)</p>
+                <p>$t_8 = a r^7 = 384$ &nbsp; --- (ii)</p>
+                <p>Dividing (ii) by (i):</p>
+                $$\frac{a r^7}{a r^4} = \frac{384}{48} \implies r^3 = 8 \implies r = 2$$
+                <p>Substituting $r = 2$ in (i): $a(2^4) = 48 \implies 16a = 48 \implies a = 3$.</p>
+                <p><strong>Answer:</strong> The G.P. is <strong>$3, 6, 12, 24, 48, \dots$</strong></p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 3 (Term from the End):</strong> Find the $4^{\text{th}}$ term from the end of the G.P. $8, 4, 2, \dots, \frac{1}{128}$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Here common ratio $r = \frac{4}{8} = \frac{1}{2}$, last term $l = \frac{1}{128}$.</p>
+                <p>Using formula for $n^{\text{th}}$ term from end: $t_n^{\text{end}} = \frac{l}{r^{n-1}}$:</p>
+                $$t_4^{\text{end}} = \frac{1/128}{(1/2)^{4-1}} = \frac{1/128}{(1/2)^3} = \frac{1/128}{1/8} = \frac{8}{128} = \frac{1}{16}$$
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 4 (Infinite Sum Calculation):</strong> Find the sum to infinity of the G.P. $(\sqrt{2} + 1) + 1 + (\sqrt{2} - 1) + \dots$</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>First term $a = \sqrt{2} + 1$. Common ratio $r = \frac{1}{\sqrt{2} + 1} = \sqrt{2} - 1 < 1$.</p>
+                <p>Using $S_\infty = \frac{a}{1 - r}$:</p>
+                $$S_\infty = \frac{\sqrt{2} + 1}{1 - (\sqrt{2} - 1)} = \frac{\sqrt{2} + 1}{2 - \sqrt{2}} = \frac{\sqrt{2} + 1}{\sqrt{2}(\sqrt{2} - 1)} = \frac{(\sqrt{2} + 1)^2}{\sqrt{2}(2 - 1)} = \frac{2 + 1 + 2\sqrt{2}}{\sqrt{2}} = \frac{4 + 3\sqrt{2}}{2}$$
+            </div>
+        </div>
+
+        <!-- SECTION 9 -->
+        <h2>9. Quick Formula & Revision Matrix</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Concept</th>
+                    <th>Given Input</th>
+                    <th>Direct Formula</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Common Ratio ($r$)</strong></td>
+                    <td>Terms $t_n, t_{n-1}$</td>
+                    <td>$r = \frac{t_n}{t_{n-1}}$</td>
+                </tr>
+                <tr>
+                    <td><strong>$n^{\text{th}}$ Term ($t_n$)</strong></td>
+                    <td>$a, r, n$</td>
+                    <td>$t_n = a \cdot r^{n-1}$</td>
+                </tr>
+                <tr>
+                    <td><strong>$n^{\text{th}}$ Term from End</strong></td>
+                    <td>$l, r, n$</td>
+                    <td>$t_n^{\text{end}} = \frac{l}{r^{n-1}}$</td>
+                </tr>
+                <tr>
+                    <td><strong>Sum of $n$ Terms ($r > 1$)</strong></td>
+                    <td>$a, r, n$</td>
+                    <td>$S_n = \frac{a(r^n - 1)}{r - 1} = \frac{lr - a}{r - 1}$</td>
+                </tr>
+                <tr>
+                    <td><strong>Sum of $n$ Terms ($r < 1$)</strong></td>
+                    <td>$a, r, n$</td>
+                    <td>$S_n = \frac{a(1 - r^n)}{1 - r} = \frac{a - lr}{1 - r}$</td>
+                </tr>
+                <tr>
+                    <td><strong>Sum to Infinity ($S_\infty$)</strong></td>
+                    <td>$a, |r| < 1$</td>
+                    <td>$S_\infty = \frac{a}{1 - r}$</td>
+                </tr>
+                <tr>
+                    <td><strong>Single Geometric Mean</strong></td>
+                    <td>Two numbers $a, b$</td>
+                    <td>$G = \sqrt{ab}$</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- SECTION 10 -->
+        <h2>10. ICSE Board PYQs & High-Yield Practice Problems</h2>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2015</span>
+            <p><span class="q-tag">BOARD</span> The $4^{\text{th}}, 7^{\text{th}}$, and $10^{\text{th}}$ terms of a G.P. are $a, b, c$ respectively. Prove that $b^2 = ac$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2013</span>
+            <p><span class="q-tag">BOARD</span> The $4^{\text{th}}$ term of a G.P. is $16$ and the $7^{\text{th}}$ term is $128$. Find the first term, common ratio, and the sum of its first 10 terms.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2011</span>
+            <p><span class="q-tag">BOARD</span> Find three numbers in G.P. whose sum is $21$ and the sum of their squares is $189$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2008</span>
+            <p><span class="q-tag">BOARD</span> The sum of the first 3 terms of a G.P. is $\frac{13}{12}$ and their product is $-1$. Find the terms.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2001</span>
+            <p><span class="q-tag">BOARD</span> Insert three geometric means between $1$ and $256$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2000</span>
+            <p><span class="q-tag">BOARD</span> The second term of a G.P. is $9$ and the sum of its infinite terms is $48$. Find its first term and common ratio.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+
+        // Initialize Chart.js Diagram for G.P. vs A.P. Growth
+        window.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('gpChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Term 1', 'Term 2', 'Term 3', 'Term 4', 'Term 5', 'Term 6'],
+                        datasets: [
+                            {
+                                label: 'G.P. (a=2, r=2): 2, 4, 8, 16, 32, 64',
+                                data: [2, 4, 8, 16, 32, 64],
+                                borderColor: '#6a1b9a',
+                                backgroundColor: 'rgba(106, 27, 154, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'A.P. (a=2, d=2): 2, 4, 6, 8, 10, 12',
+                                data: [2, 4, 6, 8, 10, 12],
+                                borderColor: '#2e7d32',
+                                borderWidth: 2.5,
+                                fill: false,
+                                tension: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { family: 'Outfit', size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label.split(':')[0] + ': ' + context.raw;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Term Position (n)', font: { family: 'Outfit', weight: 'bold' } }
+                            },
+                            y: {
+                                title: { display: true, text: 'Term Value (tn)', font: { family: 'Outfit', weight: 'bold' } },
+                                min: 0,
+                                max: 70
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

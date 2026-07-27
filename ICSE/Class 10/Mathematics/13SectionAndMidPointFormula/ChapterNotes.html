@@ -1,1 +1,1187 @@
-﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 13: Section and Mid-Point Formula - Vardaan Master Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            chtml: {
+                scale: 1.05
+            }
+        };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --purple-main: #6a1b9a;
+            --purple-dark: #4a148c;
+            --purple-light: #7b1fa2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #fff;
+            color: #1a1a1a;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.75;
+        }
+
+        html {
+            transition: filter .3s;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--purple-main);
+            margin-bottom: .5rem;
+        }
+
+        .sub-header {
+            text-align: center;
+            color: #555;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--purple-main);
+            padding-bottom: .5rem;
+            color: var(--purple-main);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple-light);
+        }
+
+        h4 {
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #8e24aa;
+        }
+
+        p,
+        li {
+            margin-bottom: .8rem;
+            font-size: 1.05rem;
+        }
+
+        ul,
+        ol {
+            padding-left: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: .95rem;
+            display: table;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3e5f5;
+            color: var(--purple-dark);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .definition-box {
+            background: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .rule-box {
+            background: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .analysis-box {
+            background: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .derivation-box {
+            background: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .master-tip {
+            border: 2px dashed #d32f2f;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            background: #ffebee;
+            border-radius: 6px;
+        }
+
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            padding: 1.5rem;
+            margin: 1.8rem 0;
+            position: relative;
+            background: #fff;
+            border-radius: 4px;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .practice-box {
+            background: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: .75rem;
+            margin-right: 5px;
+            font-weight: 600;
+        }
+
+        .solved-example {
+            background: #f3e5f5;
+            border-left: 4px solid #7b1fa2;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .step-box {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        /* SVG & Graph Container Styling */
+        .svg-container {
+            text-align: center;
+            margin: 1.8rem 0;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.2rem;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .math-svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            position: relative;
+            max-width: 550px;
+            margin: 1.8rem auto;
+            background: #fff;
+            padding: 1.2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* MATHJAX NO-SCROLLBAR STYLING */
+        mjx-container,
+        mjx-container[jax="CHTML"][display="true"],
+        mjx-container * {
+            overflow: visible !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+
+        mjx-container::-webkit-scrollbar,
+        mjx-container *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        mjx-container {
+            display: inline !important;
+        }
+
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            margin: 0.5em 0;
+        }
+
+        .formula-box,
+        .practice-box,
+        .definition-box,
+        .rule-box,
+        .derivation-box,
+        .analysis-box,
+        .step-box,
+        .solved-example,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        table {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        @media(max-width:800px) {
+            .paper-sheet {
+                width: 95%;
+                padding: 15px;
+            }
+
+            table {
+                font-size: .8rem;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+
+            mjx-container[jax="CHTML"][display="true"] {
+                font-size: 0.85em !important;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image" alt="Watermark"></div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="icon-moon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Section and Mid-Point Formula</h1>
+        <p class="sub-header">ICSE Class 10 Mathematics — Chapter 13 Master Notes</p>
+
+        <!-- SECTION 1 -->
+        <h2>1. Introduction</h2>
+        <div class="definition-box">
+            <p>In Coordinate Geometry, for any two known points $A(x_1, y_1)$ and $B(x_2, y_2)$ in a Cartesian plane, we use specialized algebraic formulas to find:</p>
+            <ul>
+                <li>The distance between the two points: $AB = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$.</li>
+                <li>The coordinates of a point $P$ which divides the line segment $AB$ internally in a given ratio $m_1 : m_2$.</li>
+                <li>The coordinates of the mid-point of the line segment joining $A$ and $B$.</li>
+                <li>The coordinates of the centroid of a triangle formed by three given points.</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 2 -->
+        <h2>2. The Section Formula (Internal Division)</h2>
+        <p>To find the co-ordinates of a point $P(x, y)$ which divides the line segment joining $A(x_1, y_1)$ and $B(x_2, y_2)$ internally in a given ratio $m_1 : m_2$ (i.e. $AP : PB = m_1 : m_2$).</p>
+
+        <!-- SVG DIAGRAM 1: SECTION FORMULA DERIVATION -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 540 370" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/>
+                    </marker>
+                    <marker id="arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1565c0"/>
+                    </marker>
+                </defs>
+
+                <!-- Background grid lines -->
+                <rect x="0" y="0" width="540" height="370" fill="#fafafa" rx="6"/>
+
+                <!-- Axes -->
+                <line x1="50" y1="310" x2="510" y2="310" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                <line x1="80" y1="340" x2="80" y2="30" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                <text x="515" y="315" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#333">X</text>
+                <text x="75" y="22" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#333">Y</text>
+                <text x="65" y="328" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#333">O</text>
+
+                <!-- Points coordinates: A=(160, 230), P=(290, 150), B=(440, 60) -->
+                <!-- Main Line Segment AB -->
+                <line x1="160" y1="230" x2="440" y2="60" stroke="#6a1b9a" stroke-width="3"/>
+
+                <!-- Perpendiculars to X-axis -->
+                <line x1="160" y1="230" x2="160" y2="310" stroke="#888" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <line x1="290" y1="150" x2="290" y2="310" stroke="#888" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <line x1="440" y1="60" x2="440" y2="310" stroke="#888" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+                <!-- Horizontal Projections for Similar Triangles -->
+                <line x1="160" y1="230" x2="290" y2="230" stroke="#1565c0" stroke-width="1.5" stroke-dasharray="3,3"/>
+                <line x1="290" y1="150" x2="440" y2="150" stroke="#1565c0" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+                <!-- Right Angle Indicators -->
+                <rect x="280" y="220" width="10" height="10" fill="none" stroke="#1565c0" stroke-width="1"/>
+                <rect x="430" y="140" width="10" height="10" fill="none" stroke="#1565c0" stroke-width="1"/>
+
+                <!-- Points Circles -->
+                <circle cx="160" cy="230" r="5" fill="#c62828"/>
+                <circle cx="290" cy="150" r="5" fill="#2e7d32"/>
+                <circle cx="440" cy="60" r="5" fill="#c62828"/>
+
+                <circle cx="290" cy="230" r="3" fill="#1565c0"/>
+                <circle cx="440" cy="150" r="3" fill="#1565c0"/>
+
+                <!-- Point Labels (Non-overlapping) -->
+                <text x="148" y="234" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="end" fill="#c62828">A(x₁, y₁)</text>
+                
+                <rect x="250" y="115" width="80" height="22" fill="#fafafa" opacity="0.85" rx="4"/>
+                <text x="290" y="131" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#2e7d32">P(x, y)</text>
+                
+                <text x="452" y="64" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="start" fill="#c62828">B(x₂, y₂)</text>
+
+                <text x="298" y="244" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#1565c0">R</text>
+                <text x="448" y="164" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#1565c0">S</text>
+
+                <!-- Feet of perpendiculars -->
+                <text x="160" y="328" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#555">L</text>
+                <text x="290" y="328" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#555">M</text>
+                <text x="440" y="328" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#555">N</text>
+
+                <!-- Section Ratios Labels -->
+                <text x="215" y="178" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#6a1b9a">m₁</text>
+                <text x="355" y="95" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#6a1b9a">m₂</text>
+
+                <!-- Distance Labels -->
+                <text x="225" y="248" font-family="Outfit, sans-serif" font-size="12" fill="#1565c0">x - x₁</text>
+                <text x="365" y="168" font-family="Outfit, sans-serif" font-size="12" fill="#1565c0">x₂ - x</text>
+                <text x="300" y="195" font-family="Outfit, sans-serif" font-size="12" fill="#1565c0">y - y₁</text>
+                <text x="450" y="110" font-family="Outfit, sans-serif" font-size="12" fill="#1565c0">y₂ - y</text>
+
+                <!-- Subtitle / Title in SVG -->
+                <text x="270" y="355" font-family="Outfit, sans-serif" font-size="13" font-style="italic" text-anchor="middle" fill="#555">Fig 13.1: Geometric Derivation of Section Formula via Similar Triangles ΔAPR ~ ΔPBS</text>
+            </svg>
+        </div>
+
+        <div class="derivation-box">
+            <p><strong>Complete Geometric Proof / Derivation:</strong></p>
+            <p>Let $A(x_1, y_1)$ and $B(x_2, y_2)$ be the given points and $P(x, y)$ be the point dividing $AB$ internally in the ratio $m_1 : m_2$.</p>
+            <p>Draw perpendiculars $AL$, $PM$, and $BN$ onto the x-axis from points $A$, $P$, and $B$ respectively. Thus, $AL \parallel PM \parallel BN$.</p>
+            <p>From point $A$, draw $AR \perp PM$, and from $P$, draw $PS \perp BN$.</p>
+            <ul>
+                <li>$AR = LM = OM - OL = x - x_1$</li>
+                <li>$PR = PM - RM = PM - AL = y - y_1$</li>
+                <li>$PS = MN = ON - OM = x_2 - x$</li>
+                <li>$BS = BN - SN = BN - PM = y_2 - y$</li>
+            </ul>
+            <p>Since $\triangle APR$ and $\triangle PBS$ are similar triangles ($\angle APR = \angle PBS$ and $\angle ARP = \angle PSB = 90^\circ$):</p>
+            $$\frac{AR}{PS} = \frac{PR}{BS} = \frac{AP}{PB} = \frac{m_1}{m_2}$$
+            <p><strong>Equating X-coordinates ratio:</strong></p>
+            $$\frac{x - x_1}{x_2 - x} = \frac{m_1}{m_2}$$
+            $$m_2(x - x_1) = m_1(x_2 - x) \implies m_2 x - m_2 x_1 = m_1 x_2 - m_1 x$$
+            $$m_1 x + m_2 x = m_1 x_2 + m_2 x_1 \implies x(m_1 + m_2) = m_1 x_2 + m_2 x_1$$
+            $$\therefore x = \frac{m_1 x_2 + m_2 x_1}{m_1 + m_2}$$
+
+            <p><strong>Equating Y-coordinates ratio:</strong></p>
+            $$\frac{y - y_1}{y_2 - y} = \frac{m_1}{m_2}$$
+            $$m_2(y - y_1) = m_1(y_2 - y) \implies y(m_1 + m_2) = m_1 y_2 + m_2 y_1$$
+            $$\therefore y = \frac{m_1 y_2 + m_2 y_1}{m_1 + m_2}$$
+        </div>
+
+        <div class="formula-box">
+            <p><strong>Section Formula (Internal Division):</strong></p>
+            <p>The coordinates of point $P(x, y)$ dividing line joining $A(x_1, y_1)$ and $B(x_2, y_2)$ in ratio $m_1 : m_2$ are:</p>
+            <p style="text-align:center;font-size:1.25rem;font-weight:600;">
+                $$P(x, y) = \left( \frac{m_1 x_2 + m_2 x_1}{m_1 + m_2}, \frac{m_1 y_2 + m_2 y_1}{m_1 + m_2} \right)$$
+            </p>
+        </div>
+
+        <div class="rule-box">
+            <p><strong>Alternative $k : 1$ Method for Finding Ratio:</strong></p>
+            <p>When finding an unknown ratio in which a point divides a line segment, assume the ratio to be $k : 1$ (where $k = \frac{m_1}{m_2}$).</p>
+            <p>The coordinates of $P$ become:</p>
+            $$x = \frac{k x_2 + x_1}{k + 1}, \quad y = \frac{k y_2 + y_1}{k + 1}$$
+            <ul>
+                <li>If $k > 0$ (positive), the point divides the line segment <strong>internally</strong>.</li>
+                <li>If $k < 0$ (negative), the point divides the line segment <strong>externally</strong>.</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 3 -->
+        <h2>3. Division of Line Segments by Axes & Given Lines</h2>
+
+        <!-- SVG DIAGRAM 2: DIVISION BY AXES -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 520 300" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="520" height="300" fill="#fafafa" rx="6"/>
+                <!-- Axes -->
+                <line x1="40" y1="170" x2="480" y2="170" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                <line x1="200" y1="265" x2="200" y2="30" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                <text x="485" y="175" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#333">X</text>
+                <text x="195" y="22" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#333">Y</text>
+                <text x="182" y="190" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#333">O</text>
+
+                <!-- Line AB intersecting both axes -->
+                <!-- A(80, 50), B(420, 245) -->
+                <line x1="80" y1="50" x2="420" y2="245" stroke="#d32f2f" stroke-width="3"/>
+
+                <!-- Intersections -->
+                <!-- Y-axis intersection Q at x=200, y=119 -->
+                <!-- X-axis intersection P at y=170, x=289 -->
+                <circle cx="80" cy="50" r="6" fill="#6a1b9a"/>
+                <circle cx="420" cy="245" r="6" fill="#6a1b9a"/>
+                <circle cx="200" cy="119" r="6" fill="#1565c0"/>
+                <circle cx="289" cy="170" r="6" fill="#2e7d32"/>
+
+                <!-- Labels with clear non-overlapping positions -->
+                <!-- Point A label -->
+                <text x="70" y="42" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="end" fill="#6a1b9a">A(x₁, y₁)</text>
+                
+                <!-- Point B label -->
+                <text x="430" y="258" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="start" fill="#6a1b9a">B(x₂, y₂)</text>
+
+                <!-- Point Q (Y-axis cut): placed cleanly to the LEFT of Y-axis (x <= 185) -->
+                <text x="185" y="115" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="end" fill="#1565c0">Q(0, y) [Y-Axis Cut]</text>
+
+                <!-- Point P (X-axis cut): placed cleanly ABOVE X-axis (y=152) to the right of green dot (x=300) -->
+                <text x="300" y="152" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="start" fill="#2e7d32">P(x, 0) [X-Axis Cut]</text>
+
+                <text x="260" y="288" font-family="Outfit, sans-serif" font-size="13" font-style="italic" text-anchor="middle" fill="#555">Fig 13.2: Line Segment AB Intersecting X-axis at P(x,0) and Y-axis at Q(0,y)</text>
+            </svg>
+        </div>
+
+        <div class="analysis-box">
+            <p>In ICSE Board Exams, questions frequently ask for the ratio in which a line segment is divided by the x-axis, y-axis, or a given line:</p>
+            <ol>
+                <li><strong>Division by X-Axis:</strong>
+                    <br>Any point on the x-axis has ordinate $y = 0$.
+                    <br>Set $y = \frac{m_1 y_2 + m_2 y_1}{m_1 + m_2} = 0 \implies m_1 y_2 + m_2 y_1 = 0 \implies \frac{m_1}{m_2} = -\frac{y_1}{y_2}$.
+                </li>
+                <li><strong>Division by Y-Axis:</strong>
+                    <br>Any point on the y-axis has abscissa $x = 0$.
+                    <br>Set $x = \frac{m_1 x_2 + m_2 x_1}{m_1 + m_2} = 0 \implies m_1 x_2 + m_2 x_1 = 0 \implies \frac{m_1}{m_2} = -\frac{x_1}{x_2}$.
+                </li>
+                <li><strong>Division by Line $ax + by + c = 0$ (or $y = c$):</strong>
+                    <br>Express coordinates of point $P$ in terms of $k$ as $\left( \frac{k x_2 + x_1}{k+1}, \frac{k y_2 + y_1}{k+1} \right)$.
+                    <br>Substitute these coordinates into the given line equation to solve for $k$.
+                </li>
+            </ol>
+        </div>
+
+        <div class="master-tip">
+            <p><strong>Master Tip for Board Exams:</strong></p>
+            <p>Always draw a rough sketch showing line $AB$ and point $P$. Label $A(x_1, y_1)$ as the starting point and $B(x_2, y_2)$ as the ending point so that $m_1$ multiplies $x_2, y_2$ and $m_2$ multiplies $x_1, y_1$ without cross-over confusion!</p>
+        </div>
+
+        <!-- SECTION 4 -->
+        <h2>4. Points of Trisection</h2>
+
+        <!-- SVG DIAGRAM 3: TRISECTION -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 520 140" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="520" height="140" fill="#fafafa" rx="6"/>
+                <!-- Line Segment AB -->
+                <line x1="50" y1="65" x2="470" y2="65" stroke="#333" stroke-width="3"/>
+
+                <!-- Points A, P, Q, B -->
+                <!-- Distances: 420px total -> 140px each -->
+                <!-- A=50, P=190, Q=330, B=470 -->
+                <circle cx="50" cy="65" r="6" fill="#6a1b9a"/>
+                <circle cx="190" cy="65" r="6" fill="#1565c0"/>
+                <circle cx="330" cy="65" r="6" fill="#1565c0"/>
+                <circle cx="470" cy="65" r="6" fill="#6a1b9a"/>
+
+                <!-- Tick marks for equal parts -->
+                <line x1="120" y1="57" x2="120" y2="73" stroke="#d32f2f" stroke-width="2"/>
+                <line x1="260" y1="57" x2="260" y2="73" stroke="#d32f2f" stroke-width="2"/>
+                <line x1="400" y1="57" x2="400" y2="73" stroke="#d32f2f" stroke-width="2"/>
+
+                <!-- Labels -->
+                <text x="50" y="42" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#6a1b9a">A(x₁, y₁)</text>
+                <text x="190" y="42" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1565c0">P (Ratio 1 : 2)</text>
+                <text x="330" y="42" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1565c0">Q (Ratio 2 : 1)</text>
+                <text x="470" y="42" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#6a1b9a">B(x₂, y₂)</text>
+
+                <!-- Equal Part Labels -->
+                <text x="120" y="92" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#555">AP = 1 part</text>
+                <text x="260" y="92" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#555">PQ = 1 part</text>
+                <text x="400" y="92" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#555">QB = 1 part</text>
+
+                <text x="260" y="125" font-family="Outfit, sans-serif" font-size="13" font-style="italic" text-anchor="middle" fill="#555">Fig 13.3: Points of Trisection P and Q Dividing AB into 3 Equal Parts (AP = PQ = QB)</text>
+            </svg>
+        </div>
+
+        <div class="definition-box">
+            <p>If points $P$ and $Q$ lie on line segment $AB$ such that $AP = PQ = QB$, then $P$ and $Q$ are called the <strong>points of trisection</strong> of line segment $AB$.</p>
+            <ul>
+                <li>Point $P$ divides $AB$ internally in ratio <strong>$1 : 2$</strong>.</li>
+                <li>Point $Q$ divides $AB$ internally in ratio <strong>$2 : 1$</strong> (or $Q$ is the midpoint of $PB$).</li>
+            </ul>
+        </div>
+
+        <div class="formula-box">
+            <p><strong>Trisection Coordinates Formulas:</strong></p>
+            <p>For $A(x_1, y_1)$ and $B(x_2, y_2)$:</p>
+            $$P = \left( \frac{1 \cdot x_2 + 2 \cdot x_1}{1 + 2}, \frac{1 \cdot y_2 + 2 \cdot y_1}{1 + 2} \right) = \left( \frac{x_2 + 2x_1}{3}, \frac{y_2 + 2y_1}{3} \right)$$
+            $$Q = \left( \frac{2 \cdot x_2 + 1 \cdot x_1}{2 + 1}, \frac{2 \cdot y_2 + 1 \cdot y_1}{2 + 1} \right) = \left( \frac{2x_2 + x_1}{3}, \frac{2y_2 + y_1}{3} \right)$$
+        </div>
+
+        <!-- SECTION 5 -->
+        <h2>5. The Mid-Point Formula</h2>
+        <p>The mid-point $M(x, y)$ of line segment joining $A(x_1, y_1)$ and $B(x_2, y_2)$ divides $AB$ in equal ratio $m_1 : m_2 = 1 : 1$.</p>
+
+        <!-- SVG DIAGRAM 4: MIDPOINT & PARALLELOGRAM DIAGONALS -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 540 240" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="540" height="240" fill="#fafafa" rx="6"/>
+
+                <!-- PANEL 1: Line Midpoint -->
+                <g transform="translate(10, 10)">
+                    <line x1="30" y1="110" x2="220" y2="110" stroke="#333" stroke-width="3"/>
+                    <circle cx="30" cy="110" r="5" fill="#6a1b9a"/>
+                    <circle cx="125" cy="110" r="5" fill="#2e7d32"/>
+                    <circle cx="220" cy="110" r="5" fill="#6a1b9a"/>
+
+                    <!-- Ticks for 1:1 -->
+                    <line x1="75" y1="102" x2="75" y2="118" stroke="#d32f2f" stroke-width="2"/>
+                    <line x1="170" y1="102" x2="170" y2="118" stroke="#d32f2f" stroke-width="2"/>
+
+                    <text x="30" y="90" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#6a1b9a">A(x₁, y₁)</text>
+                    <text x="125" y="90" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#2e7d32">M(x, y)</text>
+                    <text x="220" y="90" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#6a1b9a">B(x₂, y₂)</text>
+
+                    <text x="125" y="135" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#555">Ratio 1 : 1</text>
+                    <text x="125" y="200" font-family="Outfit, sans-serif" font-size="12" font-style="italic" text-anchor="middle" fill="#333">Mid-Point of Line Segment</text>
+                </g>
+
+                <!-- Separator line -->
+                <line x1="260" y1="20" x2="260" y2="220" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+                <!-- PANEL 2: Parallelogram Diagonals -->
+                <g transform="translate(270, 10)">
+                    <!-- Parallelogram ABCD -->
+                    <!-- A=(40, 170), B=(150, 170), C=(220, 50), D=(110, 50) -->
+                    <polygon points="40,170 150,170 220,50 110,50" fill="none" stroke="#6a1b9a" stroke-width="2.5"/>
+
+                    <!-- Diagonals AC and BD -->
+                    <line x1="40" y1="170" x2="220" y2="50" stroke="#1565c0" stroke-width="2" stroke-dasharray="4,4"/>
+                    <line x1="150" y1="170" x2="110" y2="50" stroke="#d32f2f" stroke-width="2" stroke-dasharray="4,4"/>
+
+                    <!-- Intersection M -->
+                    <!-- Midpoint = ((40+220)/2, (170+50)/2) = (130, 110) -->
+                    <circle cx="130" cy="110" r="5" fill="#2e7d32"/>
+
+                    <!-- Vertex Labels -->
+                    <text x="25" y="185" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#6a1b9a">A</text>
+                    <text x="160" y="185" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#6a1b9a">B</text>
+                    <text x="230" y="45" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#6a1b9a">C</text>
+                    <text x="95" y="45" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#6a1b9a">D</text>
+
+                    <!-- Point M Label with clean background backdrop pill -->
+                    <rect x="138" y="98" width="130" height="22" fill="#fafafa" opacity="0.92" rx="4"/>
+                    <text x="142" y="114" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#2e7d32">M (Common Midpoint)</text>
+                    <text x="130" y="200" font-family="Outfit, sans-serif" font-size="12" font-style="italic" text-anchor="middle" fill="#333">Parallelogram Diagonals Bisect</text>
+                </g>
+            </svg>
+        </div>
+
+        <div class="derivation-box">
+            <p>Substituting $m_1 = 1$ and $m_2 = 1$ in the Section Formula:</p>
+            $$x = \frac{1 \cdot x_2 + 1 \cdot x_1}{1 + 1} = \frac{x_1 + x_2}{2}$$
+            $$y = \frac{1 \cdot y_2 + 1 \cdot y_1}{1 + 1} = \frac{y_1 + y_2}{2}$$
+        </div>
+
+        <div class="formula-box">
+            <p><strong>Mid-Point Formula:</strong></p>
+            <p style="text-align:center;font-size:1.3rem;font-weight:600;">
+                $$M(x, y) = \left( \frac{x_1 + x_2}{2}, \frac{y_1 + y_2}{2} \right)$$
+            </p>
+        </div>
+
+        <div class="rule-box">
+            <p><strong>Key Geometrical Applications of Mid-Point Formula:</strong></p>
+            <ol>
+                <li><strong>Diagonals of a Parallelogram (Rectangle, Rhombus, Square):</strong>
+                    <br>The diagonals of a parallelogram bisect each other.
+                    $$\text{Mid-point of diagonal } AC = \text{Mid-point of diagonal } BD$$
+                    This property is heavily used to find the missing fourth vertex of a quadrilateral!
+                </li>
+                <li><strong>Circle Diameter:</strong>
+                    <br>The center $C(x, y)$ of a circle is the mid-point of any diameter $AB$.
+                    $$C = \left( \frac{x_A + x_B}{2}, \frac{y_A + y_B}{2} \right)$$
+                </li>
+                <li><strong>Line Intercepts between Axes:</strong>
+                    <br>If a line meets the x-axis at $A(a, 0)$ and y-axis at $B(0, b)$, then the midpoint of $AB$ is $\left(\frac{a}{2}, \frac{b}{2}\right)$.
+                </li>
+            </ol>
+        </div>
+
+        <!-- SECTION 6 -->
+        <h2>6. Centroid of a Triangle</h2>
+
+        <!-- SVG DIAGRAM 5: CENTROID OF TRIANGLE -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 480 320" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="480" height="320" fill="#fafafa" rx="6"/>
+
+                <!-- Triangle ABC: A(240, 35), B(70, 260), C(410, 260) -->
+                <polygon points="240,35 70,260 410,260" fill="none" stroke="#6a1b9a" stroke-width="3"/>
+
+                <!-- Midpoints D of BC=(240, 260), E of AC=(325, 147.5), F of AB=(155, 147.5) -->
+                <!-- Medians AD, BE, CF -->
+                <line x1="240" y1="35" x2="240" y2="260" stroke="#d32f2f" stroke-width="2"/>
+                <line x1="70" y1="260" x2="325" y2="147.5" stroke="#1565c0" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <line x1="410" y1="260" x2="155" y2="147.5" stroke="#1565c0" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+                <!-- Centroid G at (240, 185) -->
+                <circle cx="240" cy="185" r="6" fill="#2e7d32"/>
+
+                <!-- Midpoint dots -->
+                <circle cx="240" cy="260" r="4" fill="#d32f2f"/>
+                <circle cx="325" cy="147.5" r="4" fill="#1565c0"/>
+                <circle cx="155" cy="147.5" r="4" fill="#1565c0"/>
+
+                <!-- Vertex Dots -->
+                <circle cx="240" cy="35" r="5" fill="#6a1b9a"/>
+                <circle cx="70" cy="260" r="5" fill="#6a1b9a"/>
+                <circle cx="410" cy="260" r="5" fill="#6a1b9a"/>
+
+                <!-- Labels -->
+                <text x="240" y="22" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#6a1b9a">A(x₁, y₁)</text>
+                <text x="45" y="275" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#6a1b9a">B(x₂, y₂)</text>
+                <text x="418" y="275" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#6a1b9a">C(x₃, y₃)</text>
+
+                <!-- Midpoint labels -->
+                <text x="240" y="280" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#d32f2f">D (Midpoint of BC)</text>
+                <text x="338" y="145" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#1565c0">E</text>
+                <text x="138" y="145" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#1565c0">F</text>
+
+                <!-- Centroid Label with background backdrop pill -->
+                <rect x="250" y="172" width="88" height="22" fill="#fafafa" opacity="0.9" rx="4"/>
+                <text x="254" y="188" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#2e7d32">G (Centroid)</text>
+
+                <!-- Ratio labels on Median AD -->
+                <text x="225" y="115" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#d32f2f">2</text>
+                <text x="225" y="225" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#d32f2f">1</text>
+
+                <text x="240" y="308" font-family="Outfit, sans-serif" font-size="13" font-style="italic" text-anchor="middle" fill="#555">Fig 13.4: Intersection of Medians at Centroid G (AG : GD = 2 : 1)</text>
+            </svg>
+        </div>
+
+        <div class="definition-box">
+            <p><strong>Definition:</strong> The point of intersection of the three medians of a triangle is called its <strong>Centroid</strong> ($G$).</p>
+            <p><strong>Property:</strong> The centroid divides each median internally in the ratio <strong>$2 : 1$</strong> measured from the vertex to the midpoint of the opposite side.</p>
+        </div>
+
+        <div class="derivation-box">
+            <p><strong>Derivation of Centroid Formula:</strong></p>
+            <p>Let $A(x_1, y_1)$, $B(x_2, y_2)$, and $C(x_3, y_3)$ be vertices of $\triangle ABC$.</p>
+            <p>Let $D$ be the midpoint of side $BC$. By Mid-Point Formula:</p>
+            $$D = \left( \frac{x_2 + x_3}{2}, \frac{y_2 + y_3}{2} \right)$$
+            <p>The centroid $G(x, y)$ lies on median $AD$ and divides $AD$ in ratio $AG : GD = 2 : 1$.</p>
+            <p>Applying Section Formula on segment $AD$ with ratio $2 : 1$:</p>
+            $$x = \frac{2 \left(\frac{x_2 + x_3}{2}\right) + 1 \cdot x_1}{2 + 1} = \frac{x_2 + x_3 + x_1}{3} = \frac{x_1 + x_2 + x_3}{3}$$
+            $$y = \frac{2 \left(\frac{y_2 + y_3}{2}\right) + 1 \cdot y_1}{2 + 1} = \frac{y_2 + y_3 + y_1}{3} = \frac{y_1 + y_2 + y_3}{3}$$
+        </div>
+
+        <div class="formula-box">
+            <p><strong>Centroid Formula:</strong></p>
+            <p style="text-align:center;font-size:1.3rem;font-weight:600;">
+                $$G(x, y) = \left( \frac{x_1 + x_2 + x_3}{3}, \frac{y_1 + y_2 + y_3}{3} \right)$$
+            </p>
+        </div>
+
+        <div class="master-tip">
+            <p><strong>Important Theorem to Remember:</strong></p>
+            <p>The centroid of the triangle formed by joining the midpoints of the sides of $\triangle ABC$ is <strong>identical</strong> to the centroid of $\triangle ABC$.</p>
+        </div>
+
+        <!-- SECTION 7 -->
+        <h2>7. Step-by-Step Solved Master Examples & Interactive Chart</h2>
+
+        <!-- CHART.JS INTERACTIVE VISUALIZATION -->
+        <div class="chart-container">
+            <h4 style="text-align: center; margin-bottom: 10px; color: var(--purple-main);">Interactive Coordinate Plot: Section Division (Example 2)</h4>
+            <canvas id="sectionChart" width="500" height="260"></canvas>
+            <p style="font-size: 0.85rem; text-align: center; color: #666; margin-top: 8px;">
+                Visualizing line segment joining $A(2, 1)$ and $B(7, 6)$ divided by $P(5, 4)$ in ratio $3 : 2$.
+            </p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 1 (Finding Dividing Point):</strong> Find the co-ordinates of point $P$ which divides the line joining $A(4, -5)$ and $B(6, 3)$ in the ratio $2 : 5$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Here $(x_1, y_1) = (4, -5)$, $(x_2, y_2) = (6, 3)$, and $m_1 : m_2 = 2 : 5$.</p>
+                <p>Using Section Formula:</p>
+                $$x = \frac{m_1 x_2 + m_2 x_1}{m_1 + m_2} = \frac{2 \times 6 + 5 \times 4}{2 + 5} = \frac{12 + 20}{7} = \frac{32}{7}$$
+                $$y = \frac{m_1 y_2 + m_2 y_1}{m_1 + m_2} = \frac{2 \times 3 + 5 \times (-5)}{2 + 5} = \frac{6 - 25}{7} = \frac{-19}{7}$$
+                <p><strong>Answer:</strong> $P = \left( \frac{32}{7}, \frac{-19}{7} \right)$</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 2 (Finding Ratio):</strong> Find the ratio in which the point $(5, 4)$ divides the line joining points $(2, 1)$ and $(7, 6)$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Let the required ratio be $m_1 : m_2$.</p>
+                <p>Using section formula for x-coordinate:</p>
+                $$x = \frac{m_1 x_2 + m_2 x_1}{m_1 + m_2} \implies 5 = \frac{m_1 \times 7 + m_2 \times 2}{m_1 + m_2}$$
+                $$5(m_1 + m_2) = 7m_1 + 2m_2 \implies 5m_1 + 5m_2 = 7m_1 + 2m_2$$
+                $$3m_2 = 2m_1 \implies \frac{m_1}{m_2} = \frac{3}{2}$$
+                <p><strong>Answer:</strong> The required ratio is <strong>$3 : 2$</strong>.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 3 (Division by X-axis):</strong> In what ratio is the line joining the points $(4, 2)$ and $(3, -5)$ divided by the x-axis? Also, find the co-ordinates of the point of intersection.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Let the ratio be $k : 1$. Since the point lies on x-axis, its coordinates are $P(x, 0)$.</p>
+                <p>Here $(x_1, y_1) = (4, 2)$ and $(x_2, y_2) = (3, -5)$.</p>
+                <p>Using section formula for y-coordinate:</p>
+                $$y = \frac{k y_2 + y_1}{k + 1} \implies 0 = \frac{k(-5) + 2}{k + 1} \implies -5k + 2 = 0 \implies k = \frac{2}{5}$$
+                <p>Thus, ratio $m_1 : m_2 = 2 : 5$.</p>
+                <p>Now finding x-coordinate:</p>
+                $$x = \frac{m_1 x_2 + m_2 x_1}{m_1 + m_2} = \frac{2(3) + 5(4)}{2 + 5} = \frac{6 + 20}{7} = \frac{26}{7}$$
+                <p><strong>Answer:</strong> Ratio $= 2 : 5$, Point of intersection $= \left( \frac{26}{7}, 0 \right)$.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 4 (Division by horizontal line $y=3$):</strong> Calculate the ratio in which the line joining $(4, 6)$ and $(-5, -4)$ is divided by the line $y = 3$. Also, find the co-ordinates of the point of intersection.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Every point on line $y = 3$ is of the form $(x, 3)$.</p>
+                <p>Using section formula for y-coordinate with ratio $m_1 : m_2$:</p>
+                $$3 = \frac{m_1(-4) + m_2(6)}{m_1 + m_2} \implies 3m_1 + 3m_2 = -4m_1 + 6m_2$$
+                $$7m_1 = 3m_2 \implies \frac{m_1}{m_2} = \frac{3}{7}$$
+                <p>Ratio is $3 : 7$. Now calculating x-coordinate:</p>
+                $$x = \frac{3(-5) + 7(4)}{3 + 7} = \frac{-15 + 28}{10} = \frac{13}{10}$$
+                <p><strong>Answer:</strong> Ratio $= 3 : 7$, Point $= \left(\frac{13}{10}, 3\right)$.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 5 (Trisection Calculation):</strong> Find the co-ordinates of the points of trisection of the line segment joining $A(6, -2)$ and $B(-8, 10)$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Let $P$ and $Q$ be points of trisection ($AP = PQ = QB$).</p>
+                <p><strong>For point $P$ ($1 : 2$ ratio):</strong></p>
+                $$x_P = \frac{1(-8) + 2(6)}{1 + 2} = \frac{-8 + 12}{3} = \frac{4}{3}$$
+                $$y_P = \frac{1(10) + 2(-2)}{1 + 2} = \frac{10 - 4}{3} = 2$$
+                $$\implies P = \left( \frac{4}{3}, 2 \right)$$
+                <p><strong>For point $Q$ ($2 : 1$ ratio):</strong></p>
+                $$x_Q = \frac{2(-8) + 1(6)}{2 + 1} = \frac{-16 + 6}{3} = -\frac{10}{3}$$
+                $$y_Q = \frac{2(10) + 1(-2)}{2 + 1} = \frac{20 - 2}{3} = 6$$
+                $$\implies Q = \left( -\frac{10}{3}, 6 \right)$$
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 6 (Mid-Point on Axes Intercept):</strong> The mid-point of line segment $AB$ shown in a diagram is $(-3, 5)$ where $A$ lies on the x-axis and $B$ lies on the y-axis. Find the coordinates of $A$ and $B$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Let $A = (x, 0)$ and $B = (0, y)$.</p>
+                <p>Mid-point of $AB = \left( \frac{x + 0}{2}, \frac{0 + y}{2} \right) = \left( \frac{x}{2}, \frac{y}{2} \right)$.</p>
+                <p>Given mid-point $= (-3, 5)$:</p>
+                $$\frac{x}{2} = -3 \implies x = -6$$
+                $$\frac{y}{2} = 5 \implies y = 10$$
+                <p><strong>Answer:</strong> $A = (-6, 0)$ and $B = (0, 10)$.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 7 (Missing Fourth Vertex of Parallelogram):</strong> $A(14, -2)$, $B(6, -2)$, and $D(8, 2)$ are three vertices of a parallelogram $ABCD$. Find the co-ordinates of the fourth vertex $C(x, y)$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Diagonals of parallelogram $ABCD$ are $AC$ and $BD$. They bisect each other, so:</p>
+                $$\text{Mid-point of } AC = \text{Mid-point of } BD$$
+                $$\left( \frac{14 + x}{2}, \frac{-2 + y}{2} \right) = \left( \frac{6 + 8}{2}, \frac{-2 + 2}{2} \right)$$
+                $$\left( \frac{14 + x}{2}, \frac{-2 + y}{2} \right) = \left( \frac{14}{2}, \frac{0}{2} \right) = (7, 0)$$
+                <p>Equating components:</p>
+                $$\frac{14 + x}{2} = 7 \implies 14 + x = 14 \implies x = 0$$
+                $$\frac{-2 + y}{2} = 0 \implies -2 + y = 0 \implies y = 2$$
+                <p><strong>Answer:</strong> Vertex $C = (0, 2)$.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 8 (Reconstructing Triangle Vertices from Side Midpoints):</strong> In $\triangle ABC$, $P(-2, 5)$ is mid-point of $AB$, $Q(2, 4)$ is mid-point of $BC$, and $R(-1, 2)$ is mid-point of $AC$. Calculate vertices $A, B, C$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Let $A(x_1, y_1)$, $B(x_2, y_2)$, $C(x_3, y_3)$.</p>
+                <p>Forming x-coordinate equations:</p>
+                $$\frac{x_1 + x_2}{2} = -2 \implies x_1 + x_2 = -4 \quad \text{--- (i)}$$
+                $$\frac{x_2 + x_3}{2} = 2 \implies x_2 + x_3 = 4 \quad \text{--- (ii)}$$
+                $$\frac{x_1 + x_3}{2} = -1 \implies x_1 + x_3 = -2 \quad \text{--- (iii)}$$
+                <p>Adding (i), (ii), (iii):</p>
+                $$2(x_1 + x_2 + x_3) = -4 + 4 - 2 = -2 \implies x_1 + x_2 + x_3 = -1 \quad \text{--- (iv)}$$
+                <p>Subtracting (ii) from (iv): $x_1 = -1 - 4 = -5$.</p>
+                <p>Subtracting (iii) from (iv): $x_2 = -1 - (-2) = 1$.</p>
+                <p>Subtracting (i) from (iv): $x_3 = -1 - (-4) = 3$.</p>
+                
+                <p>Forming y-coordinate equations similarly:</p>
+                $$y_1 + y_2 = 10, \quad y_2 + y_3 = 8, \quad y_1 + y_3 = 4$$
+                $$2(y_1 + y_2 + y_3) = 22 \implies y_1 + y_2 + y_3 = 11$$
+                $$y_1 = 11 - 8 = 3, \quad y_2 = 11 - 4 = 7, \quad y_3 = 11 - 10 = 1$$
+                <p><strong>Answer:</strong> $A(-5, 3)$, $B(1, 7)$, and $C(3, 1)$.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 9 (Centroid Calculation & Side Length):</strong> $\triangle ABC$ has centroid $G(4, 3)$. If $A(1, 3)$, $B(4, b)$, and $C(a, 1)$, find $a$ and $b$, and calculate side length $BC$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Using Centroid formula $G = \left(\frac{x_1 + x_2 + x_3}{3}, \frac{y_1 + y_2 + y_3}{3}\right)$:</p>
+                $$\frac{1 + 4 + a}{3} = 4 \implies 5 + a = 12 \implies a = 7$$
+                $$\frac{3 + b + 1}{3} = 3 \implies 4 + b = 9 \implies b = 5$$
+                <p>Thus, $B = (4, 5)$ and $C = (7, 1)$.</p>
+                <p>Now calculating side length $BC$ using Distance formula:</p>
+                $$BC = \sqrt{(7 - 4)^2 + (1 - 5)^2} = \sqrt{3^2 + (-4)^2} = \sqrt{9 + 16} = \sqrt{25} = 5 \text{ units.}$$
+            </div>
+        </div>
+
+        <!-- SECTION 8 -->
+        <h2>8. Quick Formula & Revision Matrix</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Concept</th>
+                    <th>Given Parameters</th>
+                    <th>Standard Formula / Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Section Formula (Internal)</strong></td>
+                    <td>$A(x_1,y_1), B(x_2,y_2)$, Ratio $m_1:m_2$</td>
+                    <td>$P = \left( \frac{m_1 x_2 + m_2 x_1}{m_1 + m_2}, \frac{m_1 y_2 + m_2 y_1}{m_1 + m_2} \right)$</td>
+                </tr>
+                <tr>
+                    <td><strong>Ratio Method ($k:1$)</strong></td>
+                    <td>Point $P(x,y)$, Vertices $A, B$</td>
+                    <td>$x = \frac{k x_2 + x_1}{k+1}, \quad y = \frac{k y_2 + y_1}{k+1}$</td>
+                </tr>
+                <tr>
+                    <td><strong>Mid-Point Formula</strong></td>
+                    <td>Ratio $1:1$, Vertices $A, B$</td>
+                    <td>$M = \left( \frac{x_1 + x_2}{2}, \frac{y_1 + y_2}{2} \right)$</td>
+                </tr>
+                <tr>
+                    <td><strong>Trisection Points</strong></td>
+                    <td>Ratio $1:2$ for P, $2:1$ for Q</td>
+                    <td>$P = \left(\frac{x_2+2x_1}{3}, \frac{y_2+2y_1}{3}\right), \quad Q = \left(\frac{2x_2+x_1}{3}, \frac{2y_2+y_1}{3}\right)$</td>
+                </tr>
+                <tr>
+                    <td><strong>Parallelogram Vertex</strong></td>
+                    <td>Vertices $A, B, C, D$</td>
+                    <td>$\text{Midpoint of } AC = \text{Midpoint of } BD$</td>
+                </tr>
+                <tr>
+                    <td><strong>Centroid of Triangle</strong></td>
+                    <td>Vertices $A, B, C$</td>
+                    <td>$G = \left( \frac{x_1 + x_2 + x_3}{3}, \frac{y_1 + y_2 + y_3}{3} \right)$</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- SECTION 9 -->
+        <h2>9. ICSE Board PYQs & High-Yield Practice Problems</h2>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2023</span>
+            <p><span class="q-tag">BOARD</span> The line segment joining $A(-5, 8)$ and $B(10, -4)$ is trisected by the coordinate axes. Find the coordinates of the points of trisection.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2014</span>
+            <p><span class="q-tag">BOARD</span> Calculate the ratio in which the line joining $A(-4, 2)$ and $B(3, 6)$ is divided by point $P(x, 3)$. Also, find $x$ and the length of $AP$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2013</span>
+            <p><span class="q-tag">BOARD</span> $A(-4, 2)$ and $B(8, -3)$ are given points. $P$ is a point on $AB$ such that $AP : PB = 1 : 2$. Find the coordinates of $A$ and $B$ if $P$ is on the x-axis.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2012</span>
+            <p><span class="q-tag">BOARD</span> Given a line segment $AB$ joining $A(-4, 6)$ and $B(8, -3)$. Find:</p>
+            <ul>
+                <li>(i) The ratio in which $AB$ is divided by the y-axis.</li>
+                <li>(ii) The coordinates of the point of intersection.</li>
+                <li>(iii) The length of segment $AB$.</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2011</span>
+            <p><span class="q-tag">BOARD</span> Triangle $ABC$ has centroid $G(4, 3)$. If $A(1, 3)$, $B(4, b)$, and $C(a, 1)$, find $a$ and $b$, and the length of side $BC$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2008</span>
+            <p><span class="q-tag">BOARD</span> Find the ratio in which the line segment joining $A(-4, 3)$ and $B(8, -6)$ is divided by the x-axis.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2006</span>
+            <p><span class="q-tag">BOARD</span> The line segment joining $A(2, 3)$ and $B(6, -5)$ is intercepted by the x-axis at point $K$. Write down the ordinate of point $K$. Hence, find the ratio in which $K$ divides $AB$ and the coordinates of $K$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2004</span>
+            <p><span class="q-tag">BOARD</span> $P(-4, 5)$ and $Q(3, 2)$ intersect the y-axis at point $R$. $PM$ and $QN$ are perpendiculars from $P$ and $Q$ onto the x-axis. Find:</p>
+            <ul>
+                <li>(i) The ratio $PR : RQ$.</li>
+                <li>(ii) The coordinates of $R$.</li>
+                <li>(iii) The area of quadrilateral $PMNQ$.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+
+        // Initialize Chart.js Diagram
+        window.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('sectionChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Line Segment AB',
+                                data: [
+                                    { x: 2, y: 1 },
+                                    { x: 7, y: 6 }
+                                ],
+                                showLine: true,
+                                borderColor: '#6a1b9a',
+                                strokeWidth: 3,
+                                backgroundColor: '#6a1b9a',
+                                pointRadius: 6,
+                                pointHoverRadius: 8
+                            },
+                            {
+                                label: 'Dividing Point P(5, 4)',
+                                data: [{ x: 5, y: 4 }],
+                                backgroundColor: '#2e7d32',
+                                pointRadius: 8,
+                                pointHoverRadius: 10
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { family: 'Outfit', size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': (' + context.raw.x + ', ' + context.raw.y + ')';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'X-axis', font: { family: 'Outfit', weight: 'bold' } },
+                                min: 0,
+                                max: 8
+                            },
+                            y: {
+                                title: { display: true, text: 'Y-axis', font: { family: 'Outfit', weight: 'bold' } },
+                                min: 0,
+                                max: 7
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

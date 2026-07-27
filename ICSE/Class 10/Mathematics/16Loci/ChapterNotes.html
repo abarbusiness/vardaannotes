@@ -1,1 +1,971 @@
-﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 16: Loci - Vardaan Master Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            chtml: {
+                scale: 1.05
+            }
+        };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --purple-main: #6a1b9a;
+            --purple-dark: #4a148c;
+            --purple-light: #7b1fa2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #fff;
+            color: #1a1a1a;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.75;
+        }
+
+        html {
+            transition: filter .3s;
+        }
+
+        html.dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .watermark-image {
+            width: 600px;
+            max-width: 80%;
+            opacity: 0.05;
+        }
+
+        .paper-sheet {
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            z-index: 10;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg);
+            background: #e0e0e0;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--purple-main);
+            margin-bottom: .5rem;
+        }
+
+        .sub-header {
+            text-align: center;
+            color: #555;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--purple-main);
+            padding-bottom: .5rem;
+            color: var(--purple-main);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--purple-light);
+        }
+
+        h4 {
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #8e24aa;
+        }
+
+        p,
+        li {
+            margin-bottom: .8rem;
+            font-size: 1.05rem;
+        }
+
+        ul,
+        ol {
+            padding-left: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: .95rem;
+            display: table;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3e5f5;
+            color: var(--purple-dark);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .definition-box {
+            background: var(--yellow-bg);
+            border-left: 5px solid var(--yellow-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .rule-box {
+            background: var(--blue-bg);
+            border-left: 5px solid var(--blue-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .analysis-box {
+            background: var(--pink-bg);
+            border-left: 5px solid var(--pink-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .derivation-box {
+            background: var(--green-bg);
+            border-left: 5px solid var(--green-border);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .master-tip {
+            border: 2px dashed #d32f2f;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            background: #ffebee;
+            border-radius: 6px;
+        }
+
+        .formula-box {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            padding: 1.5rem;
+            margin: 1.8rem 0;
+            position: relative;
+            background: #fff;
+            border-radius: 4px;
+        }
+
+        .formula-box::after {
+            content: "FORMULA";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .practice-box {
+            background: #fff8e1;
+            border: 2px solid #ff6f00;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .practice-header {
+            font-weight: 700;
+            color: #d35400;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+            border-bottom: 1px dashed #d35400;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .q-tag {
+            background: #d35400;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: .75rem;
+            margin-right: 5px;
+            font-weight: 600;
+        }
+
+        .solved-example {
+            background: #f3e5f5;
+            border-left: 4px solid #7b1fa2;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .step-box {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        /* SVG & Graph Container Styling */
+        .svg-container {
+            text-align: center;
+            margin: 1.8rem 0;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.2rem;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .math-svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            position: relative;
+            max-width: 580px;
+            margin: 1.8rem auto;
+            background: #fff;
+            padding: 1.2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* MATHJAX NO-SCROLLBAR STYLING */
+        mjx-container,
+        mjx-container[jax="CHTML"][display="true"],
+        mjx-container * {
+            overflow: visible !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+
+        mjx-container::-webkit-scrollbar,
+        mjx-container *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        mjx-container {
+            display: inline !important;
+        }
+
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            margin: 0.5em 0;
+        }
+
+        .formula-box,
+        .practice-box,
+        .definition-box,
+        .rule-box,
+        .derivation-box,
+        .analysis-box,
+        .step-box,
+        .solved-example,
+        .master-tip {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        table {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        @media(max-width:800px) {
+            .paper-sheet {
+                width: 95%;
+                padding: 15px;
+            }
+
+            table {
+                font-size: .8rem;
+            }
+
+            mjx-container {
+                font-size: 0.9em !important;
+            }
+
+            mjx-container[jax="CHTML"][display="true"] {
+                font-size: 0.85em !important;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark-overlay"><img
+            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            class="watermark-image" alt="Watermark"></div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="icon-moon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+        </svg>
+    </button>
+
+    <div class="paper-sheet">
+        <h1>Loci (Locus & Its Constructions)</h1>
+        <p class="sub-header">ICSE Class 10 Mathematics — Chapter 16 Master Notes</p>
+
+        <!-- SECTION 1 -->
+        <h2>1. Concept & Definition of Locus</h2>
+        <div class="definition-box">
+            <p><strong>Origin:</strong> The word <em>locus</em> is derived from Latin, meaning <em>location</em> or <em>place</em>. Its plural form is <strong>loci</strong> (pronounced <em>los-eye</em>).</p>
+            <p><strong>Definition:</strong> A <strong>locus</strong> is the path or curve traced out by a moving point which moves in a plane according to one or more given mathematical conditions.</p>
+            <p><strong>To describe a locus completely, you must:</strong></p>
+            <ol>
+                <li>State the exact <strong>geometrical shape</strong> (e.g. straight line, circle, pair of parallel lines).</li>
+                <li>State its exact <strong>position</strong> with respect to the given fixed points or lines.</li>
+                <li>Verify that <em>every point on the locus satisfies the condition</em>, and <em>every point satisfying the condition lies on the locus</em>.</li>
+            </ol>
+        </div>
+
+        <!-- SECTION 2 -->
+        <h2>2. Fundamental Loci Theorems & Geometric Proofs</h2>
+
+        <!-- SVG DIAGRAM 1: EQUIDISTANT FROM TWO FIXED POINTS -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 520 280" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="520" height="280" fill="#fafafa" rx="6"/>
+
+                <!-- Fixed Segment AB -->
+                <line x1="120" y1="180" x2="400" y2="180" stroke="#333" stroke-width="2.5"/>
+                <circle cx="120" cy="180" r="6" fill="#6a1b9a"/>
+                <circle cx="400" cy="180" r="6" fill="#6a1b9a"/>
+                <circle cx="260" cy="180" r="4" fill="#333"/>
+
+                <!-- Perpendicular Bisector Locus Line PQ -->
+                <line x1="260" y1="240" x2="260" y2="30" stroke="#1565c0" stroke-width="3"/>
+                
+                <!-- Moving point P on Locus -->
+                <circle cx="260" cy="70" r="6" fill="#2e7d32"/>
+                <circle cx="260" cy="210" r="5" fill="#2e7d32"/>
+
+                <!-- Lines PA and PB -->
+                <line x1="260" y1="70" x2="120" y2="180" stroke="#d32f2f" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <line x1="260" y1="70" x2="400" y2="180" stroke="#d32f2f" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+                <!-- Right angle symbol at midpoint O -->
+                <rect x="250" y="170" width="10" height="10" fill="none" stroke="#333" stroke-width="1.2"/>
+
+                <!-- Equal side ticks on AO and OB -->
+                <line x1="185" y1="172" x2="185" y2="188" stroke="#333" stroke-width="2"/>
+                <line x1="190" y1="172" x2="190" y2="188" stroke="#333" stroke-width="2"/>
+
+                <line x1="325" y1="172" x2="325" y2="188" stroke="#333" stroke-width="2"/>
+                <line x1="330" y1="172" x2="330" y2="188" stroke="#333" stroke-width="2"/>
+
+                <!-- Non-overlapping Labels -->
+                <text x="100" y="185" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="end" fill="#6a1b9a">Fixed Point A</text>
+                <text x="420" y="185" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="start" fill="#6a1b9a">Fixed Point B</text>
+
+                <rect x="268" y="58" width="165" height="22" fill="#fafafa" opacity="0.9" rx="3"/>
+                <text x="272" y="74" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#2e7d32">Moving Point P (PA = PB)</text>
+                
+                <text x="248" y="198" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#333">O</text>
+                <text x="268" y="28" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" fill="#1565c0">Perpendicular Bisector Locus</text>
+
+                <text x="260" y="268" font-family="Outfit, sans-serif" font-size="13" font-style="italic" text-anchor="middle" fill="#555">Fig 16.1: Theorem 1 — Locus of a Point Equidistant from Two Fixed Points A and B</text>
+            </svg>
+        </div>
+
+        <div class="derivation-box">
+            <p><strong>Theorem 1 (Proof): Locus of a point equidistant from two fixed points $A$ and $B$.</strong></p>
+            <p><strong>Statement:</strong> The locus of a point equidistant from two given fixed points $A$ and $B$ is the <strong>perpendicular bisector</strong> of the line segment joining the two points.</p>
+            <p><strong>Proof:</strong></p>
+            <ul>
+                <li>Let $A$ and $B$ be two fixed points. Let $P$ be a moving point such that $PA = PB$.</li>
+                <li>Let $O$ be the mid-point of $AB$. Join $PO$.</li>
+                <li>In $\triangle AOP$ and $\triangle BOP$:
+                    <ol>
+                        <li>$PA = PB$ (Given)</li>
+                        <li>$AO = BO$ ($O$ is midpoint of $AB$)</li>
+                        <li>$PO = PO$ (Common side)</li>
+                    </ol>
+                </li>
+                <li>By SSS Congruence Criterion, $\triangle AOP \cong \triangle BOP$.</li>
+                <li>$\implies \angle AOP = \angle BOP$ (CPCTC).</li>
+                <li>Since $\angle AOP + \angle BOP = 180^\circ$ (Linear pair), $\angle AOP = \angle BOP = 90^\circ$.</li>
+                <li>$\therefore PO \perp AB$ at its mid-point $O$. Hence, $P$ lies on the perpendicular bisector of $AB$.</li>
+            </ul>
+        </div>
+
+        <!-- SVG DIAGRAM 2: EQUIDISTANT FROM INTERSECTING LINES -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 520 280" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="520" height="280" fill="#fafafa" rx="6"/>
+
+                <!-- Intersecting Lines AB and CD meeting at O(260, 140) -->
+                <line x1="60" y1="210" x2="460" y2="70" stroke="#333" stroke-width="2"/>
+                <line x1="60" y1="70" x2="460" y2="210" stroke="#333" stroke-width="2"/>
+
+                <text x="470" y="65" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#333">Line AB</text>
+                <text x="470" y="215" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#333">Line CD</text>
+                <text x="260" y="162" font-family="Outfit, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">O</text>
+
+                <!-- Angle Bisector Locus Lines -->
+                <line x1="60" y1="140" x2="460" y2="140" stroke="#1565c0" stroke-width="3"/>
+                <line x1="260" y1="240" x2="260" y2="40" stroke="#1565c0" stroke-width="2.5" stroke-dasharray="4,4"/>
+
+                <!-- Point P on Bisector -->
+                <circle cx="140" cy="140" r="5" fill="#2e7d32"/>
+                <text x="140" y="125" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#2e7d32">P (PL = PM)</text>
+
+                <!-- Perpendiculars PL and PM to lines -->
+                <!-- PL perpendicular to AB, PM perpendicular to CD -->
+                <line x1="140" y1="140" x2="162" y2="175" stroke="#d32f2f" stroke-width="1.5" stroke-dasharray="3,3"/>
+                <line x1="140" y1="140" x2="162" y2="105" stroke="#d32f2f" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+                <text x="170" y="185" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#d32f2f">L</text>
+                <text x="170" y="100" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#d32f2f">M</text>
+
+                <text x="465" y="135" font-family="Outfit, sans-serif" font-size="13" font-weight="bold" fill="#1565c0">Angle Bisector Locus</text>
+
+                <text x="260" y="268" font-family="Outfit, sans-serif" font-size="13" font-style="italic" text-anchor="middle" fill="#555">Fig 16.2: Theorem 2 — Locus of a Point Equidistant from Two Intersecting Lines AB and CD (Angle Bisectors)</text>
+            </svg>
+        </div>
+
+        <div class="derivation-box">
+            <p><strong>Theorem 2 (Proof): Locus of a point equidistant from two intersecting straight lines.</strong></p>
+            <p><strong>Statement:</strong> The locus of a point equidistant from two intersecting straight lines is the <strong>pair of angle bisectors</strong> of the angles formed between the lines.</p>
+            <p><strong>Proof:</strong></p>
+            <ul>
+                <li>Let $AB$ and $CD$ be two lines intersecting at $O$. Let $P$ be a point in the interior of $\angle AOC$ such that perpendicular distance $PL = PM$ (where $PL \perp AB$ and $PM \perp CD$).</li>
+                <li>Join $OP$. In right $\triangle POL$ and right $\triangle POM$:
+                    <ol>
+                        <li>$PL = PM$ (Given distance equality)</li>
+                        <li>$\angle PLO = \angle PMO = 90^\circ$ (Perpendiculars)</li>
+                        <li>$OP = OP$ (Common hypotenuse)</li>
+                    </ol>
+                </li>
+                <li>By RHS Congruence Criterion, $\triangle POL \cong \triangle POM$.</li>
+                <li>$\implies \angle POL = \angle POM$ (CPCTC).</li>
+                <li>$\therefore P$ lies on the angle bisector of $\angle AOC$.</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 3 -->
+        <h2>3. Standard Loci Summary (8 Essential Board Results)</h2>
+        <p>In ICSE Board Examinations, locus questions require applying these 8 standard geometric results:</p>
+
+        <!-- SVG DIAGRAM 3: SUMMARY OF 4 BASIC LINE/CIRCLE LOCI -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 540 260" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="540" height="260" fill="#fafafa" rx="6"/>
+
+                <!-- PANEL 1: Parallel Lines Locus -->
+                <g transform="translate(10, 10)">
+                    <line x1="20" y1="50" x2="230" y2="50" stroke="#333" stroke-width="2"/>
+                    <line x1="20" y1="170" x2="230" y2="170" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Locus midway -->
+                    <line x1="20" y1="110" x2="230" y2="110" stroke="#1565c0" stroke-width="3"/>
+
+                    <text x="235" y="54" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#333">Line l</text>
+                    <text x="235" y="174" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#333">Line s</text>
+                    <text x="125" y="100" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1565c0">Parallel Locus (d/2)</text>
+                    <text x="125" y="225" font-family="Outfit, sans-serif" font-size="12" font-style="italic" text-anchor="middle" fill="#333">Equidistant from 2 Parallel Lines</text>
+                </g>
+
+                <!-- Separator line -->
+                <line x1="265" y1="20" x2="265" y2="240" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+                <!-- PANEL 2: Circle Locus (Fixed Point & Distance) -->
+                <g transform="translate(280, 10)">
+                    <circle cx="125" cy="110" r="60" fill="none" stroke="#1565c0" stroke-width="3"/>
+                    <circle cx="125" cy="110" r="5" fill="#6a1b9a"/>
+
+                    <line x1="125" y1="110" x2="185" y2="110" stroke="#d32f2f" stroke-width="2" stroke-dasharray="3,3"/>
+
+                    <text x="125" y="98" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#6a1b9a">Center O</text>
+                    <text x="155" y="125" font-family="Outfit, sans-serif" font-size="12" fill="#d32f2f">Radius r</text>
+                    <text x="188" y="105" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" fill="#1565c0">Circle Locus</text>
+
+                    <text x="125" y="225" font-family="Outfit, sans-serif" font-size="12" font-style="italic" text-anchor="middle" fill="#333">Equidistant from Fixed Point O</text>
+                </g>
+            </svg>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Given Condition</th>
+                    <th>Resulting Locus</th>
+                    <th>Key Geometrical Property</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. Equidistant from 2 fixed points $A$ and $B$</strong></td>
+                    <td>Perpendicular bisector of segment $AB$</td>
+                    <td>Line passes through midpoint of $AB$ at $90^\circ$</td>
+                </tr>
+                <tr>
+                    <td><strong>2. Equidistant from 2 intersecting lines</strong></td>
+                    <td>Pair of angle bisectors of the angles between them</td>
+                    <td>Divides interior/exterior angles into equal halves</td>
+                </tr>
+                <tr>
+                    <td><strong>3. Equidistant from a fixed point $O$ (distance $r$)</strong></td>
+                    <td>Circumference of a circle</td>
+                    <td>Center $= O$, Radius $= r$</td>
+                </tr>
+                <tr>
+                    <td><strong>4. Equidistant from 2 parallel lines $l$ and $s$</strong></td>
+                    <td>A line parallel to both $l$ and $s$</td>
+                    <td>Midway between $l$ and $s$ at distance $d/2$</td>
+                </tr>
+                <tr>
+                    <td><strong>5. At a fixed distance $d$ from a given line $l$</strong></td>
+                    <td>A pair of lines parallel to line $l$</td>
+                    <td>One line on each side of $l$ at distance $d$</td>
+                </tr>
+                <tr>
+                    <td><strong>6. Mid-points of all equal chords in a circle</strong></td>
+                    <td>Circumference of a concentric circle</td>
+                    <td>Radius $=$ distance of equal chords from centre</td>
+                </tr>
+                <tr>
+                    <td><strong>7. Mid-points of all parallel chords in a circle</strong></td>
+                    <td>Diameter of the circle</td>
+                    <td>Perpendicular to the given parallel chords</td>
+                </tr>
+                <tr>
+                    <td><strong>8. Equidistant from 2 concentric circles</strong></td>
+                    <td>Circumference of a concentric circle</td>
+                    <td>Radius $= \frac{r_1 + r_2}{2}$ (midway between them)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- SECTION 4 -->
+        <h2>4. Triangle Concurrency Points & Special Loci Properties</h2>
+
+        <!-- SVG DIAGRAM 4: TRIANGLE CONCURRENCY POINTS -->
+        <div class="svg-container">
+            <svg class="math-svg" viewBox="0 0 540 250" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="540" height="250" fill="#fafafa" rx="6"/>
+
+                <!-- PANEL 1: INCENTRE (Equidistant from 3 sides) -->
+                <g transform="translate(10, 10)">
+                    <polygon points="110,20 20,180 200,180" fill="none" stroke="#6a1b9a" stroke-width="2.5"/>
+                    <!-- Mathematically exact Incircle (r = 52.64, center = 110, 127.36) -->
+                    <circle cx="110" cy="127.36" r="52.64" fill="none" stroke="#1565c0" stroke-width="2"/>
+                    <circle cx="110" cy="127.36" r="4" fill="#1565c0"/>
+
+                    <!-- Inradius perpendicular indicator lines -->
+                    <line x1="110" y1="127.36" x2="110" y2="180" stroke="#1565c0" stroke-width="1" stroke-dasharray="2,2"/>
+
+                    <text x="110" y="115" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1565c0">Incentre I</text>
+                    <text x="110" y="215" font-family="Outfit, sans-serif" font-size="12" font-style="italic" text-anchor="middle" fill="#333">Equidistant from 3 Sides</text>
+                </g>
+
+                <!-- Separator line -->
+                <line x1="265" y1="20" x2="265" y2="230" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+                <!-- PANEL 2: CIRCUMCENTRE (Equidistant from 3 vertices) -->
+                <g transform="translate(280, 10)">
+                    <!-- Mathematically exact Circumcircle (R = 88.1, center = 125, 108.1) -->
+                    <circle cx="125" cy="108.1" r="88.1" fill="none" stroke="#2e7d32" stroke-width="2"/>
+                    <polygon points="125,20 45,145 205,145" fill="none" stroke="#6a1b9a" stroke-width="2.5"/>
+                    <circle cx="125" cy="108.1" r="4" fill="#2e7d32"/>
+
+                    <!-- Circumradius indicator line to vertex A -->
+                    <line x1="125" y1="108.1" x2="125" y2="20" stroke="#2e7d32" stroke-width="1" stroke-dasharray="2,2"/>
+
+                    <text x="125" y="98" font-family="Outfit, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2e7d32">Circumcentre O</text>
+                    <text x="125" y="215" font-family="Outfit, sans-serif" font-size="12" font-style="italic" text-anchor="middle" fill="#333">Equidistant from 3 Vertices</text>
+                </g>
+            </svg>
+        </div>
+
+        <div class="rule-box">
+            <p><strong>Concurrency Points in Triangles (Frequently Tested in ICSE Board):</strong></p>
+            <ol>
+                <li><strong>Incentre ($I$):</strong>
+                    <br>Intersection of the 3 <strong>angle bisectors</strong> of a triangle.
+                    <br><em>Locus Property:</em> Incentre $I$ is <strong>equidistant from all three sides</strong> of the triangle ($ID = IE = IF = \text{in-radius } r$).
+                </li>
+                <li><strong>Circumcentre ($O$):</strong>
+                    <br>Intersection of the 3 <strong>perpendicular bisectors of sides</strong> of a triangle.
+                    <br><em>Locus Property:</em> Circumcentre $O$ is <strong>equidistant from all three vertices</strong> of the triangle ($OA = OB = OC = \text{circum-radius } R$).
+                </li>
+                <li><strong>Centroid ($G$):</strong>
+                    <br>Intersection of the 3 <strong>medians</strong> of a triangle. Divides each median in ratio $2 : 1$.
+                </li>
+                <li><strong>Orthocentre ($H$):</strong>
+                    <br>Intersection of the 3 <strong>altitudes</strong> of a triangle.
+                </li>
+            </ol>
+        </div>
+
+        <div class="master-tip">
+            <p><strong>Master Rules for Isosceles & Equilateral Triangles:</strong></p>
+            <ul>
+                <li>In an <strong>Isosceles Triangle</strong> ($AB = AC$), the median from vertex $A$ to base $BC$ is simultaneously the angle bisector of $\angle A$, the perpendicular bisector of $BC$, and the altitude to $BC$. Thus, $G, I, O, H$ all lie on this single altitude line!</li>
+                <li>In an <strong>Equilateral Triangle</strong>, Centroid $=$ Incentre $=$ Circumcentre $=$ Orthocentre! All 4 points coincide into a single point!</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 5 -->
+        <h2>5. Step-by-Step Solved Master Examples & Interactive Chart</h2>
+
+        <!-- CHART.JS INTERACTIVE VISUALIZATION -->
+        <div class="chart-container">
+            <h4 style="text-align: center; margin-bottom: 10px; color: var(--purple-main);">Interactive Locus Visualization: Circle & Perpendicular Line Loci</h4>
+            <canvas id="locusChart" width="550" height="270"></canvas>
+            <p style="font-size: 0.85rem; text-align: center; color: #666; margin-top: 8px;">
+                Plotting Locus 1: Circle $x^2 + y^2 = 25$ (distance $r=5$ from origin) and Locus 2: Line $x = 3$. Points of intersection $P(3, 4)$ and $Q(3, -4)$.
+            </p>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 1 (Simultaneous Loci Construction):</strong> Construct a triangle $ABC$ with $AB = 6\text{ cm}$, $BC = 7\text{ cm}$, $CA = 6.5\text{ cm}$. Find a point $P$ inside the triangle which is equidistant from $B$ and $C$, and also equidistant from sides $AB$ and $BC$.</p>
+            <div class="step-box">
+                <p><strong>Solution & Construction Steps:</strong></p>
+                <p>Point $P$ must satisfy two distinct loci conditions simultaneously:</p>
+                <ol>
+                    <li><strong>Locus 1 (Equidistant from vertices $B$ and $C$):</strong> Point $P$ lies on the <strong>perpendicular bisector of side $BC$</strong>.</li>
+                    <li><strong>Locus 2 (Equidistant from sides $AB$ and $BC$):</strong> Point $P$ lies on the <strong>angle bisector of $\angle ABC$</strong>.</li>
+                </ol>
+                <p><strong>Conclusion:</strong> Point $P$ is the <strong>point of intersection</strong> of the perpendicular bisector of $BC$ and the angle bisector of $\angle ABC$.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 2 (Right-Angle Subtended Locus):</strong> $A$ and $B$ are two fixed points. Find the locus of a point $P$ such that $\angle APB = 90^\circ$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Since the angle in a semi-circle is a right angle ($90^\circ$), for any position of point $P$ such that $\angle APB = 90^\circ$, $P$ lies on the circumference of a circle drawn with segment $AB$ as diameter.</p>
+                <p><strong>Answer:</strong> The locus of point $P$ is the <strong>circumference of a circle with diameter $AB$</strong> (excluding endpoints $A$ and $B$).</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 3 (Chord Equidistance):</strong> $AB$ is a chord of a circle with center $O$. Find the locus of a point in the circle which is equidistant from $A$ and $B$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <p>Any point equidistant from fixed points $A$ and $B$ lies on the perpendicular bisector of $AB$.</p>
+                <p>Since the perpendicular bisector of any chord of a circle passes through its center $O$, the perpendicular bisector of chord $AB$ is a diameter of the circle.</p>
+                <p><strong>Answer:</strong> The locus is the <strong>diameter of the circle perpendicular to chord $AB$</strong>.</p>
+            </div>
+        </div>
+
+        <div class="solved-example">
+            <p><strong>Example 4 (Distance from Angle Arms):</strong> Draw an angle $\angle ABC = 120^\circ$. Find a point $P$ such that $P$ is at a distance of $3\text{ cm}$ from $AB$ and $2\text{ cm}$ from $BC$.</p>
+            <div class="step-box">
+                <p><strong>Solution:</strong></p>
+                <ol>
+                    <li>Draw line $l_1$ parallel to arm $AB$ at a distance of $3\text{ cm}$ from it.</li>
+                    <li>Draw line $l_2$ parallel to arm $BC$ at a distance of $2\text{ cm}$ from it.</li>
+                    <li>The point of intersection of lines $l_1$ and $l_2$ is the required point $P$.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- SECTION 6 -->
+        <h2>6. Quick Revision Checklist for ICSE Board Exams</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Locus Target</th>
+                    <th>Exact Description to Write in Board Exams</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Point $P$ equidistant from $A$ and $B$</strong></td>
+                    <td>Perpendicular bisector of segment $AB$</td>
+                </tr>
+                <tr>
+                    <td><strong>Point $P$ equidistant from lines $AB$ and $AC$</strong></td>
+                    <td>Bisector of angle $\angle BAC$</td>
+                </tr>
+                <tr>
+                    <td><strong>Point $P$ at distance $r$ from fixed point $O$</strong></td>
+                    <td>Circle with center $O$ and radius $r$</td>
+                </tr>
+                <tr>
+                    <td><strong>Point $P$ at distance $d$ from line $AB$</strong></td>
+                    <td>Pair of lines parallel to $AB$ at distance $d$ on either side</td>
+                </tr>
+                <tr>
+                    <td><strong>Point $P$ such that $\angle APB = 90^\circ$</strong></td>
+                    <td>Circumference of circle with diameter $AB$</td>
+                </tr>
+                <tr>
+                    <td><strong>Centroid of all triangles on base $BC$ with same area</strong></td>
+                    <td>Line parallel to base $BC$ at distance equal to altitude $/ 3$</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- SECTION 7 -->
+        <h2>7. ICSE Board PYQs & High-Yield Practice Problems</h2>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2010</span>
+            <p><span class="q-tag">BOARD</span> Use ruler and compasses only for this question:</p>
+            <ul>
+                <li>(i) Construct $\triangle ABC$ where $AB = 3.5\text{ cm}$, $BC = 6\text{ cm}$, and $\angle ABC = 60^\circ$.</li>
+                <li>(ii) Construct the locus of points inside the triangle equidistant from $BA$ and $BC$.</li>
+                <li>(iii) Construct the locus of points inside the triangle equidistant from $B$ and $C$.</li>
+                <li>(iv) Mark the point $P$ equidistant from $AB, BC$ and from $B, C$. Measure and record length $PB$.</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2008</span>
+            <p><span class="q-tag">BOARD</span> Straight line $AB$ is $8\text{ cm}$ long. Draw and describe the locus of a point which is:</p>
+            <ul>
+                <li>(i) Always $4\text{ cm}$ from the line $AB$.</li>
+                <li>(ii) Equidistant from $A$ and $B$.</li>
+                <li>(iii) Mark points $X$ and $Y$ which are $4\text{ cm}$ from $AB$ and equidistant from $A$ and $B$. Describe figure $AXBY$.</li>
+            </ul>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2007</span>
+            <p><span class="q-tag">BOARD</span> Construct a triangle $BCP$ given $BC = 5\text{ cm}$, $BP = 4\text{ cm}$, $\angle PBC = 45^\circ$. Complete rectangle $ABCD$ such that $P$ is equidistant from $AB$ and $BC$, and $P$ is equidistant from $C$ and $D$. Measure length $AB$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2003</span>
+            <p><span class="q-tag">BOARD</span> Plot points $P(3, 2)$ and $Q(-3, -2)$. From $P$ and $Q$, draw perpendiculars $PM$ and $QN$ to the x-axis. Write down the coordinates of the point to which $M$ is mapped on reflection in: (i) x-axis, (ii) y-axis, (iii) origin.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2001</span>
+            <p><span class="q-tag">BOARD</span> Construct an isosceles triangle $ABC$ such that $AB = 6\text{ cm}$, $BC = AC = 4\text{ cm}$. Bisect $\angle C$ internally and mark point $P$ on this bisector such that $CP = 5\text{ cm}$. Find points $Q$ and $R$ which are $5\text{ cm}$ from $P$ and $5\text{ cm}$ from line $AB$.</p>
+        </div>
+
+        <div class="practice-box">
+            <span class="practice-header">ICSE Board PYQ 2000</span>
+            <p><span class="q-tag">BOARD</span> Construct a triangle $ABC$ with $AB = 7\text{ cm}$, $BC = 8\text{ cm}$, $\angle ABC = 60^\circ$. Locate by construction point $P$ such that $P$ is equidistant from $B$ and $C$, and $P$ is equidistant from $AB$ and $BC$. Measure length $PB$.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark-mode');
+            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Initialize Theme - Default to LIGHT
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+
+        // Initialize Chart.js Diagram for Locus
+        window.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('locusChart');
+            if (ctx) {
+                // Circle points for x^2 + y^2 = 25
+                const circlePoints = [];
+                for (let angle = 0; angle <= 360; angle += 10) {
+                    const rad = (angle * Math.PI) / 180;
+                    circlePoints.push({ x: 5 * Math.cos(rad), y: 5 * Math.sin(rad) });
+                }
+
+                new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Circle Locus (r = 5)',
+                                data: circlePoints,
+                                showLine: true,
+                                borderColor: '#1565c0',
+                                borderWidth: 2,
+                                backgroundColor: 'rgba(21, 101, 192, 0.1)',
+                                pointRadius: 2
+                            },
+                            {
+                                label: 'Line Locus (x = 3)',
+                                data: [
+                                    { x: 3, y: -7 },
+                                    { x: 3, y: 7 }
+                                ],
+                                showLine: true,
+                                borderColor: '#d32f2f',
+                                borderWidth: 2.5,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Intersection Points P & Q',
+                                data: [
+                                    { x: 3, y: 4 },
+                                    { x: 3, y: -4 }
+                                ],
+                                backgroundColor: '#2e7d32',
+                                pointRadius: 7,
+                                pointHoverRadius: 9
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { family: 'Outfit', size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': (' + context.raw.x.toFixed(1) + ', ' + context.raw.y.toFixed(1) + ')';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'X-axis', font: { family: 'Outfit', weight: 'bold' } },
+                                min: -7,
+                                max: 7
+                            },
+                            y: {
+                                title: { display: true, text: 'Y-axis', font: { family: 'Outfit', weight: 'bold' } },
+                                min: -7,
+                                max: 7
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
