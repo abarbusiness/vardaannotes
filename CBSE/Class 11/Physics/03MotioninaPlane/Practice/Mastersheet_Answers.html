@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Detailed Solutions: Master Sheet (Motion in 2D)</title>
+    
+    <script>
+      window.MathJax = { 
+          tex: { 
+              inlineMath: [['$', '$'], ['\\(', '\\)']],
+              displayMath: [['$$', '$$'], ['\\[', '\\]']]
+          } 
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES (Master Level: Deep Orange) --- */
+        :root {
+            --primary-color: #e65100; /* Deep Orange */
+            --bg-color: #fff3e0;      /* Light Orange background */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+            --sol-bg: #fff8f0;        /* Very light warm background for solutions */
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ffb74d;   /* Lighter orange for readability */
+            --bg-color: #331e10;        /* Dark warm container background */
+            --body-bg: #121212;         
+            --text-main: #e0e0e0;       
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #555;
+            --sol-bg: #221208;          /* Dark warm solution box */
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.5; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT & SOLUTIONS STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 18px; }
+        .question-item { 
+            display: flex; flex-direction: column; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 15px;
+        }
+        .q-row { display: flex; align-items: baseline; margin-bottom: 8px; }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-text { font-weight: bold; color: var(--text-secondary); flex: 1; }
+        
+        .solution-box {
+            background-color: var(--sol-bg);
+            border-left: 3px solid var(--primary-color);
+            padding: 12px 15px;
+            margin-left: 35px;
+            border-radius: 0 4px 4px 0;
+            font-size: 11pt;
+            overflow-x: auto;
+        }
+        .sol-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* --- FOOTER & UTILITIES --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+        }
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark { filter: invert(1); opacity: 0.05; }
+        
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle { filter: invert(1) hue-rotate(180deg); background: #e0e0e0; }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media (max-width: 768px) {
+            .meta-info { flex-direction: column; gap: 8px; text-align: center; }
+            .container { padding: 10px; margin-top: 60px; }
+            .solution-box { margin-left: 0; margin-top: 10px; }
+        }
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+            .solution-box { background-color: var(--sol-bg) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Solution Manual: Comprehensive Master Sheet (Motion in 2D)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 11th (CBSE/NEET/JEE)</span>
+                <span>Subject: Physics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section A: Vectors & Vector Operations</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">1.</span><div class="q-text">If the magnitude of the sum of two vectors is equal to the magnitude of the difference of the two vectors, what is the angle between the vectors?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Given $|\vec{A} + \vec{B}| = |\vec{A} - \vec{B}|$.<br> Squaring both sides: $A^2 + B^2 + 2AB\cos\theta = A^2 + B^2 - 2AB\cos\theta$.<br> $\implies 4AB\cos\theta = 0 \implies \cos\theta = 0 \implies \mathbf{\theta = 90^\circ}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">2.</span><div class="q-text">Two forces $P$ and $Q$ of magnitude $2F$ and $3F$, respectively, are at an angle $\theta$ with each other. If the force $Q$ is doubled, then their resultant also gets doubled. Find the angle $\theta$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Case 1: $R^2 = (2F)^2 + (3F)^2 + 2(2F)(3F)\cos\theta \implies R^2 = 13F^2 + 12F^2\cos\theta$.<br> Case 2: $Q$ is doubled to $6F$, $R$ doubles to $2R$.<br> $(2R)^2 = (2F)^2 + (6F)^2 + 2(2F)(6F)\cos\theta \implies 4R^2 = 40F^2 + 24F^2\cos\theta$.<br> Substitute $R^2$: $4(13F^2 + 12F^2\cos\theta) = 40F^2 + 24F^2\cos\theta$.<br> $52 + 48\cos\theta = 40 + 24\cos\theta \implies 24\cos\theta = -12 \implies \cos\theta = -1/2 \implies \mathbf{\theta = 120^\circ}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">3.</span><div class="q-text">Given $\vec{A} = 3\hat{i} + 4\hat{j} + \hat{k}$ and $\vec{B} = \hat{i} - \hat{j} + \hat{k}$. Find the unit vector in the direction of $(\vec{A} + \vec{B})$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $\vec{R} = \vec{A} + \vec{B} = (3+1)\hat{i} + (4-1)\hat{j} + (1+1)\hat{k} = 4\hat{i} + 3\hat{j} + 2\hat{k}$.<br> Magnitude $|\vec{R}| = \sqrt{4^2 + 3^2 + 2^2} = \sqrt{16 + 9 + 4} = \sqrt{29}$.<br> Unit vector $\hat{R} = \mathbf{\frac{4\hat{i} + 3\hat{j} + 2\hat{k}}{\sqrt{29}}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">4.</span><div class="q-text">Find the area of the parallelogram whose adjacent sides are represented by the vectors $\vec{P} = 2\hat{i} + 3\hat{j}$ and $\vec{Q} = \hat{i} + 4\hat{j}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Area = $|\vec{P} \times \vec{Q}|$.<br> $\vec{P} \times \vec{Q} = (2\hat{i} + 3\hat{j}) \times (\hat{i} + 4\hat{j}) = (2)(4)(\hat{i}\times\hat{j}) + (3)(1)(\hat{j}\times\hat{i}) = 8\hat{k} - 3\hat{k} = 5\hat{k}$.<br> Area = $|5\hat{k}| = \mathbf{5 \text{ units}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">5.</span><div class="q-text">Find the component of vector $\vec{A} = 2\hat{i} + 3\hat{j}$ along the direction of vector $\vec{B} = \hat{i} + \hat{j}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Component of $\vec{A}$ along $\vec{B}$ is $\vec{A} \cdot \hat{B}$.<br> $\hat{B} = \frac{\hat{i} + \hat{j}}{\sqrt{1^2 + 1^2}} = \frac{\hat{i} + \hat{j}}{\sqrt{2}}$.<br> $\vec{A} \cdot \hat{B} = (2\hat{i} + 3\hat{j}) \cdot \left(\frac{\hat{i} + \hat{j}}{\sqrt{2}}\right) = \frac{2(1) + 3(1)}{\sqrt{2}} = \mathbf{\frac{5}{\sqrt{2}}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">6.</span><div class="q-text">If vectors $\vec{P} = a\hat{i} + a\hat{j} + 3\hat{k}$ and $\vec{Q} = a\hat{i} - 2\hat{j} - \hat{k}$ are perpendicular to each other, find the positive value of $a$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> For perpendicular vectors, $\vec{P} \cdot \vec{Q} = 0$.<br> $(a)(a) + (a)(-2) + (3)(-1) = 0 \implies a^2 - 2a - 3 = 0$.<br> Factoring: $(a - 3)(a + 1) = 0 \implies a = 3 \text{ or } a = -1$.<br> Positive value is $\mathbf{a = 3}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">7.</span><div class="q-text">A car travels due East with a speed of $10 \text{ m/s}$. It then takes a left turn and travels due North with the same speed of $10 \text{ m/s}$. Find the magnitude and direction of the change in velocity.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Initial velocity $\vec{v}_i = 10\hat{i}$. Final velocity $\vec{v}_f = 10\hat{j}$.<br> Change in velocity $\Delta\vec{v} = \vec{v}_f - \vec{v}_i = 10\hat{j} - 10\hat{i}$.<br> Magnitude $|\Delta\vec{v}| = \sqrt{(-10)^2 + (10)^2} = \sqrt{200} = \mathbf{10\sqrt{2} \text{ m/s}}$.<br> Direction: $-x$ and $+y$ implies North-West (NW). Angle is $135^\circ$ from East.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">8.</span><div class="q-text">If $\vec{A} \times \vec{B} = \vec{B} \times \vec{A}$, what can you conclude about the angle between vectors $\vec{A}$ and $\vec{B}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> We know $\vec{A} \times \vec{B} = -(\vec{B} \times \vec{A})$.<br> Given $\vec{A} \times \vec{B} = \vec{B} \times \vec{A} \implies \vec{A} \times \vec{B} = -(\vec{A} \times \vec{B}) \implies 2(\vec{A} \times \vec{B}) = 0 \implies \vec{A} \times \vec{B} = \vec{0}$.<br> This implies $AB\sin\theta\hat{n} = \vec{0} \implies \sin\theta = 0$.<br> Thus, the angle $\theta$ is $\mathbf{0^\circ \text{ or } 180^\circ}$ (vectors are parallel or anti-parallel).</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">9.</span><div class="q-text">The sum of the magnitudes of two forces acting at a point is $18 \text{ N}$ and the magnitude of their resultant is $12 \text{ N}$. If the resultant is at $90^\circ$ with the force of smaller magnitude, what are the magnitudes of forces?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let forces be $P$ and $Q$, with $P < Q$. Given $P + Q = 18$.<br> Resultant $\vec{R} \perp \vec{P} \implies$ vector triangle forms a right triangle with $Q$ as hypotenuse, $P$ as base, $R$ as perpendicular.<br> $Q^2 = P^2 + R^2 \implies Q^2 - P^2 = R^2 \implies (Q-P)(Q+P) = 12^2 = 144$.<br> Substitute $Q+P = 18 \implies (Q-P)(18) = 144 \implies Q-P = 8$.<br> Solving $Q+P=18$ and $Q-P=8$: Add them $\implies 2Q = 26 \implies \mathbf{Q = 13 \text{ N}}$. Then $\mathbf{P = 5 \text{ N}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">10.</span><div class="q-text">Prove that the vectors $\vec{A} = 2\hat{i} - 3\hat{j} + \hat{k}$ and $\vec{B} = 4\hat{i} - 6\hat{j} + 2\hat{k}$ are parallel to each other.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Two vectors are parallel if one is a scalar multiple of the other.<br> $\vec{B} = 4\hat{i} - 6\hat{j} + 2\hat{k} = 2(2\hat{i} - 3\hat{j} + \hat{k}) = 2\vec{A}$.<br> Since $\vec{B} = 2\vec{A}$, they have the exact same direction. (Proved).</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section B: General 2D Kinematics (Calculus Based)</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">11.</span><div class="q-text">The position of a particle is given by $\vec{r} = 3t\hat{i} + (2t^2 - 5t)\hat{j} + 4\hat{k} \text{ m}$. Find the magnitude of its velocity and acceleration at $t = 2 \text{ s}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $\vec{v} = \frac{d\vec{r}}{dt} = 3\hat{i} + (4t - 5)\hat{j}$.<br> At $t=2\text{ s}$, $\vec{v} = 3\hat{i} + (8-5)\hat{j} = 3\hat{i} + 3\hat{j} \implies |\vec{v}| = \sqrt{3^2 + 3^2} = \mathbf{3\sqrt{2} \text{ m/s}}$.<br> $\vec{a} = \frac{d\vec{v}}{dt} = 4\hat{j}$. Magnitude $|\vec{a}| = \mathbf{4 \text{ m/s}^2}$.<br> <i>(Note: Original placeholder key stated v=5; mathematically $3\sqrt{2} \approx 4.24$ is exact based on the given function).</i></div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">12.</span><div class="q-text">A particle moves in the $x$-$y$ plane with a constant acceleration of $1.5 \text{ m/s}^2$ in the direction making an angle of $37^\circ$ with the x-axis. At $t=0$, the particle is at the origin and its velocity is $8.0 \text{ m/s}$ along the x-axis. Find the velocity and the position of the particle at $t = 4.0 \text{ s}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $\vec{a} = 1.5\cos 37^\circ \hat{i} + 1.5\sin 37^\circ \hat{j} = 1.5(0.8)\hat{i} + 1.5(0.6)\hat{j} = 1.2\hat{i} + 0.9\hat{j} \text{ m/s}^2$.<br> $\vec{u} = 8.0\hat{i}$.<br> $\vec{v}(t) = \vec{u} + \vec{a}t = 8.0\hat{i} + (1.2\hat{i} + 0.9\hat{j})(4) = 8.0\hat{i} + 4.8\hat{i} + 3.6\hat{j} = \mathbf{12.8\hat{i} + 3.6\hat{j} \text{ m/s}}$.<br> $\vec{r}(t) = \vec{u}t + \frac{1}{2}\vec{a}t^2 = 8(4)\hat{i} + \frac{1}{2}(1.2\hat{i} + 0.9\hat{j})(16) = 32\hat{i} + 9.6\hat{i} + 7.2\hat{j} = \mathbf{41.6\hat{i} + 7.2\hat{j} \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">13.</span><div class="q-text">The coordinates of a moving particle at any time $t$ are given by $x = \alpha t^3$ and $y = \beta t^3$. Find the speed of the particle at time $t$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v_x = \frac{dx}{dt} = 3\alpha t^2$. $v_y = \frac{dy}{dt} = 3\beta t^2$.<br> Speed $|\vec{v}| = \sqrt{v_x^2 + v_y^2} = \sqrt{(3\alpha t^2)^2 + (3\beta t^2)^2} = \sqrt{9t^4(\alpha^2 + \beta^2)} = \mathbf{3t^2\sqrt{\alpha^2 + \beta^2}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">14.</span><div class="q-text">A particle starts from origin at $t=0$ with a velocity $5.0\hat{i} \text{ m/s}$ and moves in $x$-$y$ plane under action of a force which produces a constant acceleration of $(3.0\hat{i} + 2.0\hat{j}) \text{ m/s}^2$. What is the y-coordinate of the particle at the instant its x-coordinate is $84 \text{ m}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> x-motion: $x = u_x t + \frac{1}{2}a_x t^2 \implies 84 = 5t + \frac{1}{2}(3)t^2 \implies 1.5t^2 + 5t - 84 = 0$.<br> Multiply by 2: $3t^2 + 10t - 168 = 0$. Solving for $t$: $t = \frac{-10 \pm \sqrt{100 - 4(3)(-168)}}{6} = \frac{-10 \pm 46}{6}$.<br> Positive time $t = 36/6 = 6\text{ s}$.<br> y-motion: $y = u_y t + \frac{1}{2}a_y t^2 = 0 + \frac{1}{2}(2)(6^2) = 1(36) = \mathbf{36 \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">15.</span><div class="q-text">The equation of trajectory of a particle is given by $y = 2x - 5x^2$ (where $x, y$ are in meters). If the horizontal component of velocity is constant at $10 \text{ m/s}$, find the initial velocity of the particle and its acceleration.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v_x = \frac{dx}{dt} = 10\text{ m/s}$.<br> Differentiate trajectory wrt time: $v_y = \frac{dy}{dt} = 2\frac{dx}{dt} - 10x\frac{dx}{dt} = 2(10) - 10x(10) = 20 - 100x$.<br> At origin ($x=0$), $v_{y0} = 20$. Initial velocity $\vec{u} = \mathbf{10\hat{i} + 20\hat{j} \text{ m/s}}$.<br> Acceleration $\vec{a} = a_x\hat{i} + a_y\hat{j}$. Since $v_x$ is constant, $a_x = 0$.<br> $a_y = \frac{dv_y}{dt} = \frac{d}{dt}(20 - 100x) = -100\frac{dx}{dt} = -100(10) = -1000\text{ m/s}^2$.<br> $\vec{a} = \mathbf{-1000\hat{j} \text{ m/s}^2}$. <i>(Correction from short key: proper differentiation yields 1000).</i></div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">16.</span><div class="q-text">If a particle moves in a 2D plane such that its velocity components are $v_x = 4 \text{ m/s}$ and $v_y = (6x - 4) \text{ m/s}$, find the equation of its path if it starts from the origin.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v_x = \frac{dx}{dt} = 4 \implies dx = 4 dt \implies x = 4t$ (since starts at origin).<br> $v_y = \frac{dy}{dt} = 6x - 4$. Since we need $y=f(x)$, apply chain rule: $\frac{dy}{dx} = \frac{v_y}{v_x} = \frac{6x - 4}{4} = \frac{3}{2}x - 1$.<br> Integrate wrt $x$: $\int dy = \int (\frac{3}{2}x - 1) dx \implies y = \frac{3}{4}x^2 - x + C$.<br> At $x=0, y=0 \implies C=0$. Path equation: $\mathbf{y = \frac{3x^2}{4} - x}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">17.</span><div class="q-text">The position vector of a particle is $\vec{r} = (A \cos\omega t)\hat{i} + (A \sin\omega t)\hat{j}$. Prove that the velocity vector is perpendicular to the position vector.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Velocity $\vec{v} = \frac{d\vec{r}}{dt} = (-A\omega\sin\omega t)\hat{i} + (A\omega\cos\omega t)\hat{j}$.<br> Take dot product $\vec{r} \cdot \vec{v} = (A\cos\omega t)(-A\omega\sin\omega t) + (A\sin\omega t)(A\omega\cos\omega t)$.<br> $= -A^2\omega\sin\omega t\cos\omega t + A^2\omega\sin\omega t\cos\omega t = 0$.<br> Since $\vec{r} \cdot \vec{v} = 0$, the velocity vector is strictly perpendicular to the position vector. (Proved).</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section C: Ground-to-Ground Projectile Motion</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">18.</span><div class="q-text">A projectile is fired with a velocity of $30 \text{ m/s}$ at an angle of $60^\circ$ with the horizontal. Calculate its (i) time of flight, (ii) maximum height, and (iii) horizontal range. ($g = 10 \text{ m/s}^2$)</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $u = 30$, $\theta = 60^\circ$.<br> (i) $T = \frac{2u\sin\theta}{g} = \frac{2(30)\sin 60^\circ}{10} = 6 \left(\frac{\sqrt{3}}{2}\right) = \mathbf{3\sqrt{3} \text{ s}}$.<br> (ii) $H = \frac{u^2\sin^2\theta}{2g} = \frac{30^2(3/4)}{20} = \frac{900 \times 0.75}{20} = \frac{675}{20} = \mathbf{33.75 \text{ m}}$.<br> (iii) $R = \frac{u^2\sin 2\theta}{g} = \frac{900\sin 120^\circ}{10} = 90 \left(\frac{\sqrt{3}}{2}\right) = \mathbf{45\sqrt{3} \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">19.</span><div class="q-text">For a projectile, the horizontal range is equal to its maximum height. What is the angle of projection?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $R = H \implies \frac{u^2\sin 2\theta}{g} = \frac{u^2\sin^2\theta}{2g}$.<br> $2\sin\theta\cos\theta = \frac{\sin^2\theta}{2}$. Since $\theta \ne 0$, divide by $\sin\theta$:<br> $2\cos\theta = \frac{\sin\theta}{2} \implies 4 = \frac{\sin\theta}{\cos\theta} \implies \tan\theta = 4 \implies \mathbf{\theta = \tan^{-1}(4)}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">20.</span><div class="q-text">Show that there are two angles of projection for which the horizontal range is the same. If $t_1$ and $t_2$ are the times of flight for these two angles, prove that $t_1 t_2 = 2R/g$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $R = \frac{u^2\sin 2\theta}{g}$. Since $\sin(180^\circ - 2\theta) = \sin 2\theta$, angle $\theta' = 90^\circ - \theta$ yields the same range. Thus, $\theta$ and $90^\circ-\theta$ are complementary angles.<br> $t_1 = \frac{2u\sin\theta}{g}$ and $t_2 = \frac{2u\sin(90^\circ-\theta)}{g} = \frac{2u\cos\theta}{g}$.<br> Product $t_1 t_2 = \left(\frac{2u\sin\theta}{g}\right)\left(\frac{2u\cos\theta}{g}\right) = \frac{2}{g} \left( \frac{2u^2\sin\theta\cos\theta}{g} \right) = \frac{2}{g} \left( \frac{u^2\sin 2\theta}{g} \right) = \mathbf{\frac{2R}{g}}$. (Proved).</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">21.</span><div class="q-text">The maximum horizontal range of a projectile is $400 \text{ m}$. What is the maximum height attained by it in this case?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Max range occurs at $\theta = 45^\circ$.<br> $R_{max} = \frac{u^2}{g} = 400 \implies u^2 = 400g$.<br> Height at this angle: $H = \frac{u^2\sin^2 45^\circ}{2g} = \frac{u^2 (1/2)}{2g} = \frac{u^2}{4g}$.<br> Substitute $u^2 = 400g$: $H = \frac{400g}{4g} = \mathbf{100 \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">22.</span><div class="q-text">A boy can throw a stone up to a maximum height of $10 \text{ m}$. What is the maximum horizontal distance to which he can throw the same stone?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Max vertical throw is at $\theta = 90^\circ$. $H_{max} = \frac{u^2}{2g} = 10 \implies \frac{u^2}{g} = 20$.<br> Max horizontal range is at $\theta = 45^\circ$. $R_{max} = \frac{u^2}{g}$.<br> Thus, $R_{max} = \mathbf{20 \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">23.</span><div class="q-text">A projectile is given an initial velocity of $(\hat{i} + 2\hat{j}) \text{ m/s}$. Find the equation of its trajectory. ($g=10 \text{ m/s}^2$)</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $u_x = 1 \text{ m/s}, u_y = 2 \text{ m/s}$. $\tan\theta = \frac{u_y}{u_x} = 2$.<br> Equation of trajectory: $y = x\tan\theta - \frac{gx^2}{2u_x^2}$.<br> $y = x(2) - \frac{10x^2}{2(1^2)} = \mathbf{2x - 5x^2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">24.</span><div class="q-text">A body is projected at such an angle that the horizontal range is $3$ times the maximum height. Find the angle of projection.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $R = 3H \implies \frac{u^2\sin 2\theta}{g} = 3 \frac{u^2\sin^2\theta}{2g}$.<br> $2\sin\theta\cos\theta = 1.5\sin^2\theta \implies \frac{\sin\theta}{\cos\theta} = \frac{2}{1.5} = \frac{4}{3}$.<br> $\tan\theta = \frac{4}{3} \implies \mathbf{\theta = 53^\circ}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">25.</span><div class="q-text">A bullet is fired at an angle of $30^\circ$ with the horizontal and hits the ground $3.0 \text{ km}$ away. By adjusting its angle of projection, can one hope to hit a target $5.0 \text{ km}$ away? Assume the muzzle speed to be fixed, and neglect air resistance.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Current range $R = \frac{u^2\sin 60^\circ}{g} = 3.0 \text{ km}$.<br> $\frac{u^2}{g} (\frac{\sqrt{3}}{2}) = 3 \implies \frac{u^2}{g} = \frac{6}{\sqrt{3}} = 2\sqrt{3} \approx 3.46 \text{ km}$.<br> The absolute maximum range ($R_{max} = u^2/g$ at $45^\circ$) is $3.46 \text{ km}$.<br> Since $5.0 \text{ km} > 3.46 \text{ km}$, <b>No</b>, it cannot hit the target.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">26.</span><div class="q-text">At what time after projection will the velocity vector of a projectile, thrown with speed $u$ at an angle $\theta$, become perpendicular to its initial velocity vector?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Initial velocity $\vec{u} = u\cos\theta\hat{i} + u\sin\theta\hat{j}$.<br> Velocity at time $t$: $\vec{v} = u\cos\theta\hat{i} + (u\sin\theta - gt)\hat{j}$.<br> For $\vec{v} \perp \vec{u}$, dot product $\vec{u} \cdot \vec{v} = 0$.<br> $(u\cos\theta)(u\cos\theta) + (u\sin\theta)(u\sin\theta - gt) = 0 \implies u^2\cos^2\theta + u^2\sin^2\theta - ugt\sin\theta = 0$.<br> $u^2(\cos^2\theta + \sin^2\theta) = ugt\sin\theta \implies u^2 = ugt\sin\theta \implies \mathbf{t = \frac{u}{g\sin\theta}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">27.</span><div class="q-text">A particle is projected with a speed $v_0$ at an angle $\theta$ with the horizontal. Find the average velocity of the projectile between the point of projection and the highest point of its trajectory.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Coordinate of highest point: $x = R/2 = \frac{v_0^2\sin\theta\cos\theta}{g}$, $y = H = \frac{v_0^2\sin^2\theta}{2g}$. Time $t = \frac{v_0\sin\theta}{g}$.<br> Average velocity vector $\vec{v}_{avg} = \frac{\Delta x}{t}\hat{i} + \frac{\Delta y}{t}\hat{j}$.<br> $v_{avg,x} = \frac{(v_0^2\sin\theta\cos\theta)/g}{v_0\sin\theta/g} = v_0\cos\theta$.<br> $v_{avg,y} = \frac{(v_0^2\sin^2\theta)/2g}{v_0\sin\theta/g} = \frac{v_0\sin\theta}{2}$.<br> Magnitude $|\vec{v}_{avg}| = \sqrt{(v_0\cos\theta)^2 + \left(\frac{v_0\sin\theta}{2}\right)^2} = \frac{v_0}{2}\sqrt{4\cos^2\theta + \sin^2\theta} = \mathbf{\frac{v_0}{2}\sqrt{1 + 3\cos^2\theta}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">28.</span><div class="q-text">The equation of a projectile's path is $y = \sqrt{3}x - \frac{gx^2}{2}$. Determine the angle of projection and initial velocity.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Compare with standard equation: $y = x\tan\theta - \frac{gx^2}{2u^2\cos^2\theta}$.<br> $\tan\theta = \sqrt{3} \implies \mathbf{\theta = 60^\circ}$.<br> $\frac{g}{2} = \frac{g}{2u^2\cos^2 60^\circ} \implies 1 = \frac{1}{u^2 (1/4)} \implies u^2 \left(\frac{1}{4}\right) = 1 \implies u^2 = 4 \implies \mathbf{u = 2 \text{ m/s}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">29.</span><div class="q-text">A particle is projected from the ground with an initial speed of $u$ at an angle $\theta$ with the horizontal. What is the change in the magnitude of its momentum when it strikes the ground? What is the change in its momentum vector?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Initial speed is $u$. It strikes ground with same speed $u$. Magnitude of momentum $|p| = mu$. Change in magnitude is $\mathbf{0}$.<br> Initial momentum vector $\vec{p}_i = mu\cos\theta\hat{i} + mu\sin\theta\hat{j}$.<br> Final momentum vector $\vec{p}_f = mu\cos\theta\hat{i} - mu\sin\theta\hat{j}$.<br> Change $\Delta\vec{p} = \vec{p}_f - \vec{p}_i = \mathbf{-2mu\sin\theta\hat{j}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">30.</span><div class="q-text">Two particles are projected from the same point with the same speed $u$ such that they have the same range $R$, but different maximum heights $h_1$ and $h_2$. Prove that $R = 4\sqrt{h_1 h_2}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Same range implies angles are $\theta$ and $90^\circ-\theta$.<br> $h_1 = \frac{u^2\sin^2\theta}{2g}$, $h_2 = \frac{u^2\sin^2(90^\circ-\theta)}{2g} = \frac{u^2\cos^2\theta}{2g}$.<br> Evaluate $4\sqrt{h_1 h_2} = 4\sqrt{\left(\frac{u^2\sin^2\theta}{2g}\right)\left(\frac{u^2\cos^2\theta}{2g}\right)} = 4\sqrt{\frac{u^4\sin^2\theta\cos^2\theta}{4g^2}} = 4 \left( \frac{u^2\sin\theta\cos\theta}{2g} \right)$.<br> $= \frac{2u^2\sin\theta\cos\theta}{g} = \frac{u^2\sin 2\theta}{g} = \mathbf{R}$. (Proved).</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">31.</span><div class="q-text">A ball whose kinetic energy is $E$ is projected at an angle of $45^\circ$ to the horizontal. What is the kinetic energy of the ball at the highest point of its flight?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Initial KE $E = \frac{1}{2}mu^2$.<br> At highest point, vertical velocity is $0$, horizontal is $u_x = u\cos 45^\circ = u/\sqrt{2}$.<br> KE at highest point $K' = \frac{1}{2}mv_{top}^2 = \frac{1}{2}m(u/\sqrt{2})^2 = \frac{1}{2}m(u^2/2) = \frac{1}{2}\left(\frac{1}{2}mu^2\right) = \mathbf{\frac{E}{2}}$.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section D: Projectile from a Height & Inclined Plane</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">32.</span><div class="q-text">A bomber plane flying horizontally with a speed of $500 \text{ m/s}$ at a height of $1000 \text{ m}$ drops a bomb. Find the time taken by the bomb to hit the ground and the horizontal distance it travels. ($g = 10 \text{ m/s}^2$)</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Vertical motion is free fall: $t = \sqrt{\frac{2H}{g}} = \sqrt{\frac{2(1000)}{10}} = \sqrt{200} = 10\sqrt{2} \approx \mathbf{14.14 \text{ s}}$.<br> Horizontal distance $R = u_x t = 500 \times 10\sqrt{2} = 5000\sqrt{2} \approx \mathbf{7070 \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">33.</span><div class="q-text">A ball is thrown horizontally from the top of a tower $40 \text{ m}$ high. The ball strikes the ground at a point $80 \text{ m}$ from the foot of the tower. Find the angle that the velocity vector makes with the horizontal just before hitting the ground. ($g = 10 \text{ m/s}^2$)</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Time of flight $t = \sqrt{2H/g} = \sqrt{2(40)/10} = \sqrt{8} = 2\sqrt{2}\text{ s}$.<br> Horizontal velocity $u_x = R/t = 80/(2\sqrt{2}) = 20\sqrt{2}\text{ m/s}$.<br> Vertical velocity at impact $v_y = gt = 10(2\sqrt{2}) = 20\sqrt{2}\text{ m/s}$.<br> Angle with horizontal $\tan\theta = \frac{v_y}{v_x} = \frac{20\sqrt{2}}{20\sqrt{2}} = 1 \implies \mathbf{\theta = 45^\circ}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">34.</span><div class="q-text">A stone is thrown upwards from the top of a $20 \text{ m}$ high building with an initial velocity of $10 \text{ m/s}$ at an angle of $30^\circ$ above the horizontal. Find the horizontal range from the foot of the building. ($g = 10 \text{ m/s}^2$)</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $u_x = 10\cos 30^\circ = 5\sqrt{3}$, $u_y = 10\sin 30^\circ = 5$. Displacement $S_y = -20\text{ m}$.<br> $S_y = u_y t - \frac{1}{2}gt^2 \implies -20 = 5t - 5t^2 \implies t^2 - t - 4 = 0$.<br> $t = \frac{1 \pm \sqrt{1 - 4(1)(-4)}}{2} = \frac{1 + \sqrt{17}}{2} \approx \frac{1 + 4.123}{2} \approx 2.56\text{ s}$.<br> Range $R = u_x t = 5\sqrt{3} \times 2.56 \approx 8.66 \times 2.56 \approx \mathbf{22.2 \text{ m}}$. <i>(Exact algebraic: $5\sqrt{3}(1+\sqrt{17})/2$).</i></div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">35.</span><div class="q-text">Two tall buildings are separated by a distance of $50 \text{ m}$. A person throws a ball horizontally from a window $45 \text{ m}$ above the ground in the first building. With what speed must the ball be thrown so that it enters a window $25 \text{ m}$ above the ground in the second building? ($g = 10 \text{ m/s}^2$)</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Vertical drop $h = 45 - 25 = 20\text{ m}$.<br> Time to drop $20\text{ m}$: $t = \sqrt{2h/g} = \sqrt{2(20)/10} = \sqrt{4} = 2\text{ s}$.<br> Horizontal distance $R = 50\text{ m}$.<br> Speed $u = R/t = 50 / 2 = \mathbf{25 \text{ m/s}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">36.</span><div class="q-text">A particle is projected up an inclined plane of inclination $\beta = 30^\circ$ with an initial velocity $u = 20 \text{ m/s}$ at an angle $\alpha = 60^\circ$ with the horizontal. Find the range of the projectile along the inclined plane. ($g = 10 \text{ m/s}^2$)</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Angle of projection with incline $\theta = \alpha - \beta = 60^\circ - 30^\circ = 30^\circ$.<br> Range on incline $R = \frac{2u^2\sin\theta\cos(\theta+\beta)}{g\cos^2\beta} = \frac{2(20^2)\sin 30^\circ\cos 60^\circ}{10\cos^2 30^\circ}$.<br> $R = \frac{2(400)(1/2)(1/2)}{10(3/4)} = \frac{200}{7.5} = \frac{200 \times 4}{30} = \frac{80}{3} \approx \mathbf{26.67 \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">37.</span><div class="q-text">A projectile is fired up an inclined plane (angle of inclination $\theta$). The angle of projection is $\alpha$ with the inclined plane. For the projectile to hit the inclined plane perpendicularly, what must be the relation between $\alpha$ and $\theta$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let x-axis be along incline. $u_x = u\cos\alpha$, $a_x = -g\sin\theta$.<br> For perpendicular hit, $v_x = 0$ at time of flight $T$.<br> $v_x = u_x + a_x T \implies 0 = u\cos\alpha - (g\sin\theta)T \implies T = \frac{u\cos\alpha}{g\sin\theta}$.<br> Standard time of flight $T = \frac{2u_y}{|a_y|} = \frac{2u\sin\alpha}{g\cos\theta}$.<br> Equating: $\frac{u\cos\alpha}{g\sin\theta} = \frac{2u\sin\alpha}{g\cos\theta} \implies \frac{\cos\alpha}{\sin\alpha} = 2\frac{\sin\theta}{\cos\theta} \implies \mathbf{\cot\alpha = 2\tan\theta}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">38.</span><div class="q-text">A truck is moving with a constant velocity of $10 \text{ m/s}$. A boy inside the truck throws a ball vertically upwards with a speed of $20 \text{ m/s}$ relative to the truck. Where will the ball fall? What is the trajectory seen by an observer on the ground?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Relative to the truck, the ball's horizontal velocity is 0, so it will fall <b>straight back into the boy's hands</b>.<br> Relative to an observer on the ground, the ball has horizontal velocity $u_x = 10\text{ m/s}$ (truck's speed) and vertical $u_y = 20\text{ m/s}$. The trajectory observed will be a <b>Parabola</b>.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">39.</span><div class="q-text">Two particles are projected simultaneously from the same point, with the same speed $u$, but at different angles $\theta_1$ and $\theta_2$ such that their ranges are equal. Prove that the distance between them is always purely vertical and find the separation as a function of time.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> *Note: A known physical flaw exists in this classic phrasing. If projected with same $u$ and equal ranges, $\theta_1 = 90^\circ-\theta_2$. Their horizontal velocities $u\cos\theta_1 \ne u\cos\theta_2$ are different, so separation is NEVER purely vertical.*<br> If the question implied equal *horizontal velocities* (different $u$), then $x_1(t) = x_2(t)$.<br> Taking the literal vertical separation $\Delta y$: $y_1 = u\sin\theta_1 t - \frac{1}{2}gt^2$ and $y_2 = u\sin\theta_2 t - \frac{1}{2}gt^2$.<br> $\Delta y = y_1 - y_2 = \mathbf{ut(\sin\theta_1 - \sin\theta_2)}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">40.</span><div class="q-text">From the top of a tower, two stones are projected simultaneously with the same speed $u$; one upwards at angle $\theta$ and the other downwards at the same angle $\theta$ with the horizontal. Which stone will strike the ground with greater speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> By conservation of energy: Total Energy at top $= \frac{1}{2}mu^2 + mgH$.<br> This energy must equal the kinetic energy at the ground: $\frac{1}{2}mv^2$.<br> Thus, $v = \sqrt{u^2 + 2gH}$. Since both have the same initial speed $u$ and height $H$, they will hit the ground with the <b>exact same speed</b> (though at different angles and times).</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section E: Relative Motion in 2D (Rain-Man & River-Boat)</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">41.</span><div class="q-text">Rain is falling vertically with a speed of $30 \text{ m/s}$. A woman rides a bicycle with a speed of $10 \text{ m/s}$ in the north to south direction. What is the direction in which she should hold her umbrella?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $\vec{v}_r = -30\hat{j}$ (down). $\vec{v}_w = -10\hat{i}$ (South, assuming North is $+x$).<br> Velocity of rain wrt woman $\vec{v}_{rw} = \vec{v}_r - \vec{v}_w = -30\hat{j} - (-10\hat{i}) = 10\hat{i} - 30\hat{j}$.<br> Angle with vertical $\tan\theta = \frac{|v_x|}{|v_y|} = \frac{10}{30} = \frac{1}{3}$.<br> Umbrella must be held $\mathbf{\theta = \tan^{-1}(1/3)}$ South of vertical.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">42.</span><div class="q-text">A man walking horizontally at $3 \text{ km/h}$ observes rain falling vertically. When he increases his speed to $6 \text{ km/h}$, the rain appears to hit him at an angle of $45^\circ$ with the vertical. Find the actual speed and direction of the rain.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let actual rain velocity be $\vec{v}_r = v_x\hat{i} - v_y\hat{j}$.<br> Case 1: Man velocity $\vec{v}_{m1} = 3\hat{i}$. $\vec{v}_{r/m1} = (v_x-3)\hat{i} - v_y\hat{j}$. Observed vertical implies $v_x - 3 = 0 \implies v_x = 3$.<br> Case 2: Man velocity $\vec{v}_{m2} = 6\hat{i}$. $\vec{v}_{r/m2} = (3-6)\hat{i} - v_y\hat{j} = -3\hat{i} - v_y\hat{j}$.<br> Angle $45^\circ \implies \tan 45^\circ = \frac{|v_x|}{|v_y|} \implies 1 = \frac{3}{v_y} \implies v_y = 3$.<br> Actual $\vec{v}_r = 3\hat{i} - 3\hat{j}$. Speed $|\vec{v}_r| = \sqrt{3^2 + 3^2} = \mathbf{3\sqrt{2} \text{ km/h}}$ at angle $\mathbf{45^\circ}$ with vertical.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">43.</span><div class="q-text">A river is flowing from west to east at a speed of $5 \text{ m/s}$. A man on the south bank of the river, capable of swimming at $10 \text{ m/s}$ in still water, wants to swim across the river in the shortest time. He should swim in which direction? Also find the shortest time if the river width is $100 \text{ m}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> For shortest time, all swimming effort must be perpendicular to the flow.<br> Swim direction: <b>Due North</b> ($90^\circ$ to river flow).<br> Time $t = \frac{\text{width}}{v_s} = \frac{100}{10} = \mathbf{10 \text{ s}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">44.</span><div class="q-text">In the previous question, if the man wants to cross the river to reach exactly the opposite point on the north bank (shortest path), at what angle with the river flow should he swim? How much time will it take?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> To have zero drift, $v_s\sin\theta = v_r$ (where $\theta$ is angle upstream from vertical).<br> $10\sin\theta = 5 \implies \sin\theta = 1/2 \implies \theta = 30^\circ$ West of North.<br> Angle with flow (East) = $90^\circ + 30^\circ = \mathbf{120^\circ}$.<br> Net crossing speed $v_{net} = v_s\cos\theta = 10\cos 30^\circ = 5\sqrt{3} \text{ m/s}$.<br> Time $t = \frac{100}{5\sqrt{3}} = \frac{20}{\sqrt{3}} \approx \mathbf{11.55 \text{ s}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">45.</span><div class="q-text">A river flows with a speed $v_r$. A swimmer can swim with speed $v_s$ in still water. If $v_r > v_s$, can the swimmer cross the river strictly along the shortest path? If not, what should be his angle to minimize the drift?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> To cross exactly opposite, requires $v_s\sin\theta = v_r \implies \sin\theta = v_r/v_s$. Since $v_r > v_s$, $\sin\theta > 1$ which is impossible. <b>No</b>, he cannot.<br> To minimize drift $x = (v_r - v_s\sin\theta) \frac{d}{v_s\cos\theta}$. Differentiating $dx/d\theta = 0$ yields condition $\mathbf{\sin\theta = v_s/v_r}$ upstream from the perpendicular.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">46.</span><div class="q-text">Ship A is sailing towards north at $10\sqrt{2} \text{ km/h}$. Ship B, located $100 \text{ km}$ East of A, is sailing towards west at $10\sqrt{2} \text{ km/h}$. Find the minimum distance between the ships and the time when it occurs.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let A start at $(0,0)$. $\vec{v}_A = 10\sqrt{2}\hat{j}$.<br> B starts at $(100,0)$. $\vec{v}_B = -10\sqrt{2}\hat{i}$.<br> Relative velocity $\vec{v}_{BA} = \vec{v}_B - \vec{v}_A = -10\sqrt{2}\hat{i} - 10\sqrt{2}\hat{j}$. $|\vec{v}_{BA}| = \sqrt{200+200} = 20\text{ km/h}$.<br> Initial relative pos $\vec{r}_{BA,0} = 100\hat{i}$.<br> Time $t = \frac{-\vec{r} \cdot \vec{v}}{v^2} = \frac{-(100\hat{i}) \cdot (-10\sqrt{2}\hat{i} - 10\sqrt{2}\hat{j})}{400} = \frac{1000\sqrt{2}}{400} = \mathbf{2.5\sqrt{2} \text{ hours}}$ (approx $3.53\text{h}$).<br> Min distance $d = \frac{|\vec{r} \times \vec{v}|}{|\vec{v}|} = \frac{|100\hat{i} \times (-10\sqrt{2}\hat{i} - 10\sqrt{2}\hat{j})|}{20} = \frac{|-1000\sqrt{2}\hat{k}|}{20} = \mathbf{50\sqrt{2} \text{ km}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">47.</span><div class="q-text">An airplane is flying with a velocity of $800 \text{ km/h}$ relative to the air. A wind is blowing from the south at $150 \text{ km/h}$. If the pilot wants to travel due east, what direction must he head his plane?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Wind from South means wind blows towards North: $\vec{v}_w = 150\hat{j}$.<br> Plane wants resultant $\vec{v}_p$ along $+\hat{i}$ (East). $\vec{v}_p = \vec{v}_{p/w} + \vec{v}_w$.<br> Vertical component must be zero: $v_{p/w}\sin\theta + 150 = 0 \implies 800\sin\theta = -150 \implies \sin\theta = -\frac{150}{800} = -\frac{3}{16}$.<br> Direction must be $\mathbf{\sin^{-1}(3/16)}$ South of East.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">48.</span><div class="q-text">Two particles A and B start from origin and move on x and y axes with constant velocities $v_1$ and $v_2$ respectively. Find the rate of separation between them as a function of time.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Position of A: $\vec{r}_A = v_1 t \hat{i}$. Position of B: $\vec{r}_B = v_2 t \hat{j}$.<br> Distance $s = |\vec{r}_B - \vec{r}_A| = \sqrt{(-v_1 t)^2 + (v_2 t)^2} = t\sqrt{v_1^2 + v_2^2}$.<br> Rate of separation $\frac{ds}{dt} = \mathbf{\sqrt{v_1^2 + v_2^2}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">49.</span><div class="q-text">A person moving at $4 \text{ km/h}$ finds rain falling vertically. If he stops, the rain appears to fall at an angle of $30^\circ$ with the vertical. What is the actual velocity of the rain?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let $\vec{v}_r = v_x\hat{i} - v_y\hat{j}$. Person $\vec{v}_m = 4\hat{i}$.<br> When moving: $\vec{v}_{rm} = (v_x - 4)\hat{i} - v_y\hat{j}$. Vertical means $x$-component is 0 $\implies v_x = 4$.<br> When stopped: $\vec{v}_r = 4\hat{i} - v_y\hat{j}$. Angle $30^\circ$ with vertical $\implies \tan 30^\circ = \frac{|v_x|}{|v_y|} = \frac{4}{v_y} \implies \frac{1}{\sqrt{3}} = \frac{4}{v_y} \implies v_y = 4\sqrt{3}$.<br> Magnitude $|\vec{v}_r| = \sqrt{4^2 + (4\sqrt{3})^2} = \sqrt{16 + 48} = \sqrt{64} = \mathbf{8 \text{ km/h}}$. Angle is $30^\circ$.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section F: Uniform & Non-Uniform Circular Motion</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">50.</span><div class="q-text">A particle moves in a circle of radius $20 \text{ cm}$ with a linear speed of $10 \text{ m/s}$. Find the angular velocity of the particle.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Radius $r = 20\text{ cm} = 0.2\text{ m}$. Linear speed $v = 10\text{ m/s}$.<br> Relation $v = \omega r \implies \omega = \frac{v}{r} = \frac{10}{0.2} = \mathbf{50 \text{ rad/s}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">51.</span><div class="q-text">The angular position of a particle revolving on a circular path is given by $\theta(t) = 2t^3 - 4t^2 + 6t$. Find its angular acceleration at $t = 2 \text{ s}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Angular velocity $\omega = \frac{d\theta}{dt} = 6t^2 - 8t + 6$.<br> Angular acceleration $\alpha = \frac{d\omega}{dt} = 12t - 8$.<br> At $t = 2\text{ s}$, $\alpha = 12(2) - 8 = 24 - 8 = \mathbf{16 \text{ rad/s}^2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">52.</span><div class="q-text">A particle is moving in a circle of radius $R$ with constant speed $v$. What is the magnitude of change in its velocity after it covers half of the circle? What is the average acceleration during this time?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> After half circle, velocity reverses direction (e.g., from $+v\hat{j}$ to $-v\hat{j}$).<br> $|\Delta\vec{v}| = |(-v\hat{j}) - (v\hat{j})| = |-2v\hat{j}| = \mathbf{2v}$.<br> Time taken $t = \frac{\text{Distance}}{\text{Speed}} = \frac{\pi R}{v}$.<br> Avg acceleration $|\vec{a}_{avg}| = \frac{|\Delta\vec{v}|}{t} = \frac{2v}{\pi R / v} = \mathbf{\frac{2v^2}{\pi R}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">53.</span><div class="q-text">An object moves in a circular path of radius $R = 2.5 \text{ m}$ such that its speed varies with time as $v = 2t$. Find the net acceleration of the object at $t = 1 \text{ s}$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Tangential acceleration $a_t = \frac{dv}{dt} = 2 \text{ m/s}^2$.<br> At $t=1$, $v = 2(1) = 2 \text{ m/s}$.<br> Centripetal acceleration $a_c = \frac{v^2}{R} = \frac{2^2}{2.5} = \frac{4}{2.5} = 1.6 \text{ m/s}^2$.<br> Net acceleration $a = \sqrt{a_t^2 + a_c^2} = \sqrt{2^2 + 1.6^2} = \sqrt{4 + 2.56} = \sqrt{6.56} \approx \mathbf{2.56 \text{ m/s}^2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">54.</span><div class="q-text">In non-uniform circular motion, what is the angle between the velocity vector and the net acceleration vector if the particle is speeding up? What if it is slowing down?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Net acceleration $\vec{a} = \vec{a}_c + \vec{a}_t$. Velocity $\vec{v}$ is along the tangent.<br> Speeding up: $\vec{a}_t$ is in the same direction as $\vec{v}$. The resultant $\vec{a}$ points forward-inwards. Angle is $\mathbf{Acute (< 90^\circ)}$.<br> Slowing down: $\vec{a}_t$ is opposite to $\vec{v}$. Resultant $\vec{a}$ points backward-inwards. Angle is $\mathbf{Obtuse (> 90^\circ)}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">55.</span><div class="q-text">A stone of mass $0.5 \text{ kg}$ is tied to a string of length $1 \text{ m}$ and whirled in a horizontal circle with a uniform speed of $4 \text{ m/s}$. What is the tension in the string? (Assume the string is perfectly horizontal).</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Tension provides necessary centripetal force: $T = F_c = \frac{mv^2}{R}$.<br> $T = \frac{0.5 \times 4^2}{1} = 0.5 \times 16 = \mathbf{8 \text{ N}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">56.</span><div class="q-text">Find the radius of curvature of the trajectory of a projectile (launched with speed $u$ at angle $\theta$) at its highest point.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> At highest point, speed $v = u\cos\theta$ (purely horizontal).<br> Acceleration perpendicular to velocity is full gravity: $a_\perp = g$.<br> Centripetal accel $a_c = v^2 / R_c \implies g = \frac{(u\cos\theta)^2}{R_c} \implies \mathbf{R_c = \frac{u^2\cos^2\theta}{g}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">57.</span><div class="q-text">For the same projectile, what is the radius of curvature of the trajectory at the exact point of projection?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> At projection, speed $v = u$.<br> Gravity $g$ points down. Component of $g$ perpendicular to velocity vector (which is at $\theta$) is $a_\perp = g\cos\theta$.<br> $a_c = v^2 / R_c \implies g\cos\theta = \frac{u^2}{R_c} \implies \mathbf{R_c = \frac{u^2}{g\cos\theta}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">58.</span><div class="q-text">A car is travelling at $36 \text{ km/h}$ on a circular road of radius $50 \text{ m}$. It is increasing its speed at the rate of $2 \text{ m/s}^2$. What is its net acceleration?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v = 36\text{ km/h} = 10\text{ m/s}$. Tangential acceleration $a_t = 2\text{ m/s}^2$.<br> Centripetal accel $a_c = \frac{v^2}{R} = \frac{10^2}{50} = \frac{100}{50} = 2\text{ m/s}^2$.<br> Net acceleration $a = \sqrt{a_t^2 + a_c^2} = \sqrt{2^2 + 2^2} = \mathbf{2\sqrt{2} \text{ m/s}^2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">59.</span><div class="q-text">Show that for a particle in uniform circular motion, the acceleration vector is always directed towards the center of the circle.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Position $\vec{r} = R\cos(\omega t)\hat{i} + R\sin(\omega t)\hat{j}$.<br> Velocity $\vec{v} = \frac{d\vec{r}}{dt} = -R\omega\sin(\omega t)\hat{i} + R\omega\cos(\omega t)\hat{j}$.<br> Acceleration $\vec{a} = \frac{d\vec{v}}{dt} = -R\omega^2\cos(\omega t)\hat{i} - R\omega^2\sin(\omega t)\hat{j} = -\omega^2(R\cos(\omega t)\hat{i} + R\sin(\omega t)\hat{j})$.<br> Thus, $\vec{a} = -\omega^2\vec{r}$. The negative sign indicates $\vec{a}$ is anti-parallel to $\vec{r}$ (points strictly towards origin/center).</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section G: Advanced & Mixed Conceptual Problems</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">60.</span><div class="q-text">A particle is moving such that its position vector varies with time as $\vec{r} = a\cos(\omega t)\hat{i} + b\sin(\omega t)\hat{j}$. What is the shape of its trajectory? Find the equation of the trajectory.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $x = a\cos(\omega t) \implies \cos(\omega t) = x/a$.<br> $y = b\sin(\omega t) \implies \sin(\omega t) = y/b$.<br> Use $\cos^2(\omega t) + \sin^2(\omega t) = 1 \implies \mathbf{\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1}$.<br> This represents the standard equation of an <b>Ellipse</b>.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">61.</span><div class="q-text">Two projectiles are thrown simultaneously in the same vertical plane from the same point. The first is thrown with velocity $v_1$ at angle $\theta_1$ and the second with $v_2$ at $\theta_2$. What is the path of the first particle as seen by the second particle?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Since both are freely falling, they have same acceleration $\vec{a} = -g\hat{j}$.<br> Relative acceleration $\vec{a}_{rel} = \vec{a}_1 - \vec{a}_2 = 0$.<br> Since $\vec{a}_{rel} = 0$, relative velocity $\vec{v}_{rel}$ is constant. An object moving with constant velocity relative to an observer travels in a <b>Straight Line</b>.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">62.</span><div class="q-text">A hunter aims a gun directly at a monkey sitting on a tree branch. The instant the gun is fired, the monkey drops from the branch. Will the bullet hit the monkey? Prove your answer using relative kinematics.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let bullet be B and monkey be M. Initial relative velocity $\vec{v}_{BM,0}$ points directly from gun to monkey.<br> Accelerations: $\vec{a}_B = \vec{g}$ and $\vec{a}_M = \vec{g}$.<br> Relative acceleration $\vec{a}_{rel} = \vec{g} - \vec{g} = 0$.<br> Since relative acceleration is 0, the bullet travels in a straight line relative to the monkey along the initial line of sight. <b>Yes, it will always hit</b>.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">63.</span><div class="q-text">An elevator is moving upward with a constant acceleration $a_0$. A person inside the elevator throws a ball horizontally with a speed $u$ relative to the elevator. Determine the horizontal range of the ball relative to the elevator floor, given the throw height is $h$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> In elevator frame, pseudo acceleration is $a_0$ downwards. Effective gravity $g_{eff} = g + a_0$.<br> Time to fall height $h$: $t = \sqrt{\frac{2h}{g_{eff}}} = \sqrt{\frac{2h}{g+a_0}}$.<br> Horizontal range $R = u_x t = \mathbf{u\sqrt{\frac{2h}{g+a_0}}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">64.</span><div class="q-text">A particle is projected from the origin in the x-y plane. Its velocity at time $t$ is given by $\vec{v} = (a)\hat{i} + (b - ct)\hat{j}$. Find the maximum y-coordinate reached by the particle.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v_y = b - ct$. Integrate to find y: $y = \int (b - ct)dt = bt - \frac{ct^2}{2}$.<br> Max height occurs when $v_y = 0 \implies b - ct = 0 \implies t = b/c$.<br> Substitute $t$: $y_{max} = b(b/c) - \frac{c(b/c)^2}{2} = \frac{b^2}{c} - \frac{b^2}{2c} = \mathbf{\frac{b^2}{2c}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">65.</span><div class="q-text">A cannon ball is fired to hit a target at a horizontal distance $R$. However, it falls short by $x$ when fired at angle $\alpha$. It overshoots by $y$ when fired at angle $\beta$. Find the correct angle of projection to hit the target exactly. (Assume same initial velocity).</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Range formulas: $R - x = \frac{u^2}{g}\sin 2\alpha$ and $R + y = \frac{u^2}{g}\sin 2\beta$.<br> Multiply first by $y$, second by $x$, and add to eliminate $R$:<br> $y(R-x) + x(R+y) = yR + xR = R(x+y)$.<br> Also $y(\frac{u^2}{g}\sin 2\alpha) + x(\frac{u^2}{g}\sin 2\beta) = \frac{u^2}{g}(y\sin 2\alpha + x\sin 2\beta)$.<br> Thus, true $R = \frac{u^2}{g} \left( \frac{y\sin 2\alpha + x\sin 2\beta}{x+y} \right)$. Since true $R = \frac{u^2}{g}\sin 2\theta$, we get $\mathbf{\sin 2\theta = \frac{y\sin 2\alpha + x\sin 2\beta}{x+y}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">66.</span><div class="q-text">Two identical balls A and B are projected from a cliff of height $H$. Ball A is projected horizontally with speed $u$. Ball B is dropped from rest. If both hit the ground at times $t_A$ and $t_B$ respectively, compare $t_A$ and $t_B$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Both balls have initial vertical velocity $u_y = 0$.<br> Vertical motion equation: $H = u_y t + \frac{1}{2}gt^2 = \frac{1}{2}gt^2$.<br> Thus $t = \sqrt{2H/g}$ for both. Therefore, $\mathbf{t_A = t_B}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">67.</span><div class="q-text">A boy on a flat car moving with constant velocity $10 \text{ m/s}$ throws a ball directly upward with speed $5 \text{ m/s}$ relative to the car. What is the radius of curvature of the ball's path as seen by a stationary observer on the ground, at the highest point of its trajectory?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> For ground observer, velocity at highest point is purely horizontal: $v = v_x = 10\text{ m/s}$.<br> Perpendicular acceleration is gravity $a_\perp = g = 10\text{ m/s}^2$.<br> $R_c = \frac{v^2}{a_\perp} = \frac{10^2}{10} = \frac{100}{10} = \mathbf{10 \text{ m}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">68.</span><div class="q-text">A particle moves in a plane with constant acceleration. The initial velocity is $\vec{v}_0$ and the acceleration is $\vec{a}$. If the particle's speed is minimum at $t = t_0$, find the expression for $t_0$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Velocity $\vec{v}(t) = \vec{v}_0 + \vec{a}t$.<br> Speed squared $v^2 = (\vec{v}_0 + \vec{a}t) \cdot (\vec{v}_0 + \vec{a}t) = v_0^2 + a^2t^2 + 2(\vec{v}_0 \cdot \vec{a})t$.<br> To minimize speed, differentiate wrt $t$ and set to 0:<br> $\frac{d(v^2)}{dt} = 2a^2t + 2(\vec{v}_0 \cdot \vec{a}) = 0 \implies \mathbf{t_0 = -\frac{\vec{v}_0 \cdot \vec{a}}{a^2}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">69.</span><div class="q-text">Find the minimum initial velocity required for a projectile to cross a vertical wall of height $h$ situated at a horizontal distance $x$ from the point of projection.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Trajectory: $y = x\tan\theta - \frac{gx^2}{2u^2}(1+\tan^2\theta)$. Set $y=h$.<br> Rearrange as a quadratic in $\tan\theta$: $\left(\frac{gx^2}{2u^2}\right)\tan^2\theta - x\tan\theta + \left(h + \frac{gx^2}{2u^2}\right) = 0$.<br> For real angle $\theta$, discriminant $D \ge 0 \implies x^2 - 4\left(\frac{gx^2}{2u^2}\right)\left(h + \frac{gx^2}{2u^2}\right) \ge 0$.<br> Divide by $x^2$: $1 - \frac{2g}{u^2}\left(h + \frac{gx^2}{2u^2}\right) \ge 0 \implies u^4 - 2ghu^2 - g^2x^2 \ge 0$.<br> Solve quadratic inequality for $u^2$: $u^2 \ge \frac{2gh + \sqrt{4g^2h^2 + 4g^2x^2}}{2} = g(h + \sqrt{h^2+x^2})$.<br> Thus, $\mathbf{u_{min} = \sqrt{g(h + \sqrt{x^2+h^2})}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">70.</span><div class="q-text">A particle of mass $m$ is moving in a circular path of constant radius $r$ such that its centripetal acceleration $a_c$ varies with time $t$ as $a_c = k^2 r t^2$, where $k$ is a constant. Find the power delivered to the particle by the forces acting on it.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $a_c = \frac{v^2}{r} = k^2 r t^2 \implies v^2 = k^2 r^2 t^2 \implies v = k r t$.<br> Tangential acceleration $a_t = \frac{dv}{dt} = k r$.<br> Tangential force $F_t = m a_t = m k r$. (Centripetal force does no work).<br> Power $P = F_t \cdot v = (m k r) (k r t) = \mathbf{m k^2 r^2 t}$.</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

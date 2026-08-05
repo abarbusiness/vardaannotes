@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Detailed Solutions: Motion in 1D | Level 2</title>
+    
+    <!-- MathJax for rendering Mathematical equations -->
+    <script>
+      window.MathJax = { 
+          tex: { 
+              inlineMath: [['$', '$'], ['\\(', '\\)']],
+              displayMath: [['$$', '$$'], ['\\[', '\\]']]
+          } 
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES (Level 2: Standard/Medium) --- */
+        :root {
+            --primary-color: #1565c0; 
+            --bg-color: #e3f2fd;
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+            --sol-bg: #f9f9f9;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #64b5f6;
+            --bg-color: #1e2a38;
+            --body-bg: #121212;
+            --text-main: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+            --sol-bg: #1a1a1a;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.5; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT & SOLUTIONS STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 15px; }
+        .question-item { 
+            display: flex; flex-direction: column; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 15px;
+        }
+        .q-row { display: flex; align-items: baseline; margin-bottom: 8px; }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-text { font-weight: bold; color: var(--text-secondary); flex: 1; }
+        
+        .solution-box {
+            background-color: var(--sol-bg);
+            border-left: 3px solid var(--primary-color);
+            padding: 10px 15px;
+            margin-left: 35px;
+            border-radius: 0 4px 4px 0;
+            font-size: 11pt;
+            overflow-x: auto;
+        }
+        .sol-label { font-weight: bold; color: var(--primary-color); margin-right: 5px; }
+
+        /* Image blend rules */
+        .content-image, .img-in-note {
+            mix-blend-mode: multiply;
+            transition: filter 0.3s ease;
+        }
+        html.dark-mode .content-image, html.dark-mode .img-in-note {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        /* --- SVGS FOR GRAPHS --- */
+        .graph-container {
+            display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 10px;
+        }
+        .svg-graph {
+            width: 150px; height: 120px;
+            stroke: var(--text-main); fill: none;
+            overflow: visible;
+        }
+        .svg-curve { stroke: var(--primary-color); stroke-width: 2px; }
+
+        /* --- FOOTER & UTILITIES --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+        }
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark { filter: invert(1); opacity: 0.05; }
+        
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle { filter: invert(1) hue-rotate(180deg); background: #e0e0e0; }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media (max-width: 768px) {
+            .meta-info { flex-direction: column; gap: 8px; text-align: center; }
+            .container { padding: 10px; margin-top: 60px; }
+            .solution-box { margin-left: 0; margin-top: 10px; }
+        }
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+            .solution-box { background-color: var(--sol-bg) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Detailed Solution Manual: Motion in 1D (Level 2)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 11th (JEE/NEET)</span>
+                <span>Subject: Physics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section A: Position, Path Length & Displacement</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">1.</span><div class="q-text">Ratio of distance to displacement for half a revolution of radius R.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> For half a revolution, distance travelled (arc length) = $\pi R$. Displacement (straight line from start to end) = Diameter = $2R$.<br> Ratio = $\frac{\text{Distance}}{\text{Displacement}} = \frac{\pi R}{2R} = \frac{\pi}{2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">2.</span><div class="q-text">Athlete on circular track $R$ in $40\text{ s}$. Displacement at $2\text{ min } 20\text{ s}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Total time $t = 2 \times 60 + 20 = 140\text{ s}$.<br> Number of rounds = $\frac{140}{40} = 3.5$ rounds.<br> After 3 complete rounds, displacement is $0$. After the remaining $0.5$ round, he is at the diametrically opposite point. Displacement = $2R$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">3.</span><div class="q-text">Boy walks $4\text{ m}$ east, $3\text{ m}$ south. Total distance and displacement?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Total Distance = $4\text{ m} + 3\text{ m} = 7\text{ m}$.<br> Displacement is the hypotenuse of the right-angled triangle formed: $s = \sqrt{4^2 + 3^2} = \sqrt{16 + 9} = \sqrt{25} = 5\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">4.</span><div class="q-text">Drunkard: $5$ steps forward, $3$ steps backward, $1\text{m/s}$ per step. Time to reach pit at $13\text{ m}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> In one cycle of $8$ steps ($8\text{ s}$), net distance covered = $5 - 3 = 2\text{ m}$.<br> To reach $13\text{ m}$, he needs to fall into the pit on a forward stroke. Total distance needed before final burst = $13 - 5 = 8\text{ m}$.<br> Time for $8\text{ m}$ net displacement = $4 \text{ cycles} \times 8\text{ s} = 32\text{ s}$.<br> In the next $5\text{ s}$, he takes $5$ forward steps, reaching $8+5 = 13\text{ m}$ and falls. Total time = $32 + 5 = 37\text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">5.</span><div class="q-text">Can displacement be zero? Can distance be zero for a moving particle?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Yes, displacement can be zero if the particle returns to its starting position (e.g., completing a full circle).<br> No, distance travelled by a moving particle is always positive; it can never be zero or negative.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">6.</span><div class="q-text">Ratio of displacement to distance is:</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> (d) Equal to or less than $1$. Displacement is the shortest path, so $|\text{Displacement}| \le \text{Distance}$. Ratio $\le 1$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">7.</span><div class="q-text">Wheel ($R=1\text{m}$) rolls half revolution. Displacement of point initially in contact with ground?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> After half a revolution, the point moves horizontally by $\pi R$ and vertically up by $2R$.<br> Net displacement = $\sqrt{(\pi R)^2 + (2R)^2} = R\sqrt{\pi^2 + 4}$. Since $R=1$, displacement = $\sqrt{\pi^2 + 4}\text{ m}$.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section B: Average Speed & Average Velocity</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">8.</span><div class="q-text">First half distance at $30\text{ km/h}$, second half at $50\text{ km/h}$. Average speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> For equal distances, $v_{avg} = \frac{2 v_1 v_2}{v_1 + v_2} = \frac{2(30)(50)}{30 + 50} = \frac{3000}{80} = 37.5\text{ km/h}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">9.</span><div class="q-text">Train A to B at $10\text{ m/s}$, B to A at $20\text{ m/s}$. Average velocity and speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Average Velocity = $0$ (since net displacement is zero).<br> Average Speed (equal distances) = $\frac{2(10)(20)}{10+20} = \frac{400}{30} = 13.33\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">10.</span><div class="q-text">One-third journey with $u$, next with $v$, last with $w$. Average speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Total Distance = $S$. Total Time = $\frac{S/3}{u} + \frac{S/3}{v} + \frac{S/3}{w} = \frac{S}{3} (\frac{1}{u} + \frac{1}{v} + \frac{1}{w})$.<br> $v_{avg} = \frac{\text{Total Distance}}{\text{Total Time}} = \frac{S}{\frac{S}{3} \frac{vw + uw + uv}{uvw}} = \frac{3uvw}{vw + uw + uv}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">11.</span><div class="q-text">Velocity $v_1$ for time $t_1$, $v_2$ for $t_2$ in same direction. Average velocity?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Total Displacement = $v_1 t_1 + v_2 t_2$. Total Time = $t_1 + t_2$.<br> $v_{avg} = \frac{v_1 t_1 + v_2 t_2}{t_1 + t_2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">12.</span><div class="q-text">Boy to market ($2.5\text{km}$ at $5\text{km/h}$), returns instantly ($7.5\text{km/h}$). Avg vel for $0-40\text{min}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Time to market $t_1 = \frac{2.5}{5} = 0.5\text{ h} = 30\text{ min}$.<br> Remaining time for interval = $40 - 30 = 10\text{ min} = \frac{1}{6}\text{ h}$.<br> Distance back in $10\text{ min}$ = $7.5 \times \frac{1}{6} = 1.25\text{ km}$.<br> Net Displacement = $2.5 - 1.25 = 1.25\text{ km}$.<br> Average Velocity = $\frac{\text{Displacement}}{\text{Total Time (hours)}} = \frac{1.25}{40/60} = \frac{1.25}{2/3} = 1.875\text{ km/h}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">13.</span><div class="q-text">Speed $v_1$ for half time, $v_2$ for rest half time. Average speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Since time intervals are equal ($t_1 = t_2 = t$), $v_{avg} = \frac{v_1 t + v_2 t}{2t} = \frac{v_1 + v_2}{2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">14.</span><div class="q-text">Travels $20\text{m}$ in $2\text{s}$, then $16\text{m}$ in $2\text{s}$. Average speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Total distance = $20 + 16 = 36\text{ m}$. Total time = $2 + 2 = 4\text{ s}$.<br> Average Speed = $\frac{36}{4} = 9\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">15.</span><div class="q-text">Constant speed but variable velocity? Example in 2D? Possible in 1D?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Yes, velocity is a vector. If direction changes while magnitude (speed) remains constant, velocity varies. Example (2D): Uniform Circular Motion.<br> In strict 1D motion, it is NOT possible, because to change direction in a straight line, the object must stop and reverse, meaning speed cannot remain constant.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section C: Calculus in Kinematics</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">16.</span><div class="q-text">$x = 8.5 + 2.5t^2$. Velocity at $t = 0\text{s}$ and $t = 2.0\text{s}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v = \frac{dx}{dt} = \frac{d}{dt}(8.5 + 2.5t^2) = 5t$<br> At $t=0$, $v = 5(0) = 0\text{ m/s}$.<br> At $t=2$, $v = 5(2) = 10\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">17.</span><div class="q-text">$x = 4t^2 - 15t + 25$. Position, velocity, acceleration at $t = 0$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> At $t=0$, Position $x = 25\text{ m}$.<br> Velocity $v = \frac{dx}{dt} = 8t - 15$. At $t=0$, $v = -15\text{ m/s}$.<br> Acceleration $a = \frac{dv}{dt} = 8\text{ m/s}^2$ (Constant).</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">18.</span><div class="q-text">$a = 3t^2 + 2t + 2$. Starts with $v = 2\text{m/s}$ at $t=0$. Velocity at $t = 2\text{s}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v = \int a dt = \int (3t^2 + 2t + 2) dt = t^3 + t^2 + 2t + C$.<br> At $t=0, v=2 \implies C = 2$. So, $v = t^3 + t^2 + 2t + 2$.<br> At $t=2$, $v = (2)^3 + (2)^2 + 2(2) + 2 = 8 + 4 + 4 + 2 = 18\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">19.</span><div class="q-text">$s = t^3 - 6t^2 + 3t + 4$. Velocity when acceleration is zero?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v = \frac{ds}{dt} = 3t^2 - 12t + 3$.<br> $a = \frac{dv}{dt} = 6t - 12$. Set $a = 0 \implies 6t = 12 \implies t = 2\text{ s}$.<br> Substitute $t=2$ in velocity equation: $v = 3(2)^2 - 12(2) + 3 = 12 - 24 + 3 = -9\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">20.</span><div class="q-text">$v = A + Bt + Ct^2$. Dimensions of $A, B, C$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> By principle of homogeneity, all terms must have dimensions of velocity $[LT^{-1}]$.<br> $[A] = [LT^{-1}]$.<br> $[Bt] = [LT^{-1}] \implies [B][T] = [LT^{-1}] \implies [B] = [LT^{-2}]$.<br> $[Ct^2] = [LT^{-1}] \implies [C][T^2] = [LT^{-1}] \implies [C] = [LT^{-3}]$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">21.</span><div class="q-text">$v = \alpha \sqrt{x}$. Find acceleration.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Use chain rule: $a = v \frac{dv}{dx}$.<br> $\frac{dv}{dx} = \alpha \cdot \frac{1}{2\sqrt{x}}$.<br> $a = (\alpha \sqrt{x}) \cdot (\frac{\alpha}{2\sqrt{x}}) = \frac{\alpha^2}{2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">22.</span><div class="q-text">$t = ax^2 + bx$. Acceleration in terms of velocity $v$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Differentiate wrt $t$: $1 = 2ax \frac{dx}{dt} + b \frac{dx}{dt} = v(2ax + b)$.<br> Thus, $v = (2ax + b)^{-1}$.<br> Diff wrt $t$ again: $a = \frac{dv}{dt} = -1(2ax + b)^{-2} \cdot \frac{d}{dt}(2ax+b) = -(2ax+b)^{-2} \cdot (2av)$.<br> Substitute $(2ax+b)^{-1} = v$: $a = -v^2 \cdot (2av) = -2av^3$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">23.</span><div class="q-text">$v = t^2 - 4t + 3$. Total distance in first $4$ seconds?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Roots of $v=0$ are $t=1, 3$. The particle turns at these times.<br> Dist = $\int_0^1 |v|dt + \int_1^3 |v|dt + \int_3^4 |v|dt$.<br> $S(t) = \int v dt = \frac{t^3}{3} - 2t^2 + 3t$.<br> $\Delta S_{0 \to 1} = (\frac{1}{3} - 2 + 3) - 0 = \frac{4}{3}$.<br> $\Delta S_{1 \to 3} = (9 - 18 + 9) - \frac{4}{3} = -\frac{4}{3} \implies \text{Dist} = \frac{4}{3}$.<br> $\Delta S_{3 \to 4} = (\frac{64}{3} - 32 + 12) - 0 = \frac{64}{3} - 20 = \frac{4}{3}$.<br> Total Distance = $\frac{4}{3} + \frac{4}{3} + \frac{4}{3} = \frac{12}{3} = 4\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">24.</span><div class="q-text">$a = -kx$. Initial velocity $v_0$ at $x=0$. Velocity as function of $x$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $a = v \frac{dv}{dx} = -kx \implies \int_{v_0}^v v dv = \int_0^x -kx dx$.<br> $\left[ \frac{v^2}{2} \right]_{v_0}^v = \left[ -\frac{kx^2}{2} \right]_0^x \implies \frac{v^2}{2} - \frac{v_0^2}{2} = -\frac{kx^2}{2}$.<br> $v^2 = v_0^2 - kx^2 \implies v = \sqrt{v_0^2 - kx^2}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">25.</span><div class="q-text">$x = 2t^3 - 3t^2 + 4t$. Average acceleration between $t=1$ and $t=3$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $v = \frac{dx}{dt} = 6t^2 - 6t + 4$.<br> At $t=1, v_1 = 6(1) - 6(1) + 4 = 4\text{ m/s}$.<br> At $t=3, v_3 = 6(9) - 6(3) + 4 = 54 - 18 + 4 = 40\text{ m/s}$.<br> $a_{avg} = \frac{\Delta v}{\Delta t} = \frac{40 - 4}{3 - 1} = \frac{36}{2} = 18\text{ m/s}^2$.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section D: Equations of Kinematics</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">26.</span><div class="q-text">Jet plane: $u=0, a=3\text{m/s}^2, t=35\text{s}$. Runway length and takeoff velocity?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Length $s = ut + \frac{1}{2}at^2 = 0 + \frac{1}{2}(3)(35^2) = 1.5 \times 1225 = 1837.5\text{ m}$.<br> Velocity $v = u + at = 0 + 3(35) = 105\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">27.</span><div class="q-text">Reaction time $0.20\text{s}$. Speed $54\text{km/h}$, deceleration $6.0\text{m/s}^2$. Distance?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Initial speed $u = 54 \times \frac{5}{18} = 15\text{ m/s}$.<br> Distance during reaction time: $s_1 = 15 \times 0.20 = 3\text{ m}$.<br> Braking distance ($v=0$): $v^2 - u^2 = 2as \implies 0 - 15^2 = 2(-6)s_2 \implies s_2 = \frac{225}{12} = 18.75\text{ m}$.<br> Total distance = $3 + 18.75 = 21.75\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">28.</span><div class="q-text">Bullet: $u=200\text{m/s}$, penetrates $4\text{cm}$ and stops. Acceleration?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $u = 200\text{ m/s}$, $v = 0$, $s = 4\text{ cm} = 0.04\text{ m}$.<br> $v^2 - u^2 = 2as \implies 0 - (200)^2 = 2 \cdot a \cdot 0.04$<br> $a = -\frac{40000}{0.08} = -5 \times 10^5\text{ m/s}^2$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">29.</span><div class="q-text">Rest, constant $a$. Distance $x$ in first $10\text{s}$, $y$ in next $10\text{s}$. Relation?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $x = \frac{1}{2}a(10)^2 = 50a$.<br> Distance in first $20\text{s}$ is $S_{20} = \frac{1}{2}a(20)^2 = 200a$.<br> Distance in next $10\text{s} = y = S_{20} - x = 200a - 50a = 150a$.<br> Thus, $y = 3(50a) \implies y = 3x$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">30.</span><div class="q-text">Accelerates at $\alpha$, decelerates at $\beta$. Total time $t$. Max velocity?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let time of accel be $t_1$, decel be $t_2$. $t_1 + t_2 = t$.<br> $v_{max} = \alpha t_1 \implies t_1 = \frac{v_{max}}{\alpha}$.<br> $0 = v_{max} - \beta t_2 \implies t_2 = \frac{v_{max}}{\beta}$.<br> $\frac{v_{max}}{\alpha} + \frac{v_{max}}{\beta} = t \implies v_{max}(\frac{\alpha+\beta}{\alpha\beta}) = t \implies v_{max} = \frac{\alpha\beta t}{\alpha+\beta}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">31.</span><div class="q-text">Derive $S_n = u + \frac{a}{2}(2n - 1)$.</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Distance in $n^{\text{th}}$ second = Dist in $n$ sec - Dist in $(n-1)$ sec.<br> $S_n = (un + \frac{1}{2}an^2) - [u(n-1) + \frac{1}{2}a(n-1)^2]$<br> $S_n = un + \frac{1}{2}an^2 - un + u - \frac{1}{2}a(n^2 - 2n + 1)$<br> $S_n = u + \frac{1}{2}an^2 - \frac{1}{2}an^2 + an - \frac{1}{2}a = u + a(n - \frac{1}{2}) = u + \frac{a}{2}(2n - 1)$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">32.</span><div class="q-text">$12\text{m}$ in $2^{\text{nd}}$ sec, $20\text{m}$ in $4^{\text{th}}$ sec. Initial velocity and acceleration?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Using $S_n = u + \frac{a}{2}(2n - 1)$:<br> $12 = u + \frac{a}{2}(3) \quad \text{...(i)}$<br> $20 = u + \frac{a}{2}(7) \quad \text{...(ii)}$<br> Subtracting (i) from (ii): $8 = 2a \implies a = 4\text{ m/s}^2$.<br> Substitute $a=4$ in (i): $12 = u + \frac{4}{2}(3) \implies 12 = u + 6 \implies u = 6\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">33.</span><div class="q-text">Stopping dist is $d$ for speed $v$. New stopping dist if speed becomes $n$ times?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> From $v_f^2 - v_i^2 = 2as \implies 0 - v^2 = -2ad \implies d = \frac{v^2}{2a}$.<br> If speed is $nv$, new distance $d' = \frac{(nv)^2}{2a} = n^2 (\frac{v^2}{2a}) = n^2 d$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">34.</span><div class="q-text">Train $L$. Front passes at $u$, rear at $v$. Middle point velocity?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> For full train: $v^2 - u^2 = 2aL \implies aL = \frac{v^2 - u^2}{2}$.<br> For midpoint, distance is $L/2$. Let velocity be $v_m$.<br> $v_m^2 - u^2 = 2a(L/2) = aL$. Substitute $aL$:<br> $v_m^2 = u^2 + \frac{v^2 - u^2}{2} = \frac{2u^2 + v^2 - u^2}{2} = \frac{u^2 + v^2}{2} \implies v_m = \sqrt{\frac{u^2 + v^2}{2}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">35.</span><div class="q-text">Stops after $2\text{m}$ at $40\text{km/h}$. Stopping dist at $80\text{km/h}$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Since $d \propto v^2$ (from constant deceleration).<br> Speed is doubled ($40 \to 80$). Therefore, distance increases by $2^2 = 4$ times.<br> New distance = $4 \times 2 = 8\text{ m}$.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section E: Motion Under Gravity</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">36.</span><div class="q-text">Ball thrown up at $20\text{m/s}$ from $25\text{m}$ building. How high will it rise?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> At max height, $v = 0$. $u = 20\text{ m/s}, g = 10\text{ m/s}^2$ (downward).<br> $h = \frac{u^2}{2g} = \frac{20^2}{2(10)} = \frac{400}{20} = 20\text{ m}$ above the thrower.<br> Total height from ground = $25 + 20 = 45\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">37.</span><div class="q-text">Time before the ball from previous question hits the ground?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Using $S = ut + \frac{1}{2}at^2$. Taking upward as positive: $S = -25\text{ m}$ (since it lands below start), $u = 20$, $a = -10$.<br> $-25 = 20t - 5t^2 \implies 5t^2 - 20t - 25 = 0 \implies t^2 - 4t - 5 = 0$.<br> Factoring: $(t - 5)(t + 1) = 0$. Time must be positive, so $t = 5\text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">38.</span><div class="q-text">Stone dropped from $h$, hits with momentum $P$. Drop from $2h$, % change in $P$?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Velocity on hitting ground $v = \sqrt{2gh}$. Momentum $P = m\sqrt{2gh} \propto \sqrt{h}$.<br> If $h' = 2h$, $P' = \sqrt{2}P \approx 1.414 P$.<br> Change = $1.414P - P = 0.414P$. Percentage change = $41.4\%$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">39.</span><div class="q-text">Prove distances in successive equal intervals are $1:3:5:7\dots$</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Let interval be $t$. Distances fallen from rest in times $t, 2t, 3t \dots$ are:<br> $y_1 = \frac{1}{2}gt^2$<br> $y_2 = \frac{1}{2}g(2t)^2 = 4(\frac{1}{2}gt^2)$<br> $y_3 = \frac{1}{2}g(3t)^2 = 9(\frac{1}{2}gt^2)$<br> Distances in successive intervals: $d_1 = y_1 = 1(\frac{1}{2}gt^2)$. $d_2 = y_2 - y_1 = 3(\frac{1}{2}gt^2)$. $d_3 = y_3 - y_2 = 5(\frac{1}{2}gt^2)$. Ratio = $1:3:5\dots$</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">40.</span><div class="q-text">Balls dropped from $h_1$ and $h_2$. Ratio of times to reach ground?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> From $S = ut + \frac{1}{2}at^2$, since $u=0$, $h = \frac{1}{2}gt^2 \implies t = \sqrt{\frac{2h}{g}}$.<br> Hence, $t \propto \sqrt{h}$. Ratio $\frac{t_1}{t_2} = \sqrt{\frac{h_1}{h_2}}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">41.</span><div class="q-text">Drops fall from $5\text{m}$. 3rd leaves when 1st hits. Height of 2nd drop?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Time for 1st drop to hit ground: $t = \sqrt{2h/g} = \sqrt{10/10} = 1\text{s}$.<br> 3 drops mean 2 time intervals in $1\text{s}$. So each drop falls every $0.5\text{s}$.<br> The 2nd drop has been falling for $0.5\text{s}$. Its distance fallen = $\frac{1}{2}(10)(0.5)^2 = 1.25\text{ m}$.<br> Height above ground = $5 - 1.25 = 3.75\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">42.</span><div class="q-text">Balloon ascending at $9.8\text{m/s}$ at $39.2\text{m}$ drops packet. Time and velocity at ground?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Packet has initial velocity $u = 9.8\text{ m/s}$ (upwards), $S = -39.2\text{ m}$.<br> $-39.2 = 9.8t - 4.9t^2 \implies 4.9t^2 - 9.8t - 39.2 = 0 \implies t^2 - 2t - 8 = 0$<br> $(t-4)(t+2) = 0 \implies t = 4\text{ s}$.<br> Velocity $v = u - gt = 9.8 - 9.8(4) = 9.8 - 39.2 = -29.4\text{ m/s}$ (downwards).</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">43.</span><div class="q-text">Juggler: 4 balls, max height $20\text{m}$. Projection velocity and positions?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Projection $u = \sqrt{2gh} = \sqrt{2 \times 10 \times 20} = 20\text{ m/s}$.<br> Total flight time $T = 2u/g = 4\text{s}$. With 4 balls juggling continuously, one is thrown every $\frac{4}{4} = 1\text{s}$.<br> If ball 4 is leaving ($t=0$), ball 3 is at $t=1\text{s}$, ball 2 at $t=2\text{s}$, ball 1 at $t=3\text{s}$.<br> $h(t) = ut - \frac{1}{2}gt^2 = 20t - 5t^2$.<br> $h(1) = 20(1) - 5 = 15\text{m}$.<br> $h(2) = 20(2) - 20 = 20\text{m}$ (max height).<br> $h(3) = 20(3) - 45 = 15\text{m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">44.</span><div class="q-text">Stone travels $45\text{m}$ in last second. Height of tower?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Dist in $n^{\text{th}}$ sec: $S_n = u + \frac{g}{2}(2n - 1) \implies 45 = 0 + 5(2n - 1)$.<br> $9 = 2n - 1 \implies 2n = 10 \implies n = 5\text{s}$ (Total time of flight).<br> Total height $h = \frac{1}{2}gt^2 = 5(5^2) = 125\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">45.</span><div class="q-text">Is acceleration zero at highest point?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> No. At the highest point, velocity is momentarily zero, but gravity continues to pull the object down. Acceleration is strictly $g$ ($9.8\text{ m/s}^2$) downwards throughout the flight.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">46.</span><div class="q-text">Rocket fired with $a=19.6\text{m/s}^2$ for $5\text{s}$, then engine off. Max height?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> First phase ($5\text{s}$): $v_1 = at = 19.6 \times 5 = 98\text{ m/s}$. Height $h_1 = \frac{1}{2}at^2 = 0.5 \times 19.6 \times 25 = 245\text{ m}$.<br> Second phase (free fall from $v=98$ to $v=0$): $h_2 = \frac{v_1^2}{2g} = \frac{98^2}{2(19.6)} = 245\text{ m}$. (Assuming $g=9.8$, $2g=19.6$, wait, $98^2/19.6 = \frac{9604}{19.6} = 490\text{ m}$).<br> Total Max Height = $245 + 490 = 735\text{ m}$.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section F: Relative Velocity in 1D</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">47.</span><div class="q-text">Train A ($54\text{km/h}$ N), Train B ($90\text{km/h}$ S). Velocity of B wrt A?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $V_A = +54\text{ km/h} = +15\text{ m/s}$ (North). $V_B = -90\text{ km/h} = -25\text{ m/s}$ (South).<br> $V_{BA} = V_B - V_A = -25 - 15 = -40\text{ m/s}$.<br> Magnitude is $40\text{ m/s}$ in South direction.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">48.</span><div class="q-text">Monkey runs against Train A at $18\text{km/h}$ (wrt A). Velocity of monkey wrt ground?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $V_A = 15\text{ m/s}$ (North). Monkey runs south wrt train: $V_{MA} = -18\text{ km/h} = -5\text{ m/s}$.<br> $V_{MA} = V_M - V_A \implies -5 = V_M - 15 \implies V_M = 10\text{ m/s}$ (North).</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">49.</span><div class="q-text">Police $30\text{km/h}$, thief $192\text{km/h}$. Muzzle speed $150\text{m/s}$. Hit speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> $V_P = 30\text{ km/h} = 25/3\text{ m/s}$. $V_T = 192\text{ km/h} = 160/3\text{ m/s}$.<br> Speed of bullet wrt ground $V_b = 150 + V_P = 150 + 25/3 = 475/3\text{ m/s}$.<br> Hit speed (Relative velocity of bullet wrt thief) = $V_b - V_T = 475/3 - 160/3 = 315/3 = 105\text{ m/s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">50.</span><div class="q-text">Two trains $50\text{m}$ each, velocities $10\text{m/s}$ and $15\text{m/s}$ opposite. Crossing time?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Total relative distance = $50 + 50 = 100\text{ m}$.<br> Relative speed = $10 - (-15) = 25\text{ m/s}$.<br> Time = $\frac{\text{Distance}}{\text{Speed}} = \frac{100}{25} = 4\text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">51.</span><div class="q-text">Train $120\text{m}$ West at $10\text{m/s}$, bird East at $5\text{m/s}$. Crossing time?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Total distance = $120\text{ m}$. They are in opposite directions.<br> Relative speed = $10 + 5 = 15\text{ m/s}$.<br> Time = $\frac{120}{15} = 8\text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">52.</span><div class="q-text">Car A ($30\text{m/s}$) behind Car B ($20\text{m/s}$) by $240\text{m}$. A retards $2\text{m/s}^2$. Collision?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Initial relative velocity $u_{rel} = 30 - 20 = 10\text{ m/s}$.<br> Relative acceleration $a_{rel} = -2 - 0 = -2\text{ m/s}^2$.<br> Distance required to reduce relative velocity to zero: $S_{rel} = \frac{u_{rel}^2}{2|a_{rel}|} = \frac{100}{2(2)} = 25\text{ m}$.<br> Since required distance $25\text{m}$ < Initial gap $240\text{m}$, they will NOT collide.<br> Minimum distance = $240 - 25 = 215\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">53.</span><div class="q-text">Bus at $10\text{m/s}$, gap $1\text{km}$. Scooterist overtakes in $100\text{s}$. Speed?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Relative distance $S_{rel} = 1000\text{ m}$. Time $t = 100\text{ s}$.<br> Required relative speed $v_{rel} = \frac{1000}{100} = 10\text{ m/s}$.<br> $v_{rel} = V_{scooter} - V_{bus} \implies 10 = V_{scooter} - 10 \implies V_{scooter} = 20\text{ m/s}$.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section G: Graphical Analysis of Motion</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">54.</span><div class="q-text">Area under v-t graph? Slope of x-t graph?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Area under v-t graph represents Displacement (with sign) or Distance (absolute area).<br> Slope of x-t graph represents instantaneous Velocity.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">55.</span><div class="q-text">x-t graph is parabola. Inference on acceleration?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> A parabolic x-t graph implies position varies quadratically with time ($x \propto t^2$). This indicates the object moves with Uniform (Constant) Acceleration.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">56.</span><div class="q-text">Particle thrown upwards. Draw x-t, v-t, and a-t graphs (up is positive).</div></div>
+                <div class="solution-box">
+                    <span class="sol-label">Sol:</span>
+                    <div class="graph-container">
+                        <!-- Position-Time Graph -->
+                        <div style="text-align: center;">
+                            <svg class="svg-graph" viewBox="0 0 100 100">
+                                <!-- Axes -->
+                                <line x1="10" y1="90" x2="95" y2="90" stroke-width="1.5"/>
+                                <line x1="10" y1="90" x2="10" y2="5" stroke-width="1.5"/>
+                                <!-- Curve (Inverted Parabola) -->
+                                <path class="svg-curve" d="M 10 90 Q 50 -10 90 90"/>
+                                <!-- Labels -->
+                                <text x="85" y="105" font-size="10" fill="currentColor">t</text>
+                                <text x="-5" y="15" font-size="10" fill="currentColor">x</text>
+                                <text x="35" y="110" font-size="10" fill="currentColor" font-weight="bold">(a) x-t Graph</text>
+                            </svg>
+                        </div>
+                        <!-- Velocity-Time Graph -->
+                        <div style="text-align: center;">
+                            <svg class="svg-graph" viewBox="0 0 100 100">
+                                <!-- Axes -->
+                                <line x1="10" y1="50" x2="95" y2="50" stroke-width="1.5"/>
+                                <line x1="10" y1="95" x2="10" y2="5" stroke-width="1.5"/>
+                                <!-- Line (Negative Slope) -->
+                                <line x1="10" y1="15" x2="80" y2="85" class="svg-curve"/>
+                                <!-- Labels -->
+                                <text x="85" y="45" font-size="10" fill="currentColor">t</text>
+                                <text x="-5" y="15" font-size="10" fill="currentColor">v</text>
+                                <text x="35" y="110" font-size="10" fill="currentColor" font-weight="bold">(b) v-t Graph</text>
+                            </svg>
+                        </div>
+                        <!-- Acceleration-Time Graph -->
+                        <div style="text-align: center;">
+                            <svg class="svg-graph" viewBox="0 0 100 100">
+                                <!-- Axes -->
+                                <line x1="10" y1="50" x2="95" y2="50" stroke-width="1.5"/>
+                                <line x1="10" y1="95" x2="10" y2="5" stroke-width="1.5"/>
+                                <!-- Line (Constant Negative) -->
+                                <line x1="10" y1="80" x2="90" y2="80" class="svg-curve"/>
+                                <!-- Labels -->
+                                <text x="85" y="45" font-size="10" fill="currentColor">t</text>
+                                <text x="-5" y="15" font-size="10" fill="currentColor">a</text>
+                                <text x="0" y="85" font-size="10" fill="currentColor">-g</text>
+                                <text x="35" y="110" font-size="10" fill="currentColor" font-weight="bold">(c) a-t Graph</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">57.</span><div class="q-text">v-t graph is a triangle. Base=$10\text{s}$, peak height=$20\text{m/s}$. Total distance?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Distance = Area of Triangle in v-t graph.<br> Area = $\frac{1}{2} \times \text{Base} \times \text{Height} = \frac{1}{2} \times 10\text{ s} \times 20\text{ m/s} = 100\text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">58.</span><div class="q-text">x-t graph is parallel to time axis. Velocity?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Slope of x-t graph is zero (horizontal line implies position is not changing).<br> Therefore, Velocity = $0$. The object is at rest.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">59.</span><div class="q-text">Can x-t graph have negative slope? Vertical line?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Yes, negative slope implies the particle has a negative velocity (moving towards the origin or in opposite direction).<br> No, a vertical line would imply the particle is in multiple positions at the exact same instant, equating to infinite velocity, which is physically impossible.</div>
+            </div>
+            <div class="question-item">
+                <div class="q-row"><span class="q-num">60.</span><div class="q-text">Semi-circle v-t graph above t-axis. $t=0$ to $4\text{s}$. Displacement?</div></div>
+                <div class="solution-box"><span class="sol-label">Sol:</span> Base is $t=0$ to $t=4\text{s}$, so diameter is $4$, giving a radius $r=2$. The peak velocity (radius on v-axis) is $2\text{ m/s}$.<br> Displacement = Area of Semi-circle = $\frac{1}{2} \pi r^2 = \frac{1}{2} \pi (2)^2 = \frac{1}{2} \pi (4) = 2\pi\text{ m}$.</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

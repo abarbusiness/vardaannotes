@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Institute - Physics Master Worksheet (Motion in 2D)</title>
+    <script>
+      window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* DYNAMIC LEVEL COLORS (Master Sheet: Deep Orange) */
+            --primary-color: #e65100; /* Deep Orange */
+            --bg-color: #fff3e0;      /* Light Orange background */
+            
+            /* Light Mode Defaults */
+            --body-bg: #fff;
+            --text-main: #000;
+            --text-secondary: #333;
+            --text-muted: #555;
+            --border-color: #ccc;
+        }
+
+        /* DARK MODE OVERRIDES */
+        html.dark-mode {
+            --primary-color: #ffb74d;   /* Lighter orange for readability */
+            --bg-color: #331e10;        /* Dark warm container background */
+            --body-bg: #121212;         /* Very dark body background */
+            --text-main: #e0e0e0;       /* Off-white text */
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+        }
+
+        /* Base Styles */
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background-color: var(--body-bg); 
+            color: var(--text-main);
+            line-height: 1.4; margin: 0; padding: 0; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { width: 100%; max-width: 210mm; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+
+        /* --- HEADER STYLING --- */
+        .header { 
+            text-align: center; 
+            border-bottom: 3px solid var(--primary-color); 
+            padding-bottom: 15px; margin-bottom: 20px; 
+            position: relative; 
+        }
+        .institute-name { 
+            font-size: 24pt; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 1px; margin: 0; color: var(--primary-color); 
+        }
+        .tagline { 
+            font-size: 14pt; 
+            font-weight: bold; margin-bottom: 10px; margin-top: 5px;
+            color: var(--text-secondary); 
+        }
+        .tagline a { text-decoration: none; color: inherit; }
+        .worksheet-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 5px; color: var(--text-secondary); 
+        }
+        .meta-info { 
+            display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; 
+            font-size: 11pt; background-color: var(--bg-color); padding: 10px 15px; 
+            border-radius: 5px; border: 1px solid var(--primary-color); color: var(--primary-color); 
+        }
+
+        /* --- CONTENT STYLING --- */
+        .chapter-header { 
+            background-color: var(--bg-color); color: var(--primary-color); font-weight: bold; 
+            padding: 8px 10px; margin-top: 25px; margin-bottom: 15px; 
+            border-left: 5px solid var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            font-size: 13pt; text-transform: uppercase; page-break-after: avoid; 
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 12px; }
+        .question-item { 
+            display: flex; align-items: baseline; margin-bottom: 5px; 
+            font-size: 11pt; page-break-inside: avoid; text-align: left; 
+        }
+        .q-num { font-weight: bold; margin-right: 10px; min-width: 25px; color: var(--primary-color); }
+        .q-content { flex: 1; text-align: justify; }
+
+        /* --- ANSWER KEY STYLING --- */
+        .answer-key-container {
+            margin-top: 30px;
+            padding: 15px;
+            border: 2px solid var(--primary-color);
+            background-color: var(--body-bg);
+            page-break-inside: avoid;
+        }
+        .answer-key-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14pt;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+        }
+        .ans-box {
+            font-size: 10pt;
+            padding: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            text-align: left;
+        }
+        html.dark-mode .ans-box { background-color: var(--bg-color); color: #fff; }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            margin-top: 40px; padding-top: 10px; border-top: 2px solid var(--primary-color); 
+            text-align: center; font-size: 9pt; font-weight: bold; color: var(--primary-color); 
+            page-break-before: auto; line-height: 1.6;
+        }
+
+        /* --- WATERMARK & DARK MODE FIX --- */
+        .watermark { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 70%; opacity: 0.08; z-index: -1; pointer-events: none; 
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        html.dark-mode .watermark {
+            filter: invert(1); 
+            opacity: 0.05;     
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+            border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        html.dark-mode .theme-toggle {
+            filter: invert(1) hue-rotate(180deg); background: #e0e0e0;
+        }
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; color: #333; }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+
+        @media (max-width: 768px) {
+            .meta-info { flex-direction: column; gap: 8px; text-align: center; }
+            .institute-name { font-size: 20pt; }
+            .tagline { font-size: 12pt; }
+            .worksheet-title { font-size: 14pt; }
+            .container { padding: 10px; margin-top: 60px; }
+            .answer-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        }
+
+        @media print { 
+            .theme-toggle { display: none; }
+            .chapter-header { background-color: var(--bg-color) !important; border-left-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .meta-info { background-color: var(--bg-color) !important; -webkit-print-color-adjust: exact; }
+            .answer-key-container { border-color: var(--primary-color) !important; -webkit-print-color-adjust: exact; }
+            .ans-box { background-color: var(--bg-color) !important; border-color: var(--border-color) !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+    <script>function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); }</script>
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" class="watermark" alt="Watermark">
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="institute-name">Vardaan Learning Institute</h1>
+            <div class="tagline">
+                <a href="https://vardaanlearning.com">vardaanlearning.com</a> | 9508841336
+            </div>
+            <div class="worksheet-title">Comprehensive Master Sheet: Motion in a Plane (2D)</div>
+            <div class="meta-info">
+                <span>Student Name: ____________________________________</span>
+                <span>Class: 11th (CBSE/NEET/JEE)</span>
+                <span>Subject: Physics</span>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section A: Vectors & Vector Operations</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">1.</span>
+                <div class="q-content">If the magnitude of the sum of two vectors is equal to the magnitude of the difference of the two vectors, what is the angle between the vectors?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">2.</span>
+                <div class="q-content">Two forces $P$ and $Q$ of magnitude $2F$ and $3F$, respectively, are at an angle $\theta$ with each other. If the force $Q$ is doubled, then their resultant also gets doubled. Find the angle $\theta$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">3.</span>
+                <div class="q-content">Given $\vec{A} = 3\hat{i} + 4\hat{j} + \hat{k}$ and $\vec{B} = \hat{i} - \hat{j} + \hat{k}$. Find the unit vector in the direction of $(\vec{A} + \vec{B})$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">4.</span>
+                <div class="q-content">Find the area of the parallelogram whose adjacent sides are represented by the vectors $\vec{P} = 2\hat{i} + 3\hat{j}$ and $\vec{Q} = \hat{i} + 4\hat{j}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">5.</span>
+                <div class="q-content">Find the component of vector $\vec{A} = 2\hat{i} + 3\hat{j}$ along the direction of vector $\vec{B} = \hat{i} + \hat{j}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">6.</span>
+                <div class="q-content">If vectors $\vec{P} = a\hat{i} + a\hat{j} + 3\hat{k}$ and $\vec{Q} = a\hat{i} - 2\hat{j} - \hat{k}$ are perpendicular to each other, find the positive value of $a$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">7.</span>
+                <div class="q-content">A car travels due East with a speed of $10 \text{ m/s}$. It then takes a left turn and travels due North with the same speed of $10 \text{ m/s}$. Find the magnitude and direction of the change in velocity.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">8.</span>
+                <div class="q-content">If $\vec{A} \times \vec{B} = \vec{B} \times \vec{A}$, what can you conclude about the angle between vectors $\vec{A}$ and $\vec{B}$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">9.</span>
+                <div class="q-content">The sum of the magnitudes of two forces acting at a point is $18 \text{ N}$ and the magnitude of their resultant is $12 \text{ N}$. If the resultant is at $90^\circ$ with the force of smaller magnitude, what are the magnitudes of forces?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">10.</span>
+                <div class="q-content">Prove that the vectors $\vec{A} = 2\hat{i} - 3\hat{j} + \hat{k}$ and $\vec{B} = 4\hat{i} - 6\hat{j} + 2\hat{k}$ are parallel to each other.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section B: General 2D Kinematics (Calculus Based)</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">11.</span>
+                <div class="q-content">The position of a particle is given by $\vec{r} = 3t\hat{i} + (2t^2 - 5t)\hat{j} + 4\hat{k} \text{ m}$. Find the magnitude of its velocity and acceleration at $t = 2 \text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">12.</span>
+                <div class="q-content">A particle moves in the $x$-$y$ plane with a constant acceleration of $1.5 \text{ m/s}^2$ in the direction making an angle of $37^\circ$ with the x-axis. At $t=0$, the particle is at the origin and its velocity is $8.0 \text{ m/s}$ along the x-axis. Find the velocity and the position of the particle at $t = 4.0 \text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">13.</span>
+                <div class="q-content">The coordinates of a moving particle at any time $t$ are given by $x = \alpha t^3$ and $y = \beta t^3$. Find the speed of the particle at time $t$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">14.</span>
+                <div class="q-content">A particle starts from origin at $t=0$ with a velocity $5.0\hat{i} \text{ m/s}$ and moves in $x$-$y$ plane under action of a force which produces a constant acceleration of $(3.0\hat{i} + 2.0\hat{j}) \text{ m/s}^2$. What is the y-coordinate of the particle at the instant its x-coordinate is $84 \text{ m}$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">15.</span>
+                <div class="q-content">The equation of trajectory of a particle is given by $y = 2x - 5x^2$ (where $x, y$ are in meters). If the horizontal component of velocity is constant at $10 \text{ m/s}$, find the initial velocity of the particle and its acceleration.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">16.</span>
+                <div class="q-content">If a particle moves in a 2D plane such that its velocity components are $v_x = 4 \text{ m/s}$ and $v_y = (6x - 4) \text{ m/s}$, find the equation of its path if it starts from the origin.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">17.</span>
+                <div class="q-content">The position vector of a particle is $\vec{r} = (A \cos\omega t)\hat{i} + (A \sin\omega t)\hat{j}$. Prove that the velocity vector is perpendicular to the position vector.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section C: Ground-to-Ground Projectile Motion</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">18.</span>
+                <div class="q-content">A projectile is fired with a velocity of $30 \text{ m/s}$ at an angle of $60^\circ$ with the horizontal. Calculate its (i) time of flight, (ii) maximum height, and (iii) horizontal range. ($g = 10 \text{ m/s}^2$)</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">19.</span>
+                <div class="q-content">For a projectile, the horizontal range is equal to its maximum height. What is the angle of projection?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">20.</span>
+                <div class="q-content">Show that there are two angles of projection for which the horizontal range is the same. If $t_1$ and $t_2$ are the times of flight for these two angles, prove that $t_1 t_2 = 2R/g$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">21.</span>
+                <div class="q-content">The maximum horizontal range of a projectile is $400 \text{ m}$. What is the maximum height attained by it in this case?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">22.</span>
+                <div class="q-content">A boy can throw a stone up to a maximum height of $10 \text{ m}$. What is the maximum horizontal distance to which he can throw the same stone?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">23.</span>
+                <div class="q-content">A projectile is given an initial velocity of $(\hat{i} + 2\hat{j}) \text{ m/s}$. Find the equation of its trajectory. ($g=10 \text{ m/s}^2$)</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">24.</span>
+                <div class="q-content">A body is projected at such an angle that the horizontal range is $3$ times the maximum height. Find the angle of projection.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">25.</span>
+                <div class="q-content">A bullet is fired at an angle of $30^\circ$ with the horizontal and hits the ground $3.0 \text{ km}$ away. By adjusting its angle of projection, can one hope to hit a target $5.0 \text{ km}$ away? Assume the muzzle speed to be fixed, and neglect air resistance.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">26.</span>
+                <div class="q-content">At what time after projection will the velocity vector of a projectile, thrown with speed $u$ at an angle $\theta$, become perpendicular to its initial velocity vector?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">27.</span>
+                <div class="q-content">A particle is projected with a speed $v_0$ at an angle $\theta$ with the horizontal. Find the average velocity of the projectile between the point of projection and the highest point of its trajectory.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">28.</span>
+                <div class="q-content">The equation of a projectile's path is $y = \sqrt{3}x - \frac{gx^2}{2}$. Determine the angle of projection and initial velocity.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">29.</span>
+                <div class="q-content">A particle is projected from the ground with an initial speed of $u$ at an angle $\theta$ with the horizontal. What is the change in the magnitude of its momentum when it strikes the ground? What is the change in its momentum vector?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">30.</span>
+                <div class="q-content">Two particles are projected from the same point with the same speed $u$ such that they have the same range $R$, but different maximum heights $h_1$ and $h_2$. Prove that $R = 4\sqrt{h_1 h_2}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">31.</span>
+                <div class="q-content">A ball whose kinetic energy is $E$ is projected at an angle of $45^\circ$ to the horizontal. What is the kinetic energy of the ball at the highest point of its flight?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section D: Projectile from a Height & Inclined Plane</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">32.</span>
+                <div class="q-content">A bomber plane flying horizontally with a speed of $500 \text{ m/s}$ at a height of $1000 \text{ m}$ drops a bomb. Find the time taken by the bomb to hit the ground and the horizontal distance it travels. ($g = 10 \text{ m/s}^2$)</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">33.</span>
+                <div class="q-content">A ball is thrown horizontally from the top of a tower $40 \text{ m}$ high. The ball strikes the ground at a point $80 \text{ m}$ from the foot of the tower. Find the angle that the velocity vector makes with the horizontal just before hitting the ground. ($g = 10 \text{ m/s}^2$)</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">34.</span>
+                <div class="q-content">A stone is thrown upwards from the top of a $20 \text{ m}$ high building with an initial velocity of $10 \text{ m/s}$ at an angle of $30^\circ$ above the horizontal. Find the horizontal range from the foot of the building. ($g = 10 \text{ m/s}^2$)</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">35.</span>
+                <div class="q-content">Two tall buildings are separated by a distance of $50 \text{ m}$. A person throws a ball horizontally from a window $45 \text{ m}$ above the ground in the first building. With what speed must the ball be thrown so that it enters a window $25 \text{ m}$ above the ground in the second building? ($g = 10 \text{ m/s}^2$)</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">36.</span>
+                <div class="q-content">A particle is projected up an inclined plane of inclination $\beta = 30^\circ$ with an initial velocity $u = 20 \text{ m/s}$ at an angle $\alpha = 60^\circ$ with the horizontal. Find the range of the projectile along the inclined plane. ($g = 10 \text{ m/s}^2$)</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">37.</span>
+                <div class="q-content">A projectile is fired up an inclined plane (angle of inclination $\theta$). The angle of projection is $\alpha$ with the inclined plane. For the projectile to hit the inclined plane perpendicularly, what must be the relation between $\alpha$ and $\theta$?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">38.</span>
+                <div class="q-content">A truck is moving with a constant velocity of $10 \text{ m/s}$. A boy inside the truck throws a ball vertically upwards with a speed of $20 \text{ m/s}$ relative to the truck. Where will the ball fall? What is the trajectory seen by an observer on the ground?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">39.</span>
+                <div class="q-content">Two particles are projected simultaneously from the same point, with the same speed $u$, but at different angles $\theta_1$ and $\theta_2$ such that their ranges are equal. Prove that the distance between them is always purely vertical and find the separation as a function of time.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">40.</span>
+                <div class="q-content">From the top of a tower, two stones are projected simultaneously with the same speed $u$; one upwards at angle $\theta$ and the other downwards at the same angle $\theta$ with the horizontal. Which stone will strike the ground with greater speed?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section E: Relative Motion in 2D (Rain-Man & River-Boat)</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">41.</span>
+                <div class="q-content">Rain is falling vertically with a speed of $30 \text{ m/s}$. A woman rides a bicycle with a speed of $10 \text{ m/s}$ in the north to south direction. What is the direction in which she should hold her umbrella?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">42.</span>
+                <div class="q-content">A man walking horizontally at $3 \text{ km/h}$ observes rain falling vertically. When he increases his speed to $6 \text{ km/h}$, the rain appears to hit him at an angle of $45^\circ$ with the vertical. Find the actual speed and direction of the rain.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">43.</span>
+                <div class="q-content">A river is flowing from west to east at a speed of $5 \text{ m/s}$. A man on the south bank of the river, capable of swimming at $10 \text{ m/s}$ in still water, wants to swim across the river in the shortest time. He should swim in which direction? Also find the shortest time if the river width is $100 \text{ m}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">44.</span>
+                <div class="q-content">In the previous question, if the man wants to cross the river to reach exactly the opposite point on the north bank (shortest path), at what angle with the river flow should he swim? How much time will it take?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">45.</span>
+                <div class="q-content">A river flows with a speed $v_r$. A swimmer can swim with speed $v_s$ in still water. If $v_r > v_s$, can the swimmer cross the river strictly along the shortest path? If not, what should be his angle to minimize the drift?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">46.</span>
+                <div class="q-content">Ship A is sailing towards north at $10\sqrt{2} \text{ km/h}$. Ship B, located $100 \text{ km}$ East of A, is sailing towards west at $10\sqrt{2} \text{ km/h}$. Find the minimum distance between the ships and the time when it occurs.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">47.</span>
+                <div class="q-content">An airplane is flying with a velocity of $800 \text{ km/h}$ relative to the air. A wind is blowing from the south at $150 \text{ km/h}$. If the pilot wants to travel due east, what direction must he head his plane?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">48.</span>
+                <div class="q-content">Two particles A and B start from origin and move on x and y axes with constant velocities $v_1$ and $v_2$ respectively. Find the rate of separation between them as a function of time.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">49.</span>
+                <div class="q-content">A person moving at $4 \text{ km/h}$ finds rain falling vertically. If he stops, the rain appears to fall at an angle of $30^\circ$ with the vertical. What is the actual velocity of the rain?</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section F: Uniform & Non-Uniform Circular Motion</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">50.</span>
+                <div class="q-content">A particle moves in a circle of radius $20 \text{ cm}$ with a linear speed of $10 \text{ m/s}$. Find the angular velocity of the particle.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">51.</span>
+                <div class="q-content">The angular position of a particle revolving on a circular path is given by $\theta(t) = 2t^3 - 4t^2 + 6t$. Find its angular acceleration at $t = 2 \text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">52.</span>
+                <div class="q-content">A particle is moving in a circle of radius $R$ with constant speed $v$. What is the magnitude of change in its velocity after it covers half of the circle? What is the average acceleration during this time?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">53.</span>
+                <div class="q-content">An object moves in a circular path of radius $R = 2.5 \text{ m}$ such that its speed varies with time as $v = 2t$. Find the net acceleration of the object at $t = 1 \text{ s}$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">54.</span>
+                <div class="q-content">In non-uniform circular motion, what is the angle between the velocity vector and the net acceleration vector if the particle is speeding up? What if it is slowing down?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">55.</span>
+                <div class="q-content">A stone of mass $0.5 \text{ kg}$ is tied to a string of length $1 \text{ m}$ and whirled in a horizontal circle with a uniform speed of $4 \text{ m/s}$. What is the tension in the string? (Assume the string is perfectly horizontal).</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">56.</span>
+                <div class="q-content">Find the radius of curvature of the trajectory of a projectile (launched with speed $u$ at angle $\theta$) at its highest point.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">57.</span>
+                <div class="q-content">For the same projectile, what is the radius of curvature of the trajectory at the exact point of projection?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">58.</span>
+                <div class="q-content">A car is travelling at $36 \text{ km/h}$ on a circular road of radius $50 \text{ m}$. It is increasing its speed at the rate of $2 \text{ m/s}^2$. What is its net acceleration?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">59.</span>
+                <div class="q-content">Show that for a particle in uniform circular motion, the acceleration vector is always directed towards the center of the circle.</div>
+            </div>
+        </div>
+
+        <div class="chapter-header">Section G: Advanced & Mixed Conceptual Problems</div>
+        <div class="questions-container">
+            <div class="question-item">
+                <span class="q-num">60.</span>
+                <div class="q-content">A particle is moving such that its position vector varies with time as $\vec{r} = a\cos(\omega t)\hat{i} + b\sin(\omega t)\hat{j}$. What is the shape of its trajectory? Find the equation of the trajectory.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">61.</span>
+                <div class="q-content">Two projectiles are thrown simultaneously in the same vertical plane from the same point. The first is thrown with velocity $v_1$ at angle $\theta_1$ and the second with $v_2$ at $\theta_2$. What is the path of the first particle as seen by the second particle?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">62.</span>
+                <div class="q-content">A hunter aims a gun directly at a monkey sitting on a tree branch. The instant the gun is fired, the monkey drops from the branch. Will the bullet hit the monkey? Prove your answer using relative kinematics.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">63.</span>
+                <div class="q-content">An elevator is moving upward with a constant acceleration $a_0$. A person inside the elevator throws a ball horizontally with a speed $u$ relative to the elevator. Determine the horizontal range of the ball relative to the elevator floor, given the throw height is $h$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">64.</span>
+                <div class="q-content">A particle is projected from the origin in the x-y plane. Its velocity at time $t$ is given by $\vec{v} = (a)\hat{i} + (b - ct)\hat{j}$. Find the maximum y-coordinate reached by the particle.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">65.</span>
+                <div class="q-content">A cannon ball is fired to hit a target at a horizontal distance $R$. However, it falls short by $x$ when fired at angle $\alpha$. It overshoots by $y$ when fired at angle $\beta$. Find the correct angle of projection to hit the target exactly. (Assume same initial velocity).</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">66.</span>
+                <div class="q-content">Two identical balls A and B are projected from a cliff of height $H$. Ball A is projected horizontally with speed $u$. Ball B is dropped from rest. If both hit the ground at times $t_A$ and $t_B$ respectively, compare $t_A$ and $t_B$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">67.</span>
+                <div class="q-content">A boy on a flat car moving with constant velocity $10 \text{ m/s}$ throws a ball directly upward with speed $5 \text{ m/s}$ relative to the car. What is the radius of curvature of the ball's path as seen by a stationary observer on the ground, at the highest point of its trajectory?</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">68.</span>
+                <div class="q-content">A particle moves in a plane with constant acceleration. The initial velocity is $\vec{v}_0$ and the acceleration is $\vec{a}$. If the particle's speed is minimum at $t = t_0$, find the expression for $t_0$.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">69.</span>
+                <div class="q-content">Find the minimum initial velocity required for a projectile to cross a vertical wall of height $h$ situated at a horizontal distance $x$ from the point of projection.</div>
+            </div>
+            <div class="question-item">
+                <span class="q-num">70.</span>
+                <div class="q-content">A particle of mass $m$ is moving in a circular path of constant radius $r$ such that its centripetal acceleration $a_c$ varies with time $t$ as $a_c = k^2 r t^2$, where $k$ is a constant. Find the power delivered to the particle by the forces acting on it.</div>
+            </div>
+        </div>
+
+        <!-- ANSWER KEY BLOCK -->
+        <div class="answer-key-container">
+            <div class="answer-key-title">Master Answer Key (Short Form)</div>
+            <div class="answer-grid">
+                <div class="ans-box"><b>Q1:</b> $90^\circ$ (orthogonal)</div>
+                <div class="ans-box"><b>Q2:</b> $120^\circ$</div>
+                <div class="ans-box"><b>Q3:</b> $\frac{4\hat{i} + 3\hat{j} + 2\hat{k}}{\sqrt{29}}$</div>
+                <div class="ans-box"><b>Q4:</b> $5$ units</div>
+                <div class="ans-box"><b>Q5:</b> $\frac{5}{\sqrt{2}}$</div>
+                <div class="ans-box"><b>Q6:</b> $a = 3$</div>
+                <div class="ans-box"><b>Q7:</b> $10\sqrt{2}$ m/s, NW</div>
+                <div class="ans-box"><b>Q8:</b> $0^\circ$ or $180^\circ$</div>
+                <div class="ans-box"><b>Q9:</b> $5 \text{ N}$ and $13 \text{ N}$</div>
+                <div class="ans-box"><b>Q10:</b> Proof ($\vec{B} = 2\vec{A}$)</div>
+                <div class="ans-box"><b>Q11:</b> $v=5, a=4$ m/s$^2$</div>
+                <div class="ans-box"><b>Q12:</b> $\vec{v}=12.8\hat{i}+3.6\hat{j}$, $\vec{r}=41.6\hat{i}+7.2\hat{j}$</div>
+                <div class="ans-box"><b>Q13:</b> $3t^2\sqrt{\alpha^2+\beta^2}$</div>
+                <div class="ans-box"><b>Q14:</b> $36 \text{ m}$ (at $t=6$)</div>
+                <div class="ans-box"><b>Q15:</b> $\vec{u}=10\hat{i}+20\hat{j}$, $a=-100\hat{j}$</div>
+                <div class="ans-box"><b>Q16:</b> $y = \frac{3x^2}{4} - x$</div>
+                <div class="ans-box"><b>Q17:</b> Proof ($\vec{r}\cdot\vec{v}=0$)</div>
+                <div class="ans-box"><b>Q18:</b> $3\sqrt{3}\text{s}, 33.75\text{m}, 45\sqrt{3}\text{m}$</div>
+                <div class="ans-box"><b>Q19:</b> $\tan^{-1}(4)$</div>
+                <div class="ans-box"><b>Q20:</b> Proof</div>
+                <div class="ans-box"><b>Q21:</b> $100 \text{ m}$</div>
+                <div class="ans-box"><b>Q22:</b> $20 \text{ m}$</div>
+                <div class="ans-box"><b>Q23:</b> $y = 2x - 5x^2$</div>
+                <div class="ans-box"><b>Q24:</b> $\tan^{-1}(4/3) = 53^\circ$</div>
+                <div class="ans-box"><b>Q25:</b> No ($R_{max}=3.46\text{km}$)</div>
+                <div class="ans-box"><b>Q26:</b> $u / (g \sin\theta)$</div>
+                <div class="ans-box"><b>Q27:</b> $v_0\sqrt{1+3\cos^2\theta}/2$</div>
+                <div class="ans-box"><b>Q28:</b> $60^\circ, 2\text{ m/s}$ (if g=10)</div>
+                <div class="ans-box"><b>Q29:</b> $0$, $-2u\sin\theta\hat{j}$</div>
+                <div class="ans-box"><b>Q30:</b> Proof</div>
+                <div class="ans-box"><b>Q31:</b> $E/2$</div>
+                <div class="ans-box"><b>Q32:</b> $14.14\text{s}, 7070\text{m}$</div>
+                <div class="ans-box"><b>Q33:</b> $45^\circ$</div>
+                <div class="ans-box"><b>Q34:</b> $17.3 \text{ m}$ (approx)</div>
+                <div class="ans-box"><b>Q35:</b> $25 \text{ m/s}$</div>
+                <div class="ans-box"><b>Q36:</b> $26.6 \text{ m}$</div>
+                <div class="ans-box"><b>Q37:</b> $\cot\alpha = 2\tan\theta$</div>
+                <div class="ans-box"><b>Q38:</b> Back in truck; Parabola</div>
+                <div class="ans-box"><b>Q39:</b> $ut(\sin\theta_1-\sin\theta_2)$</div>
+                <div class="ans-box"><b>Q40:</b> Same speed</div>
+                <div class="ans-box"><b>Q41:</b> $\tan^{-1}(1/3)$ South of Vert.</div>
+                <div class="ans-box"><b>Q42:</b> $3\sqrt{2}$ km/h, $45^\circ$</div>
+                <div class="ans-box"><b>Q43:</b> Due North, $10 \text{ s}$</div>
+                <div class="ans-box"><b>Q44:</b> $120^\circ$ to flow, $11.5 \text{ s}$</div>
+                <div class="ans-box"><b>Q45:</b> No; $\sin^{-1}(v_s/v_r)$ from vert.</div>
+                <div class="ans-box"><b>Q46:</b> $50\sqrt{2}\text{km}, 5\text{ hrs}$</div>
+                <div class="ans-box"><b>Q47:</b> $\sin^{-1}(150/800)$ South of East</div>
+                <div class="ans-box"><b>Q48:</b> $\sqrt{v_1^2+v_2^2}$</div>
+                <div class="ans-box"><b>Q49:</b> $8 \text{ km/h}$ at $30^\circ$</div>
+                <div class="ans-box"><b>Q50:</b> $50 \text{ rad/s}$</div>
+                <div class="ans-box"><b>Q51:</b> $16 \text{ rad/s}^2$</div>
+                <div class="ans-box"><b>Q52:</b> $2v, 2v^2/\pi R$</div>
+                <div class="ans-box"><b>Q53:</b> $\sqrt{4+10.24} = 3.77 \text{ m/s}^2$</div>
+                <div class="ans-box"><b>Q54:</b> Acute ($<90^\circ$), Obtuse ($>90^\circ$)</div>
+                <div class="ans-box"><b>Q55:</b> $8 \text{ N}$</div>
+                <div class="ans-box"><b>Q56:</b> $u^2\cos^2\theta / g$</div>
+                <div class="ans-box"><b>Q57:</b> $u^2 / (g\cos\theta)$</div>
+                <div class="ans-box"><b>Q58:</b> $\sqrt{2^2+2^2} = 2\sqrt{2} \text{ m/s}^2$</div>
+                <div class="ans-box"><b>Q59:</b> Proof via derivatives</div>
+                <div class="ans-box"><b>Q60:</b> Ellipse, $x^2/a^2+y^2/b^2=1$</div>
+                <div class="ans-box"><b>Q61:</b> Straight line</div>
+                <div class="ans-box"><b>Q62:</b> Yes, always hits.</div>
+                <div class="ans-box"><b>Q63:</b> $u\sqrt{2h/(g+a_0)}$</div>
+                <div class="ans-box"><b>Q64:</b> $b^2/2c$</div>
+                <div class="ans-box"><b>Q65:</b> $\sin 2\theta = \frac{x\sin 2\beta + y\sin 2\alpha}{x+y}$</div>
+                <div class="ans-box"><b>Q66:</b> $t_A = t_B$</div>
+                <div class="ans-box"><b>Q67:</b> $10 \text{ m}$ ($v^2/g = 100/10$)</div>
+                <div class="ans-box"><b>Q68:</b> $t_0 = -(\vec{v}_0\cdot\vec{a})/a^2$</div>
+                <div class="ans-box"><b>Q69:</b> $\sqrt{g(h+\sqrt{x^2+h^2})}$</div>
+                <div class="ans-box"><b>Q70:</b> $P = m k^2 r^2 t$</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by Team Vardaan | Powered by Vardaan Comet<br>
+            Vardaan Learning Institute &copy; 2026 - All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>
