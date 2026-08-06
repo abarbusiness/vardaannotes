@@ -1,2 +1,897 @@
-<h1>ClassNotes</h1><p>Structure of Atom</p>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structure of Atom - Class Notes | Vardaan Learning Institute</title>
+
+    <!-- MathJax Configuration for rendering formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            chtml: { mtextInheritFont: true, scale: 1.05 },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            /* Light Mode Palette */
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255, 255, 255, 0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+            --red-border: #d32f2f;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255, 255, 255, 0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+            --red-border: #ff8a80;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Watermark Logic */
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.15;
+        }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .system-name {
+            font-size: 1rem;
+            color: var(--meta-text);
+            margin-top: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .top-branding-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 12px;
+            padding: 8px 0 0;
+            white-space: nowrap;
+            color: var(--meta-text);
+        }
+
+        .chapter-name-banner {
+            text-align: center;
+            margin: 6px 0 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .chapter-name-label {
+            display: none;
+        }
+
+        .chapter-name-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--pink-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .created-by {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .powered-by {
+            font-size: 0.9rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        .powered-by-label {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            color: var(--pink-border);
+            letter-spacing: 0.3px;
+        }
+
+        .powered-by-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: 0.4px;
+        }
+
+        html.dark-mode .powered-by-brand {
+            color: #ffffff !important;
+        }
+
+        html.dark-mode .vardaan-logo {
+            filter: invert(1);
+        }
+
+        .heart-red {
+            color: #d32f2f;
+        }
+
+        /* --- CONTACT INFO --- */
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.1rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pink-border);
+            margin-top: 35px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 12px;
+            font-weight: 700;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--accent-purple);
+            margin-top: 22px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: var(--accent-purple);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        p, li {
+            font-size: 1.02rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES & BADGE OVERLAP PROTECTION --- */
+        .blue-box, .green-box, .yellow-box, .practice-box, .derivation-block {
+            position: relative;
+            border-radius: 8px;
+            padding: 22px 20px 18px 20px;
+            margin: 52px 0 24px 0 !important; /* 52px top margin guarantees 38px gap above -14px badge */
+            box-sizing: border-box;
+            max-width: 100%;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            overflow: visible;
+            clear: both;
+        }
+
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+        }
+
+        .box-label {
+            position: absolute;
+            top: -14px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 3px 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 10;
+            line-height: 1.2;
+        }
+
+        .blue-box .box-label {
+            color: var(--blue-border);
+            border-color: var(--blue-border);
+        }
+
+        .green-box .box-label {
+            color: var(--green-border);
+            border-color: var(--green-border);
+        }
+
+        .yellow-box .box-label {
+            color: #f9a825;
+            border-color: var(--yellow-border);
+        }
+
+        /* --- PRACTICE & EXAMPLE BOXES --- */
+        .practice-box {
+            background-color: var(--paper-bg);
+            border: 2px dashed var(--accent-purple);
+        }
+
+        .practice-box .box-label {
+            color: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .solution {
+            margin-top: 14px;
+            padding: 12px 15px;
+            background-color: rgba(126, 87, 194, 0.05);
+            border-left: 3px solid var(--accent-purple);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* --- TABLES & RESPONSIVE WRAPPER --- */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 18px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            background-color: var(--paper-bg);
+            font-size: 0.88rem;
+        }
+
+        th, td {
+            border: 1px solid var(--toggle-border);
+            padding: 8px 8px;
+            text-align: center;
+            vertical-align: middle;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        th {
+            background-color: var(--blue-bg);
+            color: var(--blue-border);
+            font-weight: bold;
+        }
+
+        caption {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon {
+            position: absolute;
+            transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-sun {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        html.dark-mode .icon-moon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        html.dark-mode .icon-sun {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- MATH DERIVATION BLOCK & MATH CONTAINER OVERFLOW FIX --- */
+        .derivation-block {
+            background-color: var(--paper-bg);
+            border-left: 4px solid var(--accent-purple);
+            padding: 14px 18px;
+            margin: 18px 0;
+            font-size: 1.02rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle !important;
+        }
+
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            margin: 0.8em 0 !important;
+        }
+
+        /* --- IMAGE STYLING (Light/Dark Mode Blending Rule) --- */
+        .img-in-note {
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .content-image {
+            max-width: 100%;
+            height: auto;
+            mix-blend-mode: multiply;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .content-image {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        /* --- PRINT CONFIGURATION --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .theme-toggle, .branding-footer {
+                display: none !important;
+            }
+
+            .contact-info {
+                display: flex !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                pointer-events: none !important;
+                z-index: 9999 !important;
+            }
+
+            .watermark-image {
+                opacity: 0.10 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #d81b60;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPONENT: Watermark -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- COMPONENT: Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+
+    <!-- MAIN CONTAINER -->
+    <div class="paper-sheet">
+
+        <!-- BRANDING HEADER (Exact Class 10 Electricity Header) -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red"
+                    aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer"
+                style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png"
+                    alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
+        </div>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Structure of Atom</h1>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Student Quick Revision Focus</span>
+            High-yield exam revision guide for <strong>CBSE Boards, NEET, JEE Main &amp; Advanced</strong>. Covers discovery of subatomic particles, Thomson &amp; Rutherford models, Planck's Quantum Theory, Photoelectric effect, Bohr's Model, De Broglie dual nature, Heisenberg Uncertainty Principle, Quantum Numbers, and Electronic Configurations!
+        </div>
+
+        <h2>1. Discovery of Subatomic Particles</h2>
+
+        <h3>1.1 Discovery of Electron (Cathode Rays)</h3>
+        <p>Discovered by <strong>J.J. Thomson (1897)</strong> via discharge tube experiment at low pressure and high voltage.</p>
+        
+        <div class="img-in-note">
+            <img src="Images/cathode_ray_tube.png" alt="Cathode Ray Tube Experiment" class="content-image">
+        </div>
+
+        <ul>
+            <li>Cathode rays travel in straight lines from negative cathode to positive anode.</li>
+            <li>Deflected toward positive plate in electric field $\rightarrow$ consist of negatively charged <strong>electrons</strong>.</li>
+            <li><strong>Specific Charge ($e/m$):</strong> $\frac{e}{m_e} = \mathbf{1.758820 \times 10^{11}\text{ C/kg}}$ (constant for all gases).</li>
+            <li><strong>Electron Charge &amp; Mass:</strong> Charge $e = -1.602 \times 10^{-19}\text{ C}$ (Millikan Oil Drop), Mass $m_e = \mathbf{9.109 \times 10^{-31}\text{ kg}} = 0.00054\text{ u}$.</li>
+        </ul>
+
+        <h3>1.2 Discovery of Proton &amp; Neutron</h3>
+        <ul>
+            <li><strong>Proton (Canal Rays / Anode Rays):</strong> Discovered by Goldstein. Positively charged ions whose $e/m$ ratio <em>depends on the gas</em> (highest for Hydrogen gas $\rightarrow$ bare proton $p^+$). Charge $+1.602 \times 10^{-19}\text{ C}$, Mass $m_p = \mathbf{1.6726 \times 10^{-27}\text{ kg}} = 1.00727\text{ u}$.</li>
+            <li><strong>Neutron ($n^0$):</strong> Discovered by James Chadwick (1932) by bombarding Beryllium with $\alpha$-particles:
+                $${}^9_4\text{Be} + {}^4_2\text{He} \longrightarrow {}^{12}_6\text{C} + {}^1_0\text{n}$$
+                Neutral particle, Mass $m_n = \mathbf{1.6749 \times 10^{-27}\text{ kg}} = 1.00866\text{ u}$.
+            </li>
+        </ul>
+
+        <h2>2. Early Atomic Models</h2>
+
+        <h3>2.1 Rutherford's $\alpha$-Particle Scattering Experiment</h3>
+        
+        <div class="img-in-note">
+            <img src="Images/rutherfords_experiment.png" alt="Rutherford Alpha Scattering Experiment" class="content-image">
+        </div>
+
+        <ul>
+            <li><strong>Observations:</strong> Most $\alpha$-particles passed undeflected; a few deflected by small angles; $1$ in $20,000$ bounced back by $180^\circ$.</li>
+            <li><strong>Conclusions:</strong> Atom is mostly empty space. All positive charge and mass are concentrated in an extremely tiny dense <strong>Nucleus</strong> ($R_{\text{nucleus}} \approx 10^{-15}\text{ m}$ vs $R_{\text{atom}} \approx 10^{-10}\text{ m}$).</li>
+            <li><strong>Nuclear Radius Formula:</strong> $R = R_0 A^{1/3}$ (where $R_0 = 1.2 \times 10^{-15}\text{ m}$).</li>
+            <li><strong>Failure:</strong> According to Maxwell's electromagnetic theory, revolving accelerated electron must continuously radiate energy and spiral into nucleus. Cannot explain stability or discrete line spectra.</li>
+        </ul>
+
+        <h2>3. Wave &amp; Particle Dual Nature of Radiation</h2>
+
+        <h3>3.1 Electromagnetic Wave Parameters</h3>
+        $$\mathbf{c = \nu \lambda} \quad \text{and} \quad \mathbf{\bar{\nu} = \frac{1}{\lambda}}$$
+
+        <div class="img-in-note">
+            <img src="Images/The Electromagnetic Spectrum.png" alt="Electromagnetic Spectrum" class="content-image">
+        </div>
+
+        <h3>3.2 Black Body Radiation Graph</h3>
+        <p>Ideal body absorbing/emitting all frequencies. Intensity vs wavelength peak shifts to shorter wavelength at higher temperature (Planck's quantum concept).</p>
+
+        <div class="img-in-note">
+            <img src="Images/Black Body Radiation Graph.png" alt="Black Body Radiation Intensity Graph" class="content-image">
+        </div>
+
+        <h3>3.3 Planck's Quantum Theory &amp; Photoelectric Effect</h3>
+        <div class="green-box">
+            <span class="box-label">Planck's Energy Quantum Formula</span>
+            Radiant energy is emitted or absorbed in discrete packets called <strong>quanta (photons)</strong>:
+            $$\mathbf{E = h\nu = \frac{hc}{\lambda}}$$
+            Where $h = \text{Planck's constant} = \mathbf{6.626 \times 10^{-34}\text{ J s}}$.
+        </div>
+
+        <div class="img-in-note">
+            <img src="Images/photoelectric_effect.png" alt="Photoelectric Effect Experiment" class="content-image">
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">Einstein's Photoelectric Equation</span>
+            Ejection of electrons when light of frequency $\nu > \nu_0$ strikes metal surface:
+            $$\mathbf{E = W_0 + K.E._{max} \implies h\nu = h\nu_0 + \frac{1}{2} m_e v^2 = e V_0}$$
+            Where $W_0 = h\nu_0 = \text{Work Function}$, $\nu_0 = \text{Threshold Frequency}$, $V_0 = \text{Stopping Potential}$.
+        </div>
+
+        <h2>4. Bohr's Model for Hydrogen Atom</h2>
+
+        <div class="img-in-note">
+            <img src="Images/bohr_model.png" alt="Bohr Model of Hydrogen Atom" class="content-image">
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Bohr's Postulates &amp; Derived Formulas</span>
+            1. <strong>Quantization of Angular Momentum:</strong>
+            $$\mathbf{m v r = \frac{n h}{2\pi}} \quad (n = 1, 2, 3...)$$
+            2. <strong>Radius of $n^{\text{th}}$ Orbit:</strong>
+            $$\mathbf{r_n = 0.529 \times \frac{n^2}{Z} \text{ \AA} = 52.9 \times \frac{n^2}{Z} \text{ pm}}$$
+            3. <strong>Velocity of Electron:</strong>
+            $$\mathbf{v_n = 2.18 \times 10^6 \times \frac{Z}{n} \text{ m/s}}$$
+            4. <strong>Total Energy of Electron:</strong>
+            $$\mathbf{E_n = -13.6 \times \frac{Z^2}{n^2} \text{ eV/atom} = -2.18 \times 10^{-18} \times \frac{Z^2}{n^2} \text{ J/atom}}$$
+        </div>
+
+        <h3>4.1 Hydrogen Line Spectrum &amp; Rydberg Equation</h3>
+
+        <div class="img-in-note">
+            <img src="Images/Transition of electron in hydrogen atom.png" alt="Transitions of Electron in Hydrogen Atom" class="content-image">
+        </div>
+
+        <div class="derivation-block">
+            <strong>Rydberg Formula for Spectral Lines:</strong>
+            $$\mathbf{\bar{\nu} = \frac{1}{\lambda} = R_H Z^2 \left( \frac{1}{n_1^2} - \frac{1}{n_2^2} \right)}$$
+            Where $R_H = \text{Rydberg Constant} = \mathbf{109,677\text{ cm}^{-1} = 1.097 \times 10^7\text{ m}^{-1}}$.
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <caption><strong>Spectral Series of Hydrogen Atom</strong></caption>
+                <tr>
+                    <th>Series</th><th>$n_1$</th><th>$n_2$</th><th>Spectral Region</th>
+                </tr>
+                <tr><td><strong>Lyman</strong></td><td>1</td><td>$2, 3, 4...$</td><td>Ultraviolet (UV)</td></tr>
+                <tr><td><strong>Balmer</strong></td><td>2</td><td>$3, 4, 5...$</td><td>Visible</td></tr>
+                <tr><td><strong>Paschen</strong></td><td>3</td><td>$4, 5, 6...$</td><td>Infrared (IR)</td></tr>
+                <tr><td><strong>Brackett</strong></td><td>4</td><td>$5, 6, 7...$</td><td>Far Infrared</td></tr>
+                <tr><td><strong>Pfund</strong></td><td>5</td><td>$6, 7, 8...$</td><td>Far Infrared</td></tr>
+            </table>
+        </div>
+
+        <h2>5. Towards Quantum Mechanical Model</h2>
+
+        <h3>5.1 De Broglie Dual Nature of Matter</h3>
+
+        <div class="img-in-note">
+            <img src="Images/de_broglie.png" alt="De Broglie Dual Nature of Matter" class="content-image">
+        </div>
+
+        $$\mathbf{\lambda = \frac{h}{p} = \frac{h}{m v} = \frac{h}{\sqrt{2 m (K.E.)}} = \frac{h}{\sqrt{2 m q V}}}$$
+
+        <h3>5.2 Heisenberg's Uncertainty Principle</h3>
+
+        <div class="img-in-note">
+            <img src="Images/heisenberg.png" alt="Heisenberg Uncertainty Principle" class="content-image">
+        </div>
+
+        $$\mathbf{\Delta x \cdot \Delta p \ge \frac{h}{4\pi} \implies \Delta x \cdot (m \Delta v) \ge \frac{h}{4\pi}}$$
+        <p><em>Conclusion:</em> Impossible to determine position and velocity of microscopic particle simultaneously with absolute accuracy $\Rightarrow$ rules out Bohr's fixed circular orbits!</p>
+
+        <h2>6. Quantum Mechanical Model &amp; Quantum Numbers</h2>
+
+        <h3>6.1 Radial Probability Distribution Curves</h3>
+
+        <div class="img-in-note">
+            <img src="Images/radial_probability_graphs.png" alt="Radial Probability Distribution Graphs" class="content-image">
+        </div>
+
+        <ul>
+            <li><strong>Total Nodes $= n - 1$</strong></li>
+            <li><strong>Angular Nodes $= l$</strong></li>
+            <li><strong>Radial Nodes $= n - l - 1$</strong></li>
+        </ul>
+
+        <h3>6.2 Shapes of Atomic Orbitals</h3>
+
+        <div class="img-in-note">
+            <img src="Images/atomic_orbitals.png" alt="Shapes of s, p, d Atomic Orbitals" class="content-image">
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <caption><strong>The Four Quantum Numbers</strong></caption>
+                <tr>
+                    <th>Quantum Number</th>
+                    <th>Symbol</th>
+                    <th>Allowed Values</th>
+                    <th>Significance</th>
+                </tr>
+                <tr>
+                    <td><strong>Principal</strong></td>
+                    <td>$n$</td>
+                    <td>$1, 2, 3, 4...$</td>
+                    <td>Main shell, size &amp; energy. Total orbitals $= n^2$, Max $e^- = 2n^2$.</td>
+                </tr>
+                <tr>
+                    <td><strong>Azimuthal</strong></td>
+                    <td>$l$</td>
+                    <td>$0$ to $(n-1)$</td>
+                    <td>Subshell shape ($s=0, p=1, d=2, f=3$). Orbital angular momentum $L = \sqrt{l(l+1)}\frac{h}{2\pi}$.</td>
+                </tr>
+                <tr>
+                    <td><strong>Magnetic</strong></td>
+                    <td>$m_l$</td>
+                    <td>$-l \text{ to } +l$</td>
+                    <td>Spatial 3D orientation. Total orientations $= (2l + 1)$.</td>
+                </tr>
+                <tr>
+                    <td><strong>Spin</strong></td>
+                    <td>$m_s$</td>
+                    <td>$+\frac{1}{2}, -\frac{1}{2}$</td>
+                    <td>Electron spin orientation. Spin angular momentum $= \sqrt{s(s+1)}\frac{h}{2\pi}$.</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>7. Rules for Electronic Configuration</h2>
+
+        <h3>7.1 Aufbau Principle</h3>
+
+        <div class="img-in-note">
+            <img src="Images/aufbau_principle.png" alt="Aufbau Principle Energy Order Diagram" class="content-image">
+        </div>
+
+        <p>Orbitals are filled in increasing order of energy via <strong>$(n + l)$ rule</strong>. Order: $1s < 2s < 2p < 3s < 3p < 4s < 3d < 4p < 5s...$</p>
+
+        <h3>7.2 Pauli Exclusion &amp; Hund's Rule of Maximum Multiplicity</h3>
+
+        <div class="img-in-note">
+            <img src="Images/electronic_config.png" alt="Hund Rule Electronic Configuration Example" class="content-image">
+        </div>
+
+        <ul>
+            <li><strong>Pauli Principle:</strong> No two electrons can have identical set of all 4 quantum numbers. Max 2 $e^-$ per orbital with opposite spins.</li>
+            <li><strong>Hund's Rule:</strong> Electron pairing in degenerate orbitals ($p, d, f$) does not occur until each orbital is singly occupied with parallel spins.</li>
+        </ul>
+
+        <div class="green-box">
+            <span class="box-label">Exceptional Configurations (High-Yield)</span>
+            Half-filled &amp; fully-filled subshells possess extra stability due to high exchange energy &amp; symmetry:
+            <br>&bull; <strong>Chromium ($\text{Cr}, Z=24$):</strong> $[\text{Ar}] 3d^5 4s^1$ (not $3d^4 4s^2$)
+            <br>&bull; <strong>Copper ($\text{Cu}, Z=29$):</strong> $[\text{Ar}] 3d^{10} 4s^1$ (not $3d^9 4s^2$)
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Student Quick Revision Self-Test</span>
+
+            <strong>Q1 (JEE Main):</strong> Calculate the energy and radius of electron in 1st orbit of $\text{He}^+$ ($Z=2$).
+            <div class="solution" style="margin-bottom:12px;">
+                <strong>Solution:</strong>
+                <br>$E_1 = -13.6 \times \frac{2^2}{1^2} = \mathbf{-54.4\text{ eV}} = \mathbf{-8.72 \times 10^{-18}\text{ J}}$.
+                <br>$r_1 = 0.529 \times \frac{1^2}{2} = \mathbf{0.2645\text{ \AA}} = \mathbf{26.45\text{ pm}}$.
+            </div>
+
+            <strong>Q2 (NEET):</strong> How many radial nodes and angular nodes are present in $4p$ orbital?
+            <div class="solution">
+                <strong>Solution:</strong> For $4p$: $n=4, l=1$.
+                <br>&bull; <strong>Angular Nodes $= l = \mathbf{1}$</strong>.
+                <br>&bull; <strong>Radial Nodes $= n - l - 1 = 4 - 1 - 1 = \mathbf{2}$</strong>.
+                <br>&bull; Total Nodes $= n - 1 = 3$.
+            </div>
+        </div>
+
+        <!-- BRANDING FOOTER (Exact Class 10 Electricity Footer) -->
+        <div class="branding-footer">
+            <div class="created-by">Created by Team Vardaan with <span class="heart-red"
+                    aria-hidden="true">&hearts;</span></div>
+            <div class="powered-by"
+                style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;">
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer"
+                    style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png"
+                        alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+
+</html>
