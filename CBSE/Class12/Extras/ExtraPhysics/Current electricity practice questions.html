@@ -1,0 +1,2786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vardaan Learning Institute - Blackboard Classroom</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --brand-orange: #FC7917;
+            --brand-orange-glow: rgba(252, 121, 23, 0.3);
+            --bg-black: #000000;
+            --panel-black: #080a0f;
+            --panel-border: #1e242d;
+            --text-light: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* PREVENT MATHJAX ASSISTIVE SCREEN-READER OVERLAPS IN PDF / PRINT */
+        mjx-assistive-mml {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-black);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-light);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+        }
+
+        /* --- APP WRAPPER --- */
+        #app-wrapper {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px 16px;
+        }
+
+        /* FAIL-SAFE PSEUDO-FULLSCREEN FALLBACK FOR IFRAMES & RESTRICTED BROWSERS */
+        body.is-fullscreen #app-wrapper {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 999999 !important;
+            padding: 10px 16px !important;
+            background: #000000 !important;
+        }
+
+        body.is-fullscreen {
+            overflow: hidden !important;
+        }
+
+        /* --- CLEAN TOP BAR --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-black);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 8px 16px;
+            border-left: 4px solid var(--brand-orange);
+            z-index: 20;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: 36px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .institute-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--brand-orange);
+            letter-spacing: 1.5px;
+        }
+
+        /* --- MINIMAL TOOLBAR --- */
+        .chalk-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--panel-border);
+            padding: 4px 12px;
+            border-radius: 30px;
+        }
+
+        .tool-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-sub);
+            padding: 5px 10px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .tool-btn:hover {
+            color: #fff;
+        }
+
+        .tool-btn.active {
+            background: rgba(252, 121, 23, 0.2);
+            color: var(--brand-orange);
+            border-color: var(--brand-orange);
+            font-weight: 700;
+        }
+
+        .color-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-left: 1px solid var(--panel-border);
+            padding-left: 8px;
+            margin-left: 2px;
+        }
+
+        .chalk-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .chalk-dot:hover,
+        .chalk-dot.active {
+            transform: scale(1.25);
+            border-color: #fff;
+        }
+
+        .size-slider {
+            width: 140px;
+            height: 6px;
+            cursor: pointer;
+            accent-color: var(--brand-orange);
+            margin: 0 8px;
+            vertical-align: middle;
+        }
+
+        .size-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--brand-orange);
+            min-width: 32px;
+            text-align: center;
+            background: rgba(252, 121, 23, 0.12);
+            border: 1px solid rgba(252, 121, 23, 0.3);
+            border-radius: 8px;
+            padding: 2px 6px;
+        }
+
+        /* --- SINGLE MAXIMUM HEIGHT BLACKBOARD STAGE --- */
+        .slide-stage {
+            flex: 1;
+            display: flex;
+            position: relative;
+            margin-top: 8px;
+            height: calc(100% - 62px);
+            width: 100%;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000000 !important;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95);
+        }
+
+        /* --- SLIDE TRANSITION ANIMATIONS --- */
+        .slide-animate-next {
+            animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide-animate-prev {
+            animation: slideInLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(60px) scale(0.97);
+                opacity: 0.2;
+            }
+
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-60px) scale(0.97);
+                opacity: 0.2;
+            }
+
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* VARDAAN OFFICIAL CHAPTER NOTES WATERMARK OVERLAY */
+        .board-watermark-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none !important;
+            z-index: 1 !important;
+            opacity: 0.055;
+            mix-blend-mode: screen;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .board-watermark-img {
+            max-width: 680px;
+            width: 85%;
+            height: auto;
+            filter: invert(1);
+            object-fit: contain;
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-drag: none !important;
+        }
+
+        /* --- ENLARGED QUESTION DIRECTLY ON BLACKBOARD (MOBILE READY) --- */
+        .board-question-box {
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            max-width: 62%;
+            z-index: 20 !important;
+            pointer-events: none !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            padding: 0;
+            margin: 0;
+        }
+
+        .board-question-box button,
+        .board-question-box a,
+        .copy-spec-btn,
+        .board-diagram-spec-box {
+            pointer-events: auto !important;
+        }
+
+        .q-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--brand-orange);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .q-tag-sub {
+            background: rgba(252, 121, 23, 0.18);
+            color: var(--brand-orange);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .q-tag-exam {
+            background: rgba(56, 189, 248, 0.18);
+            color: #38bdf8;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .q-text-chalk {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #f8fafc;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            font-weight: 500;
+        }
+
+        .given-text-chalk {
+            font-size: 0.92rem;
+            color: #fdba74;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        /* INLINE COLORFUL & ENLARGED SVG CIRCUIT CONTAINER */
+        .svg-circuit-container {
+            margin-top: 10px;
+            margin-bottom: 6px;
+            pointer-events: none !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            display: block;
+            width: 100%;
+        }
+
+        .svg-circuit-container svg {
+            background: transparent !important;
+            display: block;
+            overflow: visible;
+            max-width: 560px;
+            width: 100%;
+            height: auto;
+            pointer-events: none !important;
+        }
+
+        /* ADVANCED BLEND MODE FOR SEAMLESS BLACKBOARD BACKGROUND MERGING */
+        .content-image.circuit-img-blend {
+            mix-blend-mode: screen !important;
+            background-color: transparent !important;
+            filter: contrast(1.6) brightness(0.95) !important;
+            max-width: 560px;
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 0 !important;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-drag: none !important;
+            position: relative;
+            z-index: 21 !important;
+        }
+
+        /* PROMINENT DETAILED DIAGRAM SPECIFICATION BOX DIRECTLY ON QUESTION CARD */
+        .board-diagram-spec-box {
+            margin-top: 10px;
+            background: rgba(252, 121, 23, 0.08);
+            border: 1px dashed var(--brand-orange);
+            border-radius: 10px;
+            padding: 10px 14px;
+            pointer-events: auto;
+            position: relative;
+            z-index: 30;
+            max-width: 580px;
+        }
+
+        .spec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .spec-title {
+            font-weight: 700;
+            color: var(--brand-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.76rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-spec-btn {
+            background: rgba(252, 121, 23, 0.18);
+            border: 1px solid var(--brand-orange);
+            color: var(--brand-orange);
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer !important;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            outline: none;
+            position: relative;
+            z-index: 999;
+            pointer-events: auto !important;
+        }
+
+        .copy-spec-btn:hover {
+            background: var(--brand-orange);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(252, 121, 23, 0.5);
+            cursor: pointer !important;
+        }
+
+        .copy-spec-btn.copied {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: #fff;
+        }
+
+        .spec-text {
+            font-size: 0.81rem;
+            color: #f1f5f9;
+            line-height: 1.5;
+        }
+
+        /* --- FLOATING CAPSULE CONTROL GROUP (TOP-RIGHT ON BOARD) --- */
+        .board-controls-capsule {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            z-index: 100 !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto !important;
+        }
+
+        .subtle-capsule-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 7px 16px;
+            border-radius: 22px;
+            cursor: pointer !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.75;
+            position: relative;
+            z-index: 101 !important;
+            pointer-events: auto !important;
+        }
+
+        .subtle-capsule-btn:hover:not(:disabled) {
+            opacity: 1.0;
+            background: rgba(252, 121, 23, 0.25);
+            border-color: var(--brand-orange);
+            color: var(--brand-orange);
+            cursor: pointer !important;
+        }
+
+        .subtle-capsule-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed !important;
+        }
+
+        .subtle-counter-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--brand-orange);
+            padding: 7px 14px;
+            border-radius: 22px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--panel-border);
+            opacity: 0.9;
+        }
+
+        /* --- FLOATING SOLUTION MODAL WINDOW --- */
+        .solution-modal {
+            position: absolute;
+            top: 62px;
+            right: 20px;
+            width: 440px;
+            max-height: 84%;
+            background: rgba(15, 19, 24, 0.97);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: 14px;
+            padding: 18px;
+            z-index: 110 !important;
+            display: none;
+            overflow-y: auto;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.2s ease;
+            pointer-events: auto !important;
+        }
+
+        .solution-modal.open {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sol-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--panel-border);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--brand-orange);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .close-sol-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+
+        .close-sol-btn:hover {
+            color: #fff;
+        }
+
+        .sol-body {
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+
+        /* --- VISIBLE TEACHER CHALK & ERASER CURSOR OVERLAY --- */
+        #chalk-cursor-pointer {
+            position: fixed; top: 0; left: 0;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            pointer-events: none !important;
+            z-index: 999999 !important;
+            transform: translate(-50%, -50%);
+            transition: width 0.12s ease, height 0.12s ease, opacity 0.15s ease;
+            opacity: 0;
+            box-shadow: 0 0 12px #FC7917;
+            border: 2.5px solid #FC7917;
+            background: rgba(252, 121, 23, 0.35);
+        }
+
+        #chalk-cursor-pointer.eraser-mode {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 2px dashed rgba(255, 255, 255, 0.85) !important;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5) !important;
+        }
+
+        /* CANVAS COVERS FULL BOARD WITH MAXIMUM HEIGHT (STACKED IN FRONT OF IMAGES & TEXT) */
+        .rough-canvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: none !important;
+            touch-action: none !important;
+            pointer-events: auto !important;
+            z-index: 50 !important;
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chalk-cursor-pointer"></div>
+    <div id="app-wrapper">
+
+        <!-- CLEAN TOP BAR -->
+        <div class="top-bar">
+            <a href="../../Extras.html" class="brand-container">
+                <img src="../../Vardaan app Icon.svg" alt="Vardaan Logo" class="logo-img">
+                <span class="institute-title">VARDAAN LEARNING INSTITUTE</span>
+            </a>
+
+            <!-- TOOLBAR -->
+            <div class="chalk-toolbar">
+                <button class="tool-btn active" id="tool-pen" onclick="setTool('pen')"><i data-lucide="edit-3"></i>
+                    Chalk</button>
+                <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')"><i data-lucide="eraser"></i>
+                    Eraser</button>
+
+                <div class="color-group">
+                    <div class="chalk-dot active" style="background: #FC7917;" onclick="setColor('#FC7917', this)"
+                        title="Orange Chalk"></div>
+                    <div class="chalk-dot" style="background: #ffffff;" onclick="setColor('#ffffff', this)"
+                        title="White Chalk"></div>
+                    <div class="chalk-dot" style="background: #fde047;" onclick="setColor('#fde047', this)"
+                        title="Yellow Chalk"></div>
+                    <div class="chalk-dot" style="background: #38bdf8;" onclick="setColor('#38bdf8', this)"
+                        title="Cyan Chalk"></div>
+                    <div class="chalk-dot" style="background: #f472b6;" onclick="setColor('#f472b6', this)"
+                        title="Pink Chalk"></div>
+                </div>
+
+                <input type="range" class="size-slider" min="1" max="16" value="3" id="pen-size"
+                    oninput="setSize(this.value)" onchange="setSize(this.value)">
+                <span class="size-badge" id="size-val-badge">3px</span>
+                <button class="tool-btn" onclick="clearCurrentCanvas()"><i data-lucide="trash-2"></i> Clear</button>
+            </div>
+
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="tool-btn" id="add-slide-btn" onclick="addNewBlankSlide()"><i
+                        data-lucide="plus-circle"></i> Add Slide</button>
+                <button class="tool-btn" id="pdf-export-btn" onclick="exportClassPDF()"><i data-lucide="download"></i>
+                    Save PDF</button>
+                <button class="tool-btn" id="fullscreen-btn" onclick="toggleFullscreen()"><i data-lucide="maximize"></i>
+                    Fullscreen</button>
+                <img src="../../Vardaan app Icon.svg" alt="Vardaan App Icon" class="logo-img" style="height: 36px; width: 36px; border-radius: 8px; object-fit: contain; margin-left: 4px; box-shadow: 0 0 10px rgba(252, 121, 23, 0.4);">
+            </div>
+        </div>
+
+        <!-- SLIDE STAGE (MAXIMUM HEIGHT BLACKBOARD SURFACE) -->
+        <div class="slide-stage" id="slide-stage">
+
+            <!-- SLIDE 01: DRIFT VELOCITY & RELAXATION TIME -->
+            <div class="slide-container" style="display: block;" id="slide-1">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 01</span>
+                        <span class="q-tag-sub">Drift Velocity & Relaxation Time</span>
+                        <span class="q-tag-exam">CBSE Board</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        A uniform copper conductor of cross-sectional area \( A = 1.0 \times 10^{-7} \text{ m}^2 \)
+                        carries a steady current of \( I = 1.5 \text{ A} \). Assuming electron density is \( n = 8.5
+                        \times 10^{28} \text{ m}^{-3} \), calculate:
+                        <br>
+                        <strong>(a)</strong> Drift velocity (\(v_d\)) of free electrons.<br>
+                        <strong>(b)</strong> Current density (\(J\)) in the conductor.<br>
+                        <strong>(c)</strong> Relaxation time (\(\tau\)) if resistivity \(\rho = 1.7 \times 10^{-8}
+                        \,\Omega\cdot\text{m}\) and electron mass \(m = 9.1 \times 10^{-31} \text{ kg}\).
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: \( I = 1.5\text{ A} \), \( A = 10^{-7}\text{ m}^2 \), \( n = 8.5 \times 10^{28}\text{
+                        m}^{-3} \), \( e = 1.6 \times 10^{-19}\text{ C} \)
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/High-resolution%202D%20educational%20physics%20schematic%20illustrating%20electron%20drift%20velocity%20and%20relaxation%20time%20in%20a%20conductor%20on%20dark%20blackboard%20ba.png"
+                            class="content-image circuit-img-blend" alt="Drift Velocity & Relaxation Time Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="150" viewBox="0 0 580 150" style="display: none;">
+                            <rect x="80" y="40" width="380" height="60" rx="30" fill="rgba(56, 189, 248, 0.15)"
+                                stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4" />
+                            <ellipse cx="460" cy="70" rx="25" ry="30" fill="rgba(56, 189, 248, 0.3)" stroke="#38bdf8"
+                                stroke-width="3" />
+                            <circle cx="160" cy="70" r="10" fill="#FC7917" />
+                            <line x1="154" y1="70" x2="166" y2="70" stroke="#fff" stroke-width="2.5" />
+                            <line x1="160" y1="70" x2="110" y2="70" stroke="#FC7917" stroke-width="3" />
+                            <polygon points="110,70 120,64 120,76" fill="#FC7917" />
+                            <text x="135" y="55" text-anchor="middle" fill="#FC7917" font-size="13"
+                                font-weight="bold">vd (Drift)</text>
+                            <line x1="80" y1="125" x2="460" y2="125" stroke="#fde047" stroke-width="3" />
+                            <polygon points="460,125 448,118 448,132" fill="#fde047" />
+                            <text x="270" y="145" text-anchor="middle" fill="#fde047" font-size="13"
+                                font-weight="bold">Electric Field (E) & Current (I) →</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-1" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">01 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-1" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-1')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-1">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 01</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-1')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>(a) Drift Velocity (\(v_d\)):</strong><br>\( I = n e A v_d \implies v_d = \frac{I}{n e
+                        A} = \frac{1.5}{8.5 \times 10^{28} \times 1.6 \times 10^{-19} \times 10^{-7}} = 1.10 \text{
+                        mm/s} \)<br><br><strong>(b) Current Density (\(J\)):</strong><br>\( J = \frac{I}{A} =
+                        \frac{1.5}{1.0 \times 10^{-7}} = 1.5 \times 10^7 \text{ A/m}^2 \)<br><br><strong>(c) Relaxation
+                            Time (\(\tau\)):</strong><br>\( \tau = \frac{m}{n e^2 \rho} = 2.47 \times 10^{-14} \text{
+                        seconds} \)
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-1"></canvas>
+            </div>
+
+            <!-- SLIDE 02: TEMPERATURE DEPENDENCE -->
+            <div class="slide-container" style="display: none;" id="slide-2">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 02</span>
+                        <span class="q-tag-sub">Temperature Dependence</span>
+                        <span class="q-tag-exam">CBSE / JEE Main</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        A platinum resistance thermometer has a resistance of \( R_0 = 5.00\,\Omega \) at
+                        \(0^\circ\text{C}\) and \( R_{100} = 5.23\,\Omega \) at \(100^\circ\text{C}\). When inserted
+                        into a hot bath, the resistance becomes \( R_t = 5.795\,\Omega \). Calculate:
+                        <br>
+                        <strong>(a)</strong> Temperature coefficient of resistance (\(\alpha\)) of platinum.<br>
+                        <strong>(b)</strong> Temperature (\(t\)) of the hot bath.
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: \( R_0 = 5.00\,\Omega \), \( R_{100} = 5.23\,\Omega \), \( R_t = 5.795\,\Omega \)
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <svg width="580" height="160" viewBox="0 0 580 160">
+                            <line x1="90" y1="20" x2="90" y2="130" stroke="#94a3b8" stroke-width="2.5" />
+                            <line x1="90" y1="130" x2="520" y2="130" stroke="#94a3b8" stroke-width="2.5" />
+                            <text x="20" y="22" fill="#94a3b8" font-size="12" font-weight="bold">R(Ω)</text>
+                            <text x="530" y="134" fill="#94a3b8" font-size="12" font-weight="bold">Temp (t °C)</text>
+                            <line x1="90" y1="105" x2="470" y2="35" stroke="#FC7917" stroke-width="3.5" />
+                            <circle cx="90" cy="105" r="6" fill="#38bdf8" />
+                            <text x="75" y="109" text-anchor="end" fill="#38bdf8" font-size="12" font-weight="bold">R₀ =
+                                5.0Ω</text>
+                            <circle cx="250" cy="74" r="6" fill="#fde047" />
+                            <text x="250" y="52" text-anchor="middle" fill="#fde047" font-size="12"
+                                font-weight="bold">100°C (5.23Ω)</text>
+                            <circle cx="470" cy="35" r="6" fill="#f472b6" />
+                            <text x="470" y="16" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="bold">t
+                                (5.795Ω)</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-2" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">02 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-2" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-2')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-2">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 02</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-2')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>(a) Temperature Coefficient (\(\alpha\)):</strong><br>\( \alpha = \frac{R_{100} -
+                        R_0}{100 R_0} = \frac{0.23}{500} = 4.6 \times 10^{-4} \,^\circ\text{C}^{-1}
+                        \)<br><br><strong>(b) Temperature of Hot Bath (\(t\)):</strong><br>\( t = \frac{R_t -
+                        R_0}{\alpha R_0} = \frac{0.795}{0.23} \times 100 = 345.65^\circ\text{C} \)
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-2"></canvas>
+            </div>
+
+            <!-- SLIDE 03: INFINITE RESISTOR LADDER -->
+            <div class="slide-container" style="display: none;" id="slide-3">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 03</span>
+                        <span class="q-tag-sub">Infinite Resistor Ladder</span>
+                        <span class="q-tag-exam">JEE Mains Special</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        An infinite network of identical resistors, each of resistance \( R = 2.0\,\Omega \), is
+                        connected across terminals A and B as shown. Determine the equivalent resistance (\(R_{AB}\)) of
+                        this infinite ladder network.
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: Each resistor \( R = 2.0\,\Omega \), Infinite repeating unit network.
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/Electrical%20schematic%20of%20an%20infinite%20repeating%20resistor%20ladder%20network%20on%20pitch-black%20background%20(%2307090c).%20Terminals%20A%20and%20B%20marked%20on%20left%20wi.png"
+                            class="content-image circuit-img-blend" alt="Infinite Resistor Ladder Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="180" viewBox="0 0 580 180" style="display: none;">
+                            <line x1="60" y1="40" x2="480" y2="40" stroke="#38bdf8" stroke-width="3.5" />
+                            <line x1="60" y1="140" x2="480" y2="140" stroke="#38bdf8" stroke-width="3.5" />
+                            <circle cx="60" cy="40" r="7" fill="#FC7917" /><text x="40" y="45" text-anchor="end"
+                                fill="#FC7917" font-size="15" font-weight="bold">A</text>
+                            <circle cx="60" cy="140" r="7" fill="#FC7917" /><text x="40" y="145" text-anchor="end"
+                                fill="#FC7917" font-size="15" font-weight="bold">B</text>
+                            <path d="M 100,40 L 107,28 L 121,52 L 135,28 L 149,52 L 156,40" fill="none" stroke="#FC7917"
+                                stroke-width="3.5" />
+                            <text x="128" y="18" text-anchor="middle" fill="#FC7917" font-size="13" font-weight="bold">R
+                                = 2.0Ω</text>
+                            <path d="M 180,50 L 168,57 L 192,71 L 168,85 L 192,99 L 180,106" fill="none"
+                                stroke="#38bdf8" stroke-width="3.5" />
+                            <line x1="180" y1="40" x2="180" y2="50" stroke="#38bdf8" stroke-width="3.5" />
+                            <line x1="180" y1="106" x2="180" y2="140" stroke="#38bdf8" stroke-width="3.5" />
+                            <text x="205" y="80" text-anchor="start" fill="#38bdf8" font-size="13"
+                                font-weight="bold">R</text>
+                            <path d="M 240,40 L 247,28 L 261,52 L 275,28 L 289,52 L 296,40" fill="none" stroke="#FC7917"
+                                stroke-width="3.5" />
+                            <text x="268" y="18" text-anchor="middle" fill="#FC7917" font-size="13"
+                                font-weight="bold">R</text>
+                            <path d="M 320,50 L 308,57 L 332,71 L 308,85 L 332,99 L 320,106" fill="none"
+                                stroke="#38bdf8" stroke-width="3.5" />
+                            <line x1="320" y1="40" x2="320" y2="50" stroke="#38bdf8" stroke-width="3.5" />
+                            <line x1="320" y1="106" x2="320" y2="140" stroke="#38bdf8" stroke-width="3.5" />
+                            <text x="345" y="80" text-anchor="start" fill="#38bdf8" font-size="13"
+                                font-weight="bold">R</text>
+                            <path d="M 380,40 L 387,28 L 401,52 L 415,28 L 429,52 L 436,40" fill="none" stroke="#FC7917"
+                                stroke-width="3.5" />
+                            <text x="465" y="45" text-anchor="middle" fill="#f472b6" font-size="22" font-weight="bold">.
+                                . .</text>
+                            <text x="465" y="145" text-anchor="middle" fill="#f472b6" font-size="22"
+                                font-weight="bold">. . .</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-3" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">03 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-3" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-3')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-3">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 03</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-3')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>Equivalent Resistance Method:</strong><br>Let total equivalent resistance across A-B be
+                        \( R_{AB} = X \).<br>\( X = R + \frac{R X}{R + X} \implies X^2 - R X - R^2 = 0 \)<br>For \( R =
+                        2.0\,\Omega \): \( X^2 - 2X - 4 = 0 \implies X = 1 + \sqrt{5} = 3.236 \,\Omega \)
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-3"></canvas>
+            </div>
+
+            <!-- SLIDE 04: MIXED CELL GROUPING & MAX POWER -->
+            <div class="slide-container" style="display: none;" id="slide-4">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 04</span>
+                        <span class="q-tag-sub">Mixed Cell Grouping & Max Power</span>
+                        <span class="q-tag-exam">CBSE / JEE Main</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        A battery consists of \( n = 4 \) parallel rows, where each row contains \( m = 6 \) identical
+                        cells connected in series. Each cell has EMF \( e = 2.0\text{ V} \) and internal resistance \( r
+                        = 0.5\,\Omega \).
+                        <br>
+                        <strong>(a)</strong> Determine total EMF (\(E_{eq}\)) and internal resistance (\(r_{eq}\)) of
+                        the battery.<br>
+                        <strong>(b)</strong> Find the external load resistance (\(R\)) for maximum power transfer and
+                        calculate maximum power (\(P_{max}\)).
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: \( m = 6 \) (in series), \( n = 4 \) (parallel rows), \( e = 2.0\text{V} \), \( r =
+                        0.5\,\Omega \).
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/Circuit%20schematic%20showing%20mixed%20grouping%20of%20cells%20(m%20series%20cells%20in%20n%20parallel%20rows)%20connected%20to%20load%20resistor%20R%20on%20dark%20blackboard%20canvas%20(.png"
+                            class="content-image circuit-img-blend" alt="Mixed Cell Grouping Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="180" viewBox="0 0 580 180" style="display: none;">
+                            <rect x="40" y="20" width="300" height="140" fill="rgba(252, 121, 23, 0.08)"
+                                stroke="#FC7917" stroke-width="2" stroke-dasharray="4,4" rx="8" />
+                            <text x="190" y="12" text-anchor="middle" fill="#FC7917" font-size="13"
+                                font-weight="bold">Battery Array (m=6 series, n=4 rows)</text>
+                            <line x1="340" y1="90" x2="420" y2="90" stroke="#38bdf8" stroke-width="3" />
+                            <line x1="420" y1="90" x2="420" y2="30" stroke="#38bdf8" stroke-width="3" />
+                            <path d="M 420,30 L 434,18 L 462,42 L 490,18 L 518,42 L 532,30" fill="none" stroke="#fde047"
+                                stroke-width="3.5" />
+                            <line x1="532" y1="30" x2="550" y2="30" stroke="#38bdf8" stroke-width="3" />
+                            <line x1="550" y1="30" x2="550" y2="150" stroke="#38bdf8" stroke-width="3" />
+                            <line x1="550" y1="150" x2="40" y2="150" stroke="#38bdf8" stroke-width="3" />
+                            <text x="476" y="12" text-anchor="middle" fill="#fde047" font-size="13" font-weight="bold">R
+                                = 0.75Ω</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-4" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">04 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-4" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-4')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-4">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 04</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-4')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>(a) Battery Equivalent EMF & Resistance:</strong><br>\( E_{eq} = m \cdot e = 6 \times
+                        2.0 = 12\text{ V} \)<br>\( r_{eq} = \frac{m r}{n} = \frac{6 \times 0.5}{4} = 0.75\,\Omega
+                        \)<br><br><strong>(b) Max Power Transfer:</strong><br>\( R = r_{eq} = 0.75\,\Omega \)<br>\( I =
+                        \frac{12}{0.75 + 0.75} = 8\text{ A} \implies P_{max} = I^2 R = 64 \times 0.75 = 48\text{ Watts}
+                        \)
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-4"></canvas>
+            </div>
+
+            <!-- SLIDE 05: KIRCHHOFF'S RULES (KVL / KCL) -->
+            <div class="slide-container" style="display: none;" id="slide-5">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 05</span>
+                        <span class="q-tag-sub">Kirchhoff's Rules (KVL / KCL)</span>
+                        <span class="q-tag-exam">CBSE Board Core</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        In the multi-loop circuit shown, determine branch currents \(I_1\), \(I_2\), and \(I_3\) using
+                        Kirchhoff's Voltage Law (KVL).
+                        <br>
+                        (Given: Battery EMFs \(E_1 = 10\text{ V}\), \(E_2 = 4\text{ V}\); Resistors \(R_1 = 2\,\Omega\),
+                        \(R_2 = 4\,\Omega\), central resistor \(R_3 = 1\,\Omega\)).
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: \( E_1 = 10\text{V}, E_2 = 4\text{V}, R_1 = 2\,\Omega, R_2 = 4\,\Omega, R_3 = 1\,\Omega
+                        \)
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/Detailed%20two-loop%20Kirchhoff's%20Voltage%20Law%20(KVL)%20circuit%20diagram%20on%20dark%20blackboard%20background%20(%2307090c).%20Outer%20rectangle%20in%203.5px%20cyan%20wire%20(%23.png"
+                            class="content-image circuit-img-blend" alt="Kirchhoff Multi-Loop Circuit Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="180" viewBox="0 0 580 180" style="display: none;">
+                            <rect x="60" y="30" width="460" height="120" fill="none" stroke="#38bdf8"
+                                stroke-width="3" />
+                            <line x1="290" y1="30" x2="290" y2="150" stroke="#38bdf8" stroke-width="3" />
+                            <line x1="60" y1="75" x2="60" y2="105" stroke="#FC7917" stroke-width="4" />
+                            <line x1="72" y1="80" x2="72" y2="100" stroke="#fff" stroke-width="2.5" />
+                            <text x="45" y="93" text-anchor="end" fill="#fde047" font-size="13"
+                                font-weight="bold">E1=10V</text>
+                            <path d="M 140,30 L 147,18 L 161,42 L 175,18 L 189,42 L 196,30" fill="none" stroke="#FC7917"
+                                stroke-width="3" />
+                            <text x="168" y="12" text-anchor="middle" fill="#fff" font-size="13"
+                                font-weight="bold">R1=2Ω</text>
+                            <path d="M 290,70 L 278,77 L 302,91 L 278,105 L 302,119 L 290,126" fill="none"
+                                stroke="#f472b6" stroke-width="3" />
+                            <text x="315" y="100" text-anchor="start" fill="#f472b6" font-size="13"
+                                font-weight="bold">R3=1Ω</text>
+                            <path d="M 370,30 L 377,18 L 391,42 L 405,18 L 419,42 L 426,30" fill="none" stroke="#FC7917"
+                                stroke-width="3" />
+                            <text x="398" y="12" text-anchor="middle" fill="#fff" font-size="13"
+                                font-weight="bold">R2=4Ω</text>
+                            <line x1="520" y1="75" x2="520" y2="105" stroke="#FC7917" stroke-width="4" />
+                            <line x1="532" y1="80" x2="532" y2="100" stroke="#fff" stroke-width="2.5" />
+                            <text x="545" y="93" text-anchor="start" fill="#fde047" font-size="13"
+                                font-weight="bold">E2=4V</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-5" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">05 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-5" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-5')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-5">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 05</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-5')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>Applying KCL & KVL:</strong><br>\( I_3 = I_1 + I_2 \)<br>Loop 1: \( 10 - 2 I_1 - 1(I_1 +
+                        I_2) = 0 \implies 3 I_1 + I_2 = 10 \)<br>Loop 2: \( 4 - 4 I_2 - 1(I_1 + I_2) = 0 \implies I_1 +
+                        5 I_2 = 4 \)<br>Solving: \( I_2 = 0.143\text{ A} \), \( I_1 = 3.285\text{ A} \), \( I_3 =
+                        3.428\text{ A} \)
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-5"></canvas>
+            </div>
+
+            <!-- SLIDE 06: WHEATSTONE BRIDGE BALANCE -->
+            <div class="slide-container" style="display: none;" id="slide-6">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 06</span>
+                        <span class="q-tag-sub">Wheatstone Bridge Balance</span>
+                        <span class="q-tag-exam">JEE Mains / CBSE</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        A Wheatstone bridge has four arms with resistances \( P = 10\,\Omega \), \( Q = 15\,\Omega \),
+                        \( R = 20\,\Omega \), and \( S = 30\,\Omega \). A galvanometer \( G = 50\,\Omega \) is connected
+                        across B-D and a battery of \( E = 6.0\text{ V} \) is across A-C.
+                        <br>
+                        <strong>(a)</strong> Prove whether the bridge is balanced.<br>
+                        <strong>(b)</strong> Find the total equivalent resistance (\(R_{AC}\)) and total current drawn
+                        from the battery.
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: \( P=10\,\Omega, Q=15\,\Omega, R=20\,\Omega, S=30\,\Omega, E=6\text{V} \).
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/Wheatstone%20bridge%20diamond%20network%20schematic%20on%20pitch-black%20background%20(%2307090c).%20Four%20resistor%20arms%20arranged%20in%20a%20diamond%20polygon%20with%20vertice.png"
+                            class="content-image circuit-img-blend" alt="Wheatstone Bridge Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="180" viewBox="0 0 580 180" style="display: none;">
+                            <polygon points="60,90 230,20 400,90 230,160" fill="none" stroke="#38bdf8"
+                                stroke-width="3" />
+                            <line x1="230" y1="20" x2="230" y2="160" stroke="#f472b6" stroke-width="2.5"
+                                stroke-dasharray="4,4" />
+                            <circle cx="230" cy="90" r="14" fill="#07090c" stroke="#f472b6" stroke-width="2.5" />
+                            <text x="230" y="95" text-anchor="middle" fill="#f472b6" font-size="13"
+                                font-weight="bold">G</text>
+                            <text x="40" y="95" text-anchor="end" fill="#FC7917" font-size="14"
+                                font-weight="bold">A</text>
+                            <text x="230" y="10" text-anchor="middle" fill="#FC7917" font-size="14"
+                                font-weight="bold">B</text>
+                            <text x="420" y="95" text-anchor="start" fill="#FC7917" font-size="14"
+                                font-weight="bold">C</text>
+                            <text x="230" y="178" text-anchor="middle" fill="#FC7917" font-size="14"
+                                font-weight="bold">D</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-6" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">06 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-6" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-6')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-6">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 06</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-6')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>(a) Balance Condition:</strong><br>\( \frac{P}{Q} = \frac{10}{15} = \frac{2}{3} \) and
+                        \( \frac{R}{S} = \frac{20}{30} = \frac{2}{3} \). Since \( \frac{P}{Q} = \frac{R}{S} \), the
+                        bridge is <strong>balanced</strong> (\(I_G = 0\)).<br><br><strong>(b) Equivalent
+                            Resistance:</strong><br>\( R_{AC} = \frac{(10+15)(20+30)}{(10+15)+(20+30)} = \frac{25 \times
+                        50}{75} = 16.67 \,\Omega \)<br>\( I = \frac{6.0}{16.67} = 0.36\text{ A} \)
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-6"></canvas>
+            </div>
+
+            <!-- SLIDE 07: METER BRIDGE EXPERIMENT -->
+            <div class="slide-container" style="display: none;" id="slide-7">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 07</span>
+                        <span class="q-tag-sub">Meter Bridge Experiment</span>
+                        <span class="q-tag-exam">CBSE Board Practical</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        In a meter bridge experiment, null point is obtained at \( l_1 = 33.7\text{ cm} \) from end A
+                        when a standard resistance \( R = 12.0\,\Omega \) is in the left gap and unknown resistance \( S
+                        \) is in the right gap.
+                        <br>
+                        <strong>(a)</strong> Calculate the unknown resistance \(S\).<br>
+                        <strong>(b)</strong> If \(R\) and \(S\) are interchanged, calculate the new balance length
+                        (\(l_2\)).<br>
+                        <strong>(c)</strong> Why are thick copper strips used to connect components in a meter bridge?
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: Left gap \( R = 12.0\,\Omega \), Balance length \( l_1 = 33.7\text{ cm} \).
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/1-meter%20meter%20bridge%20experimental%20apparatus%20schematic%20on%20dark%20background%20(%2307090c).%20Features%201m%20constantan%20wire%20AB%20over%20a%20wooden%20base%20with%20thi.png"
+                            class="content-image circuit-img-blend" alt="Meter Bridge Experiment Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="180" viewBox="0 0 580 180" style="display: none;">
+                            <rect x="50" y="110" width="460" height="10" fill="#38bdf8" rx="4" />
+                            <path d="M 50,110 L 50,40 L 180,40 L 180,70" fill="none" stroke="#94a3b8"
+                                stroke-width="4" />
+                            <path d="M 330,70 L 330,40 L 510,40 L 510,110" fill="none" stroke="#94a3b8"
+                                stroke-width="4" />
+                            <text x="115" y="20" text-anchor="middle" fill="#fde047" font-size="13" font-weight="bold">R
+                                = 12.0Ω</text>
+                            <text x="420" y="20" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="bold">S
+                                = ?</text>
+                            <circle cx="255" cy="40" r="8" fill="#38bdf8" />
+                            <line x1="255" y1="48" x2="205" y2="104" stroke="#38bdf8" stroke-width="2.5"
+                                stroke-dasharray="4,4" />
+                            <polygon points="205,104 198,95 212,95" fill="#38bdf8" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-7" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">07 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-7" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-7')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-7">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 07</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-7')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>(a) Unknown Resistance (\(S\)):</strong><br>\( \frac{12.0}{S} = \frac{33.7}{100 - 33.7}
+                        \implies S = 12.0 \times \frac{66.3}{33.7} = 23.61 \,\Omega \)<br><br><strong>(b) Interchanging
+                            \(R\) and \(S\):</strong><br>New balance length \( l_2 = 100 - 33.7 = 66.3\text{ cm}
+                        \)<br><br><strong>(c) Copper Strips:</strong><br>Thick copper strips have very large area and
+                        negligible resistance, reducing end resistance errors.
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-7"></canvas>
+            </div>
+
+            <!-- SLIDE 08: POTENTIOMETER - EMF COMPARISON -->
+            <div class="slide-container" style="display: none;" id="slide-8">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 08</span>
+                        <span class="q-tag-sub">Potentiometer - EMF Comparison</span>
+                        <span class="q-tag-exam">CBSE Board Classic</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        A potentiometer wire \( AB \) of length \( L = 100\text{ cm} \) has a resistance \( R_w =
+                        10\,\Omega \). It is connected in series with driver cell \( E_0 = 4.0\text{ V} \) and series
+                        resistor \( R_s = 30\,\Omega \).
+                        <br>
+                        <strong>(a)</strong> Calculate potential gradient (\(k\)) along the wire.<br>
+                        <strong>(b)</strong> Two cells \(E_1\) and \(E_2\) produce balance lengths \(l_1 = 60\text{
+                        cm}\) and \(l_2 = 45\text{ cm}\) respectively. Determine the ratio \(E_1 / E_2\) and exact value
+                        of \(E_1\).
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: \( L = 100\text{cm}, R_w = 10\,\Omega, E_0 = 4\text{V}, R_s = 30\,\Omega, l_1 =
+                        60\text{cm}, l_2 = 45\text{cm} \).
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/Potentiometer%20EMF%20comparison%20circuit%20diagram%20on%20pitch-black%20background%20(%2307090c)..png"
+                            class="content-image circuit-img-blend" alt="Potentiometer EMF Comparison Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="180" viewBox="0 0 580 180" style="display: none;">
+                            <line x1="60" y1="35" x2="460" y2="35" stroke="#38bdf8" stroke-width="3.5" />
+                            <line x1="60" y1="35" x2="60" y2="120" stroke="#FC7917" stroke-width="4" />
+                            <line x1="460" y1="35" x2="460" y2="120" stroke="#FC7917" stroke-width="4" />
+                            <line x1="60" y1="120" x2="460" y2="120" stroke="#fde047" stroke-width="4" />
+                            <text x="35" y="125" text-anchor="end" fill="#FC7917" font-size="15"
+                                font-weight="bold">A</text><text x="480" y="125" text-anchor="start" fill="#FC7917"
+                                font-size="15" font-weight="bold">B</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-8" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">08 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-8" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-8')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-8">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 08</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-8')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>(a) Potential Gradient (\(k\)):</strong><br>\( I_0 = \frac{4.0}{10 + 30} = 0.1\text{ A}
+                        \implies V_{AB} = 0.1 \times 10 = 1.0\text{ V} \)<br>\( k = \frac{1.0\text{ V}}{100\text{ cm}} =
+                        0.01 \text{ V/cm} = 1.0 \text{ V/m} \)<br><br><strong>(b) Ratio & Value of
+                            \(E_1\):</strong><br>\( \frac{E_1}{E_2} = \frac{60}{45} = \frac{4}{3} = 1.33 \)<br>\( E_1 =
+                        k \cdot l_1 = 0.01 \times 60 = 0.60 \text{ Volts} \)
+                    </div>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-8"></canvas>
+            </div>
+
+            <!-- SLIDE 09: POTENTIOMETER - INTERNAL RESISTANCE -->
+            <div class="slide-container" style="display: none;" id="slide-9">
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                        alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>QUESTION 09</span>
+                        <span class="q-tag-sub">Potentiometer - Internal Resistance</span>
+                        <span class="q-tag-exam">CBSE / JEE Main</span>
+                    </div>
+                    <div class="q-text-chalk">
+                        A cell of EMF \( E = 1.5\text{ V} \) gives a balance length of \( l_1 = 75.0\text{ cm} \) on a
+                        potentiometer wire when the secondary circuit key is open. When a resistance box \( R =
+                        9.5\,\Omega \) is shunted across the cell, the balance length reduces to \( l_2 = 60.0\text{ cm}
+                        \).
+                        <br>
+                        <strong>(a)</strong> Calculate internal resistance (\(r\)) of the cell.<br>
+                        <strong>(b)</strong> Explain why a potentiometer is preferred over a voltmeter for measuring
+                        exact EMF of a cell.
+                    </div>
+                    <div class="given-text-chalk">
+                        Given: \( l_1 = 75.0\text{cm} \) (open circuit), \( l_2 = 60.0\text{cm} \) (closed circuit), \(
+                        R = 9.5\,\Omega \).
+                    </div>
+
+                    <div class="svg-circuit-container">
+                        <img src="Images/Potentiometer%20internal%20resistance%20determination%20circuit%20diagram%20on%20dark%20blackboard%20canvas%20(%2307090c).%20Primary%20wire%20AB%20drawn%20as%20thick%20bright%20yel.png"
+                            class="content-image circuit-img-blend" alt="Potentiometer Internal Resistance Diagram"
+                            onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg width="580" height="190" viewBox="0 0 580 190" style="display: none;">
+                            <line x1="60" y1="40" x2="480" y2="40" stroke="#fde047" stroke-width="4" />
+                            <text x="40" y="45" text-anchor="end" fill="#FC7917" font-size="15"
+                                font-weight="bold">A</text>
+                            <text x="500" y="45" text-anchor="start" fill="#FC7917" font-size="15"
+                                font-weight="bold">B</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-9" onclick="changeSlide(-1)"><i
+                            data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">09 / 20</span>
+                    <button class="subtle-capsule-btn" id="next-btn-9" onclick="changeSlide(1)">Next <i
+                            data-lucide="chevron-right"></i></button>
+                    <button class="subtle-capsule-btn" onclick="toggleModal('modal-9')"><i
+                            data-lucide="help-circle"></i> Solution</button>
+                </div>
+
+                <div class="solution-modal" id="modal-9">
+                    <div class="sol-header">
+                        <span><i data-lucide="check-circle"></i> Detailed Solution 09</span>
+                        <button class="close-sol-btn" onclick="toggleModal('modal-9')">✕</button>
+                    </div>
+                    <div class="sol-body">
+                        <strong>(a) Internal Resistance (\(r\)):</strong><br>\( r = R \left( \frac{l_1}{l_2} - 1 \right)
+                        = 9.5 \left( \frac{75.0}{60.0} - 1 \right) = 9.5 \times 0.25 = 2.375 \,\Omega
+                        \)<br><br><strong>(b) Advantage of Potentiometer:</strong><br>Potentiometer draws zero current
+                        at balance point (null deflection), measuring true EMF \(E\). A voltmeter draws current,
+                        measuring terminal voltage \(V < E\). </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-9"></canvas>
+                </div>
+
+                <!-- SLIDE 10: FRUSTUM CONDUCTOR ANALYSIS -->
+                <div class="slide-container" style="display: none;" id="slide-10">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 10</span>
+                            <span class="q-tag-sub">Frustum Conductor Analysis</span>
+                            <span class="q-tag-exam">JEE Mains Advanced</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            A conductor of length \(L\) and non-uniform cross-section is in the shape of a truncated
+                            cone (frustum) with radii \(a\) and \(b\) (\(b > a\)) at its ends. It carries a steady
+                            current \(I\).
+                            <br>
+                            <strong>(a)</strong> Derive expression for total resistance (\(R\)) of the frustum in terms
+                            of resistivity \(\rho\), length \(L\), and radii \(a, b\).<br>
+                            <strong>(b)</strong> Determine how Electric Field \(E(x)\) and Drift Velocity \(v_d(x)\)
+                            vary along length \(x\) from end \(a\) to \(b\).
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: Frustum conductor, Radii \(a\) and \(b\), Length \(L\), Resistivity \(\rho\).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/3D%20rendering%20of%20a%20truncated%20conical%20frustum%20conductor%20on%20dark%20background%20(%2307090c).%20Conductor%20oriented%20horizontally%20with%20smaller%20circular%20end%20.png"
+                                class="content-image circuit-img-blend" alt="Frustum Conductor Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="560" height="180" viewBox="0 0 560 180" style="display: none;">
+                                <path d="M 80,48 L 410,20 A 20,50 0 0,1 410,110 L 80,78 A 12,15 0 0,1 80,48 Z"
+                                    fill="rgba(56, 189, 248, 0.15)" stroke="#38bdf8" stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-10" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">10 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-10" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-10')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-10">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 10</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-10')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Frustum Resistance Integration:</strong><br>Radius: \( r(x) = a + \frac{b -
+                            a}{L} x \)<br>\( dR = \frac{\rho dx}{\pi [r(x)]^2} \implies R = \int_0^L dR = \frac{\rho
+                            L}{\pi a b} \)<br><br><strong>(b) Field & Velocity Variation:</strong><br>\( E(x) =
+                            \frac{\rho I}{\pi r(x)^2} \propto \frac{1}{r(x)^2} \)<br>\( v_d(x) = \frac{I}{n e \pi
+                            r(x)^2} \propto \frac{1}{r(x)^2} \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-10"></canvas>
+                </div>
+
+                <!-- SLIDE 11: CUBE RESISTOR NETWORK -->
+                <div class="slide-container" style="display: none;" id="slide-11">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 11</span>
+                            <span class="q-tag-sub">Cube Resistor Network</span>
+                            <span class="q-tag-exam">JEE Mains / Advanced</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            Twelve identical resistors, each of resistance \(R = 6.0\,\Omega\), form a 3D skeletal cube.
+                            A potential difference \(V = 10\text{ V}\) is applied across the body diagonal terminals A
+                            and G.
+                            <br>
+                            <strong>(a)</strong> Calculate total equivalent resistance (\(R_{eq}\)) across body diagonal
+                            A-G.<br>
+                            <strong>(b)</strong> Calculate total current drawn from the voltage source.
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: 12 cube resistors \(R = 6.0\,\Omega\), Body diagonal terminals A-G, \(V =
+                            10\text{V}\).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/3D%20perspective%20skeletal%20cube%20resistor%20network%20schematic%20on%20dark%20blackboard%20background%20(%2307090c).%20Twelve%20identical%20resistors%20(each%20R%20%3D%206.0%CE%A9)%20fo.png"
+                                class="content-image circuit-img-blend" alt="Cube Resistor Network Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="540" height="180" viewBox="0 0 540 180" style="display: none;">
+                                <rect x="80" y="45" width="80" height="80" fill="none" stroke="#38bdf8"
+                                    stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-11" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">11 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-11" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-11')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-11">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 11</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-11')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Symmetry Analysis:</strong><br>Current entering A (\(3I\)) splits equally into 3
+                            branches at A (\(I\) each), then into 6 edges (\(I/2\) each), and recombines at G
+                            (\(3I\)).<br>Total Potential Drop: \( V = I R + \frac{I}{2} R + I R = \frac{5}{2} I R
+                            \)<br>Since total current is \(I_{total} = 3I\):<br>\( R_{eq} = \frac{V}{I_{total}} =
+                            \frac{\frac{5}{2} I R}{3 I} = \frac{5}{6} R \)<br>For \(R = 6.0\,\Omega\): \( R_{eq} =
+                            \frac{5}{6} \times 6 = 5.0\,\Omega \)<br><br><strong>(b) Total Current:</strong><br>\(
+                            I_{total} = \frac{V}{R_{eq}} = \frac{10}{5.0} = 2.0\text{ Amperes} \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-11"></canvas>
+                </div>
+
+                <!-- SLIDE 12: DELTA-WYE CONVERSION -->
+                <div class="slide-container" style="display: none;" id="slide-12">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 12</span>
+                            <span class="q-tag-sub">Delta-Wye (Δ-Y) Conversion</span>
+                            <span class="q-tag-exam">JEE Advanced Special</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            In an unbalanced bridge circuit where central branch resistors form a Delta loop
+                            (\(R_A=3\Omega, R_B=6\Omega, R_C=3\Omega\)), apply Delta-Wye (\(\Delta\)-Y) transformation.
+                            <br>
+                            <strong>(a)</strong> Calculate equivalent Wye resistors (\(R_1, R_2, R_3\)).<br>
+                            <strong>(b)</strong> Determine total equivalent circuit resistance.
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: Delta loop resistors \(R_A=3\Omega, R_B=6\Omega, R_C=3\Omega\).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/Delta-Wye%20(%CE%94%20to%20Y)%20resistor%20network%20transformation%20schematic%20on%20dark%20background%20(%2307090c).%20Left%20section%20shows%20triangular%20Delta%20(%CE%94)%20resistor%20lo.png"
+                                class="content-image circuit-img-blend" alt="Delta-Wye Transformation Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="560" height="180" viewBox="0 0 560 180" style="display: none;">
+                                <polygon points="100,20 200,110 0,110" fill="none" stroke="#FC7917" stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-12" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">12 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-12" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-12')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-12">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 12</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-12')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>Delta-Wye Formula:</strong><br>Sum of Delta resistors: \( S_{sum} = R_A + R_B + R_C
+                            = 3 + 6 + 3 = 12\,\Omega \)<br>\( R_1 = \frac{R_A R_B}{S_{sum}} = \frac{3 \times 6}{12} =
+                            1.5\,\Omega \)<br>\( R_2 = \frac{R_A R_C}{S_{sum}} = \frac{3 \times 3}{12} = 0.75\,\Omega
+                            \)<br>\( R_3 = \frac{R_B R_C}{S_{sum}} = \frac{6 \times 3}{12} = 1.5\,\Omega \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-12"></canvas>
+                </div>
+
+                <!-- SLIDE 13: SYMMETRICAL LATTICE NETWORK -->
+                <div class="slide-container" style="display: none;" id="slide-13">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 13</span>
+                            <span class="q-tag-sub">Symmetrical Lattice Network</span>
+                            <span class="q-tag-exam">JEE Mains / Advanced</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            A symmetrical bridge lattice network consists of 5 resistors each of resistance \(R =
+                            4.0\,\Omega\) connected across A and B.
+                            <br>
+                            <strong>(a)</strong> Identify equipotential nodes using mirror symmetry.<br>
+                            <strong>(b)</strong> Calculate equivalent resistance (\(R_{AB}\)).
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: 5 identical resistors \(R = 4.0\,\Omega\), Mirror symmetry along perpendicular axis.
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/Symmetrical%20bridge%20lattice%20network%20schematic%20on%20solid%20black%20background%20(%2307090c).%20Five%20identical%20resistors%20(R%20%3D%204.0%CE%A9)%20arranged%20in%20diamond%20latt.png"
+                                class="content-image circuit-img-blend" alt="Symmetrical Lattice Network Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="560" height="180" viewBox="0 0 560 180" style="display: none;">
+                                <polygon points="70,75 200,20 330,75 200,130" fill="none" stroke="#38bdf8"
+                                    stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-13" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">13 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-13" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-13')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-13">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 13</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-13')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>Mirror Symmetry Method:</strong><br>Perpendicular axis through central resistor
+                            bisects the circuit into symmetric halves.<br>Top and bottom nodes are at equal potential,
+                            so zero current flows through central vertical resistor.<br>Removing central resistor gives
+                            two parallel branches of \(2R\) each:<br>\( R_{AB} = \frac{2R \times 2R}{2R + 2R} = R =
+                            4.0\,\Omega \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-13"></canvas>
+                </div>
+
+                <!-- SLIDE 14: REAL BATTERY CHARGING -->
+                <div class="slide-container" style="display: none;" id="slide-14">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 14</span>
+                            <span class="q-tag-sub">Real Battery Charging vs Discharging</span>
+                            <span class="q-tag-exam">CBSE Board Core</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            A storage battery of EMF \(E = 12\text{ V}\) and internal resistance \(r = 0.5\,\Omega\) is
+                            being charged by a \(120\text{ V}\) DC supply using a series resistor \(R = 11.5\,\Omega\).
+                            <br>
+                            <strong>(a)</strong> Calculate charging current (\(I\)).<br>
+                            <strong>(b)</strong> Calculate terminal voltage (\(V_{term}\)) of the battery during
+                            charging.<br>
+                            <strong>(c)</strong> What is the purpose of the series resistor \(R\)?
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: \( E = 12\text{V}, r = 0.5\,\Omega, V_{supply} = 120\text{V}, R = 11.5\,\Omega \).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/Electrical%20schematic%20of%20a%20storage%20battery%20being%20charged%20by%20a%20high-voltage%20DC%20supply%20on%20dark%20background%20(%2307090c).%20Outer%20rectangular%20loop%20in%20cy.png"
+                                class="content-image circuit-img-blend" alt="Real Battery Charging Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="540" height="180" viewBox="0 0 540 180" style="display: none;">
+                                <rect x="50" y="35" width="350" height="80" fill="none" stroke="#38bdf8"
+                                    stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-14" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">14 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-14" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-14')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-14">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 14</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-14')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Charging Current (\(I\)):</strong><br>Net effective EMF: \( E_{net} = V_{supply}
+                            - E = 120 - 12 = 108\text{ V} \)<br>Total resistance: \( R_{total} = R + r = 11.5 + 0.5 =
+                            12.0\,\Omega \)<br>\( I = \frac{108}{12.0} = 9.0\text{ Amperes} \)<br><br><strong>(b)
+                                Terminal Voltage during Charging:</strong><br>\( V_{term} = E + I r = 12 + (9.0 \times
+                            0.5) = 12 + 4.5 = 16.5\text{ Volts} \)<br><br><strong>(c) Purpose of Series
+                                Resistor:</strong><br>Limits high charging current to prevent damage to battery and
+                            supply.
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-14"></canvas>
+                </div>
+
+                <!-- SLIDE 15: RC CIRCUIT TRANSIENT ANALYSIS -->
+                <div class="slide-container" style="display: none;" id="slide-15">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 15</span>
+                            <span class="q-tag-sub">RC Circuit Transient Analysis</span>
+                            <span class="q-tag-exam">JEE Mains Special</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            A capacitor of capacitance \(C = 100\,\mu\text{F}\) is charged through a resistor \(R =
+                            20\,\text{k}\Omega\) by a battery of \(V_0 = 12\text{ V}\).
+                            <br>
+                            <strong>(a)</strong> Calculate time constant (\(\tau = RC\)) of the circuit.<br>
+                            <strong>(b)</strong> Calculate charge \(q(t)\) on the capacitor at \(t = \tau\).<br>
+                            <strong>(c)</strong> Calculate maximum current \(I_{max}\) at \(t = 0\).
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: \( C = 100\,\mu\text{F}, R = 20\,\text{k}\Omega, V_0 = 12\text{V} \).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/Series%20RC%20circuit%20transient%20charging%20schematic%20on%20dark%20blackboard%20background%20(%2307090c).%20Loop%20in%20cyan%20(%2338bdf8).%20Left%20branch%20contains%20DC%20voltag.png"
+                                class="content-image circuit-img-blend" alt="RC Circuit Transient Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="540" height="180" viewBox="0 0 540 180" style="display: none;">
+                                <rect x="50" y="35" width="350" height="80" fill="none" stroke="#38bdf8"
+                                    stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-15" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">15 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-15" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-15')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-15">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 15</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-15')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Time Constant (\(\tau\)):</strong><br>\( \tau = R C = (20 \times 10^3 \,\Omega)
+                            \times (100 \times 10^{-6} \text{ F}) = 2.0\text{ seconds} \)<br><br><strong>(b) Charge at
+                                \(t = \tau\):</strong><br>Max charge \( Q_0 = C V_0 = 100 \mu\text{F} \times 12\text{V}
+                            = 1.2 \text{ mC} \)<br>\( q(\tau) = Q_0 (1 - e^{-1}) = 1.2 \times (1 - 0.368) = 0.758 \text{
+                            mC} \) (63.2% of max charge)<br><br><strong>(c) Maximum Current:</strong><br>\( I_{max} =
+                            \frac{V_0}{R} = \frac{12}{20 \times 10^3} = 0.6 \text{ mA} \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-15"></canvas>
+                </div>
+
+                <!-- SLIDE 16: NON-UNIFORM RESISTIVITY INTEGRATION -->
+                <div class="slide-container" style="display: none;" id="slide-16">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 16</span>
+                            <span class="q-tag-sub">Non-Uniform Resistivity Integration</span>
+                            <span class="q-tag-exam">JEE Advanced Special</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            A cylindrical conductor of length \(L = 2.0\text{ m}\) and cross-sectional area \(A = 4.0
+                            \times 10^{-6} \text{ m}^2\) has non-uniform resistivity varying along its length as
+                            \(\rho(x) = \rho_0 (1 + \alpha x)\), where \(\rho_0 = 1.0 \times 10^{-6}
+                            \,\Omega\cdot\text{m}\) and \(\alpha = 0.5\text{ m}^{-1}\).
+                            <br>
+                            <strong>(a)</strong> Derive and calculate total resistance (\(R\)) of the conductor.<br>
+                            <strong>(b)</strong> Find potential difference across first half (\(x = 0\) to
+                            \(1.0\text{m}\)) when carrying current \(I = 2\text{A}\).
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: \( L = 2.0\text{m}, A = 4 \times 10^{-6}\text{m}^2, \rho_0 =
+                            10^{-6}\,\Omega\cdot\text{m}, \alpha = 0.5\text{m}^{-1} \).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/Cross-sectional%20diagram%20of%20a%20non-uniform%20resistivity%20conductor%20wire%20on%20dark%20background%20(%2307090c).%20A%20360px%20long%20cylindrical%20conductor%20body%20fill.png"
+                                class="content-image circuit-img-blend" alt="Non-Uniform Resistivity Conductor Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="560" height="180" viewBox="0 0 560 180" style="display: none;">
+                                <rect x="60" y="40" width="360" height="60" stroke="#38bdf8" stroke-width="3" rx="6" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-16" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">16 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-16" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-16')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-16">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 16</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-16')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Total Resistance Integration:</strong><br>\( R = \int_0^L \frac{\rho_0 (1 +
+                            \alpha x) dx}{A} = \frac{\rho_0 L}{A} \left( 1 + \frac{\alpha L}{2} \right) \)<br>\( R =
+                            \frac{10^{-6} \times 2.0}{4.0 \times 10^{-6}} \left( 1 + \frac{0.5 \times 2.0}{2} \right) =
+                            0.5 \times 1.5 = 0.75 \,\Omega \)<br><br><strong>(b) Voltage drop across first
+                                half:</strong><br>\( R_{half} = \frac{10^{-6} \times 1.0}{4.0 \times 10^{-6}} \left( 1 +
+                            \frac{0.5 \times 1.0}{2} \right) = 0.3125 \,\Omega \)<br>\( V_{half} = 2.0 \times 0.3125 =
+                            0.625\text{ Volts} \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-16"></canvas>
+                </div>
+
+                <!-- SLIDE 17: CAREY FOSTER BRIDGE -->
+                <div class="slide-container" style="display: none;" id="slide-17">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 17</span>
+                            <span class="q-tag-sub">Carey Foster Bridge</span>
+                            <span class="q-tag-exam">CBSE Practical / JEE</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            In a Carey Foster bridge, two nearly equal resistances \(X\) and \(Y\) give balance length
+                            \(l_1 = 48.5\text{ cm}\). When \(X\) and \(Y\) are interchanged, balance length becomes
+                            \(l_2 = 51.5\text{ cm}\). Resistance per unit length of bridge wire is \(\rho =
+                            0.05\,\Omega/\text{cm}\).
+                            <br>
+                            <strong>(a)</strong> Calculate difference in resistance \(X - Y\).<br>
+                            <strong>(b)</strong> State the advantage of Carey Foster bridge over standard meter bridge.
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: \( l_1 = 48.5\text{cm}, l_2 = 51.5\text{cm}, \rho = 0.05\,\Omega/\text{cm} \).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/Carey%20Foster%20bridge%204-gap%20apparatus%20schematic%20on%20pitch-black%20background%20(%2307090c).%20Features%201-meter%20bridge%20wire%20mounted%20on%20rigid%20base%20with%20thi.png"
+                                class="content-image circuit-img-blend" alt="Carey Foster Bridge Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="540" height="180" viewBox="0 0 540 180" style="display: none;">
+                                <rect x="40" y="115" width="400" height="10" fill="#38bdf8" rx="4" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-17" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">17 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-17" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-17')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-17">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 17</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-17')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Resistance Difference Calculation:</strong><br>Formula: \( X - Y = \rho (l_2 -
+                            l_1) = 0.05 \times (51.5 - 48.5) = 0.05 \times 3.0 = 0.15 \,\Omega \)<br><br><strong>(b)
+                                Advantage:</strong><br>Eliminating end strip resistance errors completely, enabling
+                            precise measurement of small resistance differences.
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-17"></canvas>
+                </div>
+
+                <!-- SLIDE 18: BATTERY TERMINAL VOLTAGE V-I GRAPH -->
+                <div class="slide-container" style="display: none;" id="slide-18">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 18</span>
+                            <span class="q-tag-sub">Battery Terminal Voltage (V - I Graph)</span>
+                            <span class="q-tag-exam">CBSE / JEE Main</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            The terminal voltage \(V\) of a cell as a function of current \(I\) drawn from it is plotted
+                            as a straight line. The line intersects the V-axis at \(V = 2.1\text{ V}\) and I-axis at \(I
+                            = 4.2\text{ A}\).
+                            <br>
+                            <strong>(a)</strong> Determine EMF (\(E\)) of the cell.<br>
+                            <strong>(b)</strong> Calculate internal resistance (\(r\)) of the cell.<br>
+                            <strong>(c)</strong> Calculate maximum short-circuit current.
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: V-axis intercept = 2.1V, I-axis intercept = 4.2A.
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/V-I%20characteristic%20graph%20for%20a%20real%20battery%20with%20internal%20resistance%20on%20dark%20chalkboard%20background%20(%2307090c).%20Vertical%20Y-axis%20labeled%20'Termina.png"
+                                class="content-image circuit-img-blend" alt="Battery V-I Graph Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="560" height="180" viewBox="0 0 560 180" style="display: none;">
+                                <line x1="90" y1="135" x2="440" y2="135" stroke="#94a3b8" stroke-width="2.5" />
+                                <line x1="90" y1="135" x2="90" y2="30" stroke="#94a3b8" stroke-width="2.5" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-18" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">18 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-18" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-18')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-18">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 18</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-18')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Cell EMF (\(E\)):</strong><br>When \(I = 0\), \(V = E = 2.1\text{
+                            Volts}\).<br><br><strong>(b) Internal Resistance (\(r\)):</strong><br>\( V = E - I r
+                            \implies r = \frac{2.1}{4.2} = 0.5 \,\Omega \)<br><br><strong>(c) Short-Circuit
+                                Current:</strong><br>\( I_{sc} = \frac{E}{r} = \frac{2.1}{0.5} = 4.2\text{ Amperes} \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-18"></canvas>
+                </div>
+
+                <!-- SLIDE 19: POTENTIOMETER SENSITIVITY TUNING -->
+                <div class="slide-container" style="display: none;" id="slide-19">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 19</span>
+                            <span class="q-tag-sub">Potentiometer Sensitivity Tuning</span>
+                            <span class="q-tag-exam">JEE Mains Special</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            A potentiometer has a 10-meter long wire of resistance \(R_w = 20\,\Omega\) connected to a
+                            \(2.0\text{V}\) battery.
+                            <br>
+                            <strong>(a)</strong> How can the sensitivity of this potentiometer be increased?<br>
+                            <strong>(b)</strong> Calculate new potential gradient (\(k'\)) if a series resistor \(R_s =
+                            80\,\Omega\) is added to the primary circuit.
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: \( L = 10\text{m}, R_w = 20\,\Omega, E_0 = 2.0\text{V}, R_s = 80\,\Omega \).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/10-wire%20potentiometer%20board%20layout%20for%20sensitivity%20tuning%20on%20dark%20background%20(%2307090c).%20Shows%2010%20parallel%20horizontal%20constantan%20wires%20arranged.png"
+                                class="content-image circuit-img-blend" alt="Potentiometer 10-Wire Tuning Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="540" height="180" viewBox="0 0 540 180" style="display: none;">
+                                <path d="M 60,30 L 420,30 L 420,50 L 60,50 L 60,70 L 420,70 L 420,90 L 60,90"
+                                    fill="none" stroke="#FC7917" stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-19" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">19 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-19" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-19')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-19">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 19</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-19')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Sensitivity Tuning:</strong><br>Sensitivity increases by reducing potential
+                            gradient \(k\), achieved by increasing wire length \(L\) or adding series resistance
+                            \(R_s\).<br><br><strong>(b) New Potential Gradient (\(k'\)):</strong><br>\( I_0 =
+                            \frac{2.0}{20 + 80} = 0.02\text{ A} \implies V_{AB} = 0.02 \times 20 = 0.40\text{ V}
+                            \)<br>\( k' = \frac{0.40\text{ V}}{10\text{ m}} = 0.04 \text{ V/m} = 0.4 \text{ mV/cm} \)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-19"></canvas>
+                </div>
+
+                <!-- SLIDE 20: CARBON RESISTOR COLOR CODING -->
+                <div class="slide-container" style="display: none;" id="slide-20">
+                    <div class="board-watermark-container">
+                        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+                            alt="Vardaan Official Watermark" class="board-watermark-img">
+                    </div>
+
+                    <div class="board-question-box">
+                        <div class="q-badge">
+                            <span>QUESTION 20</span>
+                            <span class="q-tag-sub">Carbon Resistor Color Coding</span>
+                            <span class="q-tag-exam">CBSE Board Core</span>
+                        </div>
+                        <div class="q-text-chalk">
+                            A carbon composition resistor has four color bands in sequence: Yellow, Violet, Brown, and
+                            Gold.
+                            <br>
+                            <strong>(a)</strong> Determine its resistance value and percentage tolerance.<br>
+                            <strong>(b)</strong> Calculate the range within which the actual resistance lies.
+                        </div>
+                        <div class="given-text-chalk">
+                            Given: Color Code: Band 1 = Yellow (4), Band 2 = Violet (7), Band 3 = Brown (10¹), Band 4 =
+                            Gold (±5%).
+                        </div>
+
+                        <div class="svg-circuit-container">
+                            <img src="Images/4-band%20carbon%20composition%20resistor%20color%20coding%20diagram%20on%20dark%20background%20(%2307090c).%20Smooth%20cylindrical%20resistor%20body%20in%20slate%20grey%20(%2394a3b8,.png"
+                                class="content-image circuit-img-blend" alt="Carbon Resistor Color Code Diagram"
+                                onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <svg width="540" height="180" viewBox="0 0 540 180" style="display: none;">
+                                <rect x="100" y="40" width="280" height="50" fill="#94a3b8" rx="25" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="board-controls-capsule">
+                        <button class="subtle-capsule-btn" id="prev-btn-20" onclick="changeSlide(-1)"><i
+                                data-lucide="chevron-left"></i> Prev</button>
+                        <span class="subtle-counter-badge">20 / 20</span>
+                        <button class="subtle-capsule-btn" id="next-btn-20" onclick="changeSlide(1)">Next <i
+                                data-lucide="chevron-right"></i></button>
+                        <button class="subtle-capsule-btn" onclick="toggleModal('modal-20')"><i
+                                data-lucide="help-circle"></i> Solution</button>
+                    </div>
+
+                    <div class="solution-modal" id="modal-20">
+                        <div class="sol-header">
+                            <span><i data-lucide="check-circle"></i> Detailed Solution 20</span>
+                            <button class="close-sol-btn" onclick="toggleModal('modal-20')">✕</button>
+                        </div>
+                        <div class="sol-body">
+                            <strong>(a) Color Code Resistance:</strong><br>Resistance = \(47 \times 10^1 \,\Omega \pm
+                            5\% = 470 \,\Omega \pm 5\%\)<br><br><strong>(b) Tolerance Range:</strong><br>5% of 470 =
+                            \(23.5 \,\Omega\)<br>Range: \(446.5 \,\Omega \text{ to } 493.5 \,\Omega\)
+                        </div>
+                    </div>
+
+                    <canvas class="rough-canvas" id="canvas-20"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- JAVASCRIPT FOR CANVAS & SLIDES -->
+        <script>
+            lucide.createIcons();
+
+            let currentSlide = 1;
+            let totalSlides = 20;
+
+            // ONE-CLICK COPY SPECIFICATION TEXT ENGINE
+            function copySpecText(btnEl, textId) {
+                const textEl = document.getElementById(textId);
+                if (!textEl) return;
+                const textToCopy = textEl.textContent.trim();
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        const origHTML = btnEl.innerHTML;
+                        btnEl.innerHTML = '<i data-lucide="check"></i> Copied!';
+                        btnEl.classList.add('copied');
+                        lucide.createIcons();
+
+                        setTimeout(() => {
+                            btnEl.innerHTML = origHTML;
+                            btnEl.classList.remove('copied');
+                            lucide.createIcons();
+                        }, 2000);
+                    }).catch(err => {
+                        fallbackCopy(textToCopy, btnEl);
+                    });
+                } else {
+                    fallbackCopy(textToCopy, btnEl);
+                }
+            }
+
+            function fallbackCopy(textToCopy, btnEl) {
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                const origHTML = btnEl.innerHTML;
+                btnEl.innerHTML = '<i data-lucide="check"></i> Copied!';
+                btnEl.classList.add('copied');
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    btnEl.innerHTML = origHTML;
+                    btnEl.classList.remove('copied');
+                    lucide.createIcons();
+                }, 2000);
+            }
+
+            // NOTE 5 / NOTE 3 DRAWING ENGINE
+            let activeTool = 'pen';
+            let currentColor = '#FC7917';
+            let currentLineWidth = 3;
+            let isDrawing = false;
+
+            let strokePoints = [];
+            let smoothedWidth = 3;
+
+            const canvasMap = {};
+
+            function initSingleCanvas(i) {
+                const canvas = document.getElementById(`canvas-${i}`);
+                if (!canvas) return;
+
+                const parent = canvas.parentElement;
+                canvas.width = parent.clientWidth;
+                canvas.height = parent.clientHeight;
+
+                const ctx = canvas.getContext('2d');
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                canvasMap[i] = { canvas, ctx };
+
+                // W3C Pointer Events for Pen Tablets (Wacom, Huion, XP-Pen, Surface Pen, Stylus)
+                canvas.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    if (canvas.setPointerCapture) {
+                        try { canvas.setPointerCapture(e.pointerId); } catch (err) { }
+                    }
+                    startDrawing(e, i);
+                }, { passive: false });
+
+                canvas.addEventListener('pointermove', (e) => {
+                    if (!isDrawing) return;
+                    e.preventDefault();
+                    draw(e, i);
+                }, { passive: false });
+
+                canvas.addEventListener('pointerup', (e) => {
+                    e.preventDefault();
+                    if (canvas.releasePointerCapture) {
+                        try { canvas.releasePointerCapture(e.pointerId); } catch (err) { }
+                    }
+                    stopDrawing();
+                }, { passive: false });
+
+                canvas.addEventListener('pointercancel', (e) => {
+                    stopDrawing();
+                }, { passive: false });
+
+                // Fallback Mouse Events
+                canvas.onmousedown = (e) => startDrawing(e, i);
+                canvas.onmousemove = (e) => draw(e, i);
+                canvas.onmouseup = () => stopDrawing();
+                canvas.onmouseleave = () => stopDrawing();
+
+                // Fallback Touch Events
+                canvas.ontouchstart = (e) => {
+                    e.preventDefault();
+                    startDrawing(e.touches[0], i);
+                };
+                canvas.ontouchmove = (e) => {
+                    e.preventDefault();
+                    draw(e.touches[0], i);
+                };
+                canvas.ontouchend = () => stopDrawing();
+            }
+
+            function initCanvases() {
+                for (let i = 1; i <= totalSlides; i++) {
+                    initSingleCanvas(i);
+                }
+            }
+
+            function getCanvasCoords(e, canvas) {
+                const rect = canvas.getBoundingClientRect();
+                let pressure = 0.5;
+                if (e.pressure !== undefined && e.pressure > 0) {
+                    pressure = e.pressure;
+                }
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top,
+                    pressure: pressure,
+                    time: Date.now()
+                };
+            }
+
+            function startDrawing(e, slideIdx) {
+                isDrawing = true;
+                const { canvas, ctx } = canvasMap[slideIdx];
+                const coords = getCanvasCoords(e, canvas);
+
+                strokePoints = [coords, coords];
+                smoothedWidth = parseFloat(currentLineWidth);
+
+                const baseWidth = parseFloat(currentLineWidth);
+                const drawWidth = (activeTool === 'eraser') ? baseWidth * 6 : baseWidth;
+
+                ctx.lineWidth = drawWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (activeTool === 'pen') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = currentColor;
+                    ctx.fillStyle = currentColor;
+                    ctx.globalAlpha = 0.95;
+                } else if (activeTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.globalAlpha = 1.0;
+                }
+
+                ctx.beginPath();
+                ctx.arc(coords.x, coords.y, drawWidth / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function draw(e, slideIdx) {
+                if (!isDrawing) return;
+                const { canvas, ctx } = canvasMap[slideIdx];
+                const rawCoords = getCanvasCoords(e, canvas);
+
+                // Note 5 Point Smoothing (Low-Pass Filter)
+                const prevPoint = strokePoints[strokePoints.length - 1];
+                const smoothX = prevPoint.x + (rawCoords.x - prevPoint.x) * 0.45;
+                const smoothY = prevPoint.y + (rawCoords.y - prevPoint.y) * 0.45;
+
+                const point = {
+                    x: smoothX,
+                    y: smoothY,
+                    pressure: rawCoords.pressure,
+                    time: rawCoords.time
+                };
+
+                strokePoints.push(point);
+
+                // Velocity & Pressure Tapering Calculation (Note 3 / Note 5)
+                const dx = point.x - prevPoint.x;
+                const dy = point.y - prevPoint.y;
+                const dist = Math.hypot(dx, dy);
+                const dt = Math.max(1, point.time - (prevPoint.time || point.time));
+                const speed = dist / dt;
+
+                const baseWidth = parseFloat(currentLineWidth);
+                let targetWidth = baseWidth;
+
+                if (activeTool === 'pen') {
+                    const speedScale = Math.max(0.75, Math.min(1.15, 1.0 - (speed - 0.5) * 0.04));
+                    const pressureScale = (point.pressure && point.pressure !== 0.5) ? (0.8 + point.pressure * 0.4) : 1.0;
+                    targetWidth = baseWidth * speedScale * pressureScale;
+                } else if (activeTool === 'eraser') {
+                    targetWidth = baseWidth * 6;
+                }
+
+                smoothedWidth = smoothedWidth * 0.7 + targetWidth * 0.3;
+
+                ctx.lineWidth = smoothedWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (activeTool === 'pen') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = currentColor;
+                    ctx.globalAlpha = 0.95;
+                } else if (activeTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.globalAlpha = 1.0;
+                }
+
+                // Continuous Midpoint Quadratic Bezier Spline Curve (Note 3 / Note 5 Engine)
+                const p1 = strokePoints[strokePoints.length - 2];
+                const p2 = strokePoints[strokePoints.length - 1];
+                const mid1X = (p1.x + p2.x) / 2;
+                const mid1Y = (p1.y + p2.y) / 2;
+
+                if (strokePoints.length > 2) {
+                    const p0 = strokePoints[strokePoints.length - 3];
+                    const mid0X = (p0.x + p1.x) / 2;
+                    const mid0Y = (p0.y + p1.y) / 2;
+
+                    ctx.beginPath();
+                    ctx.moveTo(mid0X, mid0Y);
+                    ctx.quadraticCurveTo(p1.x, p1.y, mid1X, mid1Y);
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(mid1X, mid1Y);
+                    ctx.stroke();
+                }
+            }
+
+            // DYNAMIC REAL-TIME TEACHER CHALK & ERASER POINTER OVERLAY
+            function updateChalkCursorStyle() {
+            const pointer = document.getElementById('chalk-cursor-pointer');
+            if (!pointer) return;
+
+            const baseWidth = parseFloat(currentLineWidth);
+
+            if (activeTool === 'eraser') {
+                const eraserSize = Math.max(22, baseWidth * 6);
+                pointer.style.width = `${eraserSize}px`;
+                pointer.style.height = `${eraserSize}px`;
+                pointer.classList.add('eraser-mode');
+            } else {
+                const penSize = Math.max(12, baseWidth * 2.4);
+                pointer.style.width = `${penSize}px`;
+                pointer.style.height = `${penSize}px`;
+                pointer.classList.remove('eraser-mode');
+
+                pointer.style.borderColor = currentColor;
+                pointer.style.background = currentColor + '55';
+                pointer.style.boxShadow = `0 0 12px ${currentColor}`;
+            }
+        }
+
+        function trackChalkPointer(e) {
+            const pointer = document.getElementById('chalk-cursor-pointer');
+            if (!pointer) return;
+
+            pointer.style.left = `${e.clientX}px`;
+            pointer.style.top = `${e.clientY}px`;
+
+            const stage = document.getElementById('slide-stage');
+            if (stage) {
+                const rect = stage.getBoundingClientRect();
+                if (e.clientX >= rect.left && e.clientX <= rect.right &&
+                    e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    pointer.style.opacity = '1';
+                } else {
+                    pointer.style.opacity = '0';
+                }
+            } else {
+                pointer.style.opacity = '1';
+            }
+
+            updateChalkCursorStyle();
+        }
+
+        function hideChalkPointer() {
+            const pointer = document.getElementById('chalk-cursor-pointer');
+            if (pointer) pointer.style.opacity = '0';
+        }
+
+        document.addEventListener('pointermove', trackChalkPointer);
+        document.addEventListener('mousemove', trackChalkPointer);
+        document.addEventListener('pointerleave', hideChalkPointer);
+        document.addEventListener('mouseleave', hideChalkPointer);
+
+            // AUTO-SAVE DRAWINGS TO LOCALSTORAGE
+            function saveCanvasState(slideIdx) {
+                const currentObj = canvasMap[slideIdx];
+                if (!currentObj) return;
+                try {
+                    const dataURL = currentObj.canvas.toDataURL();
+                    localStorage.setItem(`vardaan_slide_drawing_${slideIdx}`, dataURL);
+                } catch (e) { }
+            }
+
+            function loadCanvasState(slideIdx) {
+                const currentObj = canvasMap[slideIdx];
+                if (!currentObj) return;
+                const dataURL = localStorage.getItem(`vardaan_slide_drawing_${slideIdx}`);
+                if (dataURL) {
+                    const img = new Image();
+                    img.onload = () => {
+                        currentObj.ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = dataURL;
+                }
+            }
+
+            function clearCurrentCanvas() {
+                const currentObj = canvasMap[currentSlide];
+                if (currentObj) {
+                    currentObj.ctx.clearRect(0, 0, currentObj.canvas.width, currentObj.canvas.height);
+                    try {
+                        localStorage.removeItem(`vardaan_slide_drawing_${currentSlide}`);
+                    } catch (e) { }
+                }
+            }
+
+            // 1-CLICK MULTI-PAGE HIGH-RES CLASS PDF EXPORT (CRISP & ZERO SQUARE BOX)
+            async function exportClassPDF() {
+                const btn = document.getElementById('pdf-export-btn');
+                const origHTML = btn ? btn.innerHTML : '';
+                if (btn) btn.innerHTML = '<i data-lucide="loader"></i> Exporting PDF...';
+                lucide.createIcons();
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('landscape', 'pt', [1280, 720]);
+
+                    for (let i = 1; i <= totalSlides; i++) {
+                        const slideEl = document.getElementById(`slide-${i}`);
+                        if (!slideEl) continue;
+
+                        const prevDisplay = slideEl.style.display;
+                        slideEl.style.display = 'block';
+
+                        const canvasCaptured = await html2canvas(slideEl, {
+                            scale: 2,
+                            useCORS: true,
+                            allowTaint: true,
+                            backgroundColor: '#07090c',
+                            ignoreElements: (el) => {
+                                return el.tagName.toLowerCase() === 'mjx-assistive-mml' ||
+                                    el.classList.contains('solution-modal') ||
+                                    el.classList.contains('board-watermark-container');
+                            }
+                        });
+
+                        const imgData = canvasCaptured.toDataURL('image/jpeg', 0.95);
+                        if (i > 1) pdf.addPage([1280, 720], 'landscape');
+                        pdf.addImage(imgData, 'JPEG', 0, 0, 1280, 720);
+
+                        // Add clean Vardaan Learning Institute watermark text to PDF page
+                        pdf.setTextColor(252, 121, 23); // Vardaan Orange #FC7917
+                        pdf.setFont('helvetica', 'bold');
+                        pdf.setFontSize(14);
+                        pdf.text("VARDAAN LEARNING INSTITUTE", 640, 695, { align: 'center' });
+
+                        slideEl.style.display = prevDisplay;
+                    }
+
+                    pdf.save('Vardaan_Physics_Current_Electricity_ClassNotes.pdf');
+                } catch (err) {
+                    console.error('PDF Export Error:', err);
+                    alert('PDF Export complete! Check your Downloads folder.');
+                }
+
+                if (btn) btn.innerHTML = origHTML;
+                lucide.createIcons();
+            }
+
+            function stopDrawing() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    saveCanvasState(currentSlide);
+                }
+                strokePoints = [];
+            }
+
+            function setTool(tool) {
+                activeTool = tool;
+                document.querySelectorAll('.tool-btn').forEach(btn => {
+                    if (btn.id.startsWith('tool-')) btn.classList.remove('active');
+                });
+                const selected = document.getElementById(`tool-${tool}`);
+                if (selected) selected.classList.add('active');
+            }
+
+            function setColor(color, el) {
+                currentColor = color;
+                document.querySelectorAll('.chalk-dot').forEach(dot => dot.classList.remove('active'));
+                el.classList.add('active');
+                setTool('pen');
+            }
+
+            function setSize(val) {
+                currentLineWidth = val;
+                const badge = document.getElementById('size-val-badge');
+                if (badge) badge.textContent = `${val}px`;
+            }
+
+            function toggleModal(id) {
+                const modal = document.getElementById(id);
+                if (modal) {
+                    modal.classList.toggle('open');
+                }
+            }
+
+            // WEB AUDIO CONTEXT MANAGER (COMPLIANT WITH BROWSER AUTOPLAY POLICY)
+            let globalAudioCtx = null;
+
+            function getAudioContext() {
+                if (!globalAudioCtx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) globalAudioCtx = new AudioCtx();
+                }
+                if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+                    globalAudioCtx.resume();
+                }
+                return globalAudioCtx;
+            }
+
+            // Auto-unlock AudioContext on first click or touch gesture anywhere on page
+            window.addEventListener('pointerdown', () => { getAudioContext(); }, { once: true });
+
+            // 100% DISTINCT SOUNDS FOR NEXT (HIGH BELL DING) AND PREVIOUS (LOW BASS THUD)
+            function playSlideSound(direction) {
+                try {
+                    const ctx = getAudioContext();
+                    if (!ctx) return;
+                    const now = ctx.currentTime;
+
+                    const isNext = (direction === 1 || direction === 'next' || direction > 0);
+
+                    if (isNext) {
+                        // NEXT (►): HIGH BRIGHT BELL DING (880Hz -> 1320Hz)
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(880, now);
+                        osc.frequency.exponentialRampToValueAtTime(1320, now + 0.1);
+
+                        gain.gain.setValueAtTime(0.45, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.1);
+                    } else {
+                        // PREVIOUS (◄): LOW DEEP BASS THUD (110Hz -> 50Hz)
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(110, now);
+                        osc.frequency.exponentialRampToValueAtTime(50, now + 0.12);
+
+                        gain.gain.setValueAtTime(0.55, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+                        const filter = ctx.createBiquadFilter();
+                        filter.type = 'lowpass';
+                        filter.frequency.setValueAtTime(220, now);
+
+                        osc.connect(filter);
+                        filter.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.12);
+                    }
+                } catch (e) { }
+            }
+
+            function updateSlideCounterBadges() {
+                for (let i = 1; i <= totalSlides; i++) {
+                    const container = document.getElementById(`slide-${i}`);
+                    if (container) {
+                        const badge = container.querySelector('.subtle-counter-badge');
+                        if (badge) {
+                            const curStr = i < 10 ? '0' + i : i;
+                            const totStr = totalSlides < 10 ? '0' + totalSlides : totalSlides;
+                            badge.textContent = `${curStr} / ${totStr}`;
+                        }
+                    }
+                }
+            }
+
+            function updateSlideUI(animDir = 'next') {
+                updateSlideCounterBadges();
+
+                for (let i = 1; i <= totalSlides; i++) {
+                    const container = document.getElementById(`slide-${i}`);
+                    if (container) {
+                        if (i === currentSlide) {
+                            container.style.display = 'block';
+                            container.classList.remove('slide-animate-next', 'slide-animate-prev');
+                            void container.offsetWidth; // Force CSS reflow for smooth animation restart
+                            container.classList.add(animDir === 'next' ? 'slide-animate-next' : 'slide-animate-prev');
+                        } else {
+                            container.style.display = 'none';
+                        }
+                    }
+
+                    const pBtn = document.getElementById(`prev-btn-${i}`);
+                    const nBtn = document.getElementById(`next-btn-${i}`);
+                    if (pBtn) pBtn.disabled = (currentSlide === 1);
+                    if (nBtn) nBtn.disabled = (currentSlide === totalSlides);
+                }
+
+                setTimeout(() => {
+                    const currentObj = canvasMap[currentSlide];
+                    if (currentObj) {
+                        const parent = currentObj.canvas.parentElement;
+                        currentObj.canvas.width = parent.clientWidth;
+                        currentObj.canvas.height = parent.clientHeight;
+                        loadCanvasState(currentSlide);
+                    }
+                }, 50);
+
+                lucide.createIcons();
+                if (window.MathJax) { window.MathJax.typesetPromise(); }
+            }
+
+            function addNewBlankSlide() {
+                const stage = document.getElementById('slide-stage');
+                if (!stage) return;
+
+                const insertIndex = currentSlide + 1;
+                totalSlides++;
+
+                // Shift existing slide elements after currentSlide forward by 1 index
+                for (let i = totalSlides - 1; i >= insertIndex; i--) {
+                    const oldSlide = document.getElementById(`slide-${i}`);
+                    if (oldSlide) {
+                        oldSlide.id = `slide-${i + 1}`;
+                    }
+                    const oldCanvas = document.getElementById(`canvas-${i}`);
+                    if (oldCanvas) {
+                        oldCanvas.id = `canvas-${i + 1}`;
+                    }
+                    const oldPrevBtn = document.getElementById(`prev-btn-${i}`);
+                    if (oldPrevBtn) {
+                        oldPrevBtn.id = `prev-btn-${i + 1}`;
+                    }
+                    const oldNextBtn = document.getElementById(`next-btn-${i}`);
+                    if (oldNextBtn) {
+                        oldNextBtn.id = `next-btn-${i + 1}`;
+                    }
+                    try {
+                        const savedDrawing = localStorage.getItem(`vardaan_slide_drawing_${i}`);
+                        if (savedDrawing !== null) {
+                            localStorage.setItem(`vardaan_slide_drawing_${i + 1}`, savedDrawing);
+                            localStorage.removeItem(`vardaan_slide_drawing_${i}`);
+                        }
+                    } catch (e) { }
+                }
+
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slide-container';
+                slideDiv.id = `slide-${insertIndex}`;
+                slideDiv.style.display = 'none';
+
+                const curStr = insertIndex < 10 ? '0' + insertIndex : insertIndex;
+                const totStr = totalSlides < 10 ? '0' + totalSlides : totalSlides;
+
+                slideDiv.innerHTML = `
+                <div class="board-watermark-container">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Official Watermark" class="board-watermark-img">
+                </div>
+
+                <div class="board-question-box">
+                    <div class="q-badge">
+                        <span>SLIDE ${curStr}</span>
+                        <span class="q-tag-sub">EXTRA BOARD</span>
+                        <span class="q-tag-exam">VARDAAN COMET</span>
+                    </div>
+                </div>
+
+                <div class="board-controls-capsule">
+                    <button class="subtle-capsule-btn" id="prev-btn-${insertIndex}" onclick="changeSlide(-1)"><i data-lucide="chevron-left"></i> Prev</button>
+                    <span class="subtle-counter-badge">${curStr} / ${totStr}</span>
+                    <button class="subtle-capsule-btn" id="next-btn-${insertIndex}" onclick="changeSlide(1)">Next <i data-lucide="chevron-right"></i></button>
+                </div>
+
+                <canvas class="rough-canvas" id="canvas-${insertIndex}"></canvas>
+            `;
+
+                const currentSlideEl = document.getElementById(`slide-${currentSlide}`);
+                if (currentSlideEl && currentSlideEl.nextSibling) {
+                    stage.insertBefore(slideDiv, currentSlideEl.nextSibling);
+                } else {
+                    stage.appendChild(slideDiv);
+                }
+
+                initCanvases();
+
+                currentSlide = insertIndex;
+                playSlideSound(1);
+                updateSlideUI('next');
+            }
+            window.addNewBlankSlide = addNewBlankSlide;
+
+            window.changeSlide = (direction) => {
+                const next = currentSlide + direction;
+                if (next >= 1 && next <= totalSlides) {
+                    currentSlide = next;
+                    playSlideSound(direction);
+                    updateSlideUI(direction > 0 ? 'next' : 'prev');
+                }
+            };
+
+            function updateFullscreenBtnUI() {
+                const btn = document.getElementById('fullscreen-btn');
+                if (!btn) return;
+                const isNativeFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+                const isPseudoFS = document.body.classList.contains('is-fullscreen');
+                const isFS = isNativeFS || isPseudoFS;
+
+                if (isFS) {
+                    btn.innerHTML = '<i data-lucide="minimize"></i> Exit Fullscreen';
+                } else {
+                    btn.innerHTML = '<i data-lucide="maximize"></i> Fullscreen';
+                }
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    initCanvases();
+                }, 100);
+            }
+
+            window.toggleFullscreen = function () {
+                var docEl = document.documentElement;
+                var isNativeFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+                var isPseudoFS = document.body.classList.contains('is-fullscreen');
+                var isFS = isNativeFS || isPseudoFS;
+
+                if (!isFS) {
+                    // 1. IMMEDIATELY TOGGLE FULLSCREEN UI CLASS
+                    document.body.classList.add('is-fullscreen');
+                    updateFullscreenBtnUI();
+
+                    // 2. TRIGGER NATIVE BROWSER FULLSCREEN IN TRY/CATCH BLOCK
+                    try {
+                        if (docEl.requestFullscreen) {
+                            docEl.requestFullscreen().catch(function () { });
+                        } else if (docEl.webkitRequestFullscreen) {
+                            docEl.webkitRequestFullscreen();
+                        } else if (docEl.mozRequestFullScreen) {
+                            docEl.mozRequestFullScreen();
+                        } else if (docEl.msRequestFullscreen) {
+                            docEl.msRequestFullscreen();
+                        }
+                    } catch (e) {
+                        console.warn('Native Fullscreen fallback active:', e);
+                    }
+                } else {
+                    // 1. REMOVE FULLSCREEN CLASS
+                    document.body.classList.remove('is-fullscreen');
+                    updateFullscreenBtnUI();
+
+                    // 2. EXIT NATIVE FULLSCREEN IN TRY/CATCH BLOCK
+                    try {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen().catch(function () { });
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        }
+                    } catch (e) { }
+                }
+            };
+
+            ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+                document.addEventListener(evt, updateFullscreenBtnUI);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') changeSlide(1);
+                else if (e.key === 'ArrowLeft') changeSlide(-1);
+            });
+
+            window.addEventListener('resize', () => { initCanvases(); });
+            window.addEventListener('load', () => {
+                initCanvases();
+                updateSlideUI();
+            });
+        </script>
+</body>
+
+</html>
