@@ -409,10 +409,69 @@
             .subtle-capsule-btn { padding: 6px 14px !important; font-size: 0.72rem !important; }
             .subtle-counter-badge { padding: 5px 10px !important; font-size: 0.75rem !important; }
         }
+
+        /* ⏱ TEACHER PRACTICE TIMER STYLING */
+        .timer-preset-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--panel-border);
+            color: var(--text-sub);
+            padding: 6px 4px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .timer-preset-btn:hover, .timer-preset-btn.active {
+            background: rgba(252, 121, 23, 0.22);
+            border-color: var(--brand-orange);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(252, 121, 23, 0.3);
+        }
+        @keyframes timerPopIn {
+            from { opacity: 0; transform: scale(0.9) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div id="chalk-cursor-pointer"></div>
+
+    <!-- TEACHER CLASSROOM PRACTICE TIMER WIDGET -->
+    <div id="practice-timer-widget" style="display: none; position: fixed; top: 70px; right: 24px; z-index: 999999; background: rgba(8, 10, 15, 0.96); backdrop-filter: blur(20px); border: 1.5px solid var(--brand-orange); border-radius: 20px; padding: 18px 22px; width: 310px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95), 0 0 25px rgba(252, 121, 23, 0.25); animation: timerPopIn 0.3s ease-out;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+            <div style="font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; color: var(--brand-orange); display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="timer"></i> PRACTICE TIMER
+            </div>
+            <button onclick="toggleTimerWidget()" style="background: rgba(255,255,255,0.08); border: none; color: #fff; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 1rem; display: flex; justify-content: center; align-items: center;">✕</button>
+        </div>
+
+        <!-- PRESET TIME SELECTION -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px;">
+            <button class="timer-preset-btn" onclick="setTimerSeconds(30)">30 sec</button>
+            <button class="timer-preset-btn active" onclick="setTimerSeconds(60)">1 min</button>
+            <button class="timer-preset-btn" onclick="setTimerSeconds(120)">2 mins</button>
+            <button class="timer-preset-btn" onclick="setTimerSeconds(180)">3 mins</button>
+            <button class="timer-preset-btn" onclick="setTimerSeconds(300)">5 mins</button>
+            <button class="timer-preset-btn" onclick="promptCustomTimer()">Custom</button>
+        </div>
+
+        <!-- DIGITAL CLOCK DISPLAY -->
+        <div style="text-align: center; background: rgba(0, 0, 0, 0.65); border: 1.5px solid var(--panel-border); border-radius: 14px; padding: 14px 10px; margin-bottom: 14px; position: relative; overflow: hidden;" id="timer-display-box">
+            <div style="font-family: 'Cinzel', monospace; font-size: 2.8rem; font-weight: 700; color: #f8fafc; letter-spacing: 2px; text-shadow: 0 0 15px rgba(252, 121, 23, 0.5);" id="timer-clock-text">01:00</div>
+            <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; font-weight: 500;" id="timer-status-text">Ready to Start</div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div style="display: flex; gap: 10px;">
+            <button id="timer-start-btn" onclick="toggleTimerRunning()" style="flex: 2; background: var(--brand-orange); color: #000; font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: 0.88rem; padding: 10px; border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 15px rgba(252, 121, 23, 0.4);">
+                <i data-lucide="play"></i> Start
+            </button>
+            <button onclick="resetTimer()" style="flex: 1; background: rgba(255, 255, 255, 0.08); color: #fff; font-weight: 600; font-family: 'Montserrat', sans-serif; font-size: 0.82rem; padding: 10px; border: 1px solid var(--panel-border); border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <i data-lucide="rotate-ccw"></i> Reset
+            </button>
+        </div>
+    </div>
 
     <!-- SLIDE GRID NAVIGATOR OVERLAY MODAL -->
     <div id="slide-grid-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 7, 10, 0.94); backdrop-filter: blur(16px); z-index: 999999; padding: 24px; overflow-y: auto;">
@@ -466,6 +525,7 @@
             </div>
 
             <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="tool-btn" id="timer-toggle-btn" onclick="toggleTimerWidget()"><i data-lucide="timer"></i> Practice Timer</button>
                 <button class="tool-btn" id="slide-grid-btn" onclick="toggleSlideGridModal()"><i data-lucide="grid"></i> All Slides</button>
                 <button class="tool-btn" id="add-slide-btn" onclick="addNewBlankSlide()"><i data-lucide="plus-circle"></i> Add Slide</button>
                 <button class="tool-btn" id="pdf-export-btn" onclick="exportClassPDF()"><i data-lucide="download"></i> Save PDF</button>
@@ -932,14 +992,23 @@
             if (!canvas) return;
 
             const parent = canvas.parentElement;
-            canvas.width = parent.clientWidth;
-            canvas.height = parent.clientHeight;
+            const dpr = Math.max(window.devicePixelRatio || 1, 2);
+            const w = parent ? parent.clientWidth : window.innerWidth;
+            const h = parent ? parent.clientHeight : window.innerHeight;
+
+            canvas.width = Math.floor(w * dpr);
+            canvas.height = Math.floor(h * dpr);
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
 
             const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
 
-            canvasMap[i] = { canvas, ctx };
+            canvasMap[i] = { canvas, ctx, dpr };
 
             canvas.addEventListener('pointerdown', (e) => {
                 e.preventDefault();
@@ -1250,6 +1319,24 @@
             } catch(e) {}
         }
 
+        function resizeSingleCanvas(i) {
+            const o = canvasMap[i]; if (!o) return;
+            const p = o.canvas.parentElement; if (!p) return;
+            const dpr = Math.max(window.devicePixelRatio || 1, 2);
+            const w = p.clientWidth, h = p.clientHeight;
+            if (w <= 0 || h <= 0) return;
+            if (o.canvas.width !== Math.floor(w * dpr) || o.canvas.height !== Math.floor(h * dpr)) {
+                o.canvas.width = Math.floor(w * dpr);
+                o.canvas.height = Math.floor(h * dpr);
+                o.canvas.style.width = w + 'px';
+                o.canvas.style.height = h + 'px';
+                o.ctx.scale(dpr, dpr);
+                o.ctx.lineCap = 'round'; o.ctx.lineJoin = 'round';
+                o.ctx.imageSmoothingEnabled = true; o.ctx.imageSmoothingQuality = 'high';
+                loadCanvasState(i);
+            }
+        }
+
         function loadCanvasState(slideIdx) {
             const currentObj = canvasMap[slideIdx];
             if (!currentObj) return;
@@ -1257,7 +1344,10 @@
             if (dataURL) {
                 const img = new Image();
                 img.onload = () => {
-                    currentObj.ctx.drawImage(img, 0, 0);
+                    currentObj.ctx.save();
+                    currentObj.ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    currentObj.ctx.drawImage(img, 0, 0, currentObj.canvas.width, currentObj.canvas.height);
+                    currentObj.ctx.restore();
                 };
                 img.src = dataURL;
             }
@@ -1266,11 +1356,160 @@
         function clearCurrentCanvas() {
             const currentObj = canvasMap[currentSlide];
             if (currentObj) {
+                currentObj.ctx.save();
+                currentObj.ctx.setTransform(1, 0, 0, 1, 0, 0);
                 currentObj.ctx.clearRect(0, 0, currentObj.canvas.width, currentObj.canvas.height);
+                currentObj.ctx.restore();
                 try {
                     localStorage.removeItem(`vardaan_math_c10_cg_${currentSlide}`);
                 } catch(e) {}
             }
+        }
+
+        // ─── TEACHER CLASSROOM PRACTICE TIMER ENGINE ─────────────────────────────────
+        let timerTotalSeconds = 60;
+        let timerRemaining    = 60;
+        let timerInterval     = null;
+        let isTimerRunning    = false;
+
+        function toggleTimerWidget() {
+            const widget = document.getElementById('practice-timer-widget');
+            if (!widget) return;
+            if (widget.style.display === 'none' || !widget.style.display) {
+                widget.style.display = 'block';
+                if (window.lucide) lucide.createIcons();
+            } else {
+                widget.style.display = 'none';
+            }
+        }
+
+        function updateTimerDisplay() {
+            const clockText = document.getElementById('timer-clock-text');
+            const statusText = document.getElementById('timer-status-text');
+            const displayBox = document.getElementById('timer-display-box');
+            if (!clockText) return;
+
+            const m = Math.floor(timerRemaining / 60);
+            const s = timerRemaining % 60;
+            const mStr = m < 10 ? '0' + m : m;
+            const sStr = s < 10 ? '0' + s : s;
+            clockText.textContent = `${mStr}:${sStr}`;
+
+            if (isTimerRunning) {
+                if (statusText) statusText.textContent = 'Practice in Progress...';
+                if (clockText) clockText.style.color = '#38bdf8';
+                if (displayBox) displayBox.style.borderColor = '#38bdf8';
+            } else if (timerRemaining === 0) {
+                if (statusText) statusText.textContent = '🔔 TIME UP! TIME TO SOLVE!';
+                if (clockText) clockText.style.color = '#fde047';
+                if (displayBox) displayBox.style.borderColor = '#fde047';
+            } else {
+                if (statusText) statusText.textContent = 'Ready to Start';
+                if (clockText) clockText.style.color = '#f8fafc';
+                if (displayBox) displayBox.style.borderColor = 'var(--panel-border)';
+            }
+        }
+
+        function setTimerSeconds(sec) {
+            if (isTimerRunning) pauseTimer();
+            timerTotalSeconds = sec;
+            timerRemaining    = sec;
+            document.querySelectorAll('.timer-preset-btn').forEach(btn => {
+                btn.classList.remove('active');
+                const text = btn.textContent.trim();
+                if ((sec === 30 && text.includes('30')) ||
+                    (sec === 60 && text.includes('1')) ||
+                    (sec === 120 && text.includes('2')) ||
+                    (sec === 180 && text.includes('3')) ||
+                    (sec === 300 && text.includes('5'))) {
+                    btn.classList.add('active');
+                }
+            });
+            updateTimerDisplay();
+        }
+
+        function promptCustomTimer() {
+            const val = prompt('Enter practice timer in seconds (e.g. 90 for 1.5 mins):', timerRemaining);
+            if (val !== null) {
+                const sec = parseInt(val.trim(), 10);
+                if (!isNaN(sec) && sec > 0 && sec <= 3600) {
+                    setTimerSeconds(sec);
+                } else {
+                    alert('Please enter a valid time between 1 and 3600 seconds.');
+                }
+            }
+        }
+
+        function toggleTimerRunning() {
+            if (isTimerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            if (timerRemaining <= 0) timerRemaining = timerTotalSeconds;
+            isTimerRunning = true;
+            const startBtn = document.getElementById('timer-start-btn');
+            if (startBtn) {
+                startBtn.innerHTML = '<i data-lucide="pause"></i> Pause';
+                startBtn.style.background = '#e11d48';
+                startBtn.style.boxShadow = '0 4px 15px rgba(225, 29, 72, 0.4)';
+            }
+            if (window.lucide) lucide.createIcons();
+            updateTimerDisplay();
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timerRemaining > 0) {
+                    timerRemaining--;
+                    updateTimerDisplay();
+                } else {
+                    pauseTimer();
+                    playTimerCompletionChime();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            if (timerInterval) clearInterval(timerInterval);
+            const startBtn = document.getElementById('timer-start-btn');
+            if (startBtn) {
+                startBtn.innerHTML = '<i data-lucide="play"></i> Start';
+                startBtn.style.background = 'var(--brand-orange)';
+                startBtn.style.boxShadow = '0 4px 15px rgba(252, 121, 23, 0.4)';
+            }
+            if (window.lucide) lucide.createIcons();
+            updateTimerDisplay();
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerRemaining = timerTotalSeconds;
+            updateTimerDisplay();
+        }
+
+        function playTimerCompletionChime() {
+            try {
+                const ctx = window.AudioContext || window.webkitAudioContext;
+                if (!ctx) return;
+                const audioCtx = new ctx();
+                const now = audioCtx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.12);
+                    gain.gain.setValueAtTime(0.4, now + i * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.12);
+                    osc.stop(now + i * 0.12 + 0.3);
+                });
+            } catch(e) {}
         }
 
         function updateSlideCounterBadges() {
@@ -1313,13 +1552,7 @@
             }
 
             setTimeout(() => {
-                const currentObj = canvasMap[currentSlide];
-                if (currentObj) {
-                    const parent = currentObj.canvas.parentElement;
-                    currentObj.canvas.width = parent.clientWidth;
-                    currentObj.canvas.height = parent.clientHeight;
-                    loadCanvasState(currentSlide);
-                }
+                resizeSingleCanvas(currentSlide);
             }, 50);
 
             lucide.createIcons();

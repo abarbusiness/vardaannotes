@@ -913,16 +913,26 @@ let strokePoints    = [];
 let smoothedWidth   = 3;
 const canvasMap     = {};
 
-// ─── CANVAS INIT ──────────────────────────────────────────────────────────────
+// ─── CANVAS INIT (ULTRA-HD 2X HIDPI SCALING FOR 75" SMARTBOARDS) ────────────────
 function initSingleCanvas(i) {
     const canvas = document.getElementById('canvas-' + i);
     if (!canvas) return;
     const parent = canvas.parentElement;
-    canvas.width  = parent.clientWidth;
-    canvas.height = parent.clientHeight;
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    const w = parent ? parent.clientWidth : window.innerWidth;
+    const h = parent ? parent.clientHeight : window.innerHeight;
+
+    canvas.width  = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+
     const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    canvasMap[i] = { canvas, ctx };
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    canvasMap[i] = { canvas, ctx, dpr };
 
     if (window.PointerEvent) {
         canvas.addEventListener('pointerdown', (e) => {
@@ -955,9 +965,26 @@ function initSingleCanvas(i) {
         canvas.ontouchend   = () => stopDrawing();
     }
 }
+function resizeSingleCanvas(i) {
+    const o = canvasMap[i]; if (!o) return;
+    const p = o.canvas.parentElement; if (!p) return;
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    const w = p.clientWidth, h = p.clientHeight;
+    if (w <= 0 || h <= 0) return;
+    if (o.canvas.width !== Math.floor(w * dpr) || o.canvas.height !== Math.floor(h * dpr)) {
+        o.canvas.width  = Math.floor(w * dpr);
+        o.canvas.height = Math.floor(h * dpr);
+        o.canvas.style.width  = w + 'px';
+        o.canvas.style.height = h + 'px';
+        o.ctx.scale(dpr, dpr);
+        o.ctx.lineCap = 'round'; o.ctx.lineJoin = 'round';
+        o.ctx.imageSmoothingEnabled = true; o.ctx.imageSmoothingQuality = 'high';
+        loadCanvasState(i);
+    }
+}
 function initCanvases() { for (let i = 1; i <= totalSlides; i++) initSingleCanvas(i); }
 
-// ─── DRAWING ENGINE (SMOOTH & CONTINUOUS — ZERO STUTTER) ──────────────────────
+// ─── DRAWING ENGINE (VIBRANT & ULTRA-SHARP — HIDPI SMOOTHED) ─────────────────
 function getCanvasCoords(e, canvas) {
     const rect = canvas.getBoundingClientRect();
     return { x: e.clientX - rect.left, y: e.clientY - rect.top,
@@ -971,7 +998,7 @@ function startDrawing(e, idx) {
     smoothedWidth = parseFloat(currentLineWidth);
     const dw = activeTool === 'eraser' ? parseFloat(currentLineWidth) * 6 : parseFloat(currentLineWidth);
     ctx.lineWidth = dw; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    if (activeTool === 'pen') { ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = currentColor; ctx.fillStyle = currentColor; ctx.globalAlpha = 0.95; }
+    if (activeTool === 'pen') { ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = currentColor; ctx.fillStyle = currentColor; ctx.globalAlpha = 1.0; }
     else { ctx.globalCompositeOperation = 'destination-out'; ctx.globalAlpha = 1.0; }
     ctx.beginPath(); ctx.arc(c.x, c.y, dw / 2, 0, Math.PI * 2); ctx.fill();
 }
@@ -981,9 +1008,8 @@ function draw(e, idx) {
     const raw = getCanvasCoords(e, canvas);
     const prev = strokePoints[strokePoints.length - 1];
 
-    // Filter micro-movements to eliminate event duplicate jitter
     const dist = Math.hypot(raw.x - prev.x, raw.y - prev.y);
-    if (dist < 1.5) return;
+    if (dist < 1.2) return;
 
     const pt = {
         x: prev.x + (raw.x - prev.x) * 0.5,
@@ -1012,7 +1038,7 @@ function draw(e, idx) {
     if (activeTool === 'pen') {
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = currentColor;
-        ctx.globalAlpha = 0.95;
+        ctx.globalAlpha = 1.0;
     } else {
         ctx.globalCompositeOperation = 'destination-out';
         ctx.globalAlpha = 1.0;

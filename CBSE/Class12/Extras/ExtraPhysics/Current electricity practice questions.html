@@ -2284,14 +2284,23 @@
                 if (!canvas) return;
 
                 const parent = canvas.parentElement;
-                canvas.width = parent.clientWidth;
-                canvas.height = parent.clientHeight;
+                const dpr = Math.max(window.devicePixelRatio || 1, 2);
+                const w = parent ? parent.clientWidth : window.innerWidth;
+                const h = parent ? parent.clientHeight : window.innerHeight;
+
+                canvas.width = Math.floor(w * dpr);
+                canvas.height = Math.floor(h * dpr);
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
 
                 const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
 
-                canvasMap[i] = { canvas, ctx };
+                canvasMap[i] = { canvas, ctx, dpr };
 
                 // W3C Pointer Events for Pen Tablets (Wacom, Huion, XP-Pen, Surface Pen, Stylus)
                 canvas.addEventListener('pointerdown', (e) => {
@@ -2530,6 +2539,24 @@
                 } catch (e) { }
             }
 
+            function resizeSingleCanvas(i) {
+                const o = canvasMap[i]; if (!o) return;
+                const p = o.canvas.parentElement; if (!p) return;
+                const dpr = Math.max(window.devicePixelRatio || 1, 2);
+                const w = p.clientWidth, h = p.clientHeight;
+                if (w <= 0 || h <= 0) return;
+                if (o.canvas.width !== Math.floor(w * dpr) || o.canvas.height !== Math.floor(h * dpr)) {
+                    o.canvas.width = Math.floor(w * dpr);
+                    o.canvas.height = Math.floor(h * dpr);
+                    o.canvas.style.width = w + 'px';
+                    o.canvas.style.height = h + 'px';
+                    o.ctx.scale(dpr, dpr);
+                    o.ctx.lineCap = 'round'; o.ctx.lineJoin = 'round';
+                    o.ctx.imageSmoothingEnabled = true; o.ctx.imageSmoothingQuality = 'high';
+                    loadCanvasState(i);
+                }
+            }
+
             function loadCanvasState(slideIdx) {
                 const currentObj = canvasMap[slideIdx];
                 if (!currentObj) return;
@@ -2537,7 +2564,10 @@
                 if (dataURL) {
                     const img = new Image();
                     img.onload = () => {
-                        currentObj.ctx.drawImage(img, 0, 0);
+                        currentObj.ctx.save();
+                        currentObj.ctx.setTransform(1, 0, 0, 1, 0, 0);
+                        currentObj.ctx.drawImage(img, 0, 0, currentObj.canvas.width, currentObj.canvas.height);
+                        currentObj.ctx.restore();
                     };
                     img.src = dataURL;
                 }
@@ -2546,12 +2576,17 @@
             function clearCurrentCanvas() {
                 const currentObj = canvasMap[currentSlide];
                 if (currentObj) {
+                    currentObj.ctx.save();
+                    currentObj.ctx.setTransform(1, 0, 0, 1, 0, 0);
                     currentObj.ctx.clearRect(0, 0, currentObj.canvas.width, currentObj.canvas.height);
+                    currentObj.ctx.restore();
                     try {
                         localStorage.removeItem(`vardaan_slide_drawing_${currentSlide}`);
                     } catch (e) { }
                 }
             }
+
+            // 1-CLICK MULTI-PAGE HIGH-RES CLASS PDF EXPORT (CRISP & ZERO SQUARE BOX)
 
             // 1-CLICK MULTI-PAGE HIGH-RES CLASS PDF EXPORT (CRISP & ZERO SQUARE BOX)
             async function exportClassPDF() {
