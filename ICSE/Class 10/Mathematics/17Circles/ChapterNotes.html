@@ -5,42 +5,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 17: Circles - Vardaan Master Notes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] }, chtml: { scale: 1.05 } };</script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- MathJax for rendering Mathematical LaTeX -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            chtml: {
+                scale: 1.05
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         :root {
-            --yellow-bg: #fff9c4;
-            --yellow-border: #fbc02d;
-            --green-bg: #e8f5e9;
-            --green-border: #43a047;
-            --blue-bg: #e3f2fd;
+            --paper-bg: #ffffff;
+            --page-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --heading-color: #0f172a;
             --blue-border: #1e88e5;
+            --blue-bg: #e3f2fd;
+            --green-border: #43a047;
+            --green-bg: #e8f5e9;
+            --yellow-border: #fbc02d;
+            --yellow-bg: #fffde7;
+            --pink-border: #d81b60;
             --pink-bg: #fce4ec;
-            --pink-border: #d81b60
+            --purple-border: #8e24aa;
+            --purple-bg: #f3e5f5;
+            --teal-border: #00897b;
+            --teal-bg: #e0f2f1;
+            --orange-border: #f57c00;
+            --orange-bg: #fff3e0;
+            --accent-purple: #6a1b9a;
+            --meta-text: #475569;
+            --toggle-bg: #f1f5f9;
+            --toggle-border: #cbd5e1;
+            --icon-fill: #475569;
+            --border-color: #e2e8f0;
+            --hover-shadow: transparent;
+        }
+
+        html.dark-mode {
+            --paper-bg: #0a0a0a;
+            --page-bg: #0a0a0a;
+            --text-main: #f1f5f9;
+            --text-muted: #9ca3af;
+            --heading-color: #ffffff;
+            --blue-border: #60a5fa;
+            --blue-bg: #15181c;
+            --green-border: #4ade80;
+            --green-bg: #102014;
+            --yellow-border: #facc15;
+            --yellow-bg: #22200e;
+            --pink-border: #f472b6;
+            --pink-bg: #241118;
+            --purple-border: #c084fc;
+            --purple-bg: #201328;
+            --teal-border: #2dd4bf;
+            --teal-bg: #102422;
+            --orange-border: #fb923c;
+            --orange-bg: #28180e;
+            --accent-purple: #c084fc;
+            --meta-text: #9ca3af;
+            --toggle-bg: #222222;
+            --toggle-border: #444444;
+            --icon-fill: #cbd5e1;
+            --border-color: #333333;
+            --hover-shadow: transparent;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
-            padding: 0
+            padding: 0;
+        }
+
+        /* --- MATHJAX STYLING & OVERFLOW HANDLING --- */
+        mjx-container {
+            max-width: 100% !important;
+            vertical-align: middle;
+            padding: 2px 4px !important;
+        }
+
+        mjx-container[display="true"] {
+            display: block !important;
+            margin: 10px auto !important;
+            padding: 6px 4px !important;
+            text-align: center !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            white-space: normal !important;
+        }
+
+        mjx-container::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        mjx-container::-webkit-scrollbar-thumb {
+            background: rgba(30, 136, 229, 0.3);
+            border-radius: 4px;
         }
 
         body {
-            background: #fff;
-            color: #000;
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.7
+            background-color: var(--paper-bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            transition: filter .3s
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm 20mm;
+            box-shadow: none;
+            border-radius: 0;
+            border: none;
+            position: relative;
+            z-index: 10;
+            transition: background-color 0.3s ease;
         }
 
-        html.dark-mode {
-            filter: invert(1) hue-rotate(180deg)
-        }
-
+        /* --- WATERMARK --- */
         .watermark-overlay {
             position: fixed;
             top: 0;
@@ -51,24 +148,434 @@
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            z-index: 9999
+            z-index: 1;
         }
 
         .watermark-image {
-            width: 600px;
+            width: 650px;
             max-width: 80%;
-            opacity: 0.05
+            opacity: 0.05;
+            filter: grayscale(100%);
+            mix-blend-mode: multiply;
         }
 
-        .paper-sheet {
-            width: 210mm;
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20mm;
+        html.dark-mode .watermark-image {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+            opacity: 0.04;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+        }
+
+        .institute-name {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #d32f2f;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .top-branding-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 12px;
+            padding: 8px 0 0;
+            white-space: nowrap;
+            color: var(--meta-text);
+            font-size: 0.95rem;
+        }
+
+        .chapter-name-banner {
+            text-align: center;
+            margin: 6px 0 20px;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .chapter-name-title {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .created-by {
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        .powered-by-label {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            color: var(--pink-border);
+            letter-spacing: 0.3px;
+        }
+
+        .powered-by-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.4px;
+        }
+
+        .heart-red {
+            color: #d32f2f;
+        }
+
+        /* --- HEADINGS --- */
+        h1, h2, h3, h4 {
+            color: var(--heading-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            border-bottom: 2px solid var(--accent-purple);
+            padding-bottom: 6px;
+            margin-top: 2.2rem;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            color: var(--blue-border);
+            margin-top: 1.6rem;
+            margin-bottom: 0.6rem;
+        }
+
+        h4 {
+            font-size: 1.05rem;
+            color: var(--teal-border);
+            margin-top: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.02rem;
+            color: var(--text-main);
+        }
+
+        ul, ol {
+            margin-left: 1.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+            font-size: 1.02rem;
+        }
+
+        strong {
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border-color), transparent);
+            margin: 2.5rem 0;
+        }
+
+        /* --- CONCEPT & CALLOUT BOXES --- */
+        .concept-purple,
+        .concept-blue,
+        .concept-green,
+        .concept-yellow,
+        .concept-pink,
+        .concept-teal,
+        .concept-orange {
+            border-left: 5px solid;
+            border-radius: 8px;
+            padding: 18px 22px;
+            margin: 1.4rem 0;
+            background-color: var(--paper-bg);
+            box-shadow: 0 2px 10px var(--hover-shadow);
+        }
+
+        .concept-purple {
+            border-color: var(--purple-border);
+            background-color: var(--purple-bg);
+        }
+
+        .concept-blue {
+            border-color: var(--blue-border);
+            background-color: var(--blue-bg);
+        }
+
+        .concept-green {
+            border-color: var(--green-border);
+            background-color: var(--green-bg);
+        }
+
+        .concept-yellow {
+            border-color: var(--yellow-border);
+            background-color: var(--yellow-bg);
+        }
+
+        .concept-pink {
+            border-color: var(--pink-border);
+            background-color: var(--pink-bg);
+        }
+
+        .concept-teal {
+            border-color: var(--teal-border);
+            background-color: var(--teal-bg);
+        }
+
+        .concept-orange {
+            border-color: var(--orange-border);
+            background-color: var(--orange-bg);
+        }
+
+        .box-label {
+            display: inline-block;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.82rem;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .concept-purple .box-label { color: var(--purple-border); }
+        .concept-blue .box-label { color: var(--blue-border); }
+        .concept-green .box-label { color: var(--green-border); }
+        .concept-yellow .box-label { color: #b78103; }
+        .concept-pink .box-label { color: var(--pink-border); }
+        .concept-teal .box-label { color: var(--teal-border); }
+        .concept-orange .box-label { color: var(--orange-border); }
+
+        /* --- FORMULA BOXES --- */
+        .formula-box {
+            border: 2px solid var(--blue-border);
+            background-color: var(--paper-bg);
+            border-radius: 10px;
+            padding: 22px 24px;
+            margin: 1.6rem 0;
             position: relative;
-            z-index: 10
+            box-shadow: 0 3px 12px var(--hover-shadow);
         }
 
+        .formula-box.orange { border-color: var(--orange-border); }
+        .formula-box.green { border-color: var(--green-border); }
+        .formula-box.yellow { border-color: var(--yellow-border); }
+        .formula-box.teal { border-color: var(--teal-border); }
+        .formula-box.pink { border-color: var(--pink-border); }
+        .formula-box.purple { border-color: var(--purple-border); }
+
+        .formula-pill {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--blue-border);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 3px 12px;
+            border-radius: 20px;
+        }
+
+        .formula-box.orange .formula-pill { background: var(--orange-border); }
+        .formula-box.green .formula-pill { background: var(--green-border); }
+        .formula-box.yellow .formula-pill { background: var(--yellow-border); color: #000; }
+        .formula-box.teal .formula-pill { background: var(--teal-border); }
+        .formula-box.pink .formula-pill { background: var(--pink-border); }
+        .formula-box.purple .formula-pill { background: var(--purple-border); }
+
+        /* --- MASTER TIP --- */
+        .master-tip {
+            border: 2px solid var(--yellow-border);
+            background-color: var(--yellow-bg);
+            border-radius: 8px;
+            padding: 20px 22px;
+            margin: 1.6rem 0;
+            position: relative;
+        }
+
+        .tip-header {
+            position: absolute;
+            top: -12px;
+            left: 18px;
+            background-color: var(--yellow-border);
+            color: #000;
+            padding: 2px 10px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        /* --- TABLES --- */
+        .vardaan-table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .vardaan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.98rem;
+        }
+
+        .vardaan-table th {
+            background-color: var(--blue-border);
+            color: #ffffff;
+            padding: 12px 16px;
+            font-weight: 700;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .vardaan-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .vardaan-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vardaan-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        html.dark-mode .vardaan-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* --- STATEMENT & REASON TABLE --- */
+        .proof-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-size: 0.98rem;
+            background-color: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .proof-table th {
+            background-color: var(--purple-border);
+            color: #ffffff;
+            padding: 10px 15px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .proof-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .proof-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        html.dark-mode .proof-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* --- SOLVED EXAMPLES (PYQ BOX) --- */
+        .pyq-box {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 22px 24px;
+            margin: 1.8rem 0;
+            background-color: var(--paper-bg);
+            box-shadow: 0 2px 10px var(--hover-shadow);
+        }
+
+        .pyq-header {
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+        }
+
+        .pyq-q {
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--heading-color);
+        }
+
+        .pyq-a {
+            background-color: var(--toggle-bg);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 10px;
+        }
+
+        .step-box {
+            margin-bottom: 8px;
+            font-size: 0.98rem;
+        }
+
+        .step-box:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- DIAGRAM CARD & SVG --- */
+        .svg-diagram-card {
+            text-align: center;
+            margin: 1.5rem auto;
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            max-width: 440px;
+        }
+
+        .svg-diagram-card svg {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .svg-diagram-caption {
+            font-size: 0.88rem;
+            color: var(--meta-text);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        html.dark-mode .svg-diagram-card svg text {
+            fill: #f8fafc !important;
+        }
+
+        html.dark-mode .svg-diagram-card svg .svg-line-main {
+            stroke: #f1f5f9 !important;
+        }
+
+        /* --- THEME TOGGLE BUTTON --- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -76,26 +583,28 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #f0f0f0;
-            border: none;
+            background: var(--toggle-bg);
+            border: 1px solid var(--toggle-border);
             cursor: pointer;
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        html.dark-mode .theme-toggle {
-            filter: invert(1) hue-rotate(180deg);
-            background: #e0e0e0;
+            box-shadow: 0 2px 8px var(--hover-shadow);
+            transition: all 0.3s ease;
         }
 
         .icon-sun,
         .icon-moon {
             position: absolute;
             transition: all 0.5s ease;
+            stroke: var(--icon-fill);
+        }
+
+        .icon-moon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
         }
 
         .icon-sun {
@@ -113,391 +622,1201 @@
             transform: scale(1) rotate(0deg);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
             text-align: center;
-            color: #6a1b9a;
-            margin-bottom: .5rem
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--meta-text);
         }
 
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #6a1b9a;
-            padding-bottom: .5rem;
-            color: #6a1b9a
+        /* --- PRINT MEDIA & PAGE NUMBERING --- */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            .theme-toggle,
+            .branding-footer {
+                display: none !important;
+            }
+
+            .watermark-overlay {
+                display: flex !important;
+                position: fixed !important;
+                z-index: 999 !important;
+                mix-blend-mode: multiply !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                pointer-events: none !important;
+            }
+
+            .watermark-image {
+                filter: none !important;
+                max-width: 70% !important;
+                opacity: 0.2 !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+
+                @bottom-center {
+                    content: counter(page);
+                    display: block;
+                    width: 30px;
+                    height: 30px;
+                    background-color: #1e88e5;
+                    color: #ffffff;
+                    border-radius: 50%;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    text-align: center;
+                    line-height: 30px;
+                    margin: 0 auto;
+                }
+            }
         }
 
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 1.5rem;
-            color: #7b1fa2
-        }
-
-        p,
-        li {
-            margin-bottom: .8rem
-        }
-
-        ul,
-        ol {
-            padding-left: 1.5rem
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: .8rem
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: center
-        }
-
-        th {
-            background: #f3e5f5;
-            font-weight: 600
-        }
-
-        .definition-box {
-            background: var(--yellow-bg);
-            border-left: 5px solid var(--yellow-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .rule-box {
-            background: var(--blue-bg);
-            border-left: 5px solid var(--blue-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .derivation-box {
-            background: var(--green-bg);
-            border-left: 5px solid var(--green-border);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .master-tip {
-            border: 2px dashed #d32f2f;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            background: #ffebee;
-            font-style: italic
-        }
-
-        .formula-box {
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0 #000;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            position: relative;
-            background: #fff
-        }
-
-        .formula-box::after {
-            content: "THEOREM";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #000;
-            color: #fff;
-            padding: 2px 8px;
-            font-size: .75rem
-        }
-
-        .practice-box {
-            background: #fff8e1;
-            border: 2px solid #ff6f00;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0
-        }
-
-        .practice-header {
-            font-weight: 700;
-            color: #d35400;
-            text-transform: uppercase;
-            margin-bottom: .5rem;
-            border-bottom: 1px dashed #d35400;
-            padding-bottom: 5px
-        }
-
-        .q-tag {
-            background: #d35400;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: .75rem;
-            margin-right: 5px
-        }
-
-        .solved-example {
-            background: #f3e5f5;
-            border-left: 4px solid #7b1fa2;
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0
-        }
-
-        .diagram-placeholder {
-            background: #f5f5f5;
-            padding: 15px;
-            text-align: center;
-            margin: 1rem 0;
-            color: #666;
-            font-style: italic;
-            min-height: 100px;
-            overflow-x: auto;
-            max-width: 100%;
-        }
-
-        table {
-            display: block;
-            overflow-x: auto;
-            max-width: 100%;
-        }
-
-        @media(max-width:800px) {
+        @media screen and (max-width: 800px) {
             .paper-sheet {
                 width: 95%;
-                padding: 15px
+                margin: 10px auto;
+                padding: 20px 18px;
             }
 
-            table {
-                font-size: .7rem
-            }
-
-            mjx-container {
-                font-size: 0.85em !important;
-            }
-
-            mjx-container[jax="CHTML"][display="true"] {
-                font-size: 0.8em !important;
+            .institute-name {
+                font-size: 1.6rem;
             }
         }
-
-        @media(max-width:480px) {
-            mjx-container {
-                font-size: 0.75em !important;
-            }
-
-            mjx-container[jax="CHTML"][display="true"] {
-                font-size: 0.7em !important;
-            }
-        }
-    
-        @media (max-width: 768px){.paper-sheet{padding:15px;width:100%}.institute-name{font-size:1.6rem}.system-name{font-size:.9rem;letter-spacing:1px}h1{font-size:1.6rem}h2{font-size:1.3rem}h3{font-size:1.1rem}p,li{font-size:.95rem}.blue-box,.green-box,.yellow-box{padding:15px;margin:15px 0}.theme-toggle{top:10px;right:10px;width:36px;height:36px}.chapter-image{float:none;width:100%;max-width:100%;margin:10px 0}}
     </style>
 </head>
 
 <body>
-    <div class="watermark-overlay"><img
-            src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
-            class="watermark-image"></div>
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <svg class="icon-moon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
+
+    <!-- Watermark Overlay -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg"
+            alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
-        <svg class="icon-sun" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <circle cx="12" cy="12" r="5" />
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
     </button>
 
     <div class="paper-sheet">
-        <h1>Circles</h1>
-        <p style="text-align:center;color:#555;margin-bottom:2rem">ICSE Class 10 Mathematics � Chapter 11</p>
 
-        <h2>1. Angle Properties of Circles</h2>
-
-        <h3>A. Central Angle vs Inscribed Angle</h3>
-        <div class="formula-box">
-            <p><strong>Central Angle:</strong> Angle at the center of the circle.</p>
-            <p><strong>Inscribed Angle:</strong> Angle at any point on the circle (vertex on circumference).</p>
-            <p style="text-align:center;font-size:1.2rem"><strong>Central Angle = 2 � Inscribed Angle</strong></p>
-            <p>(if both subtend the same arc)</p>
+        <!-- Header -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+        </div>
+        <div class="top-branding-note">
+            <span class="created-by">Created by <strong>Team Vardaan</strong> with <span class="heart-red"
+                    aria-hidden="true">&hearts;</span></span>
+            <span aria-hidden="true">|</span>
+            <span class="powered-by-label">Powered by</span>
+            <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer"
+                style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png"
+                    alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                <span class="powered-by-brand">VARDAAN COMET</span>
+            </a>
         </div>
 
-        <div class="diagram-placeholder">[Diagram: Circle with central angle ?AOB and inscribed angle ?ACB on same arc
-            AB]</div>
-
-        <h3>B. Angles in the Same Segment</h3>
-        <div class="rule-box">
-            <p><strong>Theorem:</strong> Angles in the same segment of a circle are equal.</p>
-            <p>All inscribed angles subtending the same arc are equal.</p>
+        <div class="chapter-name-banner">
+            <h1 class="chapter-name-title">Chapter 17: Circles</h1>
         </div>
 
-        <h3>C. Angle in a Semicircle</h3>
-        <div class="formula-box">
-            <p><strong>Theorem:</strong> An angle inscribed in a semicircle is a <strong>right angle (90�)</strong>.</p>
-            <p>If AB is a diameter and C is any point on the circle, then ?ACB = 90�</p>
-        </div>
-
-        <h2>2. Cyclic Quadrilateral</h2>
-        <div class="definition-box">
-            <p><strong>Cyclic Quadrilateral:</strong> A quadrilateral whose all four vertices lie on a circle.</p>
-        </div>
-
-        <div class="formula-box">
-            <p><strong>Property 1:</strong> Opposite angles of a cyclic quadrilateral are supplementary.</p>
-            <p style="text-align:center;font-size:1.1rem">?A + ?C = 180� and ?B + ?D = 180�</p>
-            <p><strong>Property 2:</strong> Exterior angle of cyclic quadrilateral = Interior opposite angle.</p>
-        </div>
-
-        <div class="diagram-placeholder">[Diagram: Cyclic quadrilateral ABCD inscribed in a circle]</div>
-
-        <h2>3. Tangent Properties</h2>
-        <div class="definition-box">
-            <p><strong>Tangent:</strong> A line that touches the circle at exactly one point (point of tangency).</p>
-        </div>
-
-        <div class="formula-box">
-            <p><strong>Theorem 1:</strong> The tangent at any point of a circle is <strong>perpendicular</strong> to the
-                radius at that point.</p>
-            <p style="text-align:center">If PT is tangent at T, then OT ? PT (?OTP = 90�)</p>
-        </div>
-
-        <div class="formula-box">
-            <p><strong>Theorem 2:</strong> Tangents drawn from an external point to a circle are <strong>equal in
-                    length</strong>.</p>
-            <p style="text-align:center">If PA and PB are tangents from P, then PA = PB</p>
-        </div>
-
-        <div class="diagram-placeholder">[Diagram: Two tangents PA and PB from external point P, with PA = PB]</div>
-
-        <div class="derivation-box">
-            <p><strong>Additional Properties (Two Tangents from External Point):</strong></p>
+        <!-- ==================== OFFICIAL SYLLABUS & OVERVIEW ==================== -->
+        <div class="concept-purple">
+            <span class="box-label">Official ICSE Syllabus & Chapter Scope</span>
+            <p><strong>Prescribed Syllabus:</strong> Circles – Chord properties, Angle properties, Cyclic properties, Inscribed and Circumscribed circles, and Angle-Arc relationships.</p>
+            <p><strong>Scope of Syllabus:</strong></p>
             <ul>
-                <li>PA = PB (equal tangent lengths)</li>
-                <li>?OPA = ?OPB (OP bisects angle between tangents)</li>
-                <li>?POA = ?POB (OP bisects central angle)</li>
-                <li>OP passes through center and bisects AB at right angles</li>
+                <li><strong>Chord Properties:</strong> Perpendicular from centre to a chord bisects the chord; Equal chords are equidistant from centre; Equal chords subtend equal angles at centre.</li>
+                <li><strong>Arc & Angle Properties:</strong> Angle at centre is double the angle at remaining circumference ($\angle AOB = 2\angle ACB$); Angles in the same segment of a circle are equal; Angle in a semi-circle is a right angle ($90^\circ$).</li>
+                <li><strong>Cyclic Properties:</strong> Opposite angles of a cyclic quadrilateral are supplementary ($\angle A + \angle C = 180^\circ$); Exterior angle of a cyclic quadrilateral is equal to the interior opposite angle; Properties of cyclic parallelograms, rhombuses, and trapezia.</li>
+                <li><strong>Arc & Angle Proportionality:</strong> Length of arcs proportional to central angles; Inscribed regular polygons.</li>
+                <li><strong>Solved Masterclass:</strong> Comprehensive geometric proofs and calculation numericals with formal Statement-Reason proofs and complete vector diagrams.</li>
             </ul>
         </div>
 
-        <h2>4. Intersecting Chords Theorem</h2>
-        <div class="formula-box">
-            <p><strong>Theorem:</strong> If two chords intersect inside a circle, then:</p>
-            <p style="text-align:center;font-size:1.2rem">PA � PB = PC � PD</p>
-            <p>(Product of segments of one chord = Product of segments of other chord)</p>
+        <!-- ==================== PART A ==================== -->
+        <h2>PART (A): Fundamental Concepts & Chord Properties</h2>
+
+        <h3>1. Circle Terminology and Fundamental Definitions</h3>
+        <div class="concept-blue">
+            <span class="box-label">Definitions & Locus Concept</span>
+            <ul>
+                <li><strong>Circle:</strong> A circle is the closed plane curve obtained by joining all points in a plane that are at a constant distance (radius) from a fixed point (centre).</li>
+                <li><strong>Locus Definition:</strong> A circle is the locus of a point which moves in a plane such that its distance from a fixed point in the same plane remains constant.</li>
+                <li><strong>Radius ($r$):</strong> The constant distance from the centre $O$ to any point on the circle.</li>
+                <li><strong>Circumference ($C$):</strong> The perimeter or boundary length of the circle ($C = 2\pi r$).</li>
+                <li><strong>Chord:</strong> A line segment joining any two points on the circumference of a circle.</li>
+                <li><strong>Diameter ($d$):</strong> A chord passing through the centre of the circle ($d = 2r$). It is the <strong>longest chord</strong> of the circle.</li>
+                <li><strong>Secant:</strong> A straight line intersecting a circle at two distinct points and extending outside it.</li>
+            </ul>
+
+            <!-- SVG 1: Basic Circle Terminology -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 340 260" width="320" height="245">
+                    <!-- Circle -->
+                    <circle cx="170" cy="130" r="90" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <!-- Centre O -->
+                    <circle cx="170" cy="130" r="4.5" fill="#ef4444" />
+                    <text x="170" y="152" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">O (Centre)</text>
+                    <!-- Diameter AB -->
+                    <line x1="80" y1="130" x2="260" y2="130" stroke="#10b981" stroke-width="2.5" />
+                    <circle cx="80" cy="130" r="4" fill="#ef4444" />
+                    <circle cx="260" cy="130" r="4" fill="#ef4444" />
+                    <text x="62" y="135" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="268" y="135" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <text x="120" y="122" font-size="12" font-weight="600" fill="#059669">Diameter (2r)</text>
+                    <!-- Radius OC -->
+                    <line x1="170" y1="130" x2="234" y2="66" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,4" />
+                    <circle cx="234" cy="66" r="4" fill="#ef4444" />
+                    <text x="242" y="62" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <text x="208" y="105" font-size="12" font-weight="600" fill="#d97706">Radius (r)</text>
+                    <!-- Chord PQ -->
+                    <line x1="98" y1="192" x2="242" y2="192" stroke="#8b5cf6" stroke-width="2.5" class="svg-line-main" />
+                    <circle cx="98" cy="192" r="4" fill="#ef4444" />
+                    <circle cx="242" cy="192" r="4" fill="#ef4444" />
+                    <text x="80" y="196" font-size="13" font-weight="700" fill="#0f172a">P</text>
+                    <text x="250" y="196" font-size="13" font-weight="700" fill="#0f172a">Q</text>
+                    <text x="170" y="212" font-size="12" font-weight="600" fill="#7c3aed" text-anchor="middle">Chord PQ</text>
+                </svg>
+                <div class="svg-diagram-caption">Basic Circle Elements: Centre (O), Radius (OC), Diameter (AB), and Chord (PQ).</div>
+            </div>
         </div>
 
-        <div class="diagram-placeholder">[Diagram: Two chords AB and CD intersecting at P inside circle]</div>
-
-        <h2>5. Tangent-Secant Theorem</h2>
-        <div class="formula-box">
-            <p><strong>Theorem:</strong> If a tangent and a secant are drawn from an external point:</p>
-            <p style="text-align:center;font-size:1.2rem">(Tangent)� = External segment � Whole secant</p>
-            <p style="text-align:center;font-size:1.1rem">PT� = PA � PB</p>
+        <h3>2. Types of Circles</h3>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Type of Circle</th>
+                        <th>Definition & Characteristic Property</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Concentric Circles</strong></td>
+                        <td>Two or more circles having the <strong>same centre $O$</strong> but different radii ($r_1 \neq r_2$).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Congruent (Equal) Circles</strong></td>
+                        <td>Circles having <strong>equal radii</strong> ($r_1 = r_2$). They have identical circumference and area.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Circumscribed Circle</strong></td>
+                        <td>A circle passing through <strong>all vertices</strong> of a polygon. Its centre is called the <strong>circumcentre</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inscribed Circle (In-circle)</strong></td>
+                        <td>A circle touching <strong>all sides</strong> of a polygon internally. Its centre is the <strong>incentre</strong> (intersection of internal angle bisectors).</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="diagram-placeholder">[Diagram: Tangent PT and secant PAB from point P]</div>
+        <h3>3. Fundamental Theorems on Chords</h3>
 
-        <h2>6. Angle at Tangent (Alternate Segment Theorem)</h2>
-        <div class="formula-box">
-            <p><strong>Theorem:</strong> The angle between a tangent and a chord at the point of contact equals the
-                inscribed angle in the alternate segment.</p>
-            <p style="text-align:center;font-size:1.1rem">?PTB = ?BAT (angle in alternate segment)</p>
+        <div class="formula-box green">
+            <span class="formula-pill">THEOREM: PERPENDICULAR BISECTOR OF CHORD</span>
+            <p><strong>Theorem 1:</strong> The straight line drawn from the centre of a circle to bisect a chord (which is not a diameter) is perpendicular to the chord.</p>
+            <p>In a circle with centre $O$, if $M$ is the mid-point of chord $AB$ ($AM = MB$):</p>
+            $$ OM \perp AB \implies \angle OMA = \angle OMB = 90^\circ $$
+            <p><strong>Theorem 2 (Converse):</strong> The perpendicular drawn from the centre of a circle to a chord bisects the chord.</p>
+            $$ OM \perp AB \implies AM = MB = \frac{1}{2}AB $$
+
+            <!-- SVG 2: Chord Perpendicular Bisector -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 300 240" width="280" height="224">
+                    <circle cx="150" cy="120" r="90" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <circle cx="150" cy="120" r="4.5" fill="#ef4444" />
+                    <text x="156" y="116" font-size="14" font-weight="700" fill="#0f172a">O</text>
+                    <!-- Chord AB -->
+                    <line x1="72" y1="165" x2="228" y2="165" stroke="#1e293b" stroke-width="2.5" class="svg-line-main" />
+                    <circle cx="72" cy="165" r="4" fill="#ef4444" />
+                    <circle cx="228" cy="165" r="4" fill="#ef4444" />
+                    <text x="54" y="170" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="236" y="170" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <!-- Perpendicular OM -->
+                    <line x1="150" y1="120" x2="150" y2="165" stroke="#dc2626" stroke-width="2.5" />
+                    <circle cx="150" cy="165" r="4" fill="#ef4444" />
+                    <text x="156" y="182" font-size="13" font-weight="700" fill="#0f172a">M</text>
+                    <!-- Right angle square at M -->
+                    <polyline points="150,155 160,155 160,165" fill="none" stroke="#dc2626" stroke-width="1.8" />
+                    <!-- Radii OA, OB -->
+                    <line x1="150" y1="120" x2="72" y2="165" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <line x1="150" y1="120" x2="228" y2="165" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <text x="100" y="138" font-size="12" font-weight="600" fill="#d97706">r</text>
+                    <text x="195" y="138" font-size="12" font-weight="600" fill="#d97706">r</text>
+                </svg>
+                <div class="svg-diagram-caption">Theorem 1 & 2: OM ⊥ AB ⟺ AM = MB = AB/2.</div>
+            </div>
         </div>
 
-        <h2>7. Solved Examples</h2>
-        <div class="solved-example">
-            <p><strong>Example 1:</strong> In a circle, inscribed angle is 35�. Find the central angle subtending the
-                same arc.</p>
-            <p>Central angle = 2 � Inscribed angle = 2 � 35� = <strong>70�</strong></p>
+        <div class="master-tip">
+            <span class="tip-header">⭐ PYTHAGOREAN RELATION IN CHORD PROBLEMS</span>
+            <p>In $\Delta OMA$ right-angled at $M$, where $r = OA$ (radius), $d = OM$ (perpendicular distance from centre), and $AM = \frac{1}{2}AB$:</p>
+            $$ r^2 = OM^2 + AM^2 \quad \implies \quad r = \sqrt{d^2 + \left(\frac{AB}{2}\right)^2} $$
         </div>
 
-        <div class="solved-example">
-            <p><strong>Example 2:</strong> In cyclic quadrilateral ABCD, ?A = 70� and ?B = 115�. Find ?C and ?D.</p>
-            <p>?C = 180� - ?A = 180� - 70� = <strong>110�</strong></p>
-            <p>?D = 180� - ?B = 180� - 115� = <strong>65�</strong></p>
+        <h3>4. Chord Length vs Distance from Centre</h3>
+        <div class="concept-yellow">
+            <span class="box-label">Distance & Length Inverse Relation</span>
+            <ul>
+                <li><strong>Greater the chord, smaller is its perpendicular distance from the centre:</strong><br>
+                    If $\text{chord } AB > \text{chord } CD \implies OM < ON$ (where $OM \perp AB$ and $ON \perp CD$).</li>
+                <li><strong>Converse:</strong> If $OM < ON \implies AB > CD$.</li>
+                <li><strong>Three Points Rule:</strong> There is <strong>one and only one circle</strong> which passes through three given non-collinear points.</li>
+            </ul>
         </div>
 
-        <div class="solved-example">
-            <p><strong>Example 3:</strong> Two chords AB and CD intersect at P. If AP = 4, PB = 6, CP = 3, find PD.</p>
-            <p>AP � PB = CP � PD</p>
-            <p>4 � 6 = 3 � PD</p>
-            <p>PD = 8 cm</p>
+        <h3>5. Equal Chords and Distance Properties</h3>
+        <div class="formula-box blue">
+            <span class="formula-pill">EQUAL CHORDS EQUIDISTANCE THEOREM</span>
+            <ul>
+                <li><strong>Theorem 3:</strong> Equal chords of a circle are equidistant from the centre.
+                    $$ AB = CD \implies OM = ON $$
+                </li>
+                <li><strong>Theorem 4 (Converse):</strong> Chords of a circle that are equidistant from the centre are equal in length.
+                    $$ OM = ON \implies AB = CD $$
+                </li>
+            </ul>
+
+            <!-- SVG 3: Equal Chords Equidistant -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 300 240" width="280" height="224">
+                    <circle cx="150" cy="120" r="90" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <circle cx="150" cy="120" r="4.5" fill="#ef4444" />
+                    <text x="156" y="116" font-size="14" font-weight="700" fill="#0f172a">O</text>
+                    <!-- Chord AB (bottom) -->
+                    <line x1="75" y1="165" x2="225" y2="165" stroke="#1e293b" stroke-width="2.5" class="svg-line-main" />
+                    <text x="56" y="170" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="233" y="170" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <!-- Chord CD (top-left) -->
+                    <line x1="75" y1="75" x2="225" y2="75" stroke="#1e293b" stroke-width="2.5" class="svg-line-main" />
+                    <text x="56" y="78" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <text x="233" y="78" font-size="13" font-weight="700" fill="#0f172a">D</text>
+                    <!-- Perpendiculars OM and ON -->
+                    <line x1="150" y1="120" x2="150" y2="165" stroke="#dc2626" stroke-width="2" />
+                    <text x="155" y="180" font-size="13" font-weight="700" fill="#0f172a">M</text>
+                    <line x1="150" y1="120" x2="150" y2="75" stroke="#dc2626" stroke-width="2" />
+                    <text x="155" y="68" font-size="13" font-weight="700" fill="#0f172a">N</text>
+                    <text x="120" y="148" font-size="12" font-weight="600" fill="#dc2626">d</text>
+                    <text x="120" y="98" font-size="12" font-weight="600" fill="#dc2626">d</text>
+                </svg>
+                <div class="svg-diagram-caption">Theorem 3 & 4: AB = CD ⟺ OM = ON.</div>
+            </div>
         </div>
 
-        <h2>8. Quick Reference Table</h2>
-        <table>
-            <tr>
-                <th>Theorem</th>
-                <th>Statement</th>
-            </tr>
-            <tr>
-                <td>Central = 2 � Inscribed</td>
-                <td>?at center = 2 � ?at circumference</td>
-            </tr>
-            <tr>
-                <td>Same Segment</td>
-                <td>Angles in same segment are equal</td>
-            </tr>
-            <tr>
-                <td>Semicircle</td>
-                <td>Angle in semicircle = 90�</td>
-            </tr>
-            <tr>
-                <td>Cyclic Quadrilateral</td>
-                <td>Opposite angles add to 180�</td>
-            </tr>
-            <tr>
-                <td>Tangent ? Radius</td>
-                <td>Tangent perpendicular to radius</td>
-            </tr>
-            <tr>
-                <td>Equal Tangents</td>
-                <td>Tangents from external point are equal</td>
-            </tr>
-            <tr>
-                <td>Intersecting Chords</td>
-                <td>PA � PB = PC � PD</td>
-            </tr>
-            <tr>
-                <td>Tangent-Secant</td>
-                <td>PT� = PA � PB</td>
-            </tr>
-        </table>
+        <hr class="section-divider">
 
-        <h2>Exam Practice (PYQ Trends)</h2>
-        <div class="practice-box">
-            <span class="practice-header">PYQ: 2023</span>
-            <p><span class="q-tag">BOARD</span> In the figure, O is center of circle. ?AOB = 100�. Find ?ACB and ?ADB if
-                C and D are points on the major and minor arcs respectively.</p>
+        <!-- ==================== PART B ==================== -->
+        <h2>PART (B): Arcs, Segments & Subtended Angle Theorems</h2>
+
+        <h3>1. Arcs and Segments of a Circle</h3>
+        <div class="concept-teal">
+            <span class="box-label">Arc & Segment Terminology</span>
+            <ul>
+                <li><strong>Arc:</strong> A continuous piece or portion of the circumference of a circle.
+                    <ul>
+                        <li><strong>Minor Arc:</strong> An arc whose length is less than the semi-circle (e.g. arc $APB$).</li>
+                        <li><strong>Major Arc:</strong> An arc whose length is greater than the semi-circle (e.g. arc $AQB$).</li>
+                        <li><strong>Semi-circle:</strong> An arc whose endpoints form a diameter ($180^\circ$ measure).</li>
+                    </ul>
+                </li>
+                <li><strong>Segment:</strong> The region bounded by a chord and the corresponding arc.
+                    <ul>
+                        <li><strong>Minor Segment:</strong> Region bounded by a chord and its minor arc.</li>
+                        <li><strong>Major Segment:</strong> Region bounded by a chord and its major arc.</li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-        <div class="practice-box">
-            <span class="practice-header">PYQ: 2022</span>
-            <p><span class="q-tag">BOARD</span> PA and PB are tangents to a circle with center O. If ?APB = 80�, find:
-                (i) ?AOB (ii) ?OAB</p>
+
+        <h3>2. Theorem 5: Angle Subtended by an Arc at the Centre</h3>
+        <div class="formula-box orange">
+            <span class="formula-pill">CORE THEOREM: ANGLE AT CENTRE = 2 × ANGLE AT CIRCUMFERENCE</span>
+            <p><strong>Statement:</strong> The angle subtended by an arc of a circle at the centre is <strong>double</strong> the angle subtended by it at any point on the remaining part of the circumference.</p>
+            $$ \angle AOB = 2 \angle ACB \quad \iff \quad \angle ACB = \frac{1}{2} \angle AOB $$
+
+            <!-- SVG 4: Theorem 5 Angle at Centre -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 320 260" width="300" height="244">
+                    <circle cx="160" cy="135" r="95" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <circle cx="160" cy="135" r="4.5" fill="#ef4444" />
+                    <text x="168" y="132" font-size="14" font-weight="700" fill="#0f172a">O</text>
+                    <!-- Arc endpoints A, B -->
+                    <circle cx="85" cy="195" r="4" fill="#ef4444" />
+                    <circle cx="235" cy="195" r="4" fill="#ef4444" />
+                    <text x="68" y="202" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="245" y="202" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <!-- Central Angle AOB lines -->
+                    <line x1="85" y1="195" x2="160" y2="135" stroke="#f57c00" stroke-width="2.5" />
+                    <line x1="235" y1="195" x2="160" y2="135" stroke="#f57c00" stroke-width="2.5" />
+                    <!-- Point C on circumference -->
+                    <circle cx="160" cy="40" r="4" fill="#ef4444" />
+                    <text x="156" y="28" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <!-- Subtended angle ACB lines -->
+                    <line x1="85" y1="195" x2="160" y2="40" stroke="#8b5cf6" stroke-width="2" />
+                    <line x1="235" y1="195" x2="160" y2="40" stroke="#8b5cf6" stroke-width="2" />
+                    <!-- Construction line COD -->
+                    <line x1="160" y1="40" x2="160" y2="230" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <text x="165" y="245" font-size="12" font-weight="600" fill="#64748b">D</text>
+                    <!-- Angles Labels -->
+                    <text x="145" y="165" font-size="12" font-weight="700" fill="#f57c00">2θ</text>
+                    <text x="155" y="65" font-size="12" font-weight="700" fill="#8b5cf6">θ</text>
+                </svg>
+                <div class="svg-diagram-caption">Theorem 5: Angle at centre ∠AOB (2θ) is double the angle at circumference ∠ACB (θ).</div>
+            </div>
         </div>
+
+        <div class="concept-purple">
+            <span class="box-label">Formal Geometric Proof of Theorem 5</span>
+            <p><strong>Given:</strong> A circle with centre $O$. Arc $APB$ subtends $\angle AOB$ at the centre and $\angle ACB$ at point $C$ on the remaining circumference.</p>
+            <p><strong>To Prove:</strong> $\angle AOB = 2 \angle ACB$.</p>
+            <p><strong>Construction:</strong> Join $CO$ and produce it to a point $D$.</p>
+
+            <table class="proof-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Statement</th>
+                        <th style="width: 50%;">Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. In $\Delta AOC$, $OA = OC$</td>
+                        <td>Radii of the same circle.</td>
+                    </tr>
+                    <tr>
+                        <td>2. $\therefore \angle OAC = \angle OCA$</td>
+                        <td>Angles opposite to equal sides in a triangle are equal.</td>
+                    </tr>
+                    <tr>
+                        <td>3. Ext. $\angle AOD = \angle OAC + \angle OCA = 2\angle OCA$</td>
+                        <td>Exterior angle of a $\Delta$ equals sum of two interior opposite angles.</td>
+                    </tr>
+                    <tr>
+                        <td>4. Similarly, in $\Delta BOC$, Ext. $\angle BOD = 2\angle OCB$</td>
+                        <td>Same reasoning applied to $\Delta BOC$ ($OB = OC$).</td>
+                    </tr>
+                    <tr>
+                        <td>5. $\angle AOB = \angle AOD + \angle BOD = 2\angle OCA + 2\angle OCB$</td>
+                        <td>Adding equations (3) and (4).</td>
+                    </tr>
+                    <tr>
+                        <td>6. $\therefore \angle AOB = 2(\angle OCA + \angle OCB) = \mathbf{2 \angle ACB}$</td>
+                        <td><strong>Hence Proved!</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="master-tip">
+                <span class="tip-header">⭐ CASE OF MAJOR ARC (REFLEX ANGLE)</span>
+                <p>When arc $AB$ is a major arc, the central angle is a reflex angle:</p>
+                $$ \text{Reflex } \angle AOB = 2 \angle APB $$
+            </div>
+        </div>
+
+        <h3>3. Theorem 6: Angles in the Same Segment</h3>
+        <div class="formula-box green">
+            <span class="formula-pill">THEOREM: ANGLES IN SAME SEGMENT ARE EQUAL</span>
+            <p><strong>Statement:</strong> Angles in the same segment of a circle are equal.</p>
+            $$ \angle ACB = \angle ADB $$
+
+            <!-- SVG 5: Angles in the Same Segment -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 320 250" width="300" height="234">
+                    <circle cx="160" cy="130" r="95" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <!-- Chord AB -->
+                    <line x1="85" y1="190" x2="235" y2="190" stroke="#1e293b" stroke-width="2.5" class="svg-line-main" />
+                    <circle cx="85" cy="190" r="4" fill="#ef4444" />
+                    <circle cx="235" cy="190" r="4" fill="#ef4444" />
+                    <text x="68" y="195" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="245" y="195" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <!-- Point C and D on top arc -->
+                    <circle cx="120" cy="45" r="4" fill="#ef4444" />
+                    <circle cx="200" cy="45" r="4" fill="#ef4444" />
+                    <text x="112" y="35" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <text x="202" y="35" font-size="13" font-weight="700" fill="#0f172a">D</text>
+                    <!-- Angle ACB lines -->
+                    <line x1="85" y1="190" x2="120" y2="45" stroke="#10b981" stroke-width="2" />
+                    <line x1="235" y1="190" x2="120" y2="45" stroke="#10b981" stroke-width="2" />
+                    <!-- Angle ADB lines -->
+                    <line x1="85" y1="190" x2="200" y2="45" stroke="#ec4899" stroke-width="2" />
+                    <line x1="235" y1="190" x2="200" y2="45" stroke="#ec4899" stroke-width="2" />
+                    <text x="122" y="65" font-size="12" font-weight="700" fill="#059669">θ</text>
+                    <text x="192" y="65" font-size="12" font-weight="700" fill="#db2777">θ</text>
+                </svg>
+                <div class="svg-diagram-caption">Theorem 6: Angles in the same segment ∠ACB = ∠ADB = θ.</div>
+            </div>
+        </div>
+
+        <div class="concept-blue">
+            <span class="box-label">Proof of Theorem 6</span>
+            <p><strong>Given:</strong> Angles $\angle ACB$ and $\angle ADB$ in the same segment subtended by chord/arc $AB$.</p>
+            <p><strong>Proof:</strong></p>
+            <ul>
+                <li>$\angle AOB = 2\angle ACB$ (Angle at centre is double angle at circumference).</li>
+                <li>$\angle AOB = 2\angle ADB$ (Same theorem applied to $\angle ADB$).</li>
+                <li>Equating both relations:
+                    $$ 2\angle ACB = 2\angle ADB \implies \mathbf{\angle ACB = \angle ADB} $$
+                    <em>Hence Proved!</em>
+                </li>
+            </ul>
+        </div>
+
+        <h3>4. Theorem 7: Angle in a Semi-Circle</h3>
+        <div class="formula-box yellow">
+            <span class="formula-pill">THEOREM: ANGLE IN A SEMI-CIRCLE IS 90°</span>
+            <p><strong>Statement:</strong> The angle in a semi-circle is a <strong>right angle ($90^\circ$)</strong>.</p>
+            <p>If $AB$ is a diameter of the circle, then for any point $C$ on the semi-circle:</p>
+            $$ \mathbf{\angle ACB = 90^\circ} $$
+
+            <!-- SVG 6: Angle in Semi-Circle -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 320 250" width="300" height="234">
+                    <circle cx="160" cy="130" r="90" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <!-- Centre O -->
+                    <circle cx="160" cy="130" r="4.5" fill="#ef4444" />
+                    <text x="160" y="152" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">O</text>
+                    <!-- Diameter AB -->
+                    <line x1="70" y1="130" x2="250" y2="130" stroke="#dc2626" stroke-width="2.5" />
+                    <circle cx="70" cy="130" r="4" fill="#ef4444" />
+                    <circle cx="250" cy="130" r="4" fill="#ef4444" />
+                    <text x="52" y="135" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="258" y="135" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <!-- Point C on semi-circle -->
+                    <circle cx="140" cy="42" r="4" fill="#ef4444" />
+                    <text x="140" y="28" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">C</text>
+                    <!-- Lines AC and BC -->
+                    <line x1="70" y1="130" x2="140" y2="42" stroke="#1e293b" stroke-width="2.2" class="svg-line-main" />
+                    <line x1="250" y1="130" x2="140" y2="42" stroke="#1e293b" stroke-width="2.2" class="svg-line-main" />
+                    <!-- 90 deg corner at C -->
+                    <polyline points="132.5,51.4 141.9,58.9 149.4,49.5" fill="none" stroke="#2563eb" stroke-width="1.8" />
+                    <text x="142" y="76" font-size="12" font-weight="700" fill="#2563eb" text-anchor="middle">90°</text>
+                </svg>
+                <div class="svg-diagram-caption">Theorem 7: Angle in a semi-circle ∠ACB = 90°.</div>
+            </div>
+        </div>
+
+        <div class="concept-green">
+            <span class="box-label">Proof of Theorem 7</span>
+            <ul>
+                <li>Diameter $AOB$ is a straight line passing through centre $O$, so the central angle $\angle AOB = 180^\circ$.</li>
+                <li>By Theorem 5, the angle subtended at the circumference is half the central angle:
+                    $$ \angle AOB = 2 \angle ACB \implies 180^\circ = 2 \angle ACB \implies \mathbf{\angle ACB = 90^\circ} $$
+                    <em>Hence Proved!</em>
+                </li>
+            </ul>
+        </div>
+
+        <h3>5. Angle in Major vs Minor Segment</h3>
+        <div class="concept-pink">
+            <span class="box-label">Acute & Obtuse Segment Rules</span>
+            <ol>
+                <li><strong>Angle in a Major Segment is ACUTE ($< 90^\circ$):</strong> The arc is smaller than a semi-circle, so central angle $< 180^\circ \implies \angle < 90^\circ$.</li>
+                <li><strong>Angle in a Minor Segment is OBTUSE ($> 90^\circ$):</strong> The reflex central angle $> 180^\circ \implies \angle > 90^\circ$.</li>
+            </ol>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- ==================== PART C ==================== -->
+        <h2>PART (C): Cyclic Quadrilaterals & Cyclic Properties</h2>
+
+        <h3>1. Cyclic Quadrilateral & Concyclic Points</h3>
+        <p><strong>Cyclic Quadrilateral:</strong> A quadrilateral whose all four vertices lie on the circumference of a circle.</p>
+        <p><strong>Concyclic Points:</strong> Four or more points are called concyclic if a circle can be drawn passing through all of them.</p>
+
+        <h3>2. Theorem 8: Opposite Angles of a Cyclic Quadrilateral</h3>
+        <div class="formula-box pink">
+            <span class="formula-pill">THEOREM: OPPOSITE ANGLES ARE SUPPLEMENTARY</span>
+            <p><strong>Statement:</strong> The opposite angles of a cyclic quadrilateral (quadrilateral inscribed in a circle) are <strong>supplementary ($180^\circ$)</strong>.</p>
+            $$ \angle ABC + \angle ADC = 180^\circ \quad \text{and} \quad \angle BAD + \angle BCD = 180^\circ $$
+
+            <!-- SVG 7: Cyclic Quadrilateral -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 320 260" width="300" height="244">
+                    <circle cx="160" cy="130" r="95" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <circle cx="160" cy="130" r="4.5" fill="#ef4444" />
+                    <text x="165" y="125" font-size="13" font-weight="700" fill="#0f172a">O</text>
+                    <!-- Vertices A, B, C, D -->
+                    <polygon points="90,75 75,175 220,205 240,80" fill="rgba(142, 36, 170, 0.05)" stroke="#8e24aa" stroke-width="2.5" />
+                    <circle cx="90" cy="75" r="4" fill="#ef4444" />
+                    <circle cx="75" cy="175" r="4" fill="#ef4444" />
+                    <circle cx="220" cy="205" r="4" fill="#ef4444" />
+                    <circle cx="240" cy="80" r="4" fill="#ef4444" />
+                    <text x="75" y="65" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="56" y="185" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <text x="225" y="222" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <text x="248" y="75" font-size="13" font-weight="700" fill="#0f172a">D</text>
+                    <!-- Construction lines OA, OC -->
+                    <line x1="160" y1="130" x2="90" y2="75" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <line x1="160" y1="130" x2="220" y2="205" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,4" />
+                </svg>
+                <div class="svg-diagram-caption">Theorem 8: In cyclic quad ABCD, ∠B + ∠D = 180° and ∠A + ∠C = 180°.</div>
+            </div>
+        </div>
+
+        <div class="concept-purple">
+            <span class="box-label">Formal Proof of Theorem 8</span>
+            <p><strong>Given:</strong> Cyclic quadrilateral $ABCD$ inscribed in a circle with centre $O$.</p>
+            <p><strong>To Prove:</strong> $\angle ABC + \angle ADC = 180^\circ$ and $\angle BAD + \angle BCD = 180^\circ$.</p>
+            <p><strong>Construction:</strong> Join $OA$ and $OC$.</p>
+
+            <table class="proof-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Statement</th>
+                        <th style="width: 50%;">Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. $\angle ADC = \frac{1}{2} \angle AOC$</td>
+                        <td>Angle at centre is double the angle at remaining circumference.</td>
+                    </tr>
+                    <tr>
+                        <td>2. $\angle ABC = \frac{1}{2} \text{reflex } \angle AOC$</td>
+                        <td>Major arc $ADC$ subtends reflex $\angle AOC$ at centre.</td>
+                    </tr>
+                    <tr>
+                        <td>3. $\angle ABC + \angle ADC = \frac{1}{2}(\text{reflex }\angle AOC + \angle AOC)$</td>
+                        <td>Adding (1) and (2).</td>
+                    </tr>
+                    <tr>
+                        <td>4. $\angle ABC + \angle ADC = \frac{1}{2} \times 360^\circ = \mathbf{180^\circ}$</td>
+                        <td>Sum of angles at a point $= 360^\circ$.</td>
+                    </tr>
+                    <tr>
+                        <td>5. Since sum of all angles in a quad $= 360^\circ$, $\therefore \mathbf{\angle BAD + \angle BCD = 180^\circ}$</td>
+                        <td>$360^\circ - 180^\circ = 180^\circ$. <strong>Hence Proved!</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="master-tip">
+            <span class="tip-header">⭐ CONVERSE OF THEOREM 8</span>
+            <p>If the sum of any pair of opposite angles of a quadrilateral is $180^\circ$, then the quadrilateral is <strong>CYCLIC</strong>.</p>
+        </div>
+
+        <h3>3. Theorem 9: Exterior Angle of a Cyclic Quadrilateral</h3>
+        <div class="formula-box teal">
+            <span class="formula-pill">THEOREM: EXT. ANGLE = INTERIOR OPPOSITE ANGLE</span>
+            <p><strong>Statement:</strong> If one side of a cyclic quadrilateral is produced, the exterior angle so formed is equal to the <strong>interior opposite angle</strong>.</p>
+            <p>If side $AB$ is produced to $E$:</p>
+            $$ \mathbf{\text{Ext. } \angle CBE = \angle ADC} $$
+
+            <!-- SVG 8: Exterior Angle of Cyclic Quadrilateral -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 350 250" width="320" height="228">
+                    <circle cx="150" cy="125" r="85" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <!-- Quad ABCD -->
+                    <polygon points="90,180 200,180 215,75 80,75" fill="rgba(0, 137, 123, 0.05)" stroke="#00897b" stroke-width="2.5" />
+                    <!-- Vertices Dots -->
+                    <circle cx="90" cy="180" r="4" fill="#ef4444" />
+                    <circle cx="200" cy="180" r="4" fill="#ef4444" />
+                    <circle cx="215" cy="75" r="4" fill="#ef4444" />
+                    <circle cx="80" cy="75" r="4" fill="#ef4444" />
+                    <!-- Vertex Labels -->
+                    <text x="70" y="192" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <text x="192" y="202" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <text x="224" y="72" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <text x="62" y="72" font-size="13" font-weight="700" fill="#0f172a">D</text>
+                    <!-- Produced side AB to E -->
+                    <line x1="200" y1="180" x2="285" y2="180" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,4" />
+                    <circle cx="285" cy="180" r="4" fill="#ef4444" />
+                    <text x="294" y="185" font-size="13" font-weight="700" fill="#0f172a">E</text>
+                    <!-- Angle at D -->
+                    <path d="M 80,95 A 20,20 0 0,0 98,75" fill="none" stroke="#00897b" stroke-width="2" />
+                    <text x="100" y="105" font-size="13" font-weight="700" fill="#00897b">θ</text>
+                    <!-- Exterior Angle at B -->
+                    <path d="M 203,158 A 22,22 0 0,1 222,180" fill="none" stroke="#dc2626" stroke-width="2" />
+                    <text x="226" y="165" font-size="13" font-weight="700" fill="#dc2626">Ext. θ</text>
+                </svg>
+                <div class="svg-diagram-caption">Theorem 9: Exterior angle Ext. ∠CBE = Interior opposite angle ∠ADC (θ).</div>
+            </div>
+        </div>
+
+        <div class="concept-green">
+            <span class="box-label">Proof of Theorem 9</span>
+            <ul>
+                <li>$\angle ABC + \text{Ext. } \angle CBE = 180^\circ$ (Linear pair on straight line $ABE$).</li>
+                <li>$\angle ABC + \angle ADC = 180^\circ$ (Opposite angles of cyclic quadrilateral $ABCD$).</li>
+                <li>Equating both relations:
+                    $$ \angle ABC + \text{Ext. } \angle CBE = \angle ABC + \angle ADC $$
+                    $$ \implies \mathbf{\text{Ext. } \angle CBE = \angle ADC} $$
+                    <em>Hence Proved!</em>
+                </li>
+            </ul>
+        </div>
+
+        <h3>4. Special Geometric Deductions on Cyclic Figures</h3>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Geometric Theorem</th>
+                        <th>Proof Summary & Core Relation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>A cyclic parallelogram is a RECTANGLE</strong></td>
+                        <td>In parallelogram $ABCD$, $\angle A = \angle C$ (opp. angles equal). In cyclic quad, $\angle A + \angle C = 180^\circ \implies 2\angle A = 180^\circ \implies \angle A = 90^\circ$. A $\|gm$ with one right angle is a rectangle!</td>
+                    </tr>
+                    <tr>
+                        <td><strong>A cyclic rhombus is a SQUARE</strong></td>
+                        <td>A rhombus is a parallelogram with all 4 sides equal. Since cyclic $\|gm$ is a rectangle, all angles are $90^\circ$. A rhombus with $90^\circ$ angles is a square!</td>
+                    </tr>
+                    <tr>
+                        <td><strong>A cyclic trapezium is ISOSCELES</strong></td>
+                        <td>If $AB \parallel DC$ in cyclic quad $ABCD$, co-interior angles $\angle A + \angle D = 180^\circ$. Also cyclic opp. angles $\angle B + \angle D = 180^\circ \implies \angle A = \angle B$. This proves non-parallel sides $AD = BC$ and diagonals $AC = BD$.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- ==================== PART D ==================== -->
+        <h2>PART (D): Arc-Angle Proportionality & Inscribed Polygons</h2>
+
+        <h3>1. Relation Between Arcs, Chords, and Central Angles</h3>
+        <div class="formula-box purple">
+            <span class="formula-pill">ARC - ANGLE PROPORTIONALITY</span>
+            <p>1. In a circle (or congruent circles), equal chords subtend equal angles at the centre, and conversely:</p>
+            $$ \text{chord } AB = \text{chord } CD \iff \angle AOB = \angle COD \iff \text{arc } AB = \text{arc } CD $$
+            <p>2. The lengths of two arcs of a circle are in the same ratio as the angles subtended by them at the centre:</p>
+            $$ \frac{\text{Length of Arc } AB}{\text{Length of Arc } CD} = \frac{\angle AOB}{\angle COD} $$
+
+            <!-- SVG 9: Arc-Angle Proportionality -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 320 260" width="290" height="236">
+                    <!-- Circle -->
+                    <circle cx="160" cy="130" r="90" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <!-- Centre O -->
+                    <circle cx="160" cy="130" r="4.5" fill="#ef4444" />
+                    <text x="160" y="148" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">O</text>
+
+                    <!-- Arc AB (Bottom Left) -->
+                    <path d="M 75,155 A 90,90 0 0,0 140,218" fill="none" stroke="#f57c00" stroke-width="4" />
+                    <line x1="160" y1="130" x2="75" y2="155" stroke="#f57c00" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <line x1="160" y1="130" x2="140" y2="218" stroke="#f57c00" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <line x1="75" y1="155" x2="140" y2="218" stroke="#1e293b" stroke-width="2" class="svg-line-main" />
+                    <!-- Dots & Labels AB -->
+                    <circle cx="75" cy="155" r="4" fill="#ef4444" />
+                    <text x="56" y="160" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <circle cx="140" cy="218" r="4" fill="#ef4444" />
+                    <text x="140" y="235" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <text x="122" y="168" font-size="12" font-weight="700" fill="#f57c00">α</text>
+                    <text x="80" y="205" font-size="11" font-weight="700" fill="#f57c00">Arc AB</text>
+
+                    <!-- Arc CD (Top Right) -->
+                    <path d="M 235,85 A 90,90 0 0,0 180,42" fill="none" stroke="#8e24aa" stroke-width="4" />
+                    <line x1="160" y1="130" x2="235" y2="85" stroke="#8e24aa" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <line x1="160" y1="130" x2="180" y2="42" stroke="#8e24aa" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <line x1="235" y1="85" x2="180" y2="42" stroke="#1e293b" stroke-width="2" class="svg-line-main" />
+                    <!-- Dots & Labels CD -->
+                    <circle cx="235" cy="85" r="4" fill="#ef4444" />
+                    <text x="245" y="90" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <circle cx="180" cy="42" r="4" fill="#ef4444" />
+                    <text x="180" y="30" font-size="13" font-weight="700" fill="#0f172a">D</text>
+                    <text x="185" y="105" font-size="12" font-weight="700" fill="#8e24aa">β</text>
+                    <text x="220" y="52" font-size="11" font-weight="700" fill="#8e24aa">Arc CD</text>
+                </svg>
+                <div class="svg-diagram-caption">Arc-Angle Relation: Arc AB / Arc CD = ∠AOB (α) / ∠COD (β).</div>
+            </div>
+        </div>
+
+        <h3>2. Central Angles of Inscribed Regular Polygons</h3>
+        <p>If a regular polygon of $n$ sides is inscribed in a circle, each side subtends an angle $\theta$ at the centre:</p>
+        $$ \theta = \frac{360^\circ}{n} $$
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Inscribed Regular Polygon</th>
+                        <th>Number of Sides ($n$)</th>
+                        <th>Central Angle Subtended by Each Side ($\theta = 360^\circ/n$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Equilateral Triangle</strong></td>
+                        <td>$n = 3$</td>
+                        <td>$\angle AOB = \frac{360^\circ}{3} = \mathbf{120^\circ}$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Square</strong></td>
+                        <td>$n = 4$</td>
+                        <td>$\angle AOB = \frac{360^\circ}{4} = \mathbf{90^\circ}$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Regular Pentagon</strong></td>
+                        <td>$n = 5$</td>
+                        <td>$\angle AOB = \frac{360^\circ}{5} = \mathbf{72^\circ}$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Regular Hexagon</strong></td>
+                        <td>$n = 6$</td>
+                        <td>$\angle AOB = \frac{360^\circ}{6} = \mathbf{60^\circ}$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Regular Octagon</strong></td>
+                        <td>$n = 8$</td>
+                        <td>$\angle AOB = \frac{360^\circ}{8} = \mathbf{45^\circ}$</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- SVG 10: Inscribed Regular Hexagon Diagram -->
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 320 260" width="290" height="236">
+                    <!-- Circle -->
+                    <circle cx="160" cy="130" r="90" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <!-- Centre O -->
+                    <circle cx="160" cy="130" r="4.5" fill="#ef4444" />
+                    <text x="160" y="146" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">O</text>
+
+                    <!-- Hexagon Vertices & Polygon: R = 90 -->
+                    <!-- A(250,130), B(205,52), C(115,52), D(70,130), E(115,208), F(205,208) -->
+                    <polygon points="250,130 205,52 115,52 70,130 115,208 205,208" fill="rgba(16, 185, 129, 0.05)" stroke="#10b981" stroke-width="2.5" />
+                    
+                    <!-- Radii to Vertices -->
+                    <line x1="160" y1="130" x2="250" y2="130" stroke="#f57c00" stroke-width="1.8" />
+                    <line x1="160" y1="130" x2="205" y2="52" stroke="#f57c00" stroke-width="1.8" />
+                    <line x1="160" y1="130" x2="115" y2="52" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,3" />
+                    <line x1="160" y1="130" x2="70" y2="130" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,3" />
+                    <line x1="160" y1="130" x2="115" y2="208" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,3" />
+                    <line x1="160" y1="130" x2="205" y2="208" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,3" />
+
+                    <!-- Angle 60 deg arc at O -->
+                    <path d="M 190,130 A 30,30 0 0,0 175,104" fill="none" stroke="#f57c00" stroke-width="2" />
+                    <text x="194" y="112" font-size="12" font-weight="700" fill="#f57c00">60°</text>
+
+                    <!-- Vertex Dots & Labels -->
+                    <circle cx="250" cy="130" r="4" fill="#ef4444" /><text x="258" y="135" font-size="13" font-weight="700" fill="#0f172a">A</text>
+                    <circle cx="205" cy="52" r="4" fill="#ef4444" /><text x="212" y="45" font-size="13" font-weight="700" fill="#0f172a">B</text>
+                    <circle cx="115" cy="52" r="4" fill="#ef4444" /><text x="100" y="45" font-size="13" font-weight="700" fill="#0f172a">C</text>
+                    <circle cx="70" cy="130" r="4" fill="#ef4444" /><text x="52" y="135" font-size="13" font-weight="700" fill="#0f172a">D</text>
+                    <circle cx="115" cy="208" r="4" fill="#ef4444" /><text x="100" y="222" font-size="13" font-weight="700" fill="#0f172a">E</text>
+                    <circle cx="205" cy="208" r="4" fill="#ef4444" /><text x="212" y="222" font-size="13" font-weight="700" fill="#0f172a">F</text>
+                </svg>
+                <div class="svg-diagram-caption">Inscribed Regular Hexagon (n=6): Each side subtends central angle θ = 360°/6 = 60° (side = radius r).</div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- ==================== PART E ==================== -->
+        <h2>PART (E): Solved Exemplar Masterclass (Textbook Examples 1 to 15)</h2>
+
+        <!-- EXAMPLE 1 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 1: ANGLE AT CENTRE & CYCLIC QUADRILATERAL</div>
+            <p class="pyq-q">Q. In a circle with centre $O$, $\angle AOC = 110^\circ$. $D$ is a point on the major arc and $B$ is a point on the minor arc. Calculate (i) $\angle ADC$, (ii) $\angle ABC$, (iii) $\angle OAC$.</p>
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 280 230" width="260" height="213">
+                    <circle cx="140" cy="115" r="85" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <circle cx="140" cy="115" r="4" fill="#ef4444" />
+                    <text x="145" y="110" font-size="13" font-weight="700" fill="#0f172a">O</text>
+                    <!-- Points A, C, D, B -->
+                    <circle cx="70" cy="165" r="4" fill="#ef4444" /><text x="50" y="170" font-size="13" font-weight="700">A</text>
+                    <circle cx="210" cy="165" r="4" fill="#ef4444" /><text x="220" y="170" font-size="13" font-weight="700">C</text>
+                    <circle cx="140" cy="30" r="4" fill="#ef4444" /><text x="135" y="20" font-size="13" font-weight="700">D</text>
+                    <circle cx="140" cy="200" r="4" fill="#ef4444" /><text x="135" y="218" font-size="13" font-weight="700">B</text>
+                    <!-- Lines -->
+                    <line x1="70" y1="165" x2="140" y2="115" stroke="#f57c00" stroke-width="2" />
+                    <line x1="210" y1="165" x2="140" y2="115" stroke="#f57c00" stroke-width="2" />
+                    <line x1="70" y1="165" x2="140" y2="30" stroke="#8e24aa" stroke-width="2" />
+                    <line x1="210" y1="165" x2="140" y2="30" stroke="#8e24aa" stroke-width="2" />
+                    <line x1="70" y1="165" x2="140" y2="200" stroke="#059669" stroke-width="2" />
+                    <line x1="210" y1="165" x2="140" y2="200" stroke="#059669" stroke-width="2" />
+                    <text x="125" y="140" font-size="11" font-weight="700" fill="#f57c00">110°</text>
+                </svg>
+            </div>
+            <div class="pyq-a">
+                <div class="step-box"><strong>(i) Find $\angle ADC$:</strong> Point $D$ lies on the remaining circumference.
+                    $$ \angle ADC = \frac{1}{2} \angle AOC = \frac{1}{2} \times 110^\circ = \mathbf{55^\circ} $$
+                </div>
+                <div class="step-box"><strong>(ii) Find $\angle ABC$:</strong> $ABCD$ is a cyclic quadrilateral, so opposite angles are supplementary:
+                    $$ \angle ABC + \angle ADC = 180^\circ \implies \angle ABC = 180^\circ - 55^\circ = \mathbf{125^\circ} $$
+                </div>
+                <div class="step-box"><strong>(iii) Find $\angle OAC$:</strong> In $\Delta AOC$, $OA = OC$ (radii of circle):
+                    $$ \angle OAC = \angle OCA = \frac{180^\circ - \angle AOC}{2} = \frac{180^\circ - 110^\circ}{2} = \frac{70^\circ}{2} = \mathbf{35^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 2 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 2: ANGLES IN THE SAME SEGMENT</div>
+            <p class="pyq-q">Q. In a circle, chord $PQ = PR$ and $\angle PRQ = 70^\circ$. Find $\angle QAR$ where $A$ lies on the major arc.</p>
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 280 230" width="260" height="213">
+                    <circle cx="140" cy="115" r="85" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    <!-- P, Q, R, A -->
+                    <circle cx="140" cy="30" r="4" fill="#ef4444" /><text x="135" y="20" font-size="13" font-weight="700">P</text>
+                    <circle cx="65" cy="155" r="4" fill="#ef4444" /><text x="45" y="160" font-size="13" font-weight="700">Q</text>
+                    <circle cx="215" cy="155" r="4" fill="#ef4444" /><text x="225" y="160" font-size="13" font-weight="700">R</text>
+                    <circle cx="90" cy="50" r="4" fill="#ef4444" /><text x="75" y="45" font-size="13" font-weight="700">A</text>
+                    <!-- Lines PQ, PR, QR -->
+                    <line x1="140" y1="30" x2="65" y2="155" stroke="#1e293b" stroke-width="2" class="svg-line-main" />
+                    <line x1="140" y1="30" x2="215" y2="155" stroke="#1e293b" stroke-width="2" class="svg-line-main" />
+                    <line x1="65" y1="155" x2="215" y2="155" stroke="#1e293b" stroke-width="2" class="svg-line-main" />
+                    <!-- Lines AQ, AR -->
+                    <line x1="90" y1="50" x2="65" y2="155" stroke="#8e24aa" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <line x1="90" y1="50" x2="215" y2="155" stroke="#8e24aa" stroke-width="1.8" stroke-dasharray="4,4" />
+                    <text x="175" y="145" font-size="11" font-weight="700" fill="#dc2626">70°</text>
+                </svg>
+            </div>
+            <div class="pyq-a">
+                <div class="step-box"><strong>In $\Delta PQR$:</strong> Since $PQ = PR$, angles opposite to equal sides are equal:
+                    $$ \angle PQR = \angle PRQ = 70^\circ $$
+                </div>
+                <div class="step-box"><strong>Third angle $\angle QPR$:</strong>
+                    $$ \angle QPR = 180^\circ - (70^\circ + 70^\circ) = 180^\circ - 140^\circ = 40^\circ $$
+                </div>
+                <div class="step-box"><strong>Find $\angle QAR$:</strong> $\angle QAR$ and $\angle QPR$ lie in the same segment of chord $QR$:
+                    $$ \angle QAR = \angle QPR = \mathbf{40^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 3 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 3: ANGLES IN SAME SEGMENT & TRIANGLE SUM</div>
+            <p class="pyq-q">Q. A circle passes through points $A, B, C, D$. If $\angle BAC = 67^\circ$, find $\angle DBC + \angle DCB$.</p>
+            <div class="svg-diagram-card">
+                <svg viewBox="0 0 320 260" width="280" height="228">
+                    <!-- Outer Circle -->
+                    <circle cx="160" cy="130" r="90" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+                    
+                    <!-- Cyclic Quad Inscribed Chords -->
+                    <polygon points="91,72 91,188 229,188 229,72" fill="none" stroke="#1e293b" stroke-width="2" class="svg-line-main" />
+                    
+                    <!-- Diagonals AC and BD -->
+                    <line x1="91" y1="72" x2="229" y2="188" stroke="#f57c00" stroke-width="2" />
+                    <line x1="91" y1="188" x2="229" y2="72" stroke="#059669" stroke-width="2" />
+
+                    <!-- Angle Arc at A (angle BAC) -->
+                    <path d="M 91,102 A 30,30 0 0,0 114,91" fill="none" stroke="#f57c00" stroke-width="2" />
+                    <text x="106" y="116" font-size="12" font-weight="700" fill="#f57c00" text-anchor="middle">67°</text>
+
+                    <!-- Angle Arc at D (angle BDC) -->
+                    <path d="M 229,102 A 30,30 0 0,1 206,91" fill="none" stroke="#059669" stroke-width="2" />
+                    <text x="214" y="116" font-size="12" font-weight="700" fill="#059669" text-anchor="middle">67°</text>
+
+                    <!-- Vertices Dots and Labels -->
+                    <circle cx="91" cy="72" r="4" fill="#ef4444" />
+                    <text x="74" y="66" font-size="13" font-weight="700" fill="#0f172a">A</text>
+
+                    <circle cx="91" cy="188" r="4" fill="#ef4444" />
+                    <text x="74" y="198" font-size="13" font-weight="700" fill="#0f172a">B</text>
+
+                    <circle cx="229" cy="188" r="4" fill="#ef4444" />
+                    <text x="238" y="198" font-size="13" font-weight="700" fill="#0f172a">C</text>
+
+                    <circle cx="229" cy="72" r="4" fill="#ef4444" />
+                    <text x="238" y="66" font-size="13" font-weight="700" fill="#0f172a">D</text>
+                </svg>
+            </div>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Angles in Same Segment:</strong> Chord $BC$ subtends $\angle BAC$ and $\angle BDC$ at the circumference:
+                    $$ \angle BDC = \angle BAC = 67^\circ $$
+                </div>
+                <div class="step-box"><strong>In $\Delta DBC$:</strong> Sum of all three angles is $180^\circ$:
+                    $$ \angle BDC + \angle DBC + \angle DCB = 180^\circ $$
+                    $$ 67^\circ + (\angle DBC + \angle DCB) = 180^\circ \implies \mathbf{\angle DBC + \angle DCB = 180^\circ - 67^\circ = 113^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 4 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 4: PARALLEL LINES & ANGLE AT CENTRE</div>
+            <p class="pyq-q">Q. In a circle with centre $O$, $BC \parallel DE$. If $\angle CDE = x^\circ$, find in terms of $x^\circ$ the value of $\angle BAC$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Alternate Interior Angles:</strong> Since $BC \parallel DE$ and $DC$ is the transversal:
+                    $$ \angle BCD = \angle CDE = x^\circ $$
+                </div>
+                <div class="step-box"><strong>Central Angles:</strong> Join $OB$ and $OC$.
+                    $$ \angle COE = 2 \angle CDE = 2x^\circ \quad \text{and} \quad \angle BOD = 2 \angle BCD = 2x^\circ $$
+                </div>
+                <div class="step-box"><strong>Straight Line Diameter $DOE$:</strong>
+                    $$ \angle DOB + \angle BOC + \angle COE = 180^\circ \implies 2x^\circ + \angle BOC + 2x^\circ = 180^\circ $$
+                    $$ \angle BOC = 180^\circ - 4x^\circ $$
+                </div>
+                <div class="step-box"><strong>Find $\angle BAC$:</strong>
+                    $$ \angle BAC = \frac{1}{2} \angle BOC = \frac{180^\circ - 4x^\circ}{2} = \mathbf{(90 - 2x)^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 5 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 5: DIAMETER & PERPENDICULAR CHORDS</div>
+            <p class="pyq-q">Q. In a circle, $AC$ is a diameter. $AB = BC$ and $\angle AED = 118^\circ$. Calculate (i) $\angle DEC$, (ii) $\angle DAB$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>(i) Angle in a Semi-circle:</strong> Join $EC$. Since $AC$ is diameter, $\angle AEC = 90^\circ$.
+                    $$ \angle DEC = \angle AED - \angle AEC = 118^\circ - 90^\circ = \mathbf{28^\circ} $$
+                </div>
+                <div class="step-box"><strong>(ii) Find $\angle DAB$:</strong>
+                    <ul>
+                        <li>$\angle DAC = \angle DEC = 28^\circ$ (angles in the same segment of chord $DC$).</li>
+                        <li>In $\Delta ABC$, $\angle ABC = 90^\circ$ (angle in semi-circle) and $AB = BC \implies \angle BAC = \angle BCA = 45^\circ$.</li>
+                        <li>$\therefore \angle DAB = \angle DAC + \angle BAC = 28^\circ + 45^\circ = \mathbf{73^\circ}$.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 6 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 6: PERPENDICULAR CHORDS & ALGEBRAIC EQUATION</div>
+            <p class="pyq-q">Q. In a circle with centre $O$, chords $AC$ and $BD$ are perpendicular to each other. $\angle OAB = a$ and $\angle DBC = b$. Show that $a = b$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Step 1 (In $\Delta AOB$):</strong> $OA = OB$ (radii) $\implies \angle OBA = \angle OAB = a$.
+                    $$ \angle AOB = 180^\circ - 2a $$
+                </div>
+                <div class="step-box"><strong>Step 2 (Angle at circumference):</strong>
+                    $$ \angle ACB = \frac{1}{2} \angle AOB = \frac{180^\circ - 2a}{2} = 90^\circ - a $$
+                </div>
+                <div class="step-box"><strong>Step 3 (Perpendicular Chords):</strong> Chords $AC \perp BD$, so in the right-angled triangle formed at their intersection:
+                    $$ \angle ACB + \angle DBC = 90^\circ \implies (90^\circ - a) + b = 90^\circ \implies \mathbf{a = b} $$
+                    <em>Hence Proved!</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 7 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 7: CYCLIC QUADRILATERAL & TRIANGLE EXTERIOR ANGLES</div>
+            <p class="pyq-q">Q. In a cyclic quadrilateral $ABCD$, $\angle CBQ = 48^\circ$ and $a = 2b$. Calculate the numerical value of $b$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>In $\Delta BCQ$:</strong> Exterior angle $\angle DCB = 48^\circ + b$.</div>
+                <div class="step-box"><strong>In $\Delta APB$:</strong> Vertically opposite angle $\angle ABP = \angle CBQ = 48^\circ \implies \angle DAB = 48^\circ + a$.</div>
+                <div class="step-box"><strong>Cyclic Property:</strong> Opposite angles are supplementary:
+                    $$ \angle DCB + \angle DAB = 180^\circ \implies (48^\circ + b) + (48^\circ + a) = 180^\circ $$
+                    $$ a + b = 180^\circ - 96^\circ = 84^\circ $$
+                    Substitute $a = 2b$:
+                    $$ 2b + b = 84^\circ \implies 3b = 84^\circ \implies \mathbf{b = 28^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 8 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 8: PROVING DIAMETER VIA $90^\circ$ ANGLE</div>
+            <p class="pyq-q">Q. In a cyclic quadrilateral $ABCD$, $\angle BAD = 80^\circ$, $\angle ABD = 55^\circ$, and $\angle BDC = 45^\circ$. Find (i) $\angle BCD$, (ii) $\angle ADB$. Hence show that $AC$ is a diameter.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>(i) Find $\angle BCD$:</strong> $\angle BCD = 180^\circ - \angle BAD = 180^\circ - 80^\circ = \mathbf{100^\circ}$.</div>
+                <div class="step-box"><strong>(ii) In $\Delta ABD$:</strong> $\angle ADB = 180^\circ - (80^\circ + 55^\circ) = \mathbf{45^\circ}$.</div>
+                <div class="step-box"><strong>Show $AC$ is Diameter:</strong>
+                    $$ \angle ADC = \angle ADB + \angle BDC = 45^\circ + 45^\circ = 90^\circ $$
+                    Since $\angle ADC = 90^\circ$ is in a semi-circle, chord $AC$ must be a <strong>diameter</strong>!
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 9 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 9: MID-POINT & SIMILARITY PROOF</div>
+            <p class="pyq-q">Q. In a circle with centre $O$, diameter $AB$ and chord $AD$ are drawn. Another circle on $AO$ as diameter cuts $AD$ at $C$. Prove that $BD = 2 \times OC$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Step 1:</strong> $\angle ACO = 90^\circ$ (angle in semi-circle with diameter $AO$) $\implies OC \perp AD$.</div>
+                <div class="step-box"><strong>Step 2:</strong> Perpendicular from centre $O$ bisects chord $AD \implies AC = CD \implies C$ is mid-point of $AD$.</div>
+                <div class="step-box"><strong>Step 3:</strong> $O$ is mid-point of diameter $AB$. By Mid-point Theorem in $\Delta ABD$:
+                    $$ OC \parallel BD \quad \text{and} \quad OC = \frac{1}{2}BD \implies \mathbf{BD = 2 \times OC} $$
+                    <em>Hence Proved!</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 10 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 10: ALGEBRAIC EQUATION WITH ANGLE AT CENTRE</div>
+            <p class="pyq-q">Q. In a circle with centre $O$, $\angle AOC = 160^\circ$. $y$ is on the major arc and $x$ is on the minor arc. Prove that $3\angle y - 2\angle x = 140^\circ$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Find $y$:</strong> Angle at circumference $y = \frac{1}{2}\angle AOC = \frac{1}{2} \times 160^\circ = 80^\circ$.</div>
+                <div class="step-box"><strong>Find $x$:</strong> Opposite angles of cyclic quadrilateral: $x + y = 180^\circ \implies x = 180^\circ - 80^\circ = 100^\circ$.</div>
+                <div class="step-box"><strong>Evaluate Expression:</strong>
+                    $$ 3\angle y - 2\angle x = 3(100^\circ) - 2(80^\circ) = 300^\circ - 160^\circ = \mathbf{140^\circ} $$
+                    <em>Hence Proved!</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 11 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 11: TWO INTERSECTING CIRCLES</div>
+            <p class="pyq-q">Q. Two unequal circles with centres $A$ and $B$ intersect at $C$ and $D$. The centre $B$ lies on the bigger circle. If $\angle CMD = x^\circ$, find $\angle DAC$ in terms of $x$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>In Smaller Circle (Centre $B$):</strong> Central angle $\angle CBD = 2 \angle CMD = 2x^\circ$.</div>
+                <div class="step-box"><strong>In Bigger Circle (Centre $A$):</strong> $DBCN$ is a cyclic quadrilateral:
+                    $$ \angle DNC = 180^\circ - \angle CBD = 180^\circ - 2x^\circ $$
+                </div>
+                <div class="step-box"><strong>Angle at Centre of Bigger Circle:</strong>
+                    $$ \angle DAC = 2 \angle DNC = 2(180^\circ - 2x^\circ) = \mathbf{(360 - 4x)^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 12 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 12: ANGLE BISECTORS & CIRCUMCIRCLE</div>
+            <p class="pyq-q">Q. In $\Delta ABC$, $\angle BAC = 56^\circ$ and $\angle ABC = 64^\circ$. Bisectors of $\angle A, \angle B, \angle C$ meet the circumcircle at $P, Q, R$ respectively. Find $\angle QPR$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Find $\angle ACB$:</strong> $\angle ACB = 180^\circ - (56^\circ + 64^\circ) = 60^\circ$.</div>
+                <div class="step-box"><strong>Angles in Same Segments:</strong>
+                    <ul>
+                        <li>$\angle QPA = \angle QBA = \frac{1}{2}\angle ABC = \frac{1}{2}(64^\circ) = 32^\circ$.</li>
+                        <li>$\angle RPA = \angle RCA = \frac{1}{2}\angle ACB = \frac{1}{2}(60^\circ) = 30^\circ$.</li>
+                    </ul>
+                </div>
+                <div class="step-box"><strong>Find $\angle QPR$:</strong>
+                    $$ \angle QPR = \angle QPA + \angle RPA = 32^\circ + 30^\circ = \mathbf{62^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 13 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 13: INCENTRE & CIRCUMCIRCLE</div>
+            <p class="pyq-q">Q. $I$ is the incentre of $\Delta ABC$. $AI$ produced meets the circumcircle at $D$. If $\angle BAC = 50^\circ$ and $\angle ABC = 70^\circ$, find (i) $\angle BCD$, (ii) $\angle ICD$, (iii) $\angle BIC$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Third angle $\angle ACB$:</strong> $\angle ACB = 180^\circ - (50^\circ + 70^\circ) = 60^\circ$.</div>
+                <div class="step-box"><strong>(i) Find $\angle BCD$:</strong> Line $AD$ bisects $\angle BAC \implies \angle BAD = \frac{50^\circ}{2} = 25^\circ$.
+                    $$ \angle BCD = \angle BAD = \mathbf{25^\circ} \quad \text{(angles in same segment)} $$
+                </div>
+                <div class="step-box"><strong>(ii) Find $\angle ICD$:</strong> $CI$ bisects $\angle ACB \implies \angle ICB = \frac{60^\circ}{2} = 30^\circ$.
+                    $$ \angle ICD = \angle ICB + \angle BCD = 30^\circ + 25^\circ = \mathbf{55^\circ} $$
+                </div>
+                <div class="step-box"><strong>(iii) Find $\angle BIC$:</strong> In $\Delta IBC$:
+                    $$ \angle BIC = 180^\circ - (\angle IBC + \angle ICB) = 180^\circ - (35^\circ + 30^\circ) = \mathbf{115^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 14 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 14: RATIO OF ARCS & CYCLIC QUADRILATERAL</div>
+            <p class="pyq-q">Q. The lengths of arc $AB$ and arc $BC$ are in ratio $3 : 2$. If $\angle AOB = 96^\circ$, find (i) $\angle CAB$, (ii) $\angle ADB$.</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Central Angle $\angle BOC$:</strong> $\angle BOC = \frac{2}{3} \times 96^\circ = 64^\circ$.</div>
+                <div class="step-box"><strong>(i) Find $\angle CAB$:</strong> $\angle CAB = \frac{1}{2}\angle BOC = \frac{64^\circ}{2} = \mathbf{32^\circ}$.</div>
+                <div class="step-box"><strong>(ii) Find $\angle ADB$:</strong> $\angle ACB = \frac{1}{2}\angle AOB = \frac{96^\circ}{2} = 48^\circ$.
+                    $$ \angle ADB = 180^\circ - \angle ACB = 180^\circ - 48^\circ = \mathbf{132^\circ} $$
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLE 15 -->
+        <div class="pyq-box">
+            <div class="pyq-header">✍ SOLVED EXAMPLE 15: PARALLEL SIDES OF CYCLIC QUADRILATERAL ARE ISOSCELES</div>
+            <p class="pyq-q">Q. If two sides of a cyclic quadrilateral are parallel, prove that the other two sides are equal ($AD = BC$).</p>
+            <div class="pyq-a">
+                <div class="step-box"><strong>Proof:</strong> Let $ABCD$ be a cyclic quadrilateral with $AB \parallel DC$.
+                    <ul>
+                        <li>$\angle ABC + \angle ADC = 180^\circ$ (Opposite angles of cyclic quad are supplementary).</li>
+                        <li>$\angle BAD + \angle ADC = 180^\circ$ (Co-interior angles since $AB \parallel DC$).</li>
+                        <li>$\implies \angle ABC + \angle ADC = \angle BAD + \angle ADC \implies \angle ABC = \angle BAD$.</li>
+                    </ul>
+                </div>
+                <div class="step-box"><strong>Congruence of Triangles:</strong> In $\Delta BAD$ and $\Delta ABC$:
+                    <ul>
+                        <li>$AB = AB$ (Common side).</li>
+                        <li>$\angle BAD = \angle ABC$ (Proved above).</li>
+                        <li>$\angle ADB = \angle ACB$ (Angles in same segment of chord $AB$).</li>
+                        <li>$\therefore \Delta BAD \cong \Delta ABC$ by AAS (or ASA) rule.</li>
+                        <li>$\implies \mathbf{AD = BC}$ by CPCTC! <em>Hence Proved!</em></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="branding-footer">
+            <style>
+                html.dark-mode .vardaan-logo {
+                    filter: invert(1);
+                }
+
+                html.dark-mode .powered-by-brand {
+                    color: #ffffff !important;
+                }
+            </style>
+            <div class="created-by">Created by Team Vardaan with <span class="heart-red"
+                    aria-hidden="true">&hearts;</span></div>
+            <div class="powered-by"
+                style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;">
+                <span class="powered-by-label">Powered by</span>
+                <a href="https://vardaancomet.com" target="_blank" rel="noopener noreferrer"
+                    style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1783346988/Vardaan_Comet_bg_removed_hpjuhv.png"
+                        alt="Vardaan Comet Logo" class="vardaan-logo" style="height: 24px; width: auto;">
+                    <span class="powered-by-brand">VARDAAN COMET</span>
+                </a>
+            </div>
+        </div>
+
     </div>
+
+    <!-- Theme Toggle JavaScript -->
     <script>
         function toggleTheme() {
             const html = document.documentElement;
             html.classList.toggle('dark-mode');
-            localStorage.setItem('theme', html.classList.contains('dark-mode') ? 'dark' : 'light');
+            const isDark = html.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
-        // Initialize Theme - Default to LIGHT
-        if (localStorage.getItem('theme') === 'dark') {
+        // Apply saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
             document.documentElement.classList.add('dark-mode');
         }
     </script>
 </body>
 
 </html>
-
-
-
