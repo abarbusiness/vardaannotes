@@ -1,9 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- FORMAT: Chapter Name - Subject -->
     <title>Alternating Current - Vardaan Learning Institute</title>
     <link rel="icon" type="image/png" href="../../../../favicon.png">
     <link rel="apple-touch-icon" href="../../../../favicon.png">
@@ -23,7 +22,6 @@
     <style>
         /* --- CSS VARIABLES (Vardaan Theming) --- */
         :root {
-            /* Light Mode Palette */
             --yellow-bg: #fff9c4;
             --yellow-border: #fbc02d;
             --green-bg: #e8f5e9;
@@ -64,7 +62,9 @@
             --icon-fill: #fff;
         }
 
-        /* --- GLOBAL LAYOUT --- */
+        /* --- GLOBAL LAYOUT & OVERFLOW FIXES --- */
+        * { box-sizing: border-box; }
+
         body {
             background-color: var(--paper-bg);
             margin: 0;
@@ -73,6 +73,55 @@
             color: var(--text-main);
             overflow-x: hidden;
             transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Prevent horizontal overflow across containers */
+        .paper-sheet, .blue-box, .green-box, .yellow-box, .practice-box, .ncert-figure-box, .custom-image-box {
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        /* MathJax horizontal scrolling & responsive overflow prevention */
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            padding: 4px 0;
+        }
+
+        mjx-container[jax="CHTML"][display="true"] {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            margin: 0.8em 0 !important;
+        }
+
+        mjx-assistive-mml { display: none !important; }
+
+        /* Visual Container & Image Blending (AGENTS.md Rules) */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .img-in-note {
+            max-width: 90%;
+            height: auto;
+            border-radius: 8px;
+            mix-blend-mode: multiply;
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode .img-in-note {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
         }
 
         /* --- WATERMARK OVERLAY --- */
@@ -178,7 +227,7 @@
         h2 { font-size: 1.6rem; color: var(--pink-border); margin-top: 40px; border-left: 5px solid var(--pink-border); padding-left: 15px; font-weight: 700; }
         h3 { font-size: 1.3rem; color: var(--accent-purple); margin-top: 25px; margin-bottom: 10px; text-decoration: underline; text-decoration-color: var(--accent-purple); text-decoration-thickness: 2px; text-underline-offset: 4px; }
         p, li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 10px; }
-        ul { padding-left: 20px; }
+        ul, ol { padding-left: 22px; }
         strong { color: var(--pink-border); }
 
         /* --- INFO BOXES --- */
@@ -217,9 +266,53 @@
         .solution { margin-top: 15px; padding-top: 15px; border-top: 1px dotted var(--toggle-border); font-size: 0.95rem; }
         
         /* Table Styling */
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-        th, td { border: 1px solid var(--toggle-border); padding: 10px; text-align: left; }
-        th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
+        .vardaan-table-container { overflow-x: auto; margin: 20px 0; width: 100%; }
+        table.vardaan-table { width: 100%; border-collapse: collapse; margin: 10px 0; table-layout: auto; word-wrap: break-word; overflow-wrap: break-word; }
+        table.vardaan-table th, table.vardaan-table td { border: 1px solid var(--toggle-border); padding: 10px 12px; text-align: left; font-size: 0.98rem; }
+        table.vardaan-table th { background-color: var(--blue-bg); color: var(--blue-border); font-weight: bold; text-align: center; }
+
+        /* --- NCERT FIGURE & IMAGE PLACEHOLDERS --- */
+        .ncert-figure-box {
+            border: 2px solid var(--blue-border);
+            background-color: var(--blue-bg);
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .ncert-figure-box .figure-tag {
+            display: inline-block;
+            background-color: var(--blue-border);
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 3px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .custom-image-box {
+            border: 2px dashed var(--accent-purple);
+            background-color: var(--example-bg);
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .custom-image-box .figure-tag {
+            display: inline-block;
+            background-color: var(--accent-purple);
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 3px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
 
         /* --- THEME TOGGLE --- */
         .theme-toggle {
@@ -261,12 +354,6 @@
                 @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
             }
         }
-        
-        /* Utility for AI Prompt Boxes */
-        .ai-prompt-box { border: 2px dashed #999; background-color: rgba(150, 150, 150, 0.1); padding: 15px; margin: 20px 0; border-radius: 8px; font-family: monospace; text-align: center; }
-        .visual-container { display: flex; justify-content: center; margin: 30px 0; align-items: center; width: 100%; }
-        .visual-container img { max-width: 100%; transition: filter 0.3s ease; border: none !important; box-shadow: none !important; }
-        html.dark-mode .visual-container img { filter: invert(1); }
     </style>
 </head>
 <body>
@@ -291,262 +378,703 @@
         <!-- DYNAMIC CONTENT STARTS HERE -->
         <h1>Chapter 7: Alternating Current</h1>
 
-        <p><em>Dear Class 12 Student! The electricity that powers your home, charges your phone, and runs entire cities is Alternating Current (AC). This chapter marries the concepts of Electromagnetic Induction (Chapter 6) with trigonometry. The phasor diagrams for LCR circuits, the concept of Resonance, and the working of Transformers are high-priority topics for both CBSE Boards and JEE Main. Let's master the math and physics behind AC!</em></p>
+        <p><em>Dear Class 12 Student! The electric power that runs our homes, powers factories, charges our devices, and energizes entire cities is Alternating Current (AC). Building upon Electromagnetic Induction (Chapter 6), this chapter bridges physics and higher-level trigonometry. From understanding why household supply is labeled $220\text{ V}$ to mastering Series LCR Resonance, Phasor Diagrams, Power Factors, and Transformers, these notes provide a complete, step-by-step foundation with full mathematical derivations and physical reasonings for CBSE Boards &amp; JEE/NEET!</em></p>
 
-        <h2>1. Introduction to Alternating Current</h2>
+        <!-- ==================== SECTION 1 ==================== -->
+        <h2>1. Introduction to Alternating Current (AC vs DC)</h2>
+
+        <p>Electric current can flow in two fundamental forms depending on how its magnitude and direction behave over time:</p>
         
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "A standard sine wave graph representing Alternating Current (AC). X-axis is time 't' or angle '$\omega t$'. Y-axis is Current 'I'. The wave starts at origin, reaches a peak (label as $I_0$ or Peak Value), crosses the x-axis at $T/2$, reaches a negative peak ($-I_0$), and completes one cycle at $T$. Shade the positive half-cycle green and negative half-cycle red. Pure white background #FFFFFF, clean textbook style."
-        </div>
+        <ol>
+            <li><strong>Direct Current (DC):</strong> Current that flows in a single constant direction with a constant or varying magnitude. Sources include electrochemical cells, batteries, and DC generators.</li>
+            <li><strong>Alternating Current (AC):</strong> Current whose magnitude changes continuously with time and whose direction reverses periodically. Sources include AC generators (dynamos) and power plant alternators.</li>
+        </ol>
 
-        <p>An alternating current/voltage is one whose magnitude changes continuously with time and whose direction reverses periodically.</p>
-
-        <div class="blue-box">
-            <span class="box-label">Equations & Parameters</span>
-            Voltage: <strong>$$V = V_0 \sin\omega t$$</strong>
-            Current: <strong>$$I = I_0 \sin\omega t$$</strong>
-            <ul>
-                <li><strong>Amplitude / Peak Value ($V_0, I_0$):</strong> The maximum value reached by the AC in either direction.</li>
-                <li><strong>Time Period ($T$):</strong> Time taken to complete one full cycle.</li>
-                <li><strong>Frequency ($f$ or $\nu$):</strong> Number of cycles completed per second. Standard in India is $50 \text{ Hz}$.</li>
-                <li><strong>Angular Frequency ($\omega$):</strong> $\omega = 2\pi f = \frac{2\pi}{T}$. (Unit: rad/s).</li>
-            </ul>
-        </div>
-
-        <h2>2. Average and RMS Values of AC</h2>
-
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "A single positive half-cycle of a sine wave (from 0 to $\pi$). Mark three horizontal dashed lines across the curve: The highest line labeled '$I_0$ (Peak = 100%)', a middle line labeled '$I_{rms} \approx 0.707 I_0$', and a slightly lower line labeled '$I_{avg} \approx 0.637 I_0$'. Clean, comparative math graphic on white background #FFFFFF."
-        </div>
-
-        <h3>A. Mean (Average) Value of AC</h3>
-        <p><strong>Over a complete cycle:</strong> The average value of AC over one complete cycle is exactly <strong>zero</strong> ($I_{avg} = 0$) because the positive half perfectly cancels the negative half.</p>
-        
-        <div class="green-box">
-            <span class="box-label">Derivation: Mean Value over a Half Cycle</span>
-            The mean value of AC over a positive half cycle ($0$ to $T/2$) is that steady direct current which sends the same amount of charge through a circuit as is sent by the AC in the same time.<br><br>
-            $I_{avg} = \frac{\int_0^{T/2} I \, dt}{\int_0^{T/2} dt} = \frac{\int_0^{T/2} I_0 \sin\omega t \, dt}{T/2}$<br>
-            $I_{avg} = \frac{2I_0}{T} \left[ \frac{-\cos\omega t}{\omega} \right]_0^{T/2}$<br>
-            Substitute $\omega = 2\pi/T$:<br>
-            $I_{avg} = -\frac{2I_0}{T(2\pi/T)} [ \cos(\frac{2\pi}{T} \cdot \frac{T}{2}) - \cos(0) ]$<br>
-            $I_{avg} = -\frac{I_0}{\pi} [ \cos\pi - \cos 0 ] = -\frac{I_0}{\pi} [ -1 - 1 ] = -\frac{I_0}{\pi} [-2]$<br>
-            <strong>$$I_{avg} = \frac{2 I_0}{\pi} \approx 0.637 I_0$$</strong>
-        </div>
-
-        <h3>B. Root Mean Square (RMS) Value of AC (Virtual/Effective Value)</h3>
-        <p><strong>Concept:</strong> Defined based on the <em>heating effect</em>. The RMS value of AC is that steady DC current which produces the same amount of heat in a given resistance in a given time as is produced by the AC.</p>
-
-        <div class="green-box">
-            <span class="box-label">Derivation: RMS Value (Important for Boards)</span>
-            Heat produced in small time $dt$ is $dH = I^2 R dt = (I_0 \sin\omega t)^2 R dt$.<br>
-            Total heat over one cycle ($0$ to $T$):<br>
-            $H = \int_0^T I_0^2 R \sin^2\omega t \, dt = I_0^2 R \int_0^T \left( \frac{1 - \cos 2\omega t}{2} \right) dt$<br>
-            The integral of $\cos 2\omega t$ over a full cycle is zero. Thus:<br>
-            $H = \frac{I_0^2 R}{2} \int_0^T dt = \frac{I_0^2 R T}{2}$<br><br>
-            If $I_{rms}$ is the steady current producing the same heat, then $H = I_{rms}^2 R T$.<br>
-            Equating the two heats: $I_{rms}^2 R T = \frac{I_0^2 R T}{2}$<br>
-            $I_{rms}^2 = \frac{I_0^2}{2} \implies$ <strong>$$I_{rms} = \frac{I_0}{\sqrt{2}} \approx 0.707 I_0$$</strong>
-            Similarly, <strong>$$V_{rms} = \frac{V_0}{\sqrt{2}}$$</strong>
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Direct Current (DC)</th>
+                        <th>Alternating Current (AC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Direction</strong></td>
+                        <td>Unidirectional (Single direction)</td>
+                        <td>Reverses direction periodically</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Frequency ($f$)</strong></td>
+                        <td>$0 \text{ Hz}$ (Constant)</td>
+                        <td>$50 \text{ Hz}$ (India) / $60 \text{ Hz}$ (USA)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Long Distance Transmission</strong></td>
+                        <td>High power loss as heat ($I^2R$)</td>
+                        <td>Transmitted at very high voltage with minimal power loss</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Voltage Stepping</strong></td>
+                        <td>Cannot be stepped up/down easily</td>
+                        <td>Easily stepped up or down using Transformers</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="yellow-box">
-            <span class="box-label">Real-World Note</span>
-            When we say the domestic supply is <strong>$220 \text{ V}$</strong>, we are ALWAYS talking about the <strong>RMS value</strong>. <br>
-            The peak voltage that actually hits your appliances is $V_0 = 220 \times \sqrt{2} \approx \mathbf{311 \text{ V}}$. This is why a $220\text{V}$ AC shock is much more dangerous than a $220\text{V}$ DC shock! All AC ammeters and voltmeters measure RMS values.
+            <span class="box-label">Physical Reasoning: Why AC is Preferred for Power Grids</span>
+            Power generated at power stations must travel hundreds of kilometers to reach cities. Electric power loss in transmission lines is given by Joule Heating: <strong>$P_{\text{loss}} = I^2 R$</strong>.<br>
+            By using a <strong>Step-Up Transformer</strong> at the power generator, the voltage $V$ is increased by a factor of 100. Since Power $P = V I$ is constant, increasing $V$ reduces current $I$ to $\frac{1}{100}\text{th}$ of its original value. Consequently, power loss $I^2R$ is reduced to <strong>$\frac{1}{10,000}\text{th}$</strong> (or $0.01\%$)! At local sub-stations, a <strong>Step-Down Transformer</strong> safely reduces the voltage back down to $220\text{ V}$ for home use. This is impossible with DC!
         </div>
 
-        <div class="practice-box">
-            <span class="box-label">Practice Problem 1</span>
-            <strong>Question:</strong> An alternating voltage is given by $V = 140 \sin(314 t)$. Find the peak voltage, RMS voltage, and the frequency of the supply.
-            <div class="solution">
-                <strong>Solution:</strong><br>
-                Compare with standard equation $V = V_0 \sin(\omega t)$.<br>
-                1. Peak Voltage ($V_0$): $\mathbf{140 \text{ V}}$.<br>
-                2. RMS Voltage ($V_{rms}$): $\frac{V_0}{\sqrt{2}} = \frac{140}{1.414} \approx \mathbf{99 \text{ V}}$.<br>
-                3. Frequency ($f$): We know $\omega = 314 \text{ rad/s}$.<br>
-                   Since $\omega = 2\pi f \implies 314 = 2 \times 3.14 \times f \implies f = \frac{314}{6.28} = \mathbf{50 \text{ Hz}}$.
-            </div>
-        </div>
-
-        <h2>3. AC Voltage Applied to Pure Components</h2>
-        <p><strong>Phasor:</strong> A vector that rotates about the origin with angular speed $\omega$. The projection of a phasor on the vertical axis gives the instantaneous value of the alternating quantity.</p>
-
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "Three sets of diagrams side-by-side for Pure R, Pure L, and Pure C circuits. Top row: Circuit schematics (AC source connected to R, L, and C respectively). Middle row: Phasor diagrams. For R, V and I arrows overlap. For L, V arrow is $90^\circ$ ahead of I. For C, I arrow is $90^\circ$ ahead of V. Bottom row: Wave graphs. For R, V and I waves peak together. For L, V peaks before I. For C, I peaks before V. White background #FFFFFF."
-        </div>
-
-        <h3>A. Pure Resistor (R)</h3>
-        <ul>
-            <li>Equation: If $V = V_0 \sin\omega t$, then $I = I_0 \sin\omega t$.</li>
-            <li><strong>Phase Relation:</strong> Voltage and Current are perfectly <strong>in phase</strong> ($\phi = 0^\circ$). They reach zero and peak values simultaneously.</li>
-            <li>Opposition: Resistance $R$.</li>
-        </ul>
-
-        <h3>B. Pure Inductor (L)</h3>
-        <ul>
-            <li>Equation: If $V = V_0 \sin\omega t$, then $I = I_0 \sin(\omega t - \pi/2)$.</li>
-            <li><strong>Phase Relation:</strong> Current <strong>lags</strong> the voltage by $90^\circ$ ($\pi/2$).</li>
-            <li><strong>Inductive Reactance ($X_L$):</strong> The opposition offered by an inductor to AC.
-            <br>Derivation concept: $V = L \frac{dI}{dt} \implies X_L = \frac{V_0}{I_0} = \omega L$.
-            <strong>$$X_L = \omega L = 2\pi f L$$</strong></li>
-            <li>Unit: Ohm ($\Omega$). Graph of $X_L$ vs $f$ is a straight line passing through the origin (directly proportional). DC has $f=0$, so an ideal inductor offers zero resistance to DC.</li>
-        </ul>
-
-        <h3>C. Pure Capacitor (C)</h3>
-        <ul>
-            <li>Equation: If $V = V_0 \sin\omega t$, then $I = I_0 \sin(\omega t + \pi/2)$.</li>
-            <li><strong>Phase Relation:</strong> Current <strong>leads</strong> the voltage by $90^\circ$ ($\pi/2$).</li>
-            <li><strong>Capacitive Reactance ($X_C$):</strong> The opposition offered by a capacitor to AC.
-            <br>Derivation concept: $I = \frac{dq}{dt} = \frac{d(CV)}{dt} \implies X_C = \frac{V_0}{I_0} = \frac{1}{\omega C}$.
-            <strong>$$X_C = \frac{1}{\omega C} = \frac{1}{2\pi f C}$$</strong></li>
-            <li>Unit: Ohm ($\Omega$). Graph of $X_C$ vs $f$ is a rectangular hyperbola (inversely proportional). For DC ($f=0$), $X_C = \infty$, so a capacitor completely blocks DC.</li>
-        </ul>
-
-        <h2>4. AC Applied to Series LCR Circuit</h2>
+        <h3>Mathematical Expression for Sinusoidal AC</h3>
+        <p>An alternating voltage produced by rotating a coil of $N$ turns and area $A$ in a uniform magnetic field $B$ at angular speed $\omega$ is represented by a sine function:</p>
         
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "Phasor Diagram for Series LCR circuit and Impedance Triangle. Left (Phasor): Current 'I' is taken on the positive x-axis. $V_R$ is parallel to I. $V_L$ points straight UP (+y-axis). $V_C$ points straight DOWN (-y-axis). Show a resultant vector $(V_L - V_C)$ pointing up, and the final net Voltage 'V' forming the diagonal of a rectangle with $V_R$. The angle between V and I is $\phi$. Right (Impedance Triangle): A right-angled triangle with base R, perpendicular $(X_L - X_C)$, and hypotenuse Z. Angle is $\phi$. White background #FFFFFF."
-        </div>
-
-        <p>When an Inductor (L), Capacitor (C), and Resistor (R) are connected in series across an AC source $V = V_0 \sin\omega t$, the current $I$ is the same through all elements.</p>
-
-        <h3>Phasor Diagram Method (Crucial Board Derivation)</h3>
-        <p>1. Take Current $I$ as the reference phasor along the x-axis.<br>
-        2. Voltage across R: $V_R = I R$ (in phase with I, along x-axis).<br>
-        3. Voltage across L: $V_L = I X_L$ (leads I by $90^\circ$, along +y-axis).<br>
-        4. Voltage across C: $V_C = I X_C$ (lags I by $90^\circ$, along -y-axis).</p>
-        
-        <p>Assuming $V_L > V_C$ (inductive circuit), the net reactive voltage is $(V_L - V_C)$ pointing upwards. The net voltage $V$ is the vector sum of $V_R$ and $(V_L - V_C)$:</p>
-        $$V = \sqrt{V_R^2 + (V_L - V_C)^2}$$
-        Substitute $V = IZ$, $V_R = IR$, etc.:
-        $$IZ = \sqrt{(IR)^2 + (I X_L - I X_C)^2} = I \sqrt{R^2 + (X_L - X_C)^2}$$
-
         <div class="blue-box">
-            <span class="box-label">Impedance ($Z$) and Phase Angle ($\phi$)</span>
-            <strong>Impedance ($Z$):</strong> The total opposition offered by the LCR circuit.
-            <strong>$$Z = \sqrt{R^2 + (X_L - X_C)^2}$$</strong>
-            <br>
-            <strong>Phase Angle ($\phi$):</strong> The angle by which the net voltage leads the current. From the impedance triangle:
-            <strong>$$\tan\phi = \frac{X_L - X_C}{R}$$</strong>
+            <span class="box-label">Sinusoidal Equations</span>
+            Instantaneous Voltage: <strong>$$v = V_m \sin(\omega t + \phi_0)$$</strong>
+            Instantaneous Current: <strong>$$i = I_m \sin(\omega t + \phi_0)$$</strong>
         </div>
 
-        <h2>5. Resonance in Series LCR Circuit</h2>
-        <p>A series LCR circuit is said to be in resonance when the current amplitude reaches its maximum value. This happens when the applied frequency naturally matches the natural frequency of the LC system.</p>
+        <ul>
+            <li><strong>Instantaneous Value ($v, i$):</strong> The magnitude of voltage or current at any specific instant of time $t$.</li>
+            <li><strong>Peak Value / Amplitude ($V_m, I_m$ or $V_0, I_0$):</strong> The maximum numerical value reached by AC in either positive or negative half-cycle.</li>
+            <li><strong>Time Period ($T$):</strong> The time taken to complete one full cycle of oscillation ($T = \frac{2\pi}{\omega}$).</li>
+            <li><strong>Frequency ($f$ or $\nu$):</strong> The number of complete cycles executed per second ($f = \frac{1}{T} = \frac{\omega}{2\pi}$). Standard mains frequency in India is $50\text{ Hz}$ (reverses direction 100 times per second!).</li>
+            <li><strong>Angular Frequency ($\omega$):</strong> The rate of change of phase angle ($\omega = 2\pi f = \frac{2\pi}{T}$, Unit: $\text{rad/s}$).</li>
+            <li><strong>Phase Angle ($\omega t + \phi_0$):</strong> Represents the fractional state of completion of a wave cycle at time $t$.</li>
+        </ul>
 
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "Resonance curve for LCR circuit. X-axis is angular frequency ($\omega$), Y-axis is Current Amplitude ($I_m$). A bell-shaped curve that peaks sharply at $\omega = \omega_r$ (Resonant frequency). Draw a horizontal line at $I_{max}/\sqrt{2}$ cutting the curve at two points, $\omega_1$ and $\omega_2$. Label the gap between them as 'Bandwidth $\Delta\omega$'. Add text '$X_L = X_C$, $Z = R_{min}$' at the peak. White background #FFFFFF."
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.1]</span><br>
+            <strong>AC source connected to a resistor &amp; Sinusoidal Waveform of AC Voltage/Current</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 233, Fig 7.1 — AC voltage source connected across a resistor, and graph of sinusoidal voltage v and current i vs wt)</em>
+        </div>
+
+        <!-- ==================== SECTION 2 ==================== -->
+        <h2>2. Average (Mean) and RMS Values of AC</h2>
+
+        <div class="yellow-box">
+            <span class="box-label">Conceptual Question: Why do Standard DC Meters Fail for AC?</span>
+            Standard moving-coil ammeters and voltmeters work on the principle of magnetic torque $\tau = N I A B$. Since AC reverses direction every half cycle, the average magnetic torque over a complete cycle is exactly zero ($\tau_{\text{avg}} = 0$). As a result, the pointer of a DC meter fluctuates so fast that due to inertia it remains stuck at <strong>zero</strong>!<br>
+            <strong>Solution:</strong> AC ammeters and voltmeters are designed based on the <em>heating effect of current</em> ($H \propto I^2$). Since $I^2$ is always positive regardless of current direction, these <strong>hot-wire instruments</strong> deflect proportional to $I_{\text{rms}}^2$ and directly measure <strong>RMS values</strong>!
+        </div>
+
+        <h3>A. Mean (Average) Value of AC ($I_{\text{avg}}$ or $I_{\text{mean}}$)</h3>
+        
+        <p><strong>1. Over a Complete Cycle:</strong><br>
+        The average value of AC over one full cycle ($0$ to $T$) is defined as:</p>
+        $$\begin{aligned}
+        I_{\text{avg, full}} &= \frac{1}{T} \int_0^T I_m \sin\omega t \, dt = \frac{I_m}{T} \left[ \frac{-\cos\omega t}{\omega} \right]_0^T \\
+        &= -\frac{I_m}{\omega T} [\cos(2\pi) - \cos(0)] = -\frac{I_m}{2\pi} [1 - 1] = \mathbf{0}
+        \end{aligned}$$
+        <p>Thus, the average value of AC over a complete cycle is always <strong>zero</strong> because the area of the positive half-cycle perfectly cancels the area of the negative half-cycle.</p>
+
+        <div class="green-box">
+            <span class="box-label">Full Derivation: Mean Value of AC Over a Half Cycle</span>
+            <strong>Definition:</strong> The mean value of AC over a half cycle ($0$ to $T/2$) is defined as that steady direct current ($I_{\text{avg}}$) which transfers the same amount of charge through a circuit in time $T/2$ as is transferred by the alternating current in the same time.<br><br>
+            Charge transferred by AC in small time $dt$: $dq = i \, dt = I_m \sin\omega t \, dt$.<br>
+            Total charge transferred in positive half cycle ($0$ to $T/2$):
+            $$\begin{aligned}
+            Q &= \int_0^{T/2} I_m \sin\omega t \, dt = I_m \left[ \frac{-\cos\omega t}{\omega} \right]_0^{T/2} \\
+            &= -\frac{I_m}{\omega} \left[ \cos\left(\omega \cdot \frac{T}{2}\right) - \cos(0) \right]
+            \end{aligned}$$
+            Substitute $\omega = \frac{2\pi}{T}$:
+            $$\begin{aligned}
+            Q &= -\frac{I_m}{2\pi / T} \left[ \cos\left(\frac{2\pi}{T} \cdot \frac{T}{2}\right) - 1 \right] = -\frac{I_m T}{2\pi} [\cos\pi - 1] \\
+            &= -\frac{I_m T}{2\pi} [-1 - 1] = \frac{2 I_m T}{2\pi} = \mathbf{\frac{I_m T}{\pi}}
+            \end{aligned}$$
+            By definition of steady average current: $Q = I_{\text{avg}} \times \frac{T}{2}$.<br>
+            Equating both expressions:
+            $$I_{\text{avg}} \cdot \frac{T}{2} = \frac{I_m T}{\pi} \implies \mathbf{I_{\text{avg}} = \frac{2 I_m}{\pi} \approx 0.637 I_m}$$
+            Similarly, average voltage over a half cycle: <strong>$$V_{\text{avg}} = \frac{2 V_m}{\pi} \approx 0.637 V_m$$</strong>
+        </div>
+
+        <h3>B. Root Mean Square (RMS) Value of AC ($I_{\text{rms}}$ / $V_{\text{rms}}$ or $I_{\text{eff}}$ / $V_{\text{eff}}$)</h3>
+        
+        <p><strong>Concept:</strong> Since average current over a full cycle is zero, we define the effective strength of AC based on its thermal (heating) capability.</p>
+
+        <div class="visual-container">
+            <img src="Images/Sinusoidal Current RMS Relationship Diagram.png" alt="Sinusoidal Current RMS Relationship Diagram" class="img-in-note">
         </div>
 
         <div class="green-box">
-            <span class="box-label">Characteristics of Resonance</span>
-            <strong>1. Condition:</strong> $X_L = X_C$ (Inductive reactance perfectly cancels capacitive reactance).<br>
-            <strong>2. Impedance:</strong> Minimum possible. $Z = \sqrt{R^2 + 0} = R$. The circuit behaves like a purely resistive circuit!<br>
-            <strong>3. Current:</strong> Maximum possible. $I_{max} = V/R$.<br>
-            <strong>4. Phase:</strong> $\tan\phi = 0/R = 0 \implies \phi = 0^\circ$. Voltage and current are perfectly in phase.
+            <span class="box-label">Full Derivation: RMS Value of AC (Must-Know Board Derivation)</span>
+            <strong>Definition:</strong> The Root Mean Square (RMS) value of AC is defined as that steady direct current ($I_{\text{rms}}$) which produces the same amount of heat in a given resistance $R$ in a given time $T$ as is produced by the AC in the same resistance in the same time.<br><br>
+            Heat produced by AC $i = I_m \sin\omega t$ in small time $dt$: $dH = i^2 R \, dt = (I_m \sin\omega t)^2 R \, dt$.<br>
+            Total heat produced over one complete cycle ($0$ to $T$):
+            $$\begin{aligned}
+            H &= \int_0^T I_m^2 R \sin^2\omega t \, dt = I_m^2 R \int_0^T \left( \frac{1 - \cos 2\omega t}{2} \right) dt \\
+            &= \frac{I_m^2 R}{2} \left[ \int_0^T dt - \int_0^T \cos 2\omega t \, dt \right] \\
+            &= \frac{I_m^2 R}{2} [ T - 0 ] = \frac{I_m^2 R T}{2}
+            \end{aligned}$$
+            By definition, if $I_{\text{rms}}$ is the steady current producing the same heat $H$ in time $T$:
+            $$H = I_{\text{rms}}^2 R T$$
+            Equating the two heat expressions:
+            $$I_{\text{rms}}^2 R T = \frac{I_m^2 R T}{2} \implies I_{\text{rms}}^2 = \frac{I_m^2}{2}$$
+            Taking square root on both sides:
+            $$\mathbf{I_{\text{rms}} = \frac{I_m}{\sqrt{2}} \approx 0.707 I_m} \quad \text{and} \quad \mathbf{V_{\text{rms}} = \frac{V_m}{\sqrt{2}} \approx 0.707 V_m}$$
         </div>
-
-        <h3>Resonant Frequency ($f_r$ or $\omega_r$)</h3>
-        <p>Since $X_L = X_C \implies \omega_r L = \frac{1}{\omega_r C}$</p>
-        <strong>$$\omega_r^2 = \frac{1}{LC} \implies \omega_r = \frac{1}{\sqrt{LC}} \quad \text{and} \quad f_r = \frac{1}{2\pi\sqrt{LC}}$$</strong>
-
-        <h3>Sharpness of Resonance (Q-factor)</h3>
-        <p>The Q-factor (Quality Factor) measures the sharpness of the resonance curve. A higher Q means a sharper, narrower peak (better tuning for radios!).<br>
-        Definition: The ratio of voltage across L or C to the voltage across R at resonance.</p>
-        <strong>$$Q = \frac{\omega_r L}{R} = \frac{1}{R}\sqrt{\frac{L}{C}}$$</strong>
-        <p>It is also defined as the ratio of resonant frequency to Bandwidth ($\Delta\omega$): $Q = \frac{\omega_r}{2\Delta\omega}$.</p>
-
-        <div class="practice-box">
-            <span class="box-label">Practice Problem 2</span>
-            <strong>Question:</strong> A series LCR circuit with $R = 20 \, \Omega$, $L = 1.5 \text{ H}$, and $C = 35 \text{ \mu F}$ is connected to a variable-frequency $200 \text{ V}$ AC supply. When the frequency of the supply equals the natural frequency of the circuit, what is the average power transferred to the circuit in one complete cycle?
-            <div class="solution">
-                <strong>Solution:</strong><br>
-                When supply frequency = natural frequency, the circuit is in <strong>Resonance</strong>.<br>
-                At resonance, $X_L = X_C$, so Impedance $Z = R = 20 \, \Omega$.<br>
-                Current at resonance: $I_{rms} = \frac{V_{rms}}{Z} = \frac{200}{20} = 10 \text{ A}$.<br>
-                Average Power $P = I_{rms}^2 R = (10)^2 \times 20 = 100 \times 20 = \mathbf{2000 \text{ W}}$.
-            </div>
-        </div>
-
-        <h2>6. Power in AC Circuits</h2>
 
         <div class="blue-box">
-            <span class="box-label">Average Power Dissipation Formula</span>
-            For any LCR circuit, the average power dissipated over one cycle is:
-            <strong>$$P_{avg} = V_{rms} I_{rms} \cos\phi$$</strong>
-            Where $\cos\phi$ is the <strong>Power Factor</strong>.
-        </div>
-
-        <p><strong>Power Factor ($\cos\phi = R/Z$):</strong></p>
-        <ul>
-            <li><strong>Pure R (or Resonance):</strong> $\phi = 0^\circ \implies \cos 0^\circ = 1$. Power dissipation is Maximum ($P = VI$).</li>
-            <li><strong>Pure L or Pure C:</strong> $\phi = 90^\circ \implies \cos 90^\circ = 0$. Power dissipation is exactly <strong>Zero</strong>!</li>
-        </ul>
-
-        <p><strong>Wattless Current:</strong> In a purely inductive or capacitive circuit, the current flowing does not consume any real power. The component of current ($I_{rms} \sin\phi$) perpendicular to the voltage is called wattless current.</p>
-
-        <h2>7. LC Oscillations</h2>
-
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "Four sequential panels showing LC oscillations compared to a block-spring mechanical system. Panel 1: Capacitor fully charged (Electric field E max, $I=0$), compared to a fully stretched spring (Potential energy max, $v=0$). Panel 2: Capacitor discharging (Current I max, magnetic field B forming in inductor), compared to block passing through equilibrium (Kinetic energy max). Panels 3 and 4 continue the cycle of energy bouncing between the E-field of the capacitor and B-field of the inductor. White background #FFFFFF."
-        </div>
-
-        <p>When a fully charged capacitor ($C$) is connected across an inductor ($L$), the electrical energy stored in the capacitor starts discharging through the inductor, converting into magnetic energy. Once fully discharged, the collapsing magnetic field of the inductor recharges the capacitor in the opposite direction. This continuous swapping of energy between the Electric Field and Magnetic Field produces electrical oscillations of frequency $\omega = 1/\sqrt{LC}$.</p>
-
-        <h2>8. Transformers (High Probability for Board Long Answers)</h2>
-
-        <div class="ai-prompt-box">
-            <strong>[AI Image Placeholder: Landscape (16:9) - Background: #FFFFFF]</strong><br>
-            <em>AI Prompt:</em> "A detailed schematic of a Step-Up Transformer. A rectangular laminated soft iron core. On the left side, the Primary coil ($N_p$) has a few turns of thick wire connected to an AC source. On the right side, the Secondary coil ($N_s$) has many turns of thin wire connected to a load. Show dashed magnetic flux lines ($\Phi$) looping entirely through the rectangular iron core linking both coils. Label 'Input Voltage $V_p$' and 'Output Voltage $V_s$'. White background #FFFFFF."
-        </div>
-
-        <p><strong>Principle:</strong> Based on <strong>Mutual Induction</strong>. An alternating current in the primary coil generates a continuously changing magnetic flux, which links with the secondary coil via the soft iron core, inducing an alternating EMF in the secondary.</p>
-
-        <h3>Theory and Working</h3>
-        <p>Assuming no flux leakage, the flux $\Phi$ linked with each turn is the same for both coils.<br>
-        By Faraday's law:<br>
-        Primary EMF: $V_p = -N_p \frac{d\Phi}{dt}$<br>
-        Secondary EMF: $V_s = -N_s \frac{d\Phi}{dt}$<br>
-        Dividing the two equations gives the <strong>Transformer Equation</strong>:</p>
-        
-        <div class="blue-box">
-            <span class="box-label">Transformer Equation</span>
-            <strong>$$\frac{V_s}{V_p} = \frac{N_s}{N_p} = k$$</strong>
-            Where $k$ is the Transformation Ratio.
+            <span class="box-label">Form Factor &amp; Peak Factor</span>
             <ul>
-                <li><strong>Step-Up Transformer:</strong> $N_s > N_p$ ($k > 1$). Increases voltage, decreases current.</li>
-                <li><strong>Step-Down Transformer:</strong> $N_s < N_p$ ($k < 1$). Decreases voltage, increases current.</li>
+                <li><strong>Form Factor:</strong> Ratio of RMS value to Average value over half cycle:
+                $$\text{Form Factor} = \frac{V_{\text{rms}}}{V_{\text{avg}}} = \frac{V_m / \sqrt{2}}{2V_m / \pi} = \frac{\pi}{2\sqrt{2}} \approx \mathbf{1.11}$$</li>
+                <li><strong>Peak (Crest) Factor:</strong> Ratio of Peak value to RMS value:
+                $$\text{Peak Factor} = \frac{V_m}{V_{\text{rms}}} = \frac{V_m}{V_m / \sqrt{2}} = \sqrt{2} \approx \mathbf{1.414}$$</li>
             </ul>
         </div>
 
-        <p>For an ideal transformer (100% efficiency), Power In = Power Out $\implies V_p I_p = V_s I_s \implies \frac{I_p}{I_s} = \frac{V_s}{V_p} = \frac{N_s}{N_p}$. Note that voltage and current are inversely related!</p>
+        <div class="yellow-box">
+            <span class="box-label">Real-World Application: Why $220\text{V}$ AC is More Dangerous than $220\text{V}$ DC</span>
+            When a household electrical rating says <strong>$220\text{ V}$ AC</strong>, it ALWAYS refers to the <strong>RMS Voltage ($V_{\text{rms}}$)</strong>.<br>
+            The actual maximum peak voltage hitting the appliance (and a person touching the wire) is:
+            $$V_m = V_{\text{rms}} \times \sqrt{2} = 220 \times 1.414 = \mathbf{311.08 \text{ V}}$$
+            Thus, a $220\text{V}$ AC line oscillates between $+311\text{V}$ and $-311\text{V}$ (a peak-to-peak swing of $622\text{V}$!), whereas a $220\text{V}$ DC line remains constant at $220\text{V}$. Hence, AC is much more dangerous than DC of the same nominal voltage!
+        </div>
 
-        <div class="green-box">
-            <span class="box-label">Energy Losses in a Real Transformer (Must-Know)</span>
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.2]</span><br>
+            <strong>Phasor Diagram &amp; Waveforms for Pure Resistor Circuit</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 234, Fig 7.2 — (a) Phasor diagram showing V and I along same line. (b) Graph of v and i vs wt showing both reaching zero and peak together)</em>
+        </div>
+
+        <!-- ==================== SECTION 3 ==================== -->
+        <h2>3. Representation of AC by Rotating Vectors (Phasors)</h2>
+
+        <p>Since sinusoidal alternating voltages and currents oscillate periodically with time, analyzing complex AC circuits using standard sine/cosine equations becomes tedious. Instead, we use <strong>Phasor Diagrams</strong>.</p>
+
+        <div class="blue-box">
+            <span class="box-label">What is a Phasor?</span>
+            A <strong>Phasor</strong> is a vector of magnitude equal to the peak amplitude ($V_m$ or $I_m$) of an alternating quantity, rotating counterclockwise about the origin with constant angular velocity $\omega$.<br><br>
+            <strong>Key Properties:</strong>
             <ol>
-                <li><strong>Copper Loss:</strong> Heat lost as $I^2R$ in the primary and secondary copper windings. <em>Solution: Use thick copper wires.</em></li>
-                <li><strong>Eddy Current (Iron) Loss:</strong> Alternating flux induces eddy currents in the iron core, causing heating. <em>Solution: Use a laminated iron core.</em></li>
-                <li><strong>Hysteresis Loss:</strong> Energy lost due to the continuous reversal of magnetization of the core every AC cycle. <em>Solution: Use Soft Iron, which has a narrow hysteresis loop.</em></li>
-                <li><strong>Flux Leakage:</strong> Not all flux generated by the primary links with the secondary. <em>Solution: Wind the primary and secondary coils directly over each other.</em></li>
+                <li>The length of the phasor vector represents the peak amplitude ($V_m$ or $I_m$).</li>
+                <li>The angle made by the phasor with the positive X-axis at time $t$ represents the phase angle ($\omega t$).</li>
+                <li>The projection of the phasor on the vertical Y-axis gives the instantaneous value of voltage ($v = V_m \sin\omega t$) or current ($i = I_m \sin\omega t$).</li>
             </ol>
         </div>
 
+        <!-- ==================== SECTION 4 ==================== -->
+        <h2>4. AC Voltage Applied to Pure Components (R, L, C)</h2>
+
+        <h3>A. Pure Resistor (R)</h3>
+        <p>Consider an AC source $v = V_m \sin\omega t$ connected across a pure resistor of resistance $R$.</p>
+        
+        <div class="visual-container">
+            <img src="Images/AC Voltage Applied to a Resistor.png" alt="AC Voltage Applied to a Resistor Circuit Diagram" class="img-in-note">
+        </div>
+
+        <p>By Kirchhoff's Voltage Law (KVL): $v - i R = 0 \implies i = \frac{v}{R} = \frac{V_m}{R} \sin\omega t = \mathbf{I_m \sin\omega t}$ where $I_m = \frac{V_m}{R}$.</p>
+        
+        <ul>
+            <li><strong>Phase Difference ($\phi$):</strong> $\phi = 0^\circ$. Voltage and current are <strong>in phase</strong>. Both reach maximum, zero, and minimum simultaneously.</li>
+            <li><strong>Opposition:</strong> Resistance $R$ (Unit: $\Omega$). $R$ is independent of frequency $f$.</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/Phasor Diagram and AC Waveforms.png" alt="Phasor Diagram and AC Waveforms for Pure Resistor" class="img-in-note">
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/In-Phase Voltage and Current Waveforms.png" alt="In-Phase Voltage and Current Waveforms" class="img-in-note">
+        </div>
+
+        <h3>B. Pure Inductor (L)</h3>
+        <p>Consider an AC source $v = V_m \sin\omega t$ connected across a pure inductor of self-inductance $L$ and zero resistance.</p>
+        
+        <div class="green-box">
+            <span class="box-label">Full Derivations: Pure Inductor &amp; Inductive Reactance</span>
+            As alternating current flows through the inductor, its magnetic flux changes, inducing a self-back EMF: $e = -L \frac{di}{dt}$ (Lenz's Law).<br>
+            Applying KVL to the closed circuit:
+            $$\begin{aligned}
+            v + e = 0 &\implies V_m \sin\omega t - L \frac{di}{dt} = 0 \\
+            &\implies \frac{di}{dt} = \frac{V_m}{L} \sin\omega t
+            \end{aligned}$$
+            Integrating both sides with respect to time $t$:
+            $$\begin{aligned}
+            i &= \int \frac{V_m}{L} \sin\omega t \, dt = \frac{V_m}{L} \left( \frac{-\cos\omega t}{\omega} \right) \\
+            &= -\frac{V_m}{\omega L} \cos\omega t = \mathbf{I_m \sin\left(\omega t - \frac{\pi}{2}\right)}
+            \end{aligned}$$
+            where $I_m = \frac{V_m}{\omega L}$.<br>
+            The term $\omega L$ opposes current flow and is called <strong>Inductive Reactance ($X_L$)</strong>:
+            $$\mathbf{X_L = \omega L = 2\pi f L}$$
+        </div>
+
+        <ul>
+            <li><strong>Phase Relation:</strong> Current <strong>lags</strong> voltage by $90^\circ$ ($\pi/2\text{ rad}$). Voltage reaches peak $T/4$ seconds before current.</li>
+            <li><strong>Physical Reason for $X_L \propto f$:</strong> Higher frequency means current changes at a faster rate ($\frac{di}{dt}$ is larger), inducing a stronger back EMF that offers greater opposition $X_L$.</li>
+            <li><strong>Behavior for DC ($f = 0$):</strong> $X_L = 2\pi(0) L = 0$. An ideal inductor offers <strong>zero resistance to DC</strong> (behaves as a short circuit!).</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/AC Circuit Phasors and Waveforms.png" alt="Phasor Diagram and AC Waveforms for Pure Inductor" class="img-in-note">
+        </div>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.3 &amp; 7.4]</span><br>
+            <strong>AC Source connected to Inductor &amp; Phasor Diagram showing Current Lagging Voltage by 90°</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 237, Fig 7.3 &amp; Fig 7.4 — Circuit schematic of pure L, phasor diagram with I lagging V by 90°, and wave graph showing v peaking before i)</em>
+        </div>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.5]</span><br>
+            <strong>Magnetisation and Demagnetisation of an Inductor over One AC Cycle</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 238, Fig 7.5 — Four quarter cycles showing flux buildup, energy storage in magnetic field, and energy return to source)</em>
+        </div>
+
+        <h3>C. Pure Capacitor (C)</h3>
+        <p>Consider an AC source $v = V_m \sin\omega t$ connected across a capacitor of capacitance $C$.</p>
+
+        <div class="visual-container">
+            <img src="Images/AC Circuit with Capacitor Diagram.png" alt="AC Circuit connected to a Capacitor Diagram" class="img-in-note">
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Full Derivation: Pure Capacitor &amp; Capacitive Reactance</span>
+            Let $q$ be the instantaneous charge on the capacitor at time $t$. Then $v = \frac{q}{C} \implies q = C v = C V_m \sin\omega t$.<br>
+            Current is the rate of flow of charge:
+            $$\begin{aligned}
+            i &= \frac{dq}{dt} = \frac{d}{dt}(C V_m \sin\omega t) = C V_m \omega \cos\omega t \\
+            &= \frac{V_m}{1 / (\omega C)} \cos\omega t = \mathbf{I_m \sin\left(\omega t + \frac{\pi}{2}\right)}
+            \end{aligned}$$
+            where $I_m = \frac{V_m}{1 / (\omega C)}$.<br>
+            The term $\frac{1}{\omega C}$ opposes current flow and is called <strong>Capacitive Reactance ($X_C$)</strong>:
+            $$\mathbf{X_C = \frac{1}{\omega C} = \frac{1}{2\pi f C}}$$
+        </div>
+
+        <ul>
+            <li><strong>Phase Relation:</strong> Current <strong>leads</strong> voltage by $90^\circ$ ($\pi/2\text{ rad}$). Current reaches peak $T/4$ seconds before voltage.</li>
+            <li><strong>Physical Reason for $X_C \propto 1/f$:</strong> Higher frequency AC causes plates to charge and discharge very rapidly, letting current flow freely ($X_C$ is small).</li>
+            <li><strong>Behavior for DC ($f = 0$):</strong> $X_C = \frac{1}{2\pi(0)C} = \infty$. A capacitor completely <strong>blocks DC</strong> (behaves as an open circuit once charged!).</li>
+        </ul>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.6 &amp; 7.7]</span><br>
+            <strong>AC Source connected to Capacitor &amp; Phasor Diagram showing Current Leading Voltage by 90°</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 240, Fig 7.6 &amp; Fig 7.7 — Circuit schematic of pure C, phasor diagram with I leading V by 90°, and wave graph showing i peaking before v)</em>
+        </div>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.8]</span><br>
+            <strong>Charging and Discharging of a Capacitor over One AC Cycle</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 241, Fig 7.8 — Four quarter cycles showing electric field accumulation, energy storage, and discharge back into source)</em>
+        </div>
+
+        <!-- ==================== SECTION 5 ==================== -->
+        <h2>5. AC Voltage Applied to Series LCR Circuit</h2>
+
+        <p>When an Inductor ($L$), Capacitor ($C$), and Resistor ($R$) are connected in series across an AC source $v = V_m \sin\omega t$, the same instantaneous current $i$ flows through all three components.</p>
+
+        <div class="visual-container">
+            <img src="Images/Series LCR Circuit Diagram.png" alt="Series LCR Circuit Diagram" class="img-in-note">
+        </div>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.9]</span><br>
+            <strong>Series LCR Circuit connected to an AC Source</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 243, Fig 7.9 — Series connection of L, C, and R with AC generator voltage v)</em>
+        </div>
+
+        <h3>A. Phasor Diagram Solution (NCERT 7.6.1 — Core Board Derivation)</h3>
+        <p>Let current phasor $\vec{I}$ be taken along the positive X-axis as reference.</p>
+        <ul>
+            <li>Voltage across $R$: $\vec{V}_R = I R$ (along X-axis, in phase with $I$).</li>
+            <li>Voltage across $L$: $\vec{V}_L = I X_L$ (along +Y-axis, leads $I$ by $90^\circ$).</li>
+            <li>Voltage across $C$: $\vec{V}_C = I X_C$ (along -Y-axis, lags $I$ by $90^\circ$).</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/Dual-panel phasor relationship diagram.png" alt="Dual-panel Phasor Relationship Diagram for Series LCR Circuit" class="img-in-note">
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Full Derivation: Impedance ($Z$) and Phase Angle ($\phi$)</span>
+            Assuming $V_L > V_C$ (Inductive Circuit), the net reactive voltage vector is $(V_L - V_C)$ pointing straight up along +Y-axis.<br>
+            By Pythagorean theorem on the right-angled voltage triangle:
+            $$V^2 = V_R^2 + (V_L - V_C)^2$$
+            Substitute $V = I Z$, $V_R = I R$, $V_L = I X_L$, and $V_C = I X_C$:
+            $$\begin{aligned}
+            (I Z)^2 &= (I R)^2 + (I X_L - I X_C)^2 \\
+            &= I^2 [ R^2 + (X_L - X_C)^2 ]
+            \end{aligned}$$
+            Dividing both sides by $I^2$ and taking square root gives <strong>Impedance ($Z$)</strong>:
+            $$\mathbf{Z = \sqrt{R^2 + (X_L - X_C)^2} = \sqrt{R^2 + \left(\omega L - \frac{1}{\omega C}\right)^2}}$$
+            From the <strong>Impedance Triangle</strong>, the phase angle $\phi$ between net voltage $V$ and current $I$ is:
+            $$\mathbf{\tan\phi = \frac{X_L - X_C}{R} = \frac{\omega L - \frac{1}{\omega C}}{R}}$$
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Impedance Triangle Diagram.png" alt="Impedance Triangle Diagram" class="img-in-note">
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Phasor Diagram and LCR Waveforms.png" alt="Phasor Diagram and Waveforms for Series LCR Circuit where XC > XL" class="img-in-note">
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Three Operating Regimes of Series LCR Circuit</span>
+            <ol>
+                <li><strong>Inductive Case ($X_L > X_C$):</strong> $\tan\phi > 0 \implies \phi$ is positive. Voltage leads current by phase angle $\phi$. Circuit behaves like an $R-L$ circuit.</li>
+                <li><strong>Capacitive Case ($X_C > X_L$):</strong> $\tan\phi < 0 \implies \phi$ is negative. Current leads voltage by phase angle $|\phi|$. Circuit behaves like an $R-C$ circuit.</li>
+                <li><strong>Resistive Case ($X_L = X_C$):</strong> $\tan\phi = 0 \implies \phi = 0^\circ$. Voltage and current are perfectly in phase! Circuit is in <strong>Resonance</strong>.</li>
+            </ol>
+        </div>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.10 (a) &amp; (b)]</span><br>
+            <strong>Phasor Diagram for Series LCR Circuit &amp; Impedance Triangle</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 244, Fig 7.10 — (a) Relation between voltage phasors VR, VL, VC, and V. (b) Impedance triangle with base R, perpendicular XL - XC, and hypotenuse Z)</em>
+        </div>
+
+        <h3>B. Analytical Solution using Differential Equations (NCERT 7.6.2)</h3>
+        <p>Applying Kirchhoff's Loop Rule to series LCR circuit:</p>
+        $$v_L + v_C + v_R = v \implies L \frac{di}{dt} + \frac{q}{C} + i R = V_m \sin\omega t$$
+        <p>Since $i = \frac{dq}{dt}$ and $\frac{di}{dt} = \frac{d^2q}{dt^2}$, we get the second-order differential equation:</p>
+        $$\mathbf{L \frac{d^2q}{dt^2} + R \frac{dq}{dt} + \frac{q}{C} = V_m \sin\omega t}$$
+        <p>Solving this gives steady-state charge $q = q_m \sin(\omega t + \theta)$ and current $i = \frac{dq}{dt} = I_m \sin(\omega t + \phi)$ where $I_m = \frac{V_m}{\sqrt{R^2 + (\omega L - 1/\omega C)^2}}$, proving identical results to the phasor method!</p>
+
+        <!-- ==================== SECTION 6 ==================== -->
+        <h2>6. Resonance in Series LCR Circuit &amp; Quality Factor (Q-factor)</h2>
+
+        <p><strong>Resonance:</strong> A series LCR circuit is said to be in resonance when the frequency of the applied AC source matches the natural frequency of the LC circuit, causing inductive reactance to cancel capacitive reactance ($X_L = X_C$), minimizing impedance to $Z = R$, and driving current amplitude to its absolute maximum!</p>
+
+        <div class="green-box">
+            <span class="box-label">Derivation: Resonant Frequency ($f_r$ or $\omega_r$)</span>
+            At resonance condition: $X_L = X_C$.<br>
+            $$\omega_r L = \frac{1}{\omega_r C} \implies \omega_r^2 = \frac{1}{L C}$$
+            Taking square root gives <strong>Resonant Angular Frequency ($\omega_r$)</strong>:
+            $$\mathbf{\omega_r = \frac{1}{\sqrt{LC}} \quad \text{(Unit: rad/s)}}$$
+            Resonant Frequency in Hertz ($f_r$):
+            $$\mathbf{f_r = \frac{\omega_r}{2\pi} = \frac{1}{2\pi\sqrt{LC}} \quad \text{(Unit: Hz)}}$$
+        </div>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.11]</span><br>
+            <strong>Variation of Current Amplitude $I_m$ with Frequency $\omega$ (Sharpness of Resonance)</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 248, Fig 7.11 — Resonance curves for smaller resistance R1 and larger resistance R2, showing sharper peak for smaller R)</em>
+        </div>
+
+        <h3>Sharpness of Resonance &amp; Quality Factor (Q-factor)</h3>
+        <p>The <strong>Quality Factor (Q-factor)</strong> measures how sharp or narrow the resonance peak is. A high Q-factor means the circuit responds strongly to a very narrow band of frequencies (essential for radio and TV tuning selectivity!).</p>
+
+        <div class="green-box">
+            <span class="box-label">Full Derivation: Quality Factor ($Q$)</span>
+            <strong>Definition 1:</strong> Ratio of resonant frequency ($\omega_r$) to Bandwidth ($\Delta\omega = \omega_2 - \omega_1 = \frac{R}{L}$):
+            $$Q = \frac{\omega_r}{2\Delta\omega} = \frac{\omega_r}{\left(\frac{R}{L}\right)} = \mathbf{\frac{\omega_r L}{R}}$$
+            Substitute $\omega_r = \frac{1}{\sqrt{LC}}$:
+            $$Q = \frac{1}{\sqrt{LC}} \cdot \frac{L}{R} = \mathbf{\frac{1}{R} \sqrt{\frac{L}{C}}}$$
+            <strong>Definition 2 (Voltage Magnification):</strong> Ratio of voltage drop across Inductor ($V_L$) or Capacitor ($V_C$) to applied voltage across Resistor ($V_R$) at resonance:
+            $$Q = \frac{V_L}{V_R} = \frac{I_m X_L}{I_m R} = \frac{\omega_r L}{R}$$
+        </div>
+
+        <!-- ==================== SECTION 7 ==================== -->
+        <h2>7. Power in AC Circuits, Power Factor &amp; Wattless Current</h2>
+
+        <p>Instantaneous power in an AC circuit is $p = v \cdot i = [V_m \sin\omega t] \cdot [I_m \sin(\omega t - \phi)]$.</p>
+
+        <div class="green-box">
+            <span class="box-label">Full Derivation: Average Power in AC Circuit</span>
+            Using trigonometric product formula $2\sin A \sin B = \cos(A-B) - \cos(A+B)$:
+            $$\begin{aligned}
+            p &= V_m I_m \sin\omega t \sin(\omega t - \phi) \\
+            &= \frac{V_m I_m}{2} [ \cos\phi - \cos(2\omega t - \phi) ]
+            \end{aligned}$$
+            Average power over one complete cycle ($P_{\text{avg}}$):
+            $$\begin{aligned}
+            P_{\text{avg}} &= \frac{1}{T} \int_0^T p \, dt \\
+            &= \frac{V_m I_m}{2} \cos\phi - \frac{V_m I_m}{2} \frac{1}{T} \int_0^T \cos(2\omega t - \phi) \, dt \\
+            &= \frac{V_m I_m}{2} \cos\phi = \left(\frac{V_m}{\sqrt{2}}\right) \left(\frac{I_m}{\sqrt{2}}\right) \cos\phi \\
+            &= \mathbf{V_{\text{rms}} I_{\text{rms}} \cos\phi}
+            \end{aligned}$$
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Power Factor ($\cos\phi$)</span>
+            <strong>Power Factor</strong> is defined as the ratio of True Power ($P_{\text{avg}}$) to Apparent Power ($V_{\text{rms}} I_{\text{rms}}$):
+            $$\mathbf{\text{Power Factor } (\cos\phi) = \frac{P_{\text{avg}}}{V_{\text{rms}} I_{\text{rms}}} = \frac{R}{Z} = \frac{R}{\sqrt{R^2 + (X_L - X_C)^2}}}$$
+            <ul>
+                <li><strong>Pure Resistor / Resonance:</strong> $\phi = 0^\circ \implies \cos 0^\circ = 1$. Maximum power dissipation ($P_{\text{avg}} = V_{\text{rms}} I_{\text{rms}}$).</li>
+                <li><strong>Pure Inductor / Pure Capacitor:</strong> $\phi = 90^\circ \implies \cos 90^\circ = 0$. Zero net power dissipation ($P_{\text{avg}} = 0$)!</li>
+            </ul>
+        </div>
+
+        <h3>Wattless Current (Idle Current)</h3>
+        <p>In a purely inductive or capacitive circuit ($\phi = 90^\circ$), current flows through the circuit without consuming any average electric power. The component of RMS current perpendicular to voltage ($I_{\text{rms}} \sin\phi$) is called <strong>Wattless Current</strong>.</p>
+
+        <div class="yellow-box">
+            <span class="box-label">Application: Choke Coil</span>
+            A <strong>Choke Coil</strong> is a coil of very high self-inductance ($L$) and extremely low resistance ($R$) wound over a soft iron core. It is used to reduce AC current in tube lights / fluorescent lamps without significant power dissipation, since power factor $\cos\phi = \frac{R}{\sqrt{R^2 + \omega^2 L^2}} \approx 0$!
+        </div>
+
+        <!-- ==================== SECTION 8 ==================== -->
+        <h2>8. LC Oscillations</h2>
+
+        <p>When a capacitor charged with initial charge $q_m$ is connected across an inductor of inductance $L$, electrical energy oscillates continuously back and forth between the electric field of the capacitor and the magnetic field of the inductor.</p>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.12]</span><br>
+            <strong>Energy Transfer in LC Oscillations &amp; Mechanical Spring-Mass Analogy</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 253, Fig 7.12 — 5 stages of energy transfer between E-field of capacitor and B-field of inductor compared to potential &amp; kinetic energy of a block on a spring)</em>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Full Derivation: LC Differential Equation &amp; Energy Conservation</span>
+            By Kirchhoff's Loop Rule: $\frac{q}{C} + L \frac{di}{dt} = 0$.<br>
+            Since $i = -\frac{dq}{dt}$ (current increases as charge decreases), $\frac{di}{dt} = -\frac{d^2q}{dt^2}$.<br>
+            $$\frac{q}{C} - L \frac{d^2q}{dt^2} = 0 \implies \mathbf{\frac{d^2q}{dt^2} + \frac{1}{LC} q = 0}$$
+            This is identical to the simple harmonic motion (SHM) equation $\frac{d^2x}{dt^2} + \omega_0^2 x = 0$.<br>
+            The natural frequency of LC oscillation is: <strong>$$\omega_0 = \frac{1}{\sqrt{LC}}$$</strong>
+            Solution for charge: $q(t) = q_m \cos(\omega_0 t)$.<br>
+            Current: $i(t) = -\frac{dq}{dt} = q_m \omega_0 \sin(\omega_0 t) = I_m \sin(\omega_0 t)$.<br><br>
+            <strong>Total Energy Conservation:</strong>
+            $$\begin{aligned}
+            U &= U_E + U_B = \frac{q^2}{2C} + \frac{1}{2} L i^2 \\
+            &= \frac{q_m^2 \cos^2\omega_0 t}{2C} + \frac{1}{2} L (q_m^2 \omega_0^2 \sin^2\omega_0 t) \\
+            &= \frac{q_m^2}{2C} [\cos^2\omega_0 t + \sin^2\omega_0 t] = \mathbf{\frac{q_m^2}{2C} = \text{Constant}}
+            \end{aligned}$$
+        </div>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Electrical System (LC Circuit)</th>
+                        <th>Mechanical System (Block on Spring)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Charge $q$</td>
+                        <td>Displacement $x$</td>
+                    </tr>
+                    <tr>
+                        <td>Current $i = \frac{dq}{dt}$</td>
+                        <td>Velocity $v = \frac{dx}{dt}$</td>
+                    </tr>
+                    <tr>
+                        <td>Inductance $L$</td>
+                        <td>Mass $m$</td>
+                    </tr>
+                    <tr>
+                        <td>Reciprocal Capacitance $1/C$</td>
+                        <td>Spring Factor $k$</td>
+                    </tr>
+                    <tr>
+                        <td>Electrical Energy $U_E = \frac{q^2}{2C}$</td>
+                        <td>Potential Energy $U_P = \frac{1}{2} k x^2$</td>
+                    </tr>
+                    <tr>
+                        <td>Magnetic Energy $U_B = \frac{1}{2} L i^2$</td>
+                        <td>Kinetic Energy $U_K = \frac{1}{2} m v^2$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ==================== SECTION 9 ==================== -->
+        <h2>9. Transformers (Step-Up &amp; Step-Down)</h2>
+
+        <p><strong>Definition:</strong> A static electrical device used to step up (increase) or step down (decrease) alternating voltage without changing frequency.</p>
+        <p><strong>Operating Principle:</strong> Based on <strong>Mutual Induction</strong>. When alternating current flows through the primary coil, it sets up a changing magnetic flux in the soft iron core, which links with the secondary coil and induces an alternating EMF in it.</p>
+
+        <div class="ncert-figure-box">
+            <span class="figure-tag">[NCERT Figure 7.13]</span><br>
+            <strong>Construction Schematic of Step-Up and Step-Down Transformers</strong><br>
+            <em>(Ref: NCERT Class 12 Physics Chapter 7, Page 255, Fig 7.13 — Laminated soft iron core, Primary coil Np, and Secondary coil Ns)</em>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Full Derivation: Transformer Equation</span>
+            Let $\Phi$ be the magnetic flux linked per turn of core at time $t$.<br>
+            Induced EMF in Primary Coil ($N_p$ turns): $v_p = -N_p \frac{d\Phi}{dt}$.<br>
+            Induced EMF in Secondary Coil ($N_s$ turns): $v_s = -N_s \frac{d\Phi}{dt}$.<br>
+            Dividing secondary EMF by primary EMF:
+            $$\mathbf{\frac{v_s}{v_p} = \frac{N_s}{N_p} = k} \quad \text{(Transformation Ratio)}$$
+            For an <strong>ideal transformer</strong> (100% efficient, zero energy loss):
+            $$\text{Input Power} = \text{Output Power} \implies v_p i_p = v_s i_s$$
+            $$\mathbf{\frac{i_p}{i_s} = \frac{v_s}{v_p} = \frac{N_s}{N_p} = k}$$
+        </div>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Step-Up Transformer</th>
+                        <th>Step-Down Transformer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Turn Ratio ($k$)</strong></td>
+                        <td>$k > 1 \implies N_s > N_p$</td>
+                        <td>$k < 1 \implies N_s < N_p$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Voltage ($V$)</strong></td>
+                        <td>$V_s > V_p$ (Increases voltage)</td>
+                        <td>$V_s < V_p$ (Decreases voltage)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Current ($I$)</strong></td>
+                        <td>$I_s < I_p$ (Decreases current)</td>
+                        <td>$I_s > I_p$ (Increases current)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Winding Wires</strong></td>
+                        <td>Primary thick, Secondary thin</td>
+                        <td>Primary thin, Secondary thick</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Transformer Efficiency ($\eta$)</h3>
+        $$\eta = \frac{\text{Output Power}}{\text{Input Power}} \times 100\% = \frac{V_s I_s}{V_p I_p} \times 100\%$$
+
+        <div class="green-box">
+            <span class="box-label">5 Major Energy Losses in Real Transformers &amp; Mitigations (Board Favorite)</span>
+            <ol>
+                <li><strong>Copper Loss ($I^2R$ Heating):</strong> Current flowing through copper windings generates Joule heat. <em>Mitigation: Use thick copper wires with low resistance.</em></li>
+                <li><strong>Eddy Current (Iron) Loss:</strong> Alternating magnetic flux induces circulating eddy currents in the iron core, causing heating. <em>Mitigation: Use a laminated soft iron core insulated with varnish.</em></li>
+                <li><strong>Hysteresis Loss:</strong> Continuous magnetisation and demagnetisation of core every cycle consumes energy as heat. <em>Mitigation: Core made of Soft Iron (small hysteresis loop area).</em></li>
+                <li><strong>Flux Leakage:</strong> Not all magnetic flux generated by primary links with secondary. <em>Mitigation: Wind primary and secondary coils directly over each other.</em></li>
+                <li><strong>Humming Loss:</strong> Magnetostriction causes core to expand/contract, producing buzzing sound. <em>Mitigation: Tightly clamp laminated core sheets.</em></li>
+            </ol>
+        </div>
+
+        <!-- ==================== SECTION 10 ==================== -->
+        <h2>10. High-Yield ICSE &amp; CBSE Exam Practice Drills</h2>
+
         <div class="practice-box">
-            <span class="box-label">Practice Problem 3</span>
-            <strong>Question:</strong> A power transmission line feeds input power at $2300 \text{ V}$ to a step-down transformer with its primary windings having 4000 turns. What should be the number of turns in the secondary in order to get output power at $230 \text{ V}$?
+            <span class="box-label">Exam Drill 1 — Peak to RMS Values</span>
+            <strong>Question:</strong> An alternating voltage is described by $v = 282.8 \sin(314 t) \text{ V}$. Calculate: (i) Peak voltage, (ii) RMS voltage, (iii) Frequency of AC supply, and (iv) Instantaneous voltage at $t = 1/600 \text{ s}$.
             <div class="solution">
                 <strong>Solution:</strong><br>
-                Given: $V_p = 2300 \text{ V}$, $N_p = 4000 \text{ turns}$, $V_s = 230 \text{ V}$.<br>
-                Using the transformer equation: $\frac{V_s}{V_p} = \frac{N_s}{N_p}$<br>
-                $\frac{230}{2300} = \frac{N_s}{4000}$<br>
-                $\frac{1}{10} = \frac{N_s}{4000}$<br>
-                $N_s = \frac{4000}{10} = \mathbf{400 \text{ turns}}$.
+                Comparing with $v = V_m \sin\omega t$:<br>
+                (i) Peak Voltage $V_m = \mathbf{282.8 \text{ V}}$.<br>
+                (ii) RMS Voltage $V_{\text{rms}} = \frac{V_m}{\sqrt{2}} = \frac{282.8}{1.414} = \mathbf{200 \text{ V}}$.<br>
+                (iii) $\omega = 314 \text{ rad/s} \implies 2\pi f = 314 \implies f = \frac{314}{2 \times 3.14} = \mathbf{50 \text{ Hz}}$.<br>
+                (iv) At $t = \frac{1}{600} \text{ s}$: $v = 282.8 \sin\left(314 \times \frac{1}{600}\right) = 282.8 \sin\left(\frac{\pi}{6}\right) = 282.8 \times 0.5 = \mathbf{141.4 \text{ V}}$.
             </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Exam Drill 2 — Reactance of L &amp; C</span>
+            <strong>Question:</strong> Find the reactance of a $10 \text{ mH}$ inductor and a $10 \text{ \mu F}$ capacitor at (a) DC ($0\text{ Hz}$), and (b) $50\text{ Hz}$ AC.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                <strong>(a) At DC ($f = 0$):</strong><br>
+                $X_L = 2\pi(0) L = \mathbf{0 \, \Omega}$ (Short circuit).<br>
+                $X_C = \frac{1}{2\pi(0)C} = \mathbf{\infty \, \Omega}$ (Blocks DC completely).<br><br>
+                <strong>(b) At $50\text{ Hz}$ AC ($f = 50$):</strong><br>
+                $X_L = 2\pi(50)(10 \times 10^{-3}) = 100\pi \times 10^{-2} = 3.14 \, \Omega$.<br>
+                $X_C = \frac{1}{2\pi(50)(10 \times 10^{-6})} = \frac{1}{100\pi \times 10^{-6}} = \frac{10^4}{\pi} \approx \mathbf{318.3 \, \Omega}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Exam Drill 3 — Series LCR Complete Numerical</span>
+            <strong>Question:</strong> A series LCR circuit containing $R = 30 \, \Omega$, $L = 0.8 \text{ H}$, and $C = 50 \text{ \mu F}$ is connected across a $220\text{V}, 50\text{Hz}$ supply. Calculate: (i) Impedance $Z$, (ii) RMS Current $I_{\text{rms}}$, (iii) Phase Angle $\phi$, and (iv) Average Power Dissipated $P_{\text{avg}}$.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Given: $V_{\text{rms}} = 220\text{V}, f = 50\text{Hz}, R = 30\,\Omega, L = 0.8\text{H}, C = 50\times 10^{-6}\text{F}$.<br>
+                $X_L = 2\pi f L = 2 \times 3.14 \times 50 \times 0.8 = 251.2 \, \Omega$.<br>
+                $X_C = \frac{1}{2\pi f C} = \frac{1}{2 \times 3.14 \times 50 \times 50 \times 10^{-6}} = \frac{10^6}{15700} = 63.7 \, \Omega$.<br>
+                Net Reactance $(X_L - X_C) = 251.2 - 63.7 = 187.5 \, \Omega$.<br>
+                (i) Impedance $Z = \sqrt{R^2 + (X_L - X_C)^2} = \sqrt{30^2 + (187.5)^2} = \sqrt{900 + 35156.25} = \mathbf{189.88 \, \Omega}$.<br>
+                (ii) $I_{\text{rms}} = \frac{V_{\text{rms}}}{Z} = \frac{220}{189.88} = \mathbf{1.158 \text{ A}}$.<br>
+                (iii) $\tan\phi = \frac{X_L - X_C}{R} = \frac{187.5}{30} = 6.25 \implies \phi \approx \mathbf{80.9^\circ}$ (Voltage leads current).<br>
+                (iv) $P_{\text{avg}} = I_{\text{rms}}^2 R = (1.158)^2 \times 30 = \mathbf{40.23 \text{ W}}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Exam Drill 4 — Resonance &amp; Q-Factor</span>
+            <strong>Question:</strong> A series LCR circuit has $L = 2.0\text{ H}, C = 32\text{ \mu F}, R = 10\,\Omega$. Calculate: (i) Resonant frequency $f_r$, and (ii) Q-factor of the circuit.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                (i) $\omega_r = \frac{1}{\sqrt{LC}} = \frac{1}{\sqrt{2.0 \times 32 \times 10^{-6}}} = \frac{1}{\sqrt{64 \times 10^{-6}}} = \frac{1}{8 \times 10^{-3}} = \mathbf{125 \text{ rad/s}}$.<br>
+                $f_r = \frac{\omega_r}{2\pi} = \frac{125}{6.28} = \mathbf{19.9 \text{ Hz}}$.<br>
+                (ii) $Q = \frac{\omega_r L}{R} = \frac{125 \times 2.0}{10} = \frac{250}{10} = \mathbf{25}$.
+            </div>
+        </div>
+
+        <div class="practice-box">
+            <span class="box-label">Exam Drill 5 — Transformer Efficiency</span>
+            <strong>Question:</strong> A step-down transformer operates on a $2200\text{V}$ line to supply $220\text{V}$ at $10\text{A}$ to a load. If its efficiency is $90\%$, find the current drawn from the primary line.
+            <div class="solution">
+                <strong>Solution:</strong><br>
+                Given: $V_p = 2200\text{V}, V_s = 220\text{V}, I_s = 10\text{A}, \eta = 90\% = 0.90$.<br>
+                Output Power $P_s = V_s I_s = 220 \times 10 = 2200 \text{ W}$.<br>
+                Since $\eta = \frac{P_s}{P_p} \implies P_p = \frac{P_s}{\eta} = \frac{2200}{0.90} = 2444.44 \text{ W}$.<br>
+                $V_p I_p = 2444.44 \implies 2200 \times I_p = 2444.44 \implies I_p = \frac{2444.44}{2200} = \mathbf{1.11 \text{ A}}$.
+            </div>
+        </div>
+
+        <!-- ==================== SECTION 11 ==================== -->
+        <h2>11. Master Formula &amp; Summary Comparison Table</h2>
+
+        <div class="vardaan-table-container">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th>Circuit Type</th>
+                        <th>Opposition (Reactance/Impedance)</th>
+                        <th>Current Amplitude ($I_m$)</th>
+                        <th>Phase Angle ($\phi$)</th>
+                        <th>Power Factor ($\cos\phi$)</th>
+                        <th>Average Power ($P_{\text{avg}}$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pure Resistor (R)</strong></td>
+                        <td>$R$</td>
+                        <td>$I_m = \frac{V_m}{R}$</td>
+                        <td>$\phi = 0^\circ$ (In Phase)</td>
+                        <td>$1.0$ (Maximum)</td>
+                        <td>$V_{\text{rms}} I_{\text{rms}}$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pure Inductor (L)</strong></td>
+                        <td>$X_L = \omega L = 2\pi f L$</td>
+                        <td>$I_m = \frac{V_m}{X_L}$</td>
+                        <td>$\phi = +90^\circ$ (I lags V)</td>
+                        <td>$0.0$ (Zero)</td>
+                        <td>$0$ (Wattless)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pure Capacitor (C)</strong></td>
+                        <td>$X_C = \frac{1}{\omega C} = \frac{1}{2\pi f C}$</td>
+                        <td>$I_m = \frac{V_m}{X_C}$</td>
+                        <td>$\phi = -90^\circ$ (I leads V)</td>
+                        <td>$0.0$ (Zero)</td>
+                        <td>$0$ (Wattless)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Series LCR Circuit</strong></td>
+                        <td>$Z = \sqrt{R^2 + (X_L - X_C)^2}$</td>
+                        <td>$I_m = \frac{V_m}{Z}$</td>
+                        <td>$\tan\phi = \frac{X_L - X_C}{R}$</td>
+                        <td>$\frac{R}{Z}$</td>
+                        <td>$V_{\text{rms}} I_{\text{rms}} \cos\phi$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LCR at Resonance</strong></td>
+                        <td>$Z_{\text{min}} = R$ ($X_L = X_C$)</td>
+                        <td>$I_{\text{max}} = \frac{V_m}{R}$</td>
+                        <td>$\phi = 0^\circ$ (In Phase)</td>
+                        <td>$1.0$ (Maximum)</td>
+                        <td>$V_{\text{rms}} I_{\text{rms}}$</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- BRANDING FOOTER (MANDATORY) -->
@@ -565,5 +1093,3 @@
     </script>
 </body>
 </html>
-
-
