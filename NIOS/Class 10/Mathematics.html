@@ -1,0 +1,808 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics (211) - NIOS Class 10</title>
+    <meta name="description" content="NIOS Class 10 Mathematics (211) official chapter notes, textbook PDFs, and modules. Powered by Vardaan Comet.">
+    <link rel="icon" type="image/png" href="../../vardaan comet logo favicon image.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #000;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+        }
+
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: #FC7917;
+            border-radius: 10px;
+            border: 2px solid #0a0514;
+        }
+        body::-webkit-scrollbar-track {
+            background-color: #0a0514;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #main-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-bar {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #00ffff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            background: rgba(0, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transform: translateX(-5px);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            height: 100px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(252, 121, 23, 0.8);
+        }
+        .subtitle {
+            color: #ffd8a8;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        .chapters-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chapter-item {
+            background: rgba(20, 10, 30, 0.7);
+            border: 1px solid rgba(252, 121, 23, 0.3);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .chapter-item:hover {
+            border-color: #FC7917;
+            box-shadow: 0 0 20px rgba(252, 121, 23, 0.3);
+        }
+
+        .chapter-header {
+            padding: 18px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            transition: background 0.3s;
+        }
+        .chapter-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chapter-title-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        .chapter-number {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: #FC7917;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(252, 121, 23, 0.5);
+        }
+        .chapter-name {
+            font-size: 1.05rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .toggle-icon {
+            color: #00ffff;
+            transition: transform 0.3s ease;
+            width: 22px;
+            height: 22px;
+        }
+        .chapter-item.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .chapter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-out;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            padding: 20px 24px;
+        }
+
+        .resource-btn {
+            background: linear-gradient(135deg, rgba(252, 121, 23, 0.15), rgba(180, 70, 0, 0.15));
+            border: 1px solid rgba(252, 121, 23, 0.4);
+            border-radius: 8px;
+            padding: 14px 18px;
+            text-align: center;
+            color: #ffd8a8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+        .resource-btn:hover {
+            background: linear-gradient(135deg, rgba(252, 121, 23, 0.35), rgba(180, 70, 0, 0.35));
+            color: #fff;
+            border-color: #FC7917;
+            box-shadow: 0 4px 15px rgba(252, 121, 23, 0.3);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .chapter-header { padding: 14px 18px; }
+            .chapter-number { font-size: 1.2rem; }
+            .chapter-name { font-size: 0.95rem; }
+            .logo-img { height: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-content">
+        <div class="nav-bar">
+            <a href="Class10.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Modules
+            </a>
+            <a href="../../index.html" class="brand-container">
+                <img src="../../Vardaan comet logo animation video loop.gif" alt="Vardaan Comet Logo" class="logo-img">
+            </a>
+        </div>
+
+        <div class="header-section">
+            <h1>Mathematics (211)</h1>
+            <div class="subtitle">Complete Chapter Master Notes & Official NIOS Textbooks</div>
+        </div>
+
+        <div class="chapters-container">
+            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">01</span>
+                        <span class="chapter-name">Number Systems</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/01NumberSystems/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/01NumberSystems/Chapter-01.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">02</span>
+                        <span class="chapter-name">Exponents and Radicals</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/02ExponentsAndRadicals/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/02ExponentsAndRadicals/Chapter-02.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">03</span>
+                        <span class="chapter-name">Algebraic Expressions and Polynomials</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/03AlgebraicExpressionsAndPolynomials/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/03AlgebraicExpressionsAndPolynomials/Chapter-03.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">04</span>
+                        <span class="chapter-name">Special Products and Factorization</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/04SpecialProductsAndFactorization/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/04SpecialProductsAndFactorization/Chapter-04.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">05</span>
+                        <span class="chapter-name">Linear Equations</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/05LinearEquations/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/05LinearEquations/Chapter-05.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">06</span>
+                        <span class="chapter-name">Quadratic Equations</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/06QuadraticEquations/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/06QuadraticEquations/Chapter-06.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">07</span>
+                        <span class="chapter-name">Arithmetic Progressions</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/07ArithmeticProgressions/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/07ArithmeticProgressions/Chapter-07.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">08</span>
+                        <span class="chapter-name">Percentage and its Applications</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/08PercentageAndItsApplications/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/08PercentageAndItsApplications/Chapter-08.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">09</span>
+                        <span class="chapter-name">Instalment Buying</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/09InstalmentBuying/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/09InstalmentBuying/Chapter-09.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">10</span>
+                        <span class="chapter-name">Lines and Angles</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/10LinesAndAngles/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/10LinesAndAngles/Chapter-10.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">11</span>
+                        <span class="chapter-name">Congruence of Triangles</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/11CongruenceOfTriangles/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/11CongruenceOfTriangles/Chapter-11.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">12</span>
+                        <span class="chapter-name">Concurrent Lines</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/12ConcurrentLines/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/12ConcurrentLines/Chapter-12.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">13</span>
+                        <span class="chapter-name">Quadrilaterals</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/13Quadrilaterals/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/13Quadrilaterals/Chapter-13.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">14</span>
+                        <span class="chapter-name">Similarity of Triangles</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/14SimilarityOfTriangles/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/14SimilarityOfTriangles/Chapter-14.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">15</span>
+                        <span class="chapter-name">Circles</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/15Circles/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/15Circles/Chapter-15.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">16</span>
+                        <span class="chapter-name">Angles in a Circle and Cyclic Quadrilateral</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/16AnglesInACircleAndCyclicQuadrilateral/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/16AnglesInACircleAndCyclicQuadrilateral/Chapter-16.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">17</span>
+                        <span class="chapter-name">Secants, Tangents and their Properties</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/17SecantsTangentsAndTheirProperties/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/17SecantsTangentsAndTheirProperties/Chapter-17.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">18</span>
+                        <span class="chapter-name">Constructions</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/18Constructions/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/18Constructions/Chapter-18.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">19</span>
+                        <span class="chapter-name">Co-ordinate Geometry</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/19CoordinateGeometry/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/19CoordinateGeometry/Chapter-19.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">20</span>
+                        <span class="chapter-name">Perimeters and Area of Plane Figures</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/20PerimetersAndAreaOfPlaneFigures/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/20PerimetersAndAreaOfPlaneFigures/Chapter-20.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">21</span>
+                        <span class="chapter-name">Surface Area and Volume of Solid Figures</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/21SurfaceAreaAndVolumeOfSolidFigures/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/21SurfaceAreaAndVolumeOfSolidFigures/Chapter-21.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">22</span>
+                        <span class="chapter-name">Introduction to Trigonometry</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/22IntroductionToTrigonometry/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/22IntroductionToTrigonometry/Chapter-22.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">23</span>
+                        <span class="chapter-name">Trigonometric Ratios of Some Special Angles</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/23TrigonometricRatiosOfSomeSpecialAngles/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/23TrigonometricRatiosOfSomeSpecialAngles/Chapter-23.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">24</span>
+                        <span class="chapter-name">Data and Their Representation</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/24DataAndTheirRepresentation/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/24DataAndTheirRepresentation/Chapter-24.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">25</span>
+                        <span class="chapter-name">Measures of Central Tendency</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/25MeasuresOfCentralTendency/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/25MeasuresOfCentralTendency/Chapter-25.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>            <div class="chapter-item">
+                <div class="chapter-header" onclick="toggleChapter(this)">
+                    <div class="chapter-title-group">
+                        <span class="chapter-number">26</span>
+                        <span class="chapter-name">Probability</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="toggle-icon"></i>
+                </div>
+                <div class="chapter-content">
+                    <div class="resource-grid">
+                        <a href="Mathematics/26Probability/ChapterNotes.html" class="resource-btn">
+                            <i data-lucide="file-text"></i>
+                            <span>Chapter Notes</span>
+                        </a>
+                        <a href="Mathematics/26Probability/Chapter-26.pdf" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                            <i data-lucide="book-open"></i>
+                            <span>Official Textbook PDF</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            VARDAAN LEARNING INSTITUTE &copy; 2026 &bull; Powered by Vardaan Comet
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleChapter(header) {
+            const item = header.parentElement;
+            const content = item.querySelector('.chapter-content');
+            const isActive = item.classList.contains('active');
+
+            document.querySelectorAll('.chapter-item').forEach(otherItem => {
+                if (otherItem !== item && otherItem.classList.contains('active')) {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.chapter-content').style.maxHeight = null;
+                }
+            });
+
+            if (isActive) {
+                item.classList.remove('active');
+                content.style.maxHeight = null;
+            } else {
+                item.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        }
+    </script>
+</body>
+</html>
+
