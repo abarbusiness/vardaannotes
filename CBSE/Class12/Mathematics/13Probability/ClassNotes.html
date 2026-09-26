@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability — Class Notes · Vardaan Learning Institute</title>
+    <link rel="icon" type="image/png" href="../../../../favicon.png">
+    <link rel="apple-touch-icon" href="../../../../favicon.png">
+
+    <!-- MathJax 3 Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* ---- CSS VARIABLES ---- */
+        :root {
+            --yellow-bg: #fffde7;   --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;    --green-border: #2e7d32;
+            --blue-bg: #e3f2fd;     --blue-border: #1565c0;
+            --pink-bg: #fce4ec;     --pink-border: #c2185b;
+            --orange-bg: #fff3e0;   --orange-border: #e65100;
+            --teal-bg: #e0f2f1;     --teal-border: #00695c;
+            --purple-bg: #f3e5f5;   --purple-border: #7b1fa2;
+            --text-main: #1e293b;   --paper-bg: #ffffff;
+            --meta-text: #64748b;   --accent-purple: #6b21a8;
+            --example-bg: rgba(248, 250, 252, 0.85);
+            --toggle-bg: #f1f5f9;   --toggle-border: #cbd5e1;
+            --icon-fill: #1e293b;   --card-border: #e2e8f0;
+            --table-header: #1e3a8a;
+        }
+
+        html.dark-mode {
+            --yellow-bg: #2d2600;   --yellow-border: #fdd835;
+            --green-bg: #0b2912;    --green-border: #66bb6a;
+            --blue-bg: #0c1e33;     --blue-border: #42a5f5;
+            --pink-bg: #2d0b18;     --pink-border: #ec407a;
+            --orange-bg: #2b1402;   --orange-border: #ffa726;
+            --teal-bg: #002824;     --teal-border: #26a69a;
+            --purple-bg: #23082b;   --purple-border: #ab47bc;
+            --text-main: #f1f5f9;   --paper-bg: #0f172a;
+            --meta-text: #94a3b8;   --accent-purple: #c084fc;
+            --example-bg: rgba(30, 41, 59, 0.6);
+            --toggle-bg: #1e293b;   --toggle-border: #334155;
+            --icon-fill: #f8fafc;   --card-border: #334155;
+            --table-header: #1e40af;
+        }
+
+        /* ---- GLOBAL STYLES ---- */
+        * { box-sizing: border-box; }
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            line-height: 1.68;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ---- WATERMARK ---- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: multiply;
+        }
+        .watermark-image {
+            opacity: 0.045;
+            max-width: 80%;
+            height: auto;
+        }
+        html.dark-mode .watermark-overlay {
+            mix-blend-mode: screen;
+        }
+        html.dark-mode .watermark-image {
+            filter: invert(1);
+            opacity: 0.06;
+        }
+
+        /* ---- PAPER SHEET CONTAINER ---- */
+        .paper-sheet {
+            background: var(--paper-bg);
+            width: 900px;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 30px 36px 60px;
+            position: relative;
+        }
+
+        /* ---- THEME TOGGLE ---- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: 1px solid var(--toggle-border);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.08);
+        }
+        .icon-sun, .icon-moon {
+            position: absolute;
+            transition: all 0.4s ease;
+            stroke: var(--icon-fill);
+        }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        .icon-moon { opacity: 1; transform: scale(1) rotate(0); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0); }
+
+        /* ---- BRANDING HEADER ---- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 16px;
+        }
+        .institute-name {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+        .system-name {
+            font-size: 1.05rem;
+            color: var(--meta-text);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .contact-info {
+            font-size: 0.88rem;
+            color: var(--meta-text);
+            margin-top: 6px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-weight: 500;
+        }
+
+        /* ---- HEADINGS ---- */
+        h1 {
+            font-size: 2rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin: 10px 0 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        h2 {
+            font-size: 1.45rem;
+            color: var(--pink-border);
+            margin-top: 36px;
+            margin-bottom: 14px;
+            border-left: 6px solid var(--pink-border);
+            padding-left: 14px;
+            font-weight: 700;
+        }
+        h3 {
+            font-size: 1.18rem;
+            color: var(--accent-purple);
+            margin-top: 24px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        p, li {
+            font-size: 1.02rem;
+            line-height: 1.72;
+            margin-bottom: 10px;
+        }
+        ul, ol {
+            padding-left: 24px;
+            margin-top: 6px;
+            margin-bottom: 12px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        em {
+            color: var(--meta-text);
+        }
+
+        /* ---- CONCEPT BOXES ---- */
+        .blue-box, .green-box, .yellow-box, .orange-box, .teal-box, .purple-box {
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin: 22px 0;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .blue-box   { background: var(--blue-bg);   border: 2px solid var(--blue-border); }
+        .green-box  { background: var(--green-bg);  border: 2px solid var(--green-border); }
+        .yellow-box { background: var(--yellow-bg); border: 2px solid var(--yellow-border); }
+        .orange-box { background: var(--orange-bg); border: 2px solid var(--orange-border); }
+        .teal-box   { background: var(--teal-bg);   border: 2px solid var(--teal-border); }
+        .purple-box { background: var(--purple-bg); border: 2px solid var(--purple-border); }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 18px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: 800;
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border: 2px solid;
+            border-radius: 6px;
+        }
+        .blue-box   .box-label { color: var(--blue-border);   border-color: var(--blue-border); }
+        .green-box  .box-label { color: var(--green-border);  border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f57f17;              border-color: var(--yellow-border); }
+        .orange-box .box-label { color: var(--orange-border); border-color: var(--orange-border); }
+        .teal-box   .box-label { color: var(--teal-border);   border-color: var(--teal-border); }
+        .purple-box .box-label { color: var(--purple-border); border-color: var(--purple-border); }
+
+        /* ---- WORKED BOARD PROBLEMS ---- */
+        .practice-box {
+            background: var(--example-bg);
+            border: 2px solid var(--accent-purple);
+            border-radius: 10px;
+            padding: 20px 22px;
+            margin: 24px 0;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+        }
+        .practice-box .box-label {
+            color: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+        .q-statement {
+            font-size: 1.02rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.68;
+        }
+        .solution {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--toggle-border);
+            font-size: 0.98rem;
+        }
+        .sol-tag {
+            display: inline-block;
+            background: var(--accent-purple);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .ans-highlight {
+            background: rgba(46, 125, 50, 0.12);
+            border-left: 4px solid var(--green-border);
+            padding: 12px 16px;
+            margin-top: 24px !important;
+            margin-bottom: 8px;
+            clear: both;
+            display: block;
+            font-weight: 700;
+            border-radius: 0 6px 6px 0;
+            color: var(--green-border);
+            line-height: 1.6;
+        }
+
+        /* ---- MATHJAX CLEARANCE & SPACING ---- */
+        mjx-container {
+            max-width: 100% !important;
+        }
+        mjx-container[display="true"] {
+            display: block !important;
+            text-align: center;
+            margin: 16px 0 20px 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 4px 0 !important;
+        }
+
+        /* ---- IMAGES & FIGURES ---- */
+        .image-figure {
+            text-align: center;
+            margin: 26px auto;
+            max-width: 100%;
+        }
+        .content-image {
+            max-width: min(100%, 640px) !important;
+            max-height: 360px !important;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            background: transparent !important;
+            mix-blend-mode: multiply !important;
+            border-radius: 6px;
+        }
+        html.dark-mode .content-image {
+            filter: invert(1) hue-rotate(180deg) !important;
+            mix-blend-mode: screen !important;
+        }
+        .image-caption {
+            font-size: 0.88rem;
+            color: var(--meta-text);
+            margin-top: 10px;
+            font-style: italic;
+            text-align: center;
+            line-height: 1.45;
+        }
+        .image-caption strong {
+            color: var(--blue-border);
+            font-style: normal;
+        }
+
+        /* ---- EXAM TIPS & BLUEPRINTS ---- */
+        .exam-tip {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.08), rgba(244, 63, 94, 0.04));
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin: 18px 0;
+            font-size: 0.98rem;
+        }
+        .exam-tip-title {
+            font-weight: 800;
+            color: var(--pink-border);
+            text-transform: uppercase;
+            font-size: 0.84rem;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .note-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.04));
+            border-left: 5px solid var(--orange-border);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 18px;
+            margin: 18px 0;
+            font-size: 0.98rem;
+        }
+        .note-box-title {
+            font-weight: 800;
+            color: var(--orange-border);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+
+        /* ---- TABLES ---- */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 16px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        .vardaan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.96rem;
+            background: var(--paper-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+        .vardaan-table th {
+            background: var(--table-header);
+            color: #ffffff;
+            padding: 10px 14px;
+            text-align: center;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .vardaan-table td {
+            padding: 9px 14px;
+            border: 1px solid var(--card-border);
+            text-align: center;
+        }
+        .vardaan-table tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        html.dark-mode .vardaan-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* ---- DIVIDERS ---- */
+        hr.section-divider {
+            border: none;
+            border-top: 2px dashed var(--toggle-border);
+            margin: 36px 0;
+        }
+
+        /* ---- BRANDING FOOTER ---- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+        .created-by {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .powered-by {
+            font-size: 0.88rem;
+            color: var(--pink-border);
+            font-style: italic;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 768px) {
+            .paper-sheet { padding: 20px 16px 40px; }
+            .institute-name { font-size: 1.6rem; }
+            h1 { font-size: 1.55rem; }
+            h2 { font-size: 1.25rem; }
+            .blue-box, .green-box, .yellow-box, .orange-box, .teal-box, .purple-box, .practice-box {
+                padding: 14px 16px;
+            }
+        }
+
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            .paper-sheet { width: 100% !important; padding: 0 !important; margin: 0 !important; }
+            .theme-toggle { display: none !important; }
+            .content-image { mix-blend-mode: normal !important; }
+            .watermark-overlay { opacity: 0.08 !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Watermark Overlay -->
+<div class="watermark-overlay">
+    <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+</div>
+
+<!-- Theme Toggle Button -->
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark/Light Mode">
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+</button>
+
+<div class="paper-sheet">
+
+    <!-- BRANDING HEADER -->
+    <div class="branding-header">
+        <div class="institute-name">Vardaan Learning Institute</div>
+        <div class="system-name">Class 12 Mathematics &nbsp;&bull;&nbsp; Class Notes</div>
+        <div class="contact-info">
+            <span>🌐 vardaanlearning.com</span>
+            <span>📞 9508841336</span>
+        </div>
+    </div>
+
+    <h1>Chapter 13: Probability</h1>
+
+    <p>Probability in Class 12 carries significant weightage (typically <strong>8 to 10 marks</strong>) in the Board Examination across multiple sections, including 1-mark objective questions, 2-mark and 3-mark analytical problems, and prominent <strong>5-mark or Case-Study questions</strong> on Bayes' Theorem and Probability Distributions. Below is the comprehensive chapter framework required for complete mastery in board examinations.</p>
+
+    <!-- =========================================================
+         SECTION 1: PROBABILITY FOUNDATIONS & AXIOMS
+         ========================================================= -->
+    <h2>1. Foundations &amp; Axiomatic Set Operations</h2>
+
+    <figure class="image-figure">
+        <img src="Images/Set%20Operations,%20Probability%20Axioms%20%26%20Sample%20Space%20Universe.png"
+            alt="Set Operations, Probability Axioms &amp; Sample Space Universe" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 1:</strong> Sample Space $S$, Set Operations ($A \cup B, A \cap B, A - B$), and Kolmogorov's Probability Axioms.</figcaption>
+    </figure>
+
+    <div class="blue-box">
+        <span class="box-label">Essential Set-Theoretic Terminology</span>
+        <ul>
+            <li><strong>Sample Space ($S$):</strong> The set of all possible outcomes of a random experiment. For a fair die, $S = \{1, 2, 3, 4, 5, 6\}$, $n(S) = 6$.</li>
+            <li><strong>Event ($E$):</strong> Any subset of sample space $S$ ($E \subseteq S$).</li>
+            <li><strong>Complementary Event ($A'$ or $\bar{A}$):</strong> Event 'not $A$', containing all outcomes in $S$ that are not in $A$.
+                $$P(A') = 1 - P(A)$$
+            </li>
+            <li><strong>Union ($A \cup B$):</strong> Event 'at least one of $A$ or $B$ occurs' ($A$ or $B$).</li>
+            <li><strong>Intersection ($A \cap B$):</strong> Event 'both $A$ and $B$ occur simultaneously' ($A$ and $B$).</li>
+            <li><strong>Mutually Exclusive (Disjoint) Events:</strong> Events that cannot occur together:
+                $$A \cap B = \phi \implies P(A \cap B) = 0$$
+            </li>
+            <li><strong>Exhaustive Events:</strong> Events whose union constitutes the entire sample space:
+                $$E_1 \cup E_2 \cup \cdots \cup E_n = S \implies P(E_1 \cup E_2 \cup \cdots \cup E_n) = 1$$
+            </li>
+        </ul>
+    </div>
+
+    <div class="green-box">
+        <span class="box-label">Universal Probability Addition Rules</span>
+        For any two events $A$ and $B$ in sample space $S$:
+        $$\boxed{P(A \cup B) = P(A) + P(B) - P(A \cap B)}$$
+        $$\boxed{P(A - B) = P(A \cap B') = P(A) - P(A \cap B)}$$
+        $$\boxed{P(B - A) = P(A' \cap B) = P(B) - P(A \cap B)}$$
+        <strong>De Morgan's Laws:</strong>
+        $$\boxed{P(A' \cap B') = P((A \cup B)') = 1 - P(A \cup B)}$$
+        $$\boxed{P(A' \cup B') = P((A \cap B)') = 1 - P(A \cap B)}$$
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- =========================================================
+         SECTION 2: CONDITIONAL PROBABILITY
+         ========================================================= -->
+    <h2>2. Conditional Probability</h2>
+
+    <figure class="image-figure">
+        <img src="Images/Conditional%20Probability%20%26%20Reduced%20Sample%20Space%20Mechanism.jpg"
+            alt="Conditional Probability &amp; Reduced Sample Space Mechanism" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 2:</strong> The mechanism of conditional probability: condition $B$ collapses the sample space from $S$ to $B$, isolating favorable outcomes to $A \cap B$.</figcaption>
+    </figure>
+
+    <p>Conditional probability calculates the probability of an event $A$ given that another event $B$ has <strong>already occurred</strong>.</p>
+
+    <div class="blue-box">
+        <span class="box-label">Mathematical Definition</span>
+        Let $A$ and $B$ be two events associated with a random experiment. The conditional probability of event $A$ given event $B$ has already occurred is defined as:
+        $$\boxed{P(A|B) = \frac{P(A \cap B)}{P(B)}, \quad \text{provided } P(B) \neq 0}$$
+        Similarly, the conditional probability of $B$ given $A$ is:
+        $$\boxed{P(B|A) = \frac{P(A \cap B)}{P(A)}, \quad \text{provided } P(A) \neq 0}$$
+        <em>Geometric Intuition:</em> The occurrence of $B$ reduces the effective sample space from the universal set $S$ to the subset $B$. The only outcomes favorable to $A$ within this new universe are those in $A \cap B$.
+    </div>
+
+    <div class="teal-box">
+        <span class="box-label">Three Inviolable Properties of Conditional Probability</span>
+        <strong>Property 1 (Certainty of Condition):</strong>
+        $$P(S|B) = 1 \quad \text{and} \quad P(B|B) = 1$$
+        <em>Proof:</em> $P(S|B) = \frac{P(S \cap B)}{P(B)} = \frac{P(B)}{P(B)} = 1$.<br><br>
+
+        <strong>Property 2 (Conditional Union Formula):</strong>
+        For any events $E$ and $F$ and conditioning event $B$:
+        $$P((E \cup F)|B) = P(E|B) + P(F|B) - P((E \cap F)|B)$$
+        If $E$ and $F$ are mutually exclusive: $P((E \cup F)|B) = P(E|B) + P(F|B)$.<br><br>
+
+        <strong>Property 3 (Conditional Complement Rule):</strong>
+        $$P(E'|B) = 1 - P(E|B)$$
+        <em>Proof:</em> Since $S = E \cup E'$ and $E \cap E' = \phi$, $P(S|B) = P(E|B) + P(E'|B) \implies 1 = P(E|B) + P(E'|B)$.
+    </div>
+
+    <div class="exam-tip">
+        <div class="exam-tip-title">🎯 Common Board Trap: Conditioning Order Matters!</div>
+        Remember that $P(A|B) \ne P(B|A)$ in general. The denominator is ALWAYS the probability of the <strong>already occurred (given) event</strong>:
+        $$P(A|B) \text{ has } P(B) \text{ in denominator; } \quad P(B|A) \text{ has } P(A) \text{ in denominator.}$$
+    </div>
+
+    <!-- WORKED BOARD PROBLEM 1 -->
+    <div class="practice-box">
+        <span class="box-label">Board Question &bull; 2 Marks</span>
+        <div class="q-statement">
+            If $P(A) = \frac{7}{13}$, $P(B) = \frac{9}{13}$, and $P(A \cap B) = \frac{4}{13}$, evaluate:
+            <br>(i) $P(A|B)$ &emsp; (ii) $P(B|A)$ &emsp; (iii) $P(A'|B)$ &emsp; (iv) $P(A'|B')$
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Solution</span><br>
+            <strong>(i)</strong> $P(A|B) = \frac{P(A \cap B)}{P(B)} = \frac{4/13}{9/13} = \mathbf{\frac{4}{9}}$<br><br>
+            <strong>(ii)</strong> $P(B|A) = \frac{P(A \cap B)}{P(A)} = \frac{4/13}{7/13} = \mathbf{\frac{4}{7}}$<br><br>
+            <strong>(iii)</strong> Using the complement property:
+            $$P(A'|B) = 1 - P(A|B) = 1 - \frac{4}{9} = \mathbf{\frac{5}{9}}$$<br>
+            <strong>(iv)</strong> $P(A'|B') = \frac{P(A' \cap B')}{P(B')}$.<br>
+            Using De Morgan's Law: $P(A' \cap B') = 1 - P(A \cup B)$.<br>
+            $P(A \cup B) = P(A) + P(B) - P(A \cap B) = \frac{7}{13} + \frac{9}{13} - \frac{4}{13} = \frac{12}{13}$.<br>
+            $\implies P(A' \cap B') = 1 - \frac{12}{13} = \frac{1}{13}$.<br>
+            Also, $P(B') = 1 - P(B) = 1 - \frac{9}{13} = \frac{4}{13}$.<br>
+            $$\implies P(A'|B') = \frac{1/13}{4/13} = \mathbf{\frac{1}{4}}$$
+            <div class="ans-highlight">Final Answers: (i) 4/9 &emsp; (ii) 4/7 &emsp; (iii) 5/9 &emsp; (iv) 1/4</div>
+        </div>
+    </div>
+
+    <!-- WORKED BOARD PROBLEM 2 -->
+    <div class="practice-box">
+        <span class="box-label">Board Question &bull; 2 Marks</span>
+        <div class="q-statement">
+            A family has two children. What is the probability that both children are boys, given that at least one of them is a boy?
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Solution</span><br>
+            Let $b$ represent boy and $g$ represent girl. The sample space is:
+            $$S = \{bb, bg, gb, gg\}, \quad n(S) = 4$$
+            Let $E$ = both children are boys $\implies E = \{bb\} \implies n(E) = 1$.<br>
+            Let $F$ = at least one child is a boy $\implies F = \{bb, bg, gb\} \implies n(F) = 3$.<br>
+            Notice $E \cap F = \{bb\} \implies n(E \cap F) = 1$.<br>
+            The required conditional probability is:
+            $$P(E|F) = \frac{P(E \cap F)}{P(F)} = \frac{n(E \cap F)}{n(F)} = \mathbf{\frac{1}{3}}$$
+            <div class="ans-highlight">Final Answer: 1/3 (Note: Not 1/2, because condition F collapses the sample space to 3 elements!)</div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- =========================================================
+         SECTION 3: MULTIPLICATION THEOREM ON PROBABILITY
+         ========================================================= -->
+    <h2>3. Multiplication Theorem on Probability</h2>
+
+    <figure class="image-figure">
+        <img src="Images/Sequential%20Probability%20Tree%20%E2%80%94%20With%20vs%20Without%20Replacement.png"
+            alt="Sequential Probability Tree — With vs Without Replacement" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 3:</strong> Sequential probability tree demonstrating the difference between draws with replacement (constant probabilities) and without replacement (conditional dependencies).</figcaption>
+    </figure>
+
+    <figure class="image-figure">
+        <img src="Images/3-Stage%20Multiplication%20Rule%20Sequential%20Path.png"
+            alt="3-Stage Multiplication Rule Sequential Path" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 4:</strong> 3-Stage sequential path representing the generalized multiplication theorem $P(A \cap B \cap C) = P(A) \cdot P(B|A) \cdot P(C|A \cap B)$.</figcaption>
+    </figure>
+
+    <div class="green-box">
+        <span class="box-label">Theorem Statement &amp; Generalization</span>
+        Rearranging the conditional probability formula gives the <strong>Multiplication Theorem</strong>:
+        $$\boxed{P(A \cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)}$$
+        <strong>Extension to Three Events:</strong>
+        For any three events $A, B,$ and $C$:
+        $$\boxed{P(A \cap B \cap C) = P(A) \cdot P(B|A) \cdot P(C|A \cap B)}$$
+        where $P(A) > 0$ and $P(A \cap B) > 0$.
+    </div>
+
+    <!-- WORKED BOARD PROBLEM 3 -->
+    <div class="practice-box">
+        <span class="box-label">Board Question &bull; 3 Marks</span>
+        <div class="q-statement">
+            Three cards are drawn successively, without replacement, from a well-shuffled pack of 52 cards. What is the probability that the first two cards are kings and the third card is an ace?
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Solution</span><br>
+            Let $K_1$ = first card drawn is a King.<br>
+            Let $K_2$ = second card drawn is a King.<br>
+            Let $A_3$ = third card drawn is an Ace.<br>
+            We must find $P(K_1 \cap K_2 \cap A_3)$.<br><br>
+            <strong>Step 1:</strong> Probability that the 1st card is a King:
+            $$P(K_1) = \frac{4}{52}$$
+            <strong>Step 2:</strong> Given 1 King is drawn, 51 cards remain with 3 Kings left:
+            $$P(K_2|K_1) = \frac{3}{51}$$
+            <strong>Step 3:</strong> Given 2 Kings are drawn, 50 cards remain with all 4 Aces intact:
+            $$P(A_3|K_1 \cap K_2) = \frac{4}{50}$$
+            Applying the Multiplication Theorem:
+            $$P(K_1 \cap K_2 \cap A_3) = \frac{4}{52} \times \frac{3}{51} \times \frac{4}{50} = \frac{1}{13} \times \frac{1}{17} \times \frac{2}{25} = \mathbf{\frac{2}{5525}}$$
+            <div class="ans-highlight">Final Answer: 2/5525</div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- =========================================================
+         SECTION 4: INDEPENDENT EVENTS
+         ========================================================= -->
+    <h2>4. Independent Events</h2>
+
+    <figure class="image-figure">
+        <img src="Images/Mutually%20Exclusive%20vs%20Independent%20Events.png"
+            alt="Mutually Exclusive vs Independent Events" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 5:</strong> Mutually exclusive events cannot occur simultaneously ($A \cap B = \phi$), whereas independent events can and do overlap such that $P(A \cap B) = P(A) \cdot P(B)$.</figcaption>
+    </figure>
+
+    <p>Two events are independent if the occurrence of one does not alter the probability of occurrence of the other.</p>
+
+    <div class="green-box">
+        <span class="box-label">Universal Test for Independence</span>
+        Two events $A$ and $B$ are defined to be <strong>independent</strong> if:
+        $$P(A|B) = P(A) \quad \text{and} \quad P(B|A) = P(B)$$
+        Substituting into the multiplication theorem gives the standard test:
+        $$\boxed{A \text{ and } B \text{ are independent} \iff P(A \cap B) = P(A) \cdot P(B)}$$
+        If $P(A \cap B) \neq P(A) \cdot P(B)$, the events are strictly <strong>dependent</strong>.
+    </div>
+
+    <div class="exam-tip">
+        <div class="exam-tip-title">🎯 Deadly Board Distinction: Mutually Exclusive $\neq$ Independent</div>
+        <ul>
+            <li><strong>Mutually Exclusive:</strong> $A \cap B = \phi \implies P(A \cap B) = 0$. (Set-theoretic disjointness).</li>
+            <li><strong>Independent:</strong> $P(A \cap B) = P(A) \cdot P(B) > 0$. (Informational neutrality).</li>
+        </ul>
+        <strong>Crucial Board Theorem:</strong> Two events with non-zero probabilities ($P(A) > 0, P(B) > 0$) <strong>CAN NEVER BE BOTH MUTUALLY EXCLUSIVE AND INDEPENDENT</strong>.<br>
+        <em>Proof:</em> If mutually exclusive, $P(A \cap B) = 0$. If independent, $P(A \cap B) = P(A)P(B) > 0$. Since $0 \ne P(A)P(B)$, they can never hold simultaneously.
+    </div>
+
+    <figure class="image-figure">
+        <img src="Images/Four-Quadrant%20Independence%20Matrix%20%26%20Complements%20Decomposition.png"
+            alt="Four-Quadrant Independence Matrix &amp; Complements Decomposition" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 6:</strong> Four-quadrant independence contingency matrix demonstrating that independence of $A$ and $B$ guarantees the mutual independence of their complements.</figcaption>
+    </figure>
+
+    <div class="blue-box">
+        <span class="box-label">Four Core Board Independence Theorems</span>
+        <strong>Theorem 1:</strong> If $A$ and $B$ are independent, then $A$ and $B'$ are independent.<br>
+        <em>Proof:</em> Note that $A = (A \cap B) \cup (A \cap B')$, where $(A \cap B)$ and $(A \cap B')$ are disjoint.<br>
+        $\implies P(A) = P(A \cap B) + P(A \cap B') \implies P(A \cap B') = P(A) - P(A \cap B)$.<br>
+        Using independence: $P(A \cap B') = P(A) - P(A)P(B) = P(A)[1 - P(B)] = \mathbf{P(A)P(B')}$. (Hence proved)<br><br>
+
+        <strong>Theorem 2:</strong> If $A$ and $B$ are independent, then $A'$ and $B$ are independent.<br>
+        <em>Proof:</em> Identical by symmetry: $P(A' \cap B) = P(B) - P(A \cap B) = P(B)[1 - P(A)] = \mathbf{P(A')P(B)}$.<br><br>
+
+        <strong>Theorem 3:</strong> If $A$ and $B$ are independent, then $A'$ and $B'$ are independent.<br>
+        <em>Proof:</em> Using De Morgan's Law:
+        $$P(A' \cap B') = 1 - P(A \cup B) = 1 - [P(A) + P(B) - P(A)P(B)]$$
+        $$= 1 - P(A) - P(B)[1 - P(A)] = [1 - P(A)][1 - P(B)] = \mathbf{P(A')P(B')}. \quad \text{(Hence proved)}$$<br>
+
+        <strong>Theorem 4 (At Least One Event Occurs):</strong> If $A$ and $B$ are independent events, then:
+        $$\boxed{P(\text{At least one of } A \text{ or } B) = P(A \cup B) = 1 - P(A')P(B')}$$
+        For $n$ independent events $A_1, A_2, \ldots, A_n$:
+        $$\boxed{P(\text{At least one occurs}) = 1 - P(A_1')P(A_2') \cdots P(A_n')}$$
+    </div>
+
+    <!-- WORKED BOARD PROBLEM 4 -->
+    <div class="practice-box">
+        <span class="box-label">Board Question &bull; 3 Marks (Classic Board Problem)</span>
+        <div class="q-statement">
+            A problem in mathematics is given to three students $A, B,$ and $C$ whose chances of solving it independently are $\frac{1}{2}, \frac{1}{3},$ and $\frac{1}{4}$ respectively. Find the probability that:
+            <br>(i) the problem is solved.
+            <br>(ii) exactly one of them solves the problem.
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Solution</span><br>
+            Given: $P(A) = \frac{1}{2}, P(B) = \frac{1}{3}, P(C) = \frac{1}{4}$.<br>
+            Their failure probabilities are:
+            $$P(A') = 1 - \frac{1}{2} = \frac{1}{2}, \quad P(B') = 1 - \frac{1}{3} = \frac{2}{3}, \quad P(C') = 1 - \frac{1}{4} = \frac{3}{4}$$
+
+            <strong>Part (i): Problem is solved.</strong><br>
+            The problem is solved if at least one student solves it:
+            $$P(\text{Problem solved}) = 1 - P(\text{None of them solves it}) = 1 - P(A' \cap B' \cap C')$$
+            Since the students solve independently, their complements are also independent:
+            $$P(A' \cap B' \cap C') = P(A') \cdot P(B') \cdot P(C') = \frac{1}{2} \times \frac{2}{3} \times \frac{3}{4} = \frac{1}{4}$$
+            $$P(\text{Problem solved}) = 1 - \frac{1}{4} = \mathbf{\frac{3}{4}}$$
+
+            <strong>Part (ii): Exactly one of them solves it.</strong><br>
+            This can happen in three mutually exclusive ways:
+            $$E = (A \cap B' \cap C') \cup (A' \cap B \cap C') \cup (A' \cap B' \cap C)$$
+            $$P(E) = P(A)P(B')P(C') + P(A')P(B)P(C') + P(A')P(B')P(C)$$
+            $$P(E) = \left(\frac{1}{2} \times \frac{2}{3} \times \frac{3}{4}\right) + \left(\frac{1}{2} \times \frac{1}{3} \times \frac{3}{4}\right) + \left(\frac{1}{2} \times \frac{2}{3} \times \frac{1}{4}\right)$$
+            $$P(E) = \frac{6}{24} + \frac{3}{24} + \frac{2}{24} = \mathbf{\frac{11}{24}}$$
+            <div class="ans-highlight">Final Answers: (i) 3/4 &emsp; (ii) 11/24</div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- =========================================================
+         SECTION 5: THEOREM OF TOTAL PROBABILITY
+         ========================================================= -->
+    <h2>5. Partition of Sample Space &amp; Theorem of Total Probability</h2>
+
+    <figure class="image-figure">
+        <img src="Images/Partition%20of%20Sample%20Space%20%26%20Law%20of%20Total%20Probability%20Slicing.jpg"
+            alt="Partition of Sample Space &amp; Law of Total Probability Slicing" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 7:</strong> Partition of sample space into mutually exclusive, exhaustive sets $E_1, E_2, E_3$ slicing event $A$ to establish the Law of Total Probability.</figcaption>
+    </figure>
+
+    <div class="blue-box">
+        <span class="box-label">Definition: Partition of a Sample Space</span>
+        A set of events $\{E_1, E_2, \ldots, E_n\}$ is said to form a <strong>partition</strong> of sample space $S$ if:
+        <ol>
+            <li><strong>Pairwise Disjoint (Mutually Exclusive):</strong> $E_i \cap E_j = \phi$ for all $i \neq j$.</li>
+            <li><strong>Exhaustive:</strong> $E_1 \cup E_2 \cup \cdots \cup E_n = S$.</li>
+            <li><strong>Non-Zero Probability:</strong> $P(E_i) > 0$ for each $i = 1, 2, \ldots, n$.</li>
+        </ol>
+    </div>
+
+    <div class="green-box">
+        <span class="box-label">The Law / Theorem of Total Probability</span>
+        Let $\{E_1, E_2, \ldots, E_n\}$ be a partition of the sample space $S$, and let $A$ be any event associated with $S$. Then:
+        $$\boxed{P(A) = \sum_{j=1}^n P(E_j) \cdot P(A|E_j) = P(E_1)P(A|E_1) + P(E_2)P(A|E_2) + \cdots + P(E_n)P(A|E_n)}$$
+        <strong>Board Proof:</strong>
+        Since $\{E_1, \ldots, E_n\}$ partitions $S$, $S = E_1 \cup E_2 \cup \cdots \cup E_n$.<br>
+        Intersecting with event $A$:
+        $$A = A \cap S = A \cap (E_1 \cup E_2 \cup \cdots \cup E_n) = (A \cap E_1) \cup (A \cap E_2) \cup \cdots \cup (A \cap E_n)$$
+        Since $E_i$ are pairwise disjoint, $(A \cap E_i)$ are also mutually disjoint:
+        $$P(A) = \sum_{j=1}^n P(A \cap E_j) = \sum_{j=1}^n P(E_j) \cdot P(A|E_j) \quad \text{(Hence proved)}$$
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- =========================================================
+         SECTION 6: BAYES' THEOREM & BOARD ARCHETYPES
+         ========================================================= -->
+    <h2>6. Bayes' Theorem (Core 5-Mark Board Topic)</h2>
+
+    <figure class="image-figure">
+        <img src="Images/Bayes%27%20Theorem%20Forward%20Tree%20%26%20Posterior%20Inverse%20Diagnostic.png"
+            alt="Bayes' Theorem Forward Tree &amp; Posterior Inverse Diagnostic" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 8:</strong> Bayes' Theorem probability tree contrasting forward predictive likelihood branches with the inverse diagnostic posterior computation.</figcaption>
+    </figure>
+
+    <p>While the Law of Total Probability computes the forward probability of an observed event $A$, <strong>Bayes' Theorem</strong> solves the <em>inverse probability problem</em>: given that event $A$ has occurred, what is the probability that it arose from a specific cause $E_i$?</p>
+
+    <div class="green-box">
+        <span class="box-label">Bayes' Theorem Formula</span>
+        If $E_1, E_2, \ldots, E_n$ form a partition of the sample space $S$, and $A$ is any non-zero event associated with $S$, then for any cause $E_i$:
+        $$\boxed{P(E_i|A) = \frac{P(E_i) \cdot P(A|E_i)}{\displaystyle\sum_{j=1}^n P(E_j) \cdot P(A|E_j)}}$$
+        <strong>Terminology:</strong>
+        <ul>
+            <li>$P(E_i)$: <strong>Prior Probability</strong> of hypothesis $E_i$ (before evidence is observed).</li>
+            <li>$P(A|E_i)$: <strong>Likelihood</strong> of observing evidence $A$ given cause $E_i$.</li>
+            <li>$P(E_i|A)$: <strong>Posterior Probability</strong> of cause $E_i$ after evidence $A$ is observed.</li>
+            <li>Denominator $\sum P(E_j)P(A|E_j) = P(A)$: <strong>Total Probability</strong> of evidence $A$.</li>
+        </ul>
+    </div>
+
+    <div class="yellow-box">
+        <span class="box-label">The 4-Step Board Exam Blueprint (Guaranteed 5/5 Marks)</span>
+        To secure full step-marks in CBSE Board evaluations, strictly follow this structure:
+        <ol>
+            <li><strong>Step 1 (Define Partitions):</strong> State events $E_1, E_2, \ldots$ clearly in words. State prior probabilities $P(E_1), P(E_2), \ldots$ and verify that $\sum P(E_i) = 1$. (1 Mark)</li>
+            <li><strong>Step 2 (Define Observed Event A):</strong> Write down event $A$ in words (e.g. "drawn item is defective", "reported number is 6"). (1/2 Mark)</li>
+            <li><strong>Step 3 (Write Conditional Likelihoods):</strong> State each $P(A|E_i)$ with logical reason. (1 Mark)</li>
+            <li><strong>Step 4 (State Formula &amp; Compute):</strong> Write out the complete Bayes' formula symbolically first (mandatory for 1 mark in CBSE scheme), substitute numbers, and evaluate to the final reduced fraction. (2.5 Marks)</li>
+        </ol>
+    </div>
+
+    <!-- BAYES ARCHETYPE 1: FACTORY MACHINES -->
+    <div class="practice-box">
+        <span class="box-label">Bayes Archetype 1 &bull; 5 Marks (Factory Defect Rate)</span>
+        <div class="q-statement">
+            An industrial manufacturing plant has three machines $A, B,$ and $C$. Machine $A$ produces $50\%$ of the total items, Machine $B$ produces $30\%$, and Machine $C$ produces $20\%$. The percentages of defective items produced by these machines are $2\%, 3\%,$ and $4\%$ respectively.
+            <br>An item is selected at random from the total output and is found to be <strong>defective</strong>. What is the probability that it was manufactured by Machine $B$?
+        </div>
+
+        <figure class="image-figure">
+            <img src="Images/Bayes%20Factory%203-Machine%20Production%20Pipeline%20%26%20Quality%20Control%20Diagnostic.png"
+                alt="Bayes Factory 3-Machine Production Pipeline &amp; Quality Control Diagnostic" class="content-image">
+            <figcaption class="image-caption"><strong>Fig. 9:</strong> Bayes Factory 3-machine production pipeline and quality diagnostic workflow calculating the posterior probability of Machine $B$ given a defective item.</figcaption>
+        </figure>
+
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Board Solution</span><br>
+            <strong>Step 1:</strong> Define the partition events:<br>
+            Let $E_1$ = item is manufactured by Machine $A \implies P(E_1) = \frac{50}{100} = 0.50$<br>
+            Let $E_2$ = item is manufactured by Machine $B \implies P(E_2) = \frac{30}{100} = 0.30$<br>
+            Let $E_3$ = item is manufactured by Machine $C \implies P(E_3) = \frac{20}{100} = 0.20$<br>
+            <em>Check:</em> $0.50 + 0.30 + 0.20 = 1.00$ (Exhaustive &amp; Disjoint).<br><br>
+
+            <strong>Step 2:</strong> Define the observed event:<br>
+            Let $D$ = randomly chosen item is defective.<br><br>
+
+            <strong>Step 3:</strong> Write conditional likelihoods:<br>
+            $P(D|E_1) = \frac{2}{100} = 0.02$<br>
+            $P(D|E_2) = \frac{3}{100} = 0.03$<br>
+            $P(D|E_3) = \frac{4}{100} = 0.04$<br><br>
+
+            <strong>Step 4:</strong> Apply Bayes' Theorem for $P(E_2|D)$:
+            $$P(E_2|D) = \frac{P(E_2) \cdot P(D|E_2)}{P(E_1)P(D|E_1) + P(E_2)P(D|E_2) + P(E_3)P(D|E_3)}$$
+            Denominator $= (0.50)(0.02) + (0.30)(0.03) + (0.20)(0.04) = 0.010 + 0.009 + 0.008 = 0.027$<br>
+            Numerator $= (0.30)(0.03) = 0.009$<br>
+            $$P(E_2|D) = \frac{0.009}{0.027} = \frac{9}{27} = \mathbf{\frac{1}{3}}$$
+            <div class="ans-highlight">Final Answer: 1/3 (or ~33.3%)</div>
+        </div>
+    </div>
+
+    <!-- BAYES ARCHETYPE 2: BALL TRANSFER -->
+    <div class="practice-box">
+        <span class="box-label">Bayes Archetype 2 &bull; 5 Marks (Ball Transfer Between Urns)</span>
+        <div class="q-statement">
+            Bag I contains 4 red and 4 black balls, while Bag II contains 2 red and 6 black balls. Two balls are drawn at random from Bag I and transferred to Bag II. A ball is then drawn at random from Bag II and is found to be <strong>red</strong> in colour.
+            <br>Find the probability that the two transferred balls were both black.
+        </div>
+
+        <figure class="image-figure">
+            <img src="Images/Two-Urn%20Transfer%20Mechanism%20%26%20Bayesian%20Diagnostic.png"
+                alt="Two-Urn Transfer Mechanism &amp; Bayesian Diagnostic" class="content-image">
+            <figcaption class="image-caption"><strong>Fig. 10:</strong> Two-urn ball transfer mechanism breaking down prior draw combinations and posterior probability computation for Bag II.</figcaption>
+        </figure>
+
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Board Solution</span><br>
+            <strong>Step 1:</strong> Total ways to draw 2 balls from Bag I (8 balls: 4R, 4B) $= \binom{8}{2} = \frac{8 \times 7}{2} = 28$.<br>
+            Define the partition events for the transferred balls:<br>
+            &bull; $E_1$ = 2 Red transferred $\implies P(E_1) = \frac{\binom{4}{2}}{\binom{8}{2}} = \frac{6}{28}$<br>
+            &bull; $E_2$ = 1 Red and 1 Black transferred $\implies P(E_2) = \frac{\binom{4}{1}\binom{4}{1}}{\binom{8}{2}} = \frac{16}{28}$<br>
+            &bull; $E_3$ = 2 Black transferred $\implies P(E_3) = \frac{\binom{4}{2}}{\binom{8}{2}} = \frac{6}{28}$<br>
+            <em>Check:</em> $\frac{6}{28} + \frac{16}{28} + \frac{6}{28} = \frac{28}{28} = 1$.<br><br>
+
+            <strong>Step 2:</strong> Define observed event $A$ = A ball drawn from Bag II is RED.<br>
+            After transfer, Bag II contains $8 + 2 = 10$ balls.<br><br>
+
+            <strong>Step 3:</strong> Conditional likelihoods from Bag II:<br>
+            &bull; Under $E_1$: $(2+2)=4$ Red out of 10 $\implies P(A|E_1) = \frac{4}{10}$<br>
+            &bull; Under $E_2$: $(2+1)=3$ Red out of 10 $\implies P(A|E_2) = \frac{3}{10}$<br>
+            &bull; Under $E_3$: $(2+0)=2$ Red out of 10 $\implies P(A|E_3) = \frac{2}{10}$<br><br>
+
+            <strong>Step 4:</strong> Apply Bayes' Theorem for $P(E_3|A)$:
+            $$P(E_3|A) = \frac{P(E_3)P(A|E_3)}{P(E_1)P(A|E_1) + P(E_2)P(A|E_2) + P(E_3)P(A|E_3)}$$
+            Denominator $= \left(\frac{6}{28} \times \frac{4}{10}\right) + \left(\frac{16}{28} \times \frac{3}{10}\right) + \left(\frac{6}{28} \times \frac{2}{10}\right) = \frac{24 + 48 + 12}{280} = \frac{84}{280}$<br>
+            Numerator $= \frac{6}{28} \times \frac{2}{10} = \frac{12}{280}$<br>
+            $$P(E_3|A) = \frac{12/280}{84/280} = \frac{12}{84} = \mathbf{\frac{1}{7}}$$
+            <div class="ans-highlight">Final Answer: 1/7</div>
+        </div>
+    </div>
+
+    <!-- BAYES ARCHETYPE 3: TRUTH / LIE -->
+    <div class="practice-box">
+        <span class="box-label">Bayes Archetype 3 &bull; 5 Marks (Speaking Truth vs Lie)</span>
+        <div class="q-statement">
+            A man is known to speak the truth 3 out of 4 times. He throws a standard 6-sided die and reports that it is a <strong>six</strong>. Find the probability that it is actually a six.
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Board Solution</span><br>
+            <strong>Step 1:</strong> Define the partition of actual die outcomes:<br>
+            Let $E_1$ = Die actually shows a six $\implies P(E_1) = \frac{1}{6}$<br>
+            Let $E_2$ = Die shows a number other than six $\implies P(E_2) = 1 - \frac{1}{6} = \frac{5}{6}$<br><br>
+
+            <strong>Step 2:</strong> Define observed event:<br>
+            Let $A$ = Man reports that a six has turned up.<br><br>
+
+            <strong>Step 3:</strong> Conditional likelihoods:<br>
+            &bull; $P(A|E_1)$: Probability he reports six when it IS six = Probability he tells truth $= \frac{3}{4}$.<br>
+            &bull; $P(A|E_2)$: Probability he reports six when it IS NOT six = Probability he lies $= 1 - \frac{3}{4} = \frac{1}{4}$.<br><br>
+
+            <strong>Step 4:</strong> By Bayes' Theorem for $P(E_1|A)$:
+            $$P(E_1|A) = \frac{P(E_1)P(A|E_1)}{P(E_1)P(A|E_1) + P(E_2)P(A|E_2)}$$
+            $$P(E_1|A) = \frac{\frac{1}{6} \times \frac{3}{4}}{\left(\frac{1}{6} \times \frac{3}{4}\right) + \left(\frac{5}{6} \times \frac{1}{4}\right)} = \frac{\frac{3}{24}}{\frac{3}{24} + \frac{5}{24}} = \frac{3}{8}$$
+            <div class="ans-highlight">Final Answer: 3/8</div>
+        </div>
+    </div>
+
+    <!-- BAYES ARCHETYPE 4: LOST CARD -->
+    <div class="practice-box">
+        <span class="box-label">Bayes Archetype 4 &bull; 5 Marks (The Lost Card Problem)</span>
+        <div class="q-statement">
+            A card from a pack of 52 cards is lost. From the remaining cards of the pack, two cards are drawn and are found to be both <strong>diamonds</strong>. Find the probability of the lost card being a diamond.
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Board Solution</span><br>
+            <strong>Step 1:</strong> Define partitions for the lost card:<br>
+            Let $E_1$ = Lost card is a diamond $\implies P(E_1) = \frac{13}{52} = \frac{1}{4}$<br>
+            Let $E_2$ = Lost card is not a diamond $\implies P(E_2) = \frac{39}{52} = \frac{3}{4}$<br><br>
+
+            <strong>Step 2:</strong> Define observed event $A$ = Two cards drawn from the remaining 51 cards are both diamonds.<br><br>
+
+            <strong>Step 3:</strong> Conditional likelihoods:<br>
+            &bull; Under $E_1$: 12 diamonds remain out of 51 cards:
+            $$P(A|E_1) = \frac{\binom{12}{2}}{\binom{51}{2}} = \frac{12 \times 11 / 2}{51 \times 50 / 2} = \frac{132}{51 \times 50}$$
+            &bull; Under $E_2$: all 13 diamonds remain out of 51 cards:
+            $$P(A|E_2) = \frac{\binom{13}{2}}{\binom{51}{2}} = \frac{13 \times 12 / 2}{51 \times 50 / 2} = \frac{156}{51 \times 50}$$
+
+            <strong>Step 4:</strong> Apply Bayes' Theorem for $P(E_1|A)$:
+            $$P(E_1|A) = \frac{P(E_1)P(A|E_1)}{P(E_1)P(A|E_1) + P(E_2)P(A|E_2)}$$
+            $$P(E_1|A) = \frac{\frac{1}{4} \times \frac{132}{51 \times 50}}{\left(\frac{1}{4} \times \frac{132}{51 \times 50}\right) + \left(\frac{3}{4} \times \frac{156}{51 \times 50}\right)} = \frac{132}{132 + 3(156)} = \frac{132}{132 + 468} = \frac{132}{600} = \mathbf{\frac{11}{50}}$$
+            <div class="ans-highlight">Final Answer: 11/50</div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- =========================================================
+         SECTION 7: RANDOM VARIABLES & PROBABILITY DISTRIBUTIONS
+         ========================================================= -->
+    <h2>7. Random Variables &amp; Probability Distributions</h2>
+
+    <figure class="image-figure">
+        <img src="Images/Random%20Variable%20as%20a%20Mathematical%20Mapping.png"
+            alt="Random Variable as a Mathematical Mapping" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 11:</strong> Mathematical definition of a random variable as a deterministic function mapping sample space outcomes to the real number line ($X: S \to \mathbb{R}$).</figcaption>
+    </figure>
+
+    <div class="blue-box">
+        <span class="box-label">Definition of Random Variable</span>
+        A <strong>Random Variable</strong> $X$ is a real-valued function whose domain is the sample space $S$ of a random experiment:
+        $$X: S \to \mathbb{R}$$
+        In Class 12, we work with <strong>discrete random variables</strong>, which assume finite or countably isolated integer values.
+    </div>
+
+    <h3>Probability Distribution of a Discrete Random Variable</h3>
+
+    <figure class="image-figure">
+        <img src="Images/Discrete%20Probability%20Distribution%20Structural%20Blueprint%20%26%20Verification%20Axioms.png"
+            alt="Discrete Probability Distribution Structural Blueprint &amp; Verification Axioms" class="content-image">
+        <figcaption class="image-caption"><strong>Fig. 12:</strong> Structural blueprint and axiomatic verification criteria ($p_i \ge 0$, $\sum p_i = 1$) for a discrete probability distribution.</figcaption>
+    </figure>
+
+    <p>If a discrete random variable $X$ assumes values $x_1, x_2, \ldots, x_n$ with corresponding probabilities $p_1, p_2, \ldots, p_n$ such that $P(X = x_i) = p_i$, the distribution is expressed in table form:</p>
+
+    <div class="table-responsive">
+        <table class="vardaan-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Values of $X$ ($x_i$)</th>
+                    <th>$x_1$</th>
+                    <th>$x_2$</th>
+                    <th>$x_3$</th>
+                    <th>$\cdots$</th>
+                    <th>$x_n$</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="font-weight: 700;">$P(X = x_i)$ ($p_i$)</td>
+                    <td>$p_1$</td>
+                    <td>$p_2$</td>
+                    <td>$p_3$</td>
+                    <td>$\cdots$</td>
+                    <td>$p_n$</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="green-box">
+        <span class="box-label">Two Inviolable Axiomatic Validation Conditions</span>
+        For any table to be a valid probability distribution:
+        $$\boxed{1. \quad p_i \ge 0 \quad \text{for all } i = 1, 2, \ldots, n}$$
+        $$\boxed{2. \quad \sum_{i=1}^n p_i = p_1 + p_2 + \cdots + p_n = 1}$$
+        If any probability is negative, or if the sum $\sum p_i \neq 1$, it is <strong>NOT</strong> a valid probability distribution.
+    </div>
+
+    <!-- WORKED BOARD PROBLEM 5 -->
+    <div class="practice-box">
+        <span class="box-label">Board Question &bull; 3 Marks (Finding Constant k)</span>
+        <div class="q-statement">
+            A random variable $X$ has the following probability distribution:
+            <div class="table-responsive">
+                <table class="vardaan-table">
+                    <tr>
+                        <th>$X$</th>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <th>$P(X)$</th>
+                        <td>0</td>
+                        <td>$k$</td>
+                        <td>$2k$</td>
+                        <td>$2k$</td>
+                        <td>$3k$</td>
+                        <td>$k^2$</td>
+                        <td>$2k^2$</td>
+                        <td>$7k^2 + k$</td>
+                    </tr>
+                </table>
+            </div>
+            Find: (i) $k$ &emsp; (ii) $P(X < 3)$ &emsp; (iii) $P(X \ge 6)$ &emsp; (iv) $P(0 < X < 5)$
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Solution</span><br>
+            <strong>(i) Finding $k$:</strong><br>
+            Since $\sum P(X) = 1$:
+            $$0 + k + 2k + 2k + 3k + k^2 + 2k^2 + (7k^2 + k) = 1$$
+            $$10k^2 + 9k = 1 \implies 10k^2 + 9k - 1 = 0$$
+            Factorizing the quadratic:
+            $$10k^2 + 10k - k - 1 = 0 \implies 10k(k + 1) - 1(k + 1) = 0 \implies (10k - 1)(k + 1) = 0$$
+            $\implies k = \frac{1}{10}$ or $k = -1$.<br>
+            Since $p_i \ge 0$, probability cannot be negative, so $k \neq -1$.<br>
+            $$\mathbf{k = \frac{1}{10} = 0.1}$$
+
+            <p style="margin-top: 18px; margin-bottom: 4px;"><strong>(ii) Evaluating $P(X < 3)$:</strong></p>
+            $$P(X < 3) = P(X=0) + P(X=1) + P(X=2) = 0 + k + 2k = 3k = 3(0.1) = \mathbf{0.3} = \frac{3}{10}$$
+
+            <p style="margin-top: 18px; margin-bottom: 4px;"><strong>(iii) Evaluating $P(X \ge 6)$:</strong></p>
+            $$P(X \ge 6) = P(X=6) + P(X=7) = 2k^2 + (7k^2 + k) = 9k^2 + k$$
+            $$= 9(0.01) + 0.1 = 0.09 + 0.10 = \mathbf{0.19} = \frac{19}{100}$$
+
+            <p style="margin-top: 18px; margin-bottom: 4px;"><strong>(iv) Evaluating $P(0 < X < 5)$:</strong></p>
+            $$P(0 < X < 5) = P(X=1) + P(X=2) + P(X=3) + P(X=4)$$
+            $$= k + 2k + 2k + 3k = 8k = 8(0.1) = \mathbf{0.8} = \frac{4}{5}$$
+
+            <div class="ans-highlight">Final Answers: (i) $k = \frac{1}{10}$ &emsp; (ii) $\frac{3}{10}$ &emsp; (iii) $\frac{19}{100}$ &emsp; (iv) $\frac{4}{5}$</div>
+        </div>
+    </div>
+
+    <!-- WORKED BOARD PROBLEM 6 -->
+    <div class="practice-box">
+        <span class="box-label">Board Question &bull; 4 Marks (Constructing Distribution)</span>
+        <div class="q-statement">
+            Two cards are drawn simultaneously (or successively without replacement) from a well-shuffled pack of 52 cards. Find the probability distribution of the number of <strong>aces</strong>.
+        </div>
+        <div class="solution">
+            <span class="sol-tag">Step-by-Step Solution</span><br>
+            Let $X$ denote the number of aces drawn in 2 cards.<br>
+            Possible values of $X$ are $0, 1, 2$.<br>
+            Total cards = 52. Number of aces = 4. Number of non-aces = $52 - 4 = 48$.<br>
+            Total ways to draw 2 cards from 52 $= \binom{52}{2} = \frac{52 \times 51}{2} = 1326$.<br><br>
+
+            <strong>Case 1: $X = 0$ (No aces drawn, both non-aces):</strong>
+            $$P(X = 0) = \frac{\binom{4}{0}\binom{48}{2}}{\binom{52}{2}} = \frac{1 \times \frac{48 \times 47}{2}}{1326} = \frac{1128}{1326} = \mathbf{\frac{188}{221}}$$
+
+            <strong>Case 2: $X = 1$ (Exactly one ace and one non-ace):</strong>
+            $$P(X = 1) = \frac{\binom{4}{1}\binom{48}{1}}{\binom{52}{2}} = \frac{4 \times 48}{1326} = \frac{192}{1326} = \mathbf{\frac{32}{221}}$$
+
+            <strong>Case 3: $X = 2$ (Both cards are aces):</strong>
+            $$P(X = 2) = \frac{\binom{4}{2}\binom{48}{0}}{\binom{52}{2}} = \frac{6 \times 1}{1326} = \frac{6}{1326} = \mathbf{\frac{1}{221}}$$
+
+            <em>Verification Check:</em>
+            $$\sum P(X) = \frac{188}{221} + \frac{32}{221} + \frac{1}{221} = \frac{221}{221} = 1 \quad \checkmark$$
+
+            <strong>Probability Distribution Table:</strong>
+            <div class="table-responsive">
+                <table class="vardaan-table">
+                    <thead>
+                        <tr>
+                            <th>$X$ (Number of Aces)</th>
+                            <th>0</th>
+                            <th>1</th>
+                            <th>2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 700;">$P(X)$</td>
+                            <td>$\frac{188}{221}$</td>
+                            <td>$\frac{32}{221}$</td>
+                            <td>$\frac{1}{221}$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ans-highlight">Verification: Total sum = 188/221 + 32/221 + 1/221 = 1. Valid distribution!</div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- =========================================================
+         SECTION 8: BOARD EXAM FORMULA MASTER REVISION
+         ========================================================= -->
+    <h2>8. Board Exam Formula Master Revision</h2>
+
+    <div class="teal-box">
+        <span class="box-label">Complete Formula Summary</span>
+        <div class="table-responsive">
+            <table class="vardaan-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Concept</th>
+                        <th>Standard Mathematical Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Conditional Probability</strong></td>
+                        <td>$P(A|B) = \frac{P(A \cap B)}{P(B)}, \quad P(B) > 0$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multiplication Rule</strong></td>
+                        <td>$P(A \cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Independent Events Test</strong></td>
+                        <td>$P(A \cap B) = P(A) \cdot P(B)$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Complement Independence</strong></td>
+                        <td>$P(A' \cap B') = P(A') \cdot P(B') = [1 - P(A)][1 - P(B)]$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>At Least One Occurs</strong></td>
+                        <td>$P(A \cup B) = 1 - P(A')P(B')$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Probability</strong></td>
+                        <td>$P(A) = \sum_{j=1}^n P(E_j)P(A|E_j)$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bayes' Theorem</strong></td>
+                        <td>$P(E_i|A) = \frac{P(E_i)P(A|E_i)}{\sum_{j=1}^n P(E_j)P(A|E_j)}$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Distribution Axioms</strong></td>
+                        <td>$p_i \ge 0 \quad \text{and} \quad \sum_{i=1}^n p_i = 1$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="note-box">
+        <div class="note-box-title">⚠️ Top 4 Mistakes to Avoid in Board Exams</div>
+        <ol>
+            <li><strong>Forgetting to verify $\sum P(E_i) = 1$ in Bayes' problems:</strong> Ensure your partitions are exhaustive and disjoint.</li>
+            <li><strong>Writing only the numerical answer in Bayes' Theorem:</strong> CBSE marking guidelines assign 1 mark for stating the formula symbolically before substituting values. Always write the symbolic formula first!</li>
+            <li><strong>Confusing Independent with Mutually Exclusive:</strong> Independent means $P(A \cap B) = P(A)P(B)$, NOT $P(A \cap B) = 0$.</li>
+            <li><strong>Rejecting $k$ values incorrectly:</strong> In probability distribution quadratic equations, always reject negative $k$ values because probabilities $p_i \ge 0$ must hold.</li>
+        </ol>
+    </div>
+
+    <!-- BRANDING FOOTER -->
+    <div class="branding-footer">
+        <p class="created-by">Created by Team Vardaan ❤️</p>
+        <p class="powered-by">Powered by Vardaan Comet</p>
+    </div>
+
+</div>
+
+<script>
+    function toggleTheme() {
+        document.documentElement.classList.toggle('dark-mode');
+        try {
+            if (document.documentElement.classList.contains('dark-mode')) {
+                localStorage.setItem('vardaan_theme', 'dark');
+            } else {
+                localStorage.setItem('vardaan_theme', 'light');
+            }
+        } catch (e) {}
+    }
+
+    // Initialize saved theme preference
+    (function() {
+        try {
+            var savedTheme = localStorage.getItem('vardaan_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        } catch (e) {}
+    })();
+</script>
+
+</body>
+</html>
