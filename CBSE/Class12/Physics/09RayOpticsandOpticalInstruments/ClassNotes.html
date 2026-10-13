@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ray Optics and Optical Instruments - Class Notes | Vardaan Learning Institute</title>
+    <link rel="icon" type="image/png" href="../../../../favicon.png">
+    <link rel="apple-touch-icon" href="../../../../favicon.png">
+    
+    <!-- MathJax for rendering Mathematical Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                macros: {
+                    AA: '{\\text{Å}}'
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES (Vardaan Theming) --- */
+        :root {
+            --yellow-bg: #fff9c4;
+            --yellow-border: #fbc02d;
+            --green-bg: #e8f5e9;
+            --green-border: #43a047;
+            --blue-bg: #e3f2fd;
+            --blue-border: #1e88e5;
+            --pink-bg: #fce4ec;
+            --pink-border: #d81b60;
+            --text-main: #000000;
+            --paper-bg: #ffffff;
+            --accent-purple: #7e57c2;
+            --meta-text: #666666;
+            --example-bg: rgba(255,255,255,0.6);
+            --example-text: #444444;
+            --toggle-bg: #eee;
+            --toggle-border: #ccc;
+            --icon-fill: #000;
+        }
+
+        /* --- DARK MODE VARIABLES --- */
+        html.dark-mode {
+            --yellow-bg: #3f3a00;
+            --yellow-border: #fdd835;
+            --green-bg: #0f2e13;
+            --green-border: #81c784;
+            --blue-bg: #0d1b2a;
+            --blue-border: #64b5f6;
+            --pink-bg: #300815;
+            --pink-border: #f06292;
+            --text-main: #e0e0e0;
+            --paper-bg: #121212;
+            --accent-purple: #d1c4e9;
+            --meta-text: #aaaaaa;
+            --example-bg: rgba(255,255,255,0.1);
+            --example-text: #cccccc;
+            --toggle-bg: #333;
+            --toggle-border: #555;
+            --icon-fill: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--paper-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- WATERMARK OVERLAY --- */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .watermark-image {
+            opacity: 0.1;
+            max-width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        html.dark-mode .watermark-overlay { mix-blend-mode: screen; }
+        html.dark-mode .watermark-image { filter: invert(1); opacity: 0.15; }
+
+        /* --- PAPER SHEET CONTAINER --- */
+        .paper-sheet {
+            background-color: var(--paper-bg);
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20mm;
+            box-sizing: border-box;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- BRANDING HEADER --- */
+        .branding-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 3px double var(--blue-border);
+            padding-bottom: 15px;
+        }
+
+        .institute-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue-border);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .system-name {
+            font-size: 1.05rem;
+            color: var(--meta-text);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a { color: inherit; text-decoration: none; }
+
+        /* --- BRANDING FOOTER --- */
+        .branding-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--toggle-border);
+            color: var(--meta-text);
+        }
+
+        .created-by { font-size: 1rem; margin-bottom: 5px; font-weight: bold; }
+        .powered-by { font-size: 0.9rem; color: var(--pink-border); font-style: italic; }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-size: 2.1rem;
+            color: var(--blue-border);
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--blue-border);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--pink-border);
+            margin-top: 35px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--pink-border);
+            padding-left: 14px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--accent-purple);
+            margin-top: 22px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        p, li {
+            font-size: 1.02rem;
+            line-height: 1.65;
+            margin-bottom: 8px;
+        }
+
+        ul, ol {
+            padding-left: 22px;
+            margin-bottom: 12px;
+        }
+
+        strong {
+            color: var(--pink-border);
+        }
+
+        /* --- INFO BOXES --- */
+        .blue-box {
+            background-color: var(--blue-bg);
+            border: 2px solid var(--blue-border);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .green-box {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .yellow-box {
+            background-color: var(--yellow-bg);
+            border: 2px solid var(--yellow-border);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .pink-box {
+            background-color: var(--pink-bg);
+            border: 2px solid var(--pink-border);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .box-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--paper-bg);
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+
+        .blue-box .box-label { color: var(--blue-border); border-color: var(--blue-border); }
+        .green-box .box-label { color: var(--green-border); border-color: var(--green-border); }
+        .yellow-box .box-label { color: #f9a825; border-color: var(--yellow-border); }
+        .pink-box .box-label { color: var(--pink-border); border-color: var(--pink-border); }
+
+        /* --- VISUAL ASSET & IMAGE CONTAINERS --- */
+        .visual-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 18px 0;
+            width: 100%;
+        }
+
+        .visual-container img {
+            max-width: 88%;
+            height: auto;
+            border-radius: 6px;
+            mix-blend-mode: multiply;
+            transition: filter 0.3s ease;
+        }
+
+        html.dark-mode .visual-container img {
+            filter: invert(1) hue-rotate(180deg);
+            mix-blend-mode: screen;
+        }
+
+        .fig-caption {
+            font-size: 0.92rem;
+            color: var(--meta-text);
+            margin-top: 8px;
+            text-align: center;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        /* --- TABLES --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 0.96rem;
+        }
+
+        th, td {
+            border: 1px solid var(--toggle-border);
+            padding: 9px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--blue-bg);
+            color: var(--blue-border);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        td { vertical-align: middle; }
+
+        /* --- THEME TOGGLE --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-sun, .icon-moon { position: absolute; transition: all 0.5s ease; stroke: var(--icon-fill); }
+        .icon-sun { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+        html.dark-mode .icon-moon { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        html.dark-mode .icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+
+        /* --- PRINT CONFIGURATION --- */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .paper-sheet { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .theme-toggle, .branding-footer { display: none !important; }
+            .contact-info { display: flex !important; }
+            .watermark-overlay { display: flex !important; position: fixed !important; z-index: -1 !important; opacity: 0.1 !important; mix-blend-mode: normal !important; left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; }
+            .watermark-image { filter: none !important; max-width: 80% !important; }
+            .visual-container img { mix-blend-mode: normal !important; filter: none !important; }
+            @page {
+                size: A4; margin: 2cm;
+                @bottom-center { content: counter(page); display: block; width: 30px; height: 30px; background-color: #d81b60; color: #ffffff; border-radius: 50%; font-family: 'Segoe UI', sans-serif; font-size: 11pt; font-weight: bold; text-align: center; line-height: 30px; margin: 0 auto; }
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- WATERMARK OVERLAY -->
+    <div class="watermark-overlay">
+        <img src="https://res.cloudinary.com/dxwszplz7/image/upload/v1765105606/VARDAAN_watermark_jxdqqb.jpg" alt="Vardaan Watermark" class="watermark-image">
+    </div>
+
+    <!-- THEME TOGGLE BUTTON -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
+
+    <div class="paper-sheet">
+        
+        <!-- BRANDING HEADER -->
+        <div class="branding-header">
+            <div class="institute-name">Vardaan Learning Institute</div>
+            <div class="system-name">Class 12 Physics • High-Yield Rapid Revision Class Notes</div>
+            <div class="contact-info"><span>🌐 vardaanlearning.com</span><span>📞 9508841336</span></div>
+        </div>
+
+        <!-- MAIN TITLE -->
+        <h1>Chapter 9: Ray Optics and Optical Instruments</h1>
+        <p><em>Exam Revision Capsule: A concise, highly condensed, and fully comprehensive master review sheet containing every core concept, derivation crux, key formula, ray diagram, and optical instrument needed for CBSE Board & Competitive Examinations.</em></p>
+
+        <!-- SECTION 1: NATURE OF LIGHT & REFLECTION -->
+        <h2>1. Nature of Light & Reflection by Spherical Mirrors</h2>
+        <ul>
+            <li><strong>Visible Spectrum:</strong> Light wavelength $\lambda \approx 400\text{ nm}$ to $750\text{ nm}$ ($4000\text{ Å} - 7500\text{ Å}$). Speed in vacuum $\mathbf{c \approx 3 \times 10^8\text{ m s}^{-1}}$.</li>
+            <li><strong>Rectilinear Propagation:</strong> Because macroscopic apertures $\gg \lambda$, wave diffraction is negligible; light travels along straight rays.</li>
+            <li><strong>Laws of Reflection:</strong>
+                <ol>
+                    <li>Angle of incidence equals angle of reflection: $\mathbf{\angle i = \angle r'}$.</li>
+                    <li>Incident ray, reflected ray, and normal lie in the <strong>same plane</strong> at the point of incidence.</li>
+                </ol>
+            </li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.1 Reflection of Light from a Plane Mirror.png" alt="Figure 9.1: Laws of reflection from a mirror">
+            <div class="fig-caption">Figure 9.1: The incident ray, reflected ray, and normal lie in the same plane with \(\angle i = \angle r'\).</div>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">Cartesian Sign Convention (Must-Follow)</span>
+            <ol>
+                <li>Pole ($P$) of mirror (or optical center $O$ of lens) is the origin $(0,0)$.</li>
+                <li>All distances measured in the <strong>direction of incident light</strong> (towards right) are <strong>positive (+ve)</strong>.</li>
+                <li>All distances measured <strong>opposite to incident light</strong> (towards left) are <strong>negative (-ve)</strong> $\implies$ For real object, $\mathbf{u < 0}$ always.</li>
+                <li>Heights measured upward ($+y$) are <strong>positive (+ve)</strong>; downward ($-y$) are <strong>negative (-ve)</strong>.</li>
+            </ol>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/figure 9.2 Cartesian Sign Convention Diagram.png" alt="Figure 9.2: Cartesian sign convention">
+            <div class="fig-caption">Figure 9.2: The Cartesian Sign Convention for spherical mirrors and lenses.</div>
+        </div>
+
+        <h3>Principal Focus ($F$) & Focal Length ($f$)</h3>
+        <ul>
+            <li><strong>Concave Mirror:</strong> Parallel rays converge to a <strong>real focus</strong> in front of the mirror $\implies \mathbf{f < 0}$.</li>
+            <li><strong>Convex Mirror:</strong> Parallel rays appear to diverge from a <strong>virtual focus</strong> behind the mirror $\implies \mathbf{f > 0}$.</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.3 Concave and Convex Mirror Focus Diagrams.png" alt="Figure 9.3: Focus of concave and convex mirror">
+            <div class="fig-caption">Figure 9.3: Focus of (a) concave mirror (real), (b) convex mirror (virtual), and (c) focal plane.</div>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Derivation Crux: Focal Length & Radius of Curvature</span>
+            From paraxial triangle geometry in Figure 9.4: $\tan \theta \approx \frac{MD}{CD} \approx \frac{MD}{R}$ and $\tan 2\theta \approx \frac{MD}{FD} \approx \frac{MD}{f}$.<br>
+            For small angles, $2\theta \approx 2\left(\frac{MD}{R}\right) = \frac{MD}{f} \implies \mathbf{f = \frac{R}{2}}$.
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.4 Spherical Mirror Ray Diagrams.png" alt="Figure 9.4: Derivation geometry for f = R/2">
+            <div class="fig-caption">Figure 9.4: Geometry of reflection of an incident ray for deriving \(f = R/2\).</div>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Derivation Crux: Mirror Equation & Magnification</span>
+            From similar triangles $\triangle A'B'F \sim \triangle MPF$ and $\triangle A'B'P \sim \triangle ABP$ (Figure 9.5):<br>
+            $$\frac{B'F}{FP} = \frac{B'P}{BP} \implies \frac{-v - (-f)}{-f} = \frac{-v}{-u} \implies \frac{v - f}{f} = \frac{v}{u}$$
+            Dividing throughout by $v$ yields the <strong>Mirror Formula</strong>:
+            $$\mathbf{\frac{1}{v} + \frac{1}{u} = \frac{1}{f}}$$
+            <strong>Linear Magnification:</strong> $\mathbf{m = \frac{h'}{h} = -\frac{v}{u} = \frac{f}{f - u} = \frac{f - v}{f}}$<br>
+            <em>Sign Guide:</em> $m < 0 \implies$ Real & Inverted image; $m > 0 \implies$ Virtual & Erect image.
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.5 Concave Mirror Ray Diagram.png" alt="Figure 9.5: Derivation of the mirror equation">
+            <div class="fig-caption">Figure 9.5: Ray diagram for image formation by a concave mirror (Mirror Equation Derivation).</div>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.6 Concave and Convex Mirror Ray Diagrams.png" alt="Figure 9.6: Virtual images in concave and convex mirrors">
+            <div class="fig-caption">Figure 9.6: Virtual image formation: (a) concave mirror with \(u < f\) (magnified), (b) convex mirror (diminished).</div>
+        </div>
+
+        <h3>Quick Summary: Image Formation by Mirrors</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mirror Type</th>
+                    <th>Object Position</th>
+                    <th>Image Position</th>
+                    <th>Nature & Size</th>
+                    <th>Magnification ($m$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="4"><strong>Concave</strong> ($f < 0$)</td>
+                    <td>Beyond $C$</td>
+                    <td>Between $C$ and $F$</td>
+                    <td>Real, Inverted, Diminished</td>
+                    <td>$-1 < m < 0$</td>
+                </tr>
+                <tr>
+                    <td>At $C$</td>
+                    <td>At $C$</td>
+                    <td>Real, Inverted, Same Size</td>
+                    <td>$m = -1$</td>
+                </tr>
+                <tr>
+                    <td>Between $C$ and $F$</td>
+                    <td>Beyond $C$</td>
+                    <td>Real, Inverted, Magnified</td>
+                    <td>$m < -1$</td>
+                </tr>
+                <tr>
+                    <td>Between $P$ and $F$</td>
+                    <td>Behind mirror</td>
+                    <td>Virtual, Erect, Magnified</td>
+                    <td>$m > +1$</td>
+                </tr>
+                <tr>
+                    <td><strong>Convex</strong> ($f > 0$)</td>
+                    <td>Anywhere in front</td>
+                    <td>Between $P$ and $F$ behind</td>
+                    <td>Virtual, Erect, Diminished</td>
+                    <td>$0 < m < +1$</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="yellow-box">
+            <span class="box-label">Exam Traps: Mirror Key Points</span>
+            <ul>
+                <li><strong>Covering half of mirror:</strong> Complete image is still formed (every ray obeys laws of reflection). Only the <strong>intensity/brightness is reduced to half</strong>.</li>
+                <li><strong>Longitudinal Object (Phone):</strong> Since $m = -v/u$ varies continuously across the phone, longitudinal magnification $m_L = \frac{dv}{du} = -m^2$. The nearer end is magnified more, causing a <strong>distorted trapezoidal image</strong>.</li>
+            </ul>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.7 Concave Mirror Phone Image Formation.png" alt="Figure 9.7: Image of mobile phone along axis">
+            <div class="fig-caption">Figure 9.7: Non-uniform longitudinal magnification of an object lying along the principal axis.</div>
+        </div>
+
+        <!-- SECTION 2: REFRACTION AT PLANE INTERFACES -->
+        <h2>2. Refraction of Light at Plane Interfaces</h2>
+        <ul>
+            <li><strong>Snell's Law:</strong> $\mathbf{\frac{\sin i}{\sin r} = n_{21} = \frac{n_2}{n_1} = \frac{v_1}{v_2} = \frac{\lambda_1}{\lambda_2}}$. <em>Frequency $\nu$ remains strictly unchanged during refraction!</em></li>
+            <li><strong>Optical vs Mass Density:</strong> Turpentine oil has lower mass density than water ($870\text{ kg m}^{-3} < 1000\text{ kg m}^{-3}$) but is <strong>optically denser</strong> ($n \approx 1.47 > 1.33$).</li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.8 Refraction and Reflection of Light.png" alt="Figure 9.8: Refraction at interface">
+            <div class="fig-caption">Figure 9.8: Refraction and reflection at a plane interface between two optical media.</div>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Lateral Shift in a Glass Slab</span>
+            For a rectangular slab of thickness $t$, emergent ray is strictly <strong>parallel to the incident ray</strong> ($i_1 = r_2'$).<br>
+            Perpendicular lateral shift: $\mathbf{x = \frac{t \sin(i - r)}{\cos r}}$.<br>
+            <em>Shift $x$ increases with:</em> slab thickness $t$, angle of incidence $i$, refractive index $n$, and decreasing wavelength (violet shifts more than red).
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.9 Refraction Through a Glass Slab.png" alt="Figure 9.9: Lateral shift in glass slab">
+            <div class="fig-caption">Figure 9.9: Lateral displacement of a ray passing through a parallel-sided glass slab.</div>
+        </div>
+
+        <div class="green-box">
+            <span class="box-label">Apparent Depth & Normal Shift</span>
+            When viewing an object in a denser medium ($n$) from a rarer medium (air) near normal incidence:<br>
+            $$\mathbf{\text{Apparent Depth } (h') = \frac{\text{Real Depth } (h)}{n}} \implies \mathbf{\text{Normal Shift } (d) = h - h' = t\left(1 - \frac{1}{n}\right)}$$
+            For multiple liquid layers: $\mathbf{d_{total} = \sum t_i \left(1 - \frac{1}{n_i}\right)}$.<br>
+            <em>Inverse Case (Object in air viewed from water):</em> Apparent height is greater: $\mathbf{h' = n \cdot h}$.
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.10 Apparent Depth_ Normal and Oblique Viewing.png" alt="Figure 9.10: Apparent depth and normal shift">
+            <div class="fig-caption">Figure 9.10: Apparent depth and normal upward shift under normal and oblique viewing.</div>
+        </div>
+
+        <!-- SECTION 3: TOTAL INTERNAL REFLECTION -->
+        <h2>3. Total Internal Reflection (TIR)</h2>
+        <div class="pink-box">
+            <span class="box-label">Mandatory Conditions for TIR</span>
+            <ol>
+                <li>Light must travel from an <strong>optically denser medium to an optically rarer medium</strong>.</li>
+                <li>Angle of incidence must exceed the critical angle: $\mathbf{i > i_c}$.</li>
+            </ol>
+            <strong>Critical Angle Formula:</strong> $\mathbf{\sin i_c = \frac{n_2}{n_1}} \implies \mathbf{n = \frac{1}{\sin i_c}}$ (when rarer medium is air).<br>
+            <em>Standard Critical Angles:</em> Water ($48.75^\circ$), Crown glass ($41.14^\circ$), Flint glass ($37.31^\circ$), Diamond ($24.41^\circ$).
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/Figure 9.11 Refraction and Internal Reflection Diagram.png" alt="Figure 9.11: Total internal reflection diagram">
+            <div class="fig-caption">Figure 9.11: Successive rays from denser medium showing critical angle and total internal reflection.</div>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/fIGURE 9.12 Laser Refraction and Total Internal Reflection.png" alt="Figure 9.12: Laser demonstration of TIR">
+            <div class="fig-caption">Figure 9.12: Demonstration of total internal reflection using a laser beam in water.</div>
+        </div>
+
+        <h3>High-Yield Applications of TIR</h3>
+        <ul>
+            <li><strong>Mirage:</strong> Hot air near ground is optically rarer than upper cooler air. Downward rays bend away from normal and undergo TIR ($i > i_c$), producing an inverted virtual image resembling a water pool.</li>
+            <li><strong>Diamond Sparkle:</strong> Very small critical angle ($i_c \approx 24.4^\circ$) and high refractive index ($n \approx 2.42$) allow multiple internal reflections before light emerges through facets.</li>
+            <li><strong>Totally Reflecting Prisms ($45^\circ-90^\circ-45^\circ$):</strong> Crown glass ($i_c \approx 41.1^\circ < 45^\circ$) reflects light with 100% efficiency without silvering degradation:
+                <ul>
+                    <li>Bends rays through $90^\circ$ (periscopes) or $180^\circ$ (Porro prism in binoculars).</li>
+                    <li>Inverts images without altering size (erecting prisms).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="visual-container">
+            <img src="Images/fIGURE 9.13 Prism Ray Diagrams and Total Internal Reflection.png" alt="Figure 9.13: Totally reflecting prisms">
+            <div class="fig-caption">Figure 9.13: Prisms designed to bend rays by \(90^\circ\), \(180^\circ\), or invert images using TIR.</div>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Optical Fibres & Light Pipes</span>
+            Consists of a central <strong>Core</strong> ($n_1 \approx 1.68$) coated with outer <strong>Cladding</strong> ($n_2 \approx 1.44$).<br>
+            Rays launched inside within the acceptance angle undergo repeated TIR with negligible loss over kilometers. Used in endoscopy, communications, and sensing.
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/fIGURE 9.14 Successive Total Internal Reflection in Optical Fibre.png" alt="Figure 9.14: Total internal reflection in optical fibre">
+            <div class="fig-caption">Figure 9.14: Light undergoing successive total internal reflections along the core of an optical fibre.</div>
+        </div>
+
+        <!-- SECTION 4: SPHERICAL REFRACTION & THIN LENSES -->
+        <h2>4. Refraction at Spherical Surfaces and Thin Lenses</h2>
+        <div class="green-box">
+            <span class="box-label">Derivation Crux: Refraction at a Single Spherical Surface</span>
+            Using paraxial Snell's law $n_1 i \approx n_2 r$ with exterior angles $i = \alpha + \gamma$ and $r = \gamma - \beta$ (Figure 9.15):<br>
+            $$n_1\left(\frac{MN}{OM} + \frac{MN}{MC}\right) = n_2\left(\frac{MN}{MC} - \frac{MN}{MI}\right) \implies \frac{n_1}{OM} + \frac{n_2}{MI} = \frac{n_2 - n_1}{MC}$$
+            Applying sign convention ($OM = -u, MI = +v, MC = +R$):
+            $$\mathbf{\frac{n_2}{v} - \frac{n_1}{u} = \frac{n_2 - n_1}{R}}$$
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/fIGURE 9.15 Refraction at a Spherical Surface.png" alt="Figure 9.15: Refraction at single spherical interface">
+            <div class="fig-caption">Figure 9.15: Refraction at a convex spherical surface separating medium \(n_1\) from medium \(n_2\).</div>
+        </div>
+
+        <div class="blue-box">
+            <span class="box-label">Derivation Crux: Lens Maker's Formula & Thin Lens Equation</span>
+            Adding interface equations for first surface $ABC$ and second surface $ADC$ (Figure 9.16):<br>
+            $$\frac{n_2}{v_1} - \frac{n_1}{u} = \frac{n_2 - n_1}{R_1} \quad \text{and} \quad \frac{n_1}{v} - \frac{n_2}{v_1} = \frac{n_1 - n_2}{R_2} = -\frac{n_2 - n_1}{R_2}$$
+            Summing eliminates the intermediate image distance $v_1$:
+            $$\frac{1}{v} - \frac{1}{u} = \left(\frac{n_2}{n_1} - 1\right)\left(\frac{1}{R_1} - \frac{1}{R_2}\right)$$
+            When $u = \infty, v = f$, which gives the <strong>Lens Maker's Formula</strong>:
+            $$\mathbf{\frac{1}{f} = (n_{21} - 1)\left(\frac{1}{R_1} - \frac{1}{R_2}\right)} \quad \text{and} \quad \mathbf{\frac{1}{v} - \frac{1}{u} = \frac{1}{f}}$$
+            <strong>Linear Magnification for Lens:</strong> $\mathbf{m = \frac{h'}{h} = +\frac{v}{u} = \frac{f}{f + u} = \frac{f - v}{f}}$
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/FIGURE 9.16 Double Convex Lens Refraction Diagrams.png" alt="Figure 9.16: Lens maker's formula derivation geometry">
+            <div class="fig-caption">Figure 9.16: Refraction through a double convex lens showing first and second surface refractions.</div>
+        </div>
+
+        <h3>Rules for Ray Tracing Through Lenses</h3>
+        <ol>
+            <li>Ray parallel to principal axis passes through $F'$ (convex) or appears to diverge from $F$ (concave).</li>
+            <li>Ray through optical center ($O$) passes undeviated.</li>
+            <li>Ray through primary focus $F$ emerges parallel to principal axis.</li>
+        </ol>
+
+        <div class="visual-container">
+            <img src="Images/fIGURE 9.17 Ray Tracing Through Convex and Concave Lenses.png" alt="Figure 9.17: Ray tracing rules for lenses">
+            <div class="fig-caption">Figure 9.17: Rules for tracing rays through (a) convex lens and (b) concave lens.</div>
+        </div>
+
+        <div class="pink-box">
+            <span class="box-label">Power of a Lens & Combination in Contact</span>
+            <strong>Power ($P$):</strong> Converging/diverging ability of a lens: $\mathbf{P = \frac{1}{f\text{ (in meters)}}}$ in <strong>Dioptre ($\text{D}$)</strong>.<br>
+            Converging (convex) lens: $P > 0$; Diverging (concave) lens: $P < 0$.<br><br>
+            <strong>Coaxial Thin Lenses in Contact:</strong>
+            $$\mathbf{\frac{1}{F} = \frac{1}{f_1} + \frac{1}{f_2} + \dots}, \quad \mathbf{P = P_1 + P_2 + \dots}, \quad \mathbf{m = m_1 \times m_2 \times \dots}$$
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/fIGURE 9.18 Convex Lens Power Diagram.png" alt="Figure 9.18: Definition of lens power">
+            <div class="fig-caption">Figure 9.18: Lens power defined by deviation \(\delta\) for a ray incident at unit height \(h = 1\text{ m}\).</div>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/FIGURE 9.19 Two Thin Lenses in Contact.png" alt="Figure 9.19: Lenses in contact">
+            <div class="fig-caption">Figure 9.19: Image formation by two thin coaxial lenses in contact.</div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">High-Yield Competitive Rules: Lens Alterations</span>
+            <ul>
+                <li><strong>Lens in a liquid medium:</strong> $\frac{f_m}{f_a} = \frac{(n_g - 1)}{(n_g/n_m - 1)}$. In water ($n_m = 4/3$), $\mathbf{f_{water} = 4 f_{air}}$. If $n_m = n_g$, $f \to \infty$ (lens becomes invisible plate). If $n_m > n_g$, <strong>lens nature reverses</strong>!</li>
+                <li><strong>Transverse vertical cut:</strong> Cutting equiconvex lens ($f$) vertically into two halves produces plano-convex lenses with $\mathbf{f' = 2f, P' = P/2}$.</li>
+                <li><strong>Longitudinal horizontal cut:</strong> Cutting along principal axis keeps radii unchanged $\implies \mathbf{f' = f}$; aperture halved $\implies$ intensity halved.</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 5: PRISM & DISPERSION -->
+        <h2>5. Refraction through a Prism & Dispersion</h2>
+        <div class="green-box">
+            <span class="box-label">The Prism Formula & Minimum Deviation</span>
+            From quadrilateral and triangle geometry of triangular prism (Figure 9.21):<br>
+            $$\mathbf{r_1 + r_2 = A} \quad \text{and} \quad \mathbf{\delta = i + e - A \iff A + \delta = i + e}$$
+            <strong>At Minimum Deviation ($D_m$):</strong> Ray passes symmetrically, $i = e$ and $r_1 = r_2 = r = A/2$. Refracted ray is <strong>parallel to the base</strong>.<br>
+            $$\mathbf{n = \frac{\sin\left(\frac{A + D_m}{2}\right)}{\sin\left(\frac{A}{2}\right)}}$$
+            For thin prism ($A < 10^\circ$): $\mathbf{D_m = (n - 1)A}$.
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/fIGURE 9.21 riangular Prism Ray Diagram.png" alt="Figure 9.21: Prism refraction ray diagram">
+            <div class="fig-caption">Figure 9.21: Ray path, angles of incidence, refraction, emergence, and deviation in a triangular prism.</div>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/FIGURE 9.22 Angle of Deviation Versus Incidence.png" alt="Figure 9.22: Delta vs i curve">
+            <div class="fig-caption">Figure 9.22: Plot of angle of deviation \(\delta\) versus angle of incidence \(i\) showing unique minimum deviation \(D_m\).</div>
+        </div>
+
+        <h3>Dispersion of Light</h3>
+        <ul>
+            <li><strong>Cause:</strong> Cauchy's formula $n(\lambda) = A + B/\lambda^2$. Since $\lambda_r > \lambda_v \implies n_r < n_v \implies \delta_r < \delta_v$. Red light deviates the least; violet light deviates the most.</li>
+            <li><strong>Angular Dispersion:</strong> $\mathbf{\theta = \delta_v - \delta_r = (n_v - n_r)A}$.</li>
+            <li><strong>Dispersive Power:</strong> $\mathbf{\omega = \frac{\delta_v - \delta_r}{\delta_y} = \frac{n_v - n_r}{n_y - 1}}$.</li>
+            <li><strong>Rainbow:</strong>
+                <ul>
+                    <li><em>Primary Rainbow:</em> 2 refractions + 1 internal reflection. Red on outer ring ($42^\circ$), violet on inner ($40^\circ$).</li>
+                    <li><em>Secondary Rainbow:</em> 2 refractions + 2 internal reflections. Fainter, reversed color order (violet outer $53^\circ$, red inner $50^\circ$).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- SECTION 6: SCATTERING OF LIGHT -->
+        <h2>6. Scattering of Light</h2>
+        <div class="pink-box">
+            <span class="box-label">Rayleigh's Law of Scattering</span>
+            For scattering particles smaller than wavelength ($a \ll \lambda$):
+            $$\mathbf{I \propto \frac{1}{\lambda^4}}$$
+            <em>Scattering intensity is inversely proportional to the 4th power of wavelength.</em>
+        </div>
+        <ul>
+            <li><strong>Blue Color of Clear Sky:</strong> Blue light has shorter wavelength ($\sim 1.8\times$ shorter than red) and scatters $\sim (1.8)^4 \approx 10\text{–}15$ times more strongly.</li>
+            <li><strong>Reddish Sunrise and Sunset:</strong> Sunlight traverses maximum atmospheric path; blue is scattered out, leaving longer wavelengths (red/orange) to reach the eye directly.</li>
+            <li><strong>Danger Signals are Red:</strong> Red light scatters least and penetrates smoke/fog over maximum distances.</li>
+            <li><strong>White Clouds:</strong> Droplets have size $a \gg \lambda \implies$ Rayleigh's law fails; all wavelengths are scattered equally (Mie scattering), appearing white.</li>
+        </ul>
+
+        <!-- SECTION 7: OPTICAL INSTRUMENTS -->
+        <h2>7. Optical Instruments: Formulas & Ray Diagrams</h2>
+
+        <!-- SIMPLE MICROSCOPE -->
+        <h3>7.1 The Simple Microscope (Magnifier)</h3>
+        <p>A single convex lens of short focal length $f$. Object placed between $O$ and $F$ forms an erect, magnified, virtual image.</p>
+        <div class="blue-box">
+            <span class="box-label">Simple Microscope Formulas</span>
+            $$\text{Angular Magnification } m = \frac{\beta}{\alpha}$$
+            <ul>
+                <li><strong>Case 1: Image at Near Point ($v = -D = -25\text{ cm}$ • Maximum Strain):</strong>
+                $$\mathbf{m = 1 + \frac{D}{f}}$$</li>
+                <li><strong>Case 2: Normal Adjustment (Image at Infinity • Relaxed Eye):</strong>
+                $$\mathbf{m = \frac{D}{f}}$$</li>
+            </ul>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/FIGURE 9.23 Simple Microscope Ray Diagrams.png" alt="Figure 9.23: Simple microscope ray diagrams">
+            <div class="fig-caption">Figure 9.23: Simple microscope: (a) image at near point \(D\), (b) unaided eye, and (c) normal adjustment (image at infinity).</div>
+        </div>
+
+        <!-- COMPOUND MICROSCOPE -->
+        <h3>7.2 The Compound Microscope</h3>
+        <p>Uses two convex lenses: <strong>Objective ($O$)</strong> with very short $f_o$ and small aperture; <strong>Eyepiece ($E$)</strong> with short $f_e$ ($f_e > f_o$) and larger aperture.</p>
+        <div class="green-box">
+            <span class="box-label">Compound Microscope Formulas</span>
+            Total Magnification: $\mathbf{m = m_o \times m_e \approx -\left(\frac{L}{f_o}\right) m_e}$
+            <ul>
+                <li><strong>Case 1: Image at Near Point ($D = 25\text{ cm}$):</strong>
+                $$\mathbf{m = -\left(\frac{L}{f_o}\right)\left(1 + \frac{D}{f_e}\right) \approx -\left(\frac{v_o}{u_o}\right)\left(1 + \frac{D}{f_e}\right)}, \quad \mathbf{L_{tube} = v_o + u_e}$$</li>
+                <li><strong>Case 2: Normal Adjustment (Image at Infinity • Relaxed Eye):</strong>
+                $$\mathbf{m = -\left(\frac{L}{f_o}\right)\left(\frac{D}{f_e}\right) \approx -\left(\frac{v_o}{u_o}\right)\left(\frac{D}{f_e}\right)}, \quad \mathbf{L_{tube} = v_o + f_e}$$</li>
+            </ul>
+        </div>
+
+        <div class="visual-container">
+            <img src="Images/FIGURE 9.24 Compound Microscope Ray Diagram.png" alt="Figure 9.24: Compound microscope ray diagram">
+            <div class="fig-caption">Figure 9.24: Complete ray diagram of image formation in a compound microscope.</div>
+        </div>
+
+        <!-- ASTRONOMICAL TELESCOPE -->
+        <h3>7.3 Astronomical Telescope (Refracting Type)</h3>
+        <p>Observes distant objects. <strong>Objective ($O$)</strong> has large focal length $f_o$ and very large aperture (to maximize light gathering & resolution). <strong>Eyepiece ($E$)</strong> has small focal length $f_e$.</p>
+        <div class="blue-box">
+            <span class="box-label">Astronomical Refracting Telescope Formulas</span>
+            $$\text{Magnifying Power } m = \frac{\beta}{\alpha}$$
+            <ul>
+                <li><strong>Case 1: Normal Adjustment (Image at Infinity • Relaxed Eye):</strong>
+                $$\mathbf{m = \frac{f_o}{f_e}}, \quad \text{Tube Length } \mathbf{L = f_o + f_e}$$</li>
+                <li><strong>Case 2: Image at Near Point ($D = 25\text{ cm}$):</strong>
+                $$\mathbf{m = \frac{f_o}{f_e}\left(1 + \frac{f_e}{D}\right)}, \quad \text{Tube Length } \mathbf{L = f_o + u_e}$$</li>
+            </ul>
+        </div>
+
+        <!-- REFLECTING TELESCOPE -->
+        <h3>7.4 Reflecting Telescopes (Cassegrain Telescope)</h3>
+        <p>Uses a large concave paraboloidal primary mirror and a convex secondary mirror to focus light through a central hole in the primary.</p>
+
+        <!-- FIGURE 9.26: LINKED -->
+        <div class="visual-container" id="fig-9-26">
+            <img src="Images/figure 9.26.png" alt="Figure 9.26: Schematic diagram of a reflecting telescope (Cassegrain).">
+            <div class="fig-caption">Figure 9.26: Schematic diagram of a Cassegrain reflecting telescope using a primary concave mirror and secondary convex mirror.</div>
+        </div>
+
+        <div class="yellow-box">
+            <span class="box-label">4 Major Advantages of Reflecting over Refracting Telescopes (CBSE Favorite)</span>
+            <ol>
+                <li><strong>Zero Chromatic Aberration:</strong> Reflection does not depend on wavelength; mirrors reflect all colors identically.</li>
+                <li><strong>Zero Spherical Aberration:</strong> A paraboloidal primary mirror focuses all parallel rays to a single geometric point.</li>
+                <li><strong>Mechanical Support:</strong> Heavy mirrors can be supported across their entire back surface, preventing gravitational sagging.</li>
+                <li><strong>Cost & Practicality:</strong> Only one front optical surface needs grinding and polishing, enabling giant apertures (e.g., Keck $10\text{ m}$).</li>
+            </ol>
+        </div>
+
+        <!-- SECTION 8: MASTER FORMULA CHEAT SHEET -->
+        <h2>8. Master Formula Cheat Sheet (Quick Recall)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Optical Element / Phenomenon</th>
+                    <th>Master Formula</th>
+                    <th>Key Conventions & Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Mirror Formula & Magnification</td>
+                    <td>$\frac{1}{v} + \frac{1}{u} = \frac{1}{f}, \quad m = -\frac{v}{u}$</td>
+                    <td>$f = R/2$. Concave $f < 0$, Convex $f > 0$. Real object $u < 0$.</td>
+                </tr>
+                <tr>
+                    <td>Refraction & Snell's Law</td>
+                    <td>$n_{21} = \frac{\sin i}{\sin r} = \frac{n_2}{n_1} = \frac{v_1}{v_2}$</td>
+                    <td>Frequency $\nu$ constant; $\lambda = v/\nu$.</td>
+                </tr>
+                <tr>
+                    <td>Normal Shift & Lateral Shift</td>
+                    <td>$d = t\left(1 - \frac{1}{n}\right), \quad x = \frac{t\sin(i-r)}{\cos r}$</td>
+                    <td>Apparent depth $h' = h/n$ for normal viewing.</td>
+                </tr>
+                <tr>
+                    <td>Critical Angle & TIR</td>
+                    <td>$\sin i_c = \frac{n_2}{n_1} = \frac{1}{n}$</td>
+                    <td>Denser $\to$ rarer medium; $i > i_c$.</td>
+                </tr>
+                <tr>
+                    <td>Single Spherical Surface</td>
+                    <td>$\frac{n_2}{v} - \frac{n_1}{u} = \frac{n_2 - n_1}{R}$</td>
+                    <td>Light travels from medium $n_1$ into medium $n_2$.</td>
+                </tr>
+                <tr>
+                    <td>Lens Maker's & Thin Lens</td>
+                    <td>$\frac{1}{f} = (n_{21}-1)\left(\frac{1}{R_1} - \frac{1}{R_2}\right) = \frac{1}{v} - \frac{1}{u}$</td>
+                    <td>$m = +v/u$. Equiconvex in air: $f = R/[2(n-1)]$.</td>
+                </tr>
+                <tr>
+                    <td>Power & Contact Combination</td>
+                    <td>$P = \frac{1}{f\text{ (m)}}, \quad P = \sum P_i, \quad \frac{1}{F} = \sum \frac{1}{f_i}$</td>
+                    <td>Unit: Dioptre ($\text{D}$). Convex $P > 0$, Concave $P < 0$.</td>
+                </tr>
+                <tr>
+                    <td>Prism Formula</td>
+                    <td>$n = \frac{\sin\left(\frac{A + D_m}{2}\right)}{\sin(A/2)}, \quad D_m = (n-1)A$</td>
+                    <td>At min deviation: $r = A/2, i = (A + D_m)/2$. Ray $\parallel$ base.</td>
+                </tr>
+                <tr>
+                    <td>Simple Microscope</td>
+                    <td>$m = 1 + \frac{D}{f}$ (near pt), $\quad m = \frac{D}{f}$ ($\infty$)</td>
+                    <td>$D = 25\text{ cm}$. Convex lens of short $f$.</td>
+                </tr>
+                <tr>
+                    <td>Compound Microscope</td>
+                    <td>$m \approx -\left(\frac{L}{f_o}\right)\left(1 + \frac{D}{f_e}\right), \quad m_\infty \approx -\left(\frac{L}{f_o}\right)\left(\frac{D}{f_e}\right)$</td>
+                    <td>$L_{tube} = v_o + u_e$ (near pt); $L_{tube} = v_o + f_e$ ($\infty$). $f_o < f_e$.</td>
+                </tr>
+                <tr>
+                    <td>Astronomical Telescope</td>
+                    <td>$m_\infty = \frac{f_o}{f_e}, \quad L = f_o + f_e$</td>
+                    <td>Near point: $m = \frac{f_o}{f_e}\left(1 + \frac{f_e}{D}\right), \quad L = f_o + u_e$. $f_o \gg f_e$.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- BRANDING FOOTER (MANDATORY) -->
+        <div class="branding-footer">
+            <p class="created-by">Created by Team Vardaan ❤️</p>
+            <p class="powered-by">Powered by Vardaan Comet</p>
+        </div>
+
+    </div>
+
+    <!-- THEME TOGGLE SCRIPT -->
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
